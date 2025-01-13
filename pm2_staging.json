@@ -8,7 +8,7 @@
       "cwd": "./",
       "env": {
         "NODE_ENV": "staging",
-        "PORT": 1630
+        "PORT": 1730
       }
     }
   ]

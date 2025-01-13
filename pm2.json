@@ -8,7 +8,7 @@
       "cwd": "./",
       "env": {
         "NODE_ENV": "production",
-        "PORT": 1620
+        "PORT": 1720
       }
     }
   ]
