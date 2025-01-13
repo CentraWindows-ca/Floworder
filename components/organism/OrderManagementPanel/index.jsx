@@ -34,6 +34,8 @@ const Com = (props) => {
     setEditingOrderId(0);
   }
 
+  debugger
+
   // ====== consts
   return (
     <div className={cn("w-full", styles.root)}>
