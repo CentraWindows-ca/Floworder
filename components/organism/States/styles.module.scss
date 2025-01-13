@@ -1,0 +1,23 @@
+@use "styles/theme" as *;
+
+.root {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.item {
+    padding: 10px; 
+    border-radius: 5px;
+    border: 1px solid $color_gray;
+    cursor: pointer;
+    background-color: $color_gray_light;
+    &:hover {
+        background-color: $color_gray;
+        
+    }
+
+    &.active {
+        background-color: $color_active;
+    }
+}

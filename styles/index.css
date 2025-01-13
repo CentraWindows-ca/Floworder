@@ -1,0 +1,64 @@
+/* @tailwind base; */
+
+/* @tailwind components; */
+
+@tailwind utilities;
+
+* {
+    border-width: 0;
+    border-style: solid;
+  }
+
+@media (min-width: 1024px) {
+  .mobile {
+    display: none;
+  }
+  .desktop {
+    display: unset
+  }
+}
+
+@media (max-width: 1025px) {
+  .desktop {
+    display: none;
+  }
+  .mobileTable thead {
+    display: none;
+  }
+  .mobileTable td {
+    display: flex;
+  }
+  
+  .mobileTable.hasLabel td::before {
+    content: attr(label);
+    font-weight: bold;
+    width: 120px;
+    min-width: 120px;
+  }
+}
+
+.table>:not(caption)>*>* {
+  background-color: transparent;
+}
+
+.main_wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+  'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+}
+
+html {
+  font-size: 90%; /* Makes it 10% smaller than the browser default, which is usually 16px */
+}
+
+button {
+  border-radius: 2px;
+  border: 1px solid #DDD;
+  padding: 0px 5px;
+  font-size: 90%;
+}
+button:hover {
+  background-color: aliceblue;
+}

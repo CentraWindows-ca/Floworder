@@ -1,0 +1,12 @@
+@use "styles/theme" as *;
+
+.root {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  li {
+    a {
+      cursor: pointer;
+    }
+  }
+}

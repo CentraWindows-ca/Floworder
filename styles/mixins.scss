@@ -1,0 +1,18 @@
+@mixin breakpoint-up($point) {
+    @if $point ==desktop {
+        @media (min-width: 1024px) {
+            @content;
+        }
+    }
+
+    @else if $point == mobile {
+        @media (max-width: 1024px) {
+            @content;
+        }
+    }
+}
+/*
+@include breakpoint-up(mobile) {
+    padding: 0 $gap1 * 2;
+}
+*/

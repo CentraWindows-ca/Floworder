@@ -1,0 +1,16 @@
+@use "styles/theme"as *;
+
+.root {
+	padding: 0;
+	border: none;
+	width: 100px
+}
+
+.overlay {
+	position: absolute;
+	background-color: $color_gray_dark;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+}

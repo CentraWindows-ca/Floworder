@@ -1,0 +1,18 @@
+@use "styles/theme"as *;
+
+.root {
+
+}
+
+.multiSelect {
+
+    input {
+        font-size: .85rem;
+        padding: 1px .375rem;
+        border-radius: 0px;
+    }
+    button {
+        font-size: .6rem;
+    }
+
+}

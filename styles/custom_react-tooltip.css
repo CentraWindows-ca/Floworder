@@ -1,0 +1,22 @@
+
+.react-datepicker-popper {
+    z-index: 100;
+  }
+
+  .btn-xs {
+    font-size: .8rem;
+    padding: .1rem .6rem;
+  }
+
+  .btn-xxs {
+		font-size: 12px;
+		height: 25px;
+		line-height:23px;
+		padding: 0px 10px;	
+  }
+
+  .input-group-xxs {
+    font-size: 12px;
+    height: 25px;
+		line-height:23px;  
+  }

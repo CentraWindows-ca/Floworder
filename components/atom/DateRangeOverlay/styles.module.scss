@@ -1,0 +1,30 @@
+@use "styles/theme"as *;
+
+.root {
+	padding: 0;
+	border: none;
+	width: 100px
+}
+
+.containersm {
+	.to{
+		font-size: 12px;
+		background-color: $color_gray;
+		height: 25px;
+		line-height: 25px;
+		list-style: 25px;
+		padding: 0px 5px;
+		border-top: 1px solid #ced4da;
+		border-bottom: 1px solid #ced4da;
+	}
+
+	.btn {
+		font-size: 12px;
+		height: 25px;
+		line-height:25px;
+		padding: 0px 10px;
+		display: inline-flex;
+		align-items: center;
+	}
+	
+}

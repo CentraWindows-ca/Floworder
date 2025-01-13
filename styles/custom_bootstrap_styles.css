@@ -1,0 +1,10 @@
+.noteTooltip > .tooltip-inner {
+   max-width: 20vw;
+    text-align: left !important;
+    font-size: 0.7rem;
+}
+
+
+.bg-notempty {
+    background-color: beige;
+}
