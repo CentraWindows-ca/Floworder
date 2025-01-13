@@ -7,9 +7,14 @@ import TypeaheadMultiSelect from "components/molecule/TypeaheadMultiSelect";
 // styles
 import styles from "./styles.module.scss";
 
-export const EF_Date = ({ id, value,valueType="date", onChange, onSelect, ...rest }) => {
-
-
+export const EF_Date = ({
+  id,
+  value,
+  valueType = "date",
+  onChange,
+  onSelect,
+  ...rest
+}) => {
   const handleSelect = (d) => {
     const newDate = d; // || new Date()
     onChange(newDate);
@@ -21,6 +26,7 @@ export const EF_Date = ({ id, value,valueType="date", onChange, onSelect, ...res
       onChange={onChange}
       onSelect={handleSelect}
       value={value}
+      {...rest}
     />
   );
 };
@@ -133,8 +139,17 @@ export const EF_MultiSelect = ({
   );
 };
 
-export const EF_Input = ({ ...props }) => {
-  return <input className="form-control form-control-sm" {...props} />;
+export const EF_Input = ({ onChange, ...props }) => {
+  const handleChange = (e) => {
+    onChange(e.target.value)
+  };
+  return (
+    <input
+      className="form-control form-control-sm"
+      onChange={handleChange}
+      {...props}
+    />
+  );
 };
 
 export const EF_Checkbox = ({ onChange, value, ...props }) => {

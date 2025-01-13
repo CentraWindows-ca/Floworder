@@ -12,6 +12,7 @@ const DFDatePicker = ({
   style = { width: "100px" },
   size,
   viewType = "date",
+  disabled,
   ...props
 }) => {
   let otherProps = {};
@@ -39,6 +40,7 @@ const DFDatePicker = ({
         onChange={onChange}
         onSelect={onSelect}
         className={styles.root}
+        readOnly={disabled}
         {...otherProps}
         {...{ props }}
       />

@@ -24,13 +24,14 @@ import styles from "./styles.module.scss";
 export default ({
   defaultTab,
   tabs,
+  tabName = "tab",
   children,
   renderTool = () => {},
   ...rest
 }) => {
   // const [tab, setTab] = useState(defaultTab);
   const router = useRouter();
-  const tab = router?.query?.tab || defaultTab;
+  const tab = router?.query?.[tabName] || defaultTab;
 
   /* 
     NOTE: after we did "redirect /admin/aaa to /aaa" update, we need to handle path base on visual path
@@ -42,7 +43,7 @@ export default ({
     router.replace(
       {
         pathname,
-        query: { ...router.query, tab: v },
+        query: { ...router.query, [tabName]: v },
       },
       undefined,
       { shallow: true },

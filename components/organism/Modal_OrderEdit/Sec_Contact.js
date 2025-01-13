@@ -15,7 +15,8 @@ import { LocalDataContext } from "./LocalDataProvider";
 import { DisplayBlock } from "./Com";
 
 const Com = ({ className, ...props }) => {
-  const { data, onChange, orderId, onHide } = useContext(LocalDataContext);
+  const { data, onChange, isEditable, orderId, onHide } =
+    useContext(LocalDataContext);
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -38,14 +39,15 @@ const Com = ({ className, ...props }) => {
         <a href="111">
           <i className="fa-solid fa-at me-1"></i>craig@alabasterhomes.ca
         </a>
-        |
-        <div>
-          <i
-            className="fa-solid fa-pen-to-square text-blue-500 hover:text-blue-400"
-            style={{ cursor: "pointer" }}
-            onClick={() => setIsEditing(true)}
-          ></i>
-        </div>
+        {isEditable && (
+          <div>
+            <i
+              className="fa-solid fa-pen-to-square ms-2 text-blue-500 hover:text-blue-400"
+              style={{ cursor: "pointer" }}
+              onClick={() => setIsEditing(true)}
+            ></i>
+          </div>
+        )}
       </div>
       <Modal
         title="Edit site contact"
@@ -65,7 +67,8 @@ const Com = ({ className, ...props }) => {
 };
 
 const ModalEdit = () => {
-  const { data, onChange, orderId, onHide } = useContext(LocalDataContext);
+  const { data, onChange, isEditable, orderId, onHide } =
+    useContext(LocalDataContext);
 
   return (
     <div className={cn("flex-column flex gap-2")}>

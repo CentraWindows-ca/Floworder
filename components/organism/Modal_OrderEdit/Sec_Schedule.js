@@ -13,7 +13,7 @@ import { LocalDataContext } from "./LocalDataProvider";
 import { DisplayBlock } from "./Com";
 
 const Com = ({ className, ...props }) => {
-  const { data, onChange, orderId, onHide } = useContext(LocalDataContext);
+  const { data, onChange, isEditable, orderId, onHide } = useContext(LocalDataContext);
 
   return (
     <div className={cn(styles.columnInputsContainer)}>
@@ -24,6 +24,7 @@ const Com = ({ className, ...props }) => {
             k="productionStart"
             value={data?.productionStart}
             onChange={(v) => onChange(v, "productionStart")}
+            disabled = {!isEditable}
           />
         </div>
       </DisplayBlock>

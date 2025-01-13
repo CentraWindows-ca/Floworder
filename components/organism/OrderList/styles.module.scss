@@ -4,3 +4,14 @@
     overflow: auto;
     height: 100%;
 }
+
+.orderTable {
+    .orderNumber {
+        cursor: pointer;
+        color: $color_centraBlue;
+        text-decoration: underline;
+        &:hover {
+            color: $color_centraBlue_hover;
+        }
+    }
+}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
+import utils from "lib/utils";
 import _ from "lodash";
 
 import Editable from "components/molecule/Editable";
@@ -18,9 +19,17 @@ const Com = ({ className, ...props }) => {
       <DisplayBlock>
         <label htmlFor="rushOrder">Total Windows</label>
         <div className={cn(styles.valueContainer)}>
-          123
+          {utils.formatNumber(123)}
         </div>
       </DisplayBlock>
+
+      <DisplayBlock>
+        <label htmlFor="rushOrder">Total Sales Amount</label>
+        <div className={cn(styles.valueContainer)}>
+          ${utils.formatNumber(123)}
+        </div>
+      </DisplayBlock>
+
     </div>
   );
 };

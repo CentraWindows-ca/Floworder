@@ -20,7 +20,9 @@ import styles from "./styles.module.scss";
 
 const Com = (props) => {
   const router = useRouter();
-  const state = router?.query?.state || "";
+  const {state, q, p, tab} = router?.query || {};
+
+
   const data = {};
   const [editingOrderId, setEditingOrderId] = useState(null);
 
@@ -28,12 +30,16 @@ const Com = (props) => {
     setEditingOrderId(order.id);
   };
 
+  const handleCreate = () => {
+    setEditingOrderId(0);
+  }
+
   // ====== consts
   return (
     <div className={cn("w-full", styles.root)}>
       <div className={cn(styles.topBar)}>
         <div>
-          <button className="btn btn-success">Create</button>
+          <button className="btn btn-success" onClick={handleCreate}>Create</button>
         </div>
         <div>
           <Pagination count={100} />
@@ -42,7 +48,6 @@ const Com = (props) => {
       <div className={cn(styles.detail)}>
         <OrderList onEdit={handleEdit} data={data} />
       </div>
-
       <Modal_OrderEdit onHide={() => setEditingOrderId(null)} orderId = {editingOrderId}/>
     </div>
   );

@@ -16,7 +16,8 @@ import { LocalDataContext } from "./LocalDataProvider";
 import { DisplayBlock } from "./Com";
 
 const Com = ({ className, ...props }) => {
-  const { data, onChange, orderId, onHide } = useContext(LocalDataContext);
+  const { data, onChange, isEditable, orderId, onHide } =
+    useContext(LocalDataContext);
 
   const { color, label, textColor } = ProductionStates["inProgress"];
 
@@ -28,10 +29,13 @@ const Com = ({ className, ...props }) => {
         )}
       >
         <OverlayWrapper
-          isLock={false}
+          isLock={!isEditable}
           renderTrigger={() => (
             <div
-              className={cn(styles.statesContainer)}
+              className={cn(
+                styles.statesContainer,
+                isEditable && styles.statesContainerEditable,
+              )}
               style={{ color: textColor, backgroundColor: color }}
             >
               <span>{label}</span>
@@ -53,7 +57,7 @@ const PopoverEdit = () => {
 
   const handleClick = (k) => {
     // onChange(k, 'states')
-  }
+  };
 
   return (
     <div

@@ -11,7 +11,7 @@ import { LocalDataContext } from "./LocalDataProvider";
 import { DisplayBlock } from "./Com";
 
 const Com = ({ className, ...props }) => {
-  const { data, onChange, orderId, onHide } = useContext(LocalDataContext);
+  const { data, onChange, orderId, isEditable, onHide } = useContext(LocalDataContext);
 
   return (
     <div className={cn(styles.columnOptionsContainer)}>
@@ -22,6 +22,7 @@ const Com = ({ className, ...props }) => {
             options={[]}
             value={data?.rushOrder}
             onChange={(v) => onChange(v, "rushOrder")}
+            disabled = {!isEditable}
           />
         </div>
         <label htmlFor="rushOrder">Rush Order</label>

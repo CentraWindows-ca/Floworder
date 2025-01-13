@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import Modal from "components/molecule/Modal";
+import utils from "lib/utils";
 import _ from "lodash";
 
 import Editable from "components/molecule/Editable";
@@ -12,8 +13,15 @@ import { LocalDataContext } from "./LocalDataProvider";
 import { DisplayBlock } from "./Com";
 
 const Com = ({ className, ...props }) => {
-  const { data, onChange, newAttachments, setNewAttachments, orderId, onHide } =
-    useContext(LocalDataContext);
+  const {
+    data,
+    onChange,
+    newAttachments,
+    setNewAttachments,
+    isEditable,
+    orderId,
+    onHide,
+  } = useContext(LocalDataContext);
   const handleFileChange = (event) => {
     const files = Array.from(event.target.files); // Convert FileList to Array
 
@@ -44,24 +52,51 @@ const Com = ({ className, ...props }) => {
     <>
       <div className={cn(styles.sectionTitle)}>
         <span>Attachments</span>
-        <div>
-          <label htmlFor="file-upload" className="btn btn-outline-secondary btn-xs">
-            Upload
-          </label>
-          <input
-            id="file-upload"
-            type="file"
-            multiple
-            className="d-none"
-            onChange={handleFileChange}
-          />
-        </div>
+        {isEditable && (
+          <div>
+            <label
+              htmlFor="file-upload"
+              className="btn btn-outline-secondary btn-xs"
+            >
+              Upload
+            </label>
+
+            <input
+              id="file-upload"
+              type="file"
+              multiple
+              className="d-none"
+              onChange={handleFileChange}
+            />
+          </div>
+        )}
       </div>
       <div className={cn(styles.columnAttachmentsContainer)}>
-        <div>No Data</div>
+        <div className="p-2">
+          <table className="table-xs table-bordered table-hover mb-0 table border text-sm">
+            <tbody>
+              <tr>
+                <td>aaaa.pdf</td>
+                <td className="text-right">{utils.formatNumber(123123)} KB</td>
+                <td style={{ width: 60 }}>
+                  <button
+                    className="btn btn-xs btn-danger"
+                    disabled={!isEditable}
+                  >
+                    delete
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <Modal show={newAttachments} size="md" onHide = {() => setNewAttachments(null)}>
+      <Modal
+        show={newAttachments}
+        size="md"
+        onHide={() => setNewAttachments(null)}
+      >
         <div>
           <div>
             <table className="table-sm table-bordered table-hover table border text-sm">
@@ -79,7 +114,7 @@ const Com = ({ className, ...props }) => {
                   return (
                     <tr>
                       <td>{name}</td>
-                      <td className="text-right">{size}</td>
+                      <td className="text-right">{utils.formatNumber(size)} KB</td>
                       <td>
                         <input
                           className="form-control form-control-sm"

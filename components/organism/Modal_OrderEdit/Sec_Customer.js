@@ -12,7 +12,8 @@ import { LocalDataContext } from "./LocalDataProvider";
 import { DisplayBlock } from "./Com";
 
 const Com = ({ className, ...props }) => {
-  const { data, onChange, orderId, onHide } = useContext(LocalDataContext);
+  const { data, onChange, isEditable, orderId, onHide } =
+    useContext(LocalDataContext);
   const [isEditing, setIsEditing] = useState(false);
 
   return (
@@ -25,13 +26,16 @@ const Com = ({ className, ...props }) => {
         <div className="align-items-center flex flex-row gap-2 text-sm">
           <div className="align-items-center flex flex-row gap-1">
             <i className="fa-solid fa-house text-blueGray-400"></i>
-            <span
-              className="text-blue-500 hover:text-blue-400"
-              style={{ cursor: "pointer" }}
-              onClick={() => setIsEditing(true)}
-            >
+
+            <span>
               807 EAST 33RD AVENUE
-              <i className="fa-solid fa-pen-to-square ms-2"></i>
+              {isEditable && (
+                <i
+                  className="fa-solid fa-pen-to-square ms-2"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setIsEditing(true)}
+                ></i>
+              )}
             </span>
           </div>
           |

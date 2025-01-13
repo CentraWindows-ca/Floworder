@@ -5,9 +5,9 @@ import _ from "lodash";
 import Modal from "components/molecule/Modal";
 import LoadingBlock from "components/atom/LoadingBlock";
 
-import Sec_States from "./Sec_States"
-import Sec_Contact from "./Sec_Contact"
-import Sec_Address from "./Sec_Customer"
+import Sec_States from "./Sec_States";
+import Sec_Contact from "./Sec_Contact";
+import Sec_Address from "./Sec_Customer";
 import Sec_OrderInfo from "./Sec_OrderInfo";
 import Sec_OrderOptions from "./Sec_OrderOptions";
 import Sec_Attachments from "./Sec_Attachments";
@@ -30,8 +30,16 @@ import { LocalDataContext, LocalDataProvider } from "./LocalDataProvider";
 import Editable from "components/molecule/Editable";
 
 const Com = (props) => {
-  const { orderId, onHide, onAnchor, expands, setExpands } =
-    useContext(LocalDataContext);
+  const {
+    orderId,
+    onHide,
+    onAnchor,
+    onFetchFromWindowMaker,
+    expands,
+    setExpands,
+    data,
+    onChange,
+  } = useContext(LocalDataContext);
 
   const router = useRouter();
   const { state } = router?.query || {};
@@ -39,30 +47,54 @@ const Com = (props) => {
   // use swr later
 
   const jsxTitle = (
-    <div className="flex gap-2">
-      Work Order #AN0077R2
-      <div className="flex gap-2 align-items-center">
-        <Sec_States/>
-        <Sec_Contact/>
+    <div className="align-items-center flex gap-2">
+      Work Order #
+      {orderId > 0 ? (
+        "AN0077R2"
+      ) : (
+        <div>
+          <div className="input-group input-group-sm">
+            <Editable.EF_Input
+              k="workOrderNumber"
+              options={[]}
+              value={data?.workOrderNumber}
+              onChange={(v) => onChange(v, "workOrderNumber")}
+            />
+            <button
+              className="btn btn-sm btn-primary"
+              onClick={onFetchFromWindowMaker}
+            >
+              Fetch
+            </button>
+          </div>
+        </div>
+      )}
+      <div className="align-items-center flex gap-2">
+        <Sec_States />
+        <Sec_Contact />
       </div>
     </div>
   );
 
   return (
     <Modal
-      show={orderId}
+      show={orderId !== null}
       title={jsxTitle}
       size="xl"
       onHide={onHide}
       fullscreen={true}
     >
       <div>
-        <div className="justify-content-between flex mb-2 align-items-center">
-          <div><Sec_Address/></div>
+        <div className="justify-content-between align-items-center mb-2 flex">
+          <div>
+            <Sec_Address />
+          </div>
           <div className={cn(styles.anchors)}>
             <span onClick={() => onAnchor("productionItems", true)}>Items</span>
             <span onClick={() => onAnchor("remakeItems", true)}>Remake</span>
-            <span onClick={() => onAnchor("backorderItems", true)}>Backorder</span>
+            <span onClick={() => onAnchor("backorderItems", true)}>
+              Backorder
+            </span>
             <span onClick={() => onAnchor("glassItems", true)}>Glass</span>
             <span onClick={() => onAnchor("notes", true)}>Notes</span>
           </div>
@@ -94,9 +126,11 @@ const Com = (props) => {
           </div>
         </div>
         <div className="justify-content-center my-2 flex bg-blueGray-100 p-2">
-          <button className="btn btn-primary px-4">Save</button>
+          <button className="btn btn-primary px-4" disabled={!data?.workOrderNumber}>
+            Save
+          </button>
         </div>
-        <hr/>
+        <hr />
         <div className="flex-column flex gap-2">
           <Toggle_Notes />
           <Toggle_ProductionItems />

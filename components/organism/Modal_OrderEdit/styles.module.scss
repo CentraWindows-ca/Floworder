@@ -5,17 +5,20 @@
     height: 100%;
 }
 
+.statesContainerEditable {
+    cursor: pointer;
+    &:hover {
+        opacity: .8;
+    }
+}
 .statesContainer {
     border-radius: 4px;
     padding: 4px 10px;
-    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 5px;
-    &:hover {
-        opacity: .8;
-    }
+    height: 28px;
 }
 
 .gridsOfMainInfo {

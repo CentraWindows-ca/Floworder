@@ -22,7 +22,7 @@ const Com = (props) => {
     <div className={cn("w-full", styles.root)}>
       <LoadingBlock isLoading={!data}>
         <table
-          className="table-sm table-bordered table-hover table border text-xs"
+          className={cn(styles.orderTable, "table-sm table-bordered table-hover table border text-xs")}
           style={{ minWidth: 1500 }}
         >
           <thead className="sticky top-0 bg-gray-100">
@@ -47,7 +47,9 @@ const Com = (props) => {
           </thead>
           <tbody>
             <tr>
-              <td onClick={() =>onEdit({id: 1})}>123456</td>
+              <td onClick={() => onEdit({ id: 1 })}>
+                <div className={cn(styles.orderNumber)}>123456</div>
+              </td>
               <td></td>
               <td></td>
               <td></td>

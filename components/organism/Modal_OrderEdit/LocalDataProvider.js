@@ -8,8 +8,10 @@ import React, {
 import _ from "lodash";
 export const LocalDataContext = createContext(null);
 
-export const LocalDataProvider = ({ children, ...props }) => {
+export const LocalDataProvider = ({ children, orderId, ...props }) => {
   const [data, setData] = useState(null);
+
+  const [isEditable, setIsEditable] = useState(false);
 
   // not messing up with existing files
   const [newAttachments, setNewAttachments] = useState(null);
@@ -17,9 +19,18 @@ export const LocalDataProvider = ({ children, ...props }) => {
   // UI purpose
   const [expands, setExpands] = useState({});
 
-  const handleChange = (k, v) => {
+  useEffect(() => {
+    init(orderId);
+  }, [orderId]);
+
+  const handleFetchFromWindowMaker = () => {
+    // TODO: fetch from window maker
+  };
+
+  const handleChange = (v, k) => {
     setData((prev) => {
       const _newV = JSON.parse(JSON.stringify(prev || {}));
+
       _newV[k] = v;
       return _newV;
     });
@@ -45,16 +56,28 @@ export const LocalDataProvider = ({ children, ...props }) => {
     }, 200);
   };
 
+  const init = async (orderId) => {
+    // get data by orderId
+    if (orderId === 0) {
+      setIsEditable(false);
+    } else if (orderId) {
+      setIsEditable(true);
+    }
+  };
+
   const context = {
     ...props,
+    orderId,
     data,
     setData,
     newAttachments,
     setNewAttachments,
     onChange: handleChange,
     onAnchor: handleAnchor,
+    onFetchFromWindowMaker: handleFetchFromWindowMaker,
     expands,
     setExpands,
+    isEditable,
   };
   return (
     <LocalDataContext.Provider value={context}>

@@ -13,7 +13,7 @@ import { LocalDataContext } from "./LocalDataProvider";
 import { DisplayBlock } from "./Com";
 
 const Com = ({ className, ...props }) => {
-  const { data, onChange, orderId, onHide } = useContext(LocalDataContext);
+  const { data, onChange, isEditable, orderId, onHide } = useContext(LocalDataContext);
 
   return (
     <div className={cn(styles.columnInputsContainer)}>
@@ -25,6 +25,7 @@ const Com = ({ className, ...props }) => {
             options={[]}
             value={data?.branch}
             onChange={(v) => onChange(v, "branch")}
+            disabled = {!isEditable}
           />
         </div>
       </DisplayBlock>
@@ -36,6 +37,7 @@ const Com = ({ className, ...props }) => {
             options={[]}
             value={data?.manufacturingFacility}
             onChange={(v) => onChange(v, "manufacturingFacility")}
+            disabled = {!isEditable}
           />
         </div>
       </DisplayBlock>
@@ -47,6 +49,7 @@ const Com = ({ className, ...props }) => {
             options={[]}
             value={data?.branch}
             onChange={() => onChange()}
+            disabled = {!isEditable}
           />
         </div>
       </DisplayBlock>
