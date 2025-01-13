@@ -11,6 +11,7 @@ import Sec_Address from "./Sec_Customer";
 import Sec_OrderInfo from "./Sec_OrderInfo";
 import Sec_OrderOptions from "./Sec_OrderOptions";
 import Sec_Attachments from "./Sec_Attachments";
+import Sec_PurchaseOrders from "./Sec_PurchaseOrders";
 import Sec_Schedule from "./Sec_Schedule";
 import Sec_Summary from "./Sec_Summary";
 
@@ -50,7 +51,7 @@ const Com = (props) => {
     <div className="align-items-center flex gap-2">
       Work Order #
       {orderId > 0 ? (
-        "AN0077R2"
+        data?.workOrderNumber
       ) : (
         <div>
           <div className="input-group input-group-sm">
@@ -114,7 +115,7 @@ const Com = (props) => {
           </div>
           <div className={cn(styles.mainItem, styles["mainItem-4"])}>
             <div className={cn(styles.sectionTitle)}>Purchase Orders</div>
-            Purchase Order(s)
+            <Sec_PurchaseOrders />
           </div>
           <div className={cn(styles.mainItem, styles["mainItem-5"])}>
             <div className={cn(styles.sectionTitle)}>Schedule</div>
@@ -126,7 +127,10 @@ const Com = (props) => {
           </div>
         </div>
         <div className="justify-content-center my-2 flex bg-blueGray-100 p-2">
-          <button className="btn btn-primary px-4" disabled={!data?.workOrderNumber}>
+          <button
+            className="btn btn-primary px-4"
+            disabled={!data?.workOrderNumber}
+          >
             Save
           </button>
         </div>

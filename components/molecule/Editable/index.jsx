@@ -152,6 +152,19 @@ export const EF_Input = ({ onChange, ...props }) => {
   );
 };
 
+export const EF_Text = ({ onChange, ...props }) => {
+  const handleChange = (e) => {
+    onChange(e.target.value)
+  };
+  return (
+    <textarea
+      className="form-control form-control-sm"
+      onChange={handleChange}
+      {...props}
+    />
+  );
+};
+
 export const EF_Checkbox = ({ onChange, value, ...props }) => {
   const handleChange = (e) => {
     onChange(e.target.checked);
@@ -172,6 +185,7 @@ export const Editable = {
   EF_Select,
   EF_MultiSelect,
   EF_Input,
+  EF_Text,
   EF_Checkbox,
 };
 

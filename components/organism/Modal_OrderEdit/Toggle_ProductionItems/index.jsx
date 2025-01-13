@@ -25,10 +25,10 @@ const Com = ({ className, ...props }) => {
   return (
     <ToggleBlock title={jsxTitle} id={"productionItems"}>
       <div className="p-2">
-        <div className="ms-1 mb-2 mt-2 text-left">
+        <div className="mb-2 text-left">
           <label className="text-sky-600">Windows</label>
         </div>
-        <table className="table-xs table-bordered table-hover table border text-sm">
+        <table className="table-xs table-bordered table-hover table border text-sm mb-0">
           <thead className="bg-gray-100">
             <tr>
               <td>Item</td>
@@ -59,10 +59,10 @@ const Com = ({ className, ...props }) => {
 
 
       <div className="p-2">
-        <div className="ms-1 mb-2 mt-2 text-left">
+        <div className="mb-2 text-left">
           <label className="text-sky-600">Doors</label>
         </div>
-        <table className="table-xs table-bordered table-hover table border text-sm">
+        <table className="table-xs table-bordered table-hover table border text-sm mb-0">
           <thead className="bg-gray-100">
             <tr>
               <td>Item</td>

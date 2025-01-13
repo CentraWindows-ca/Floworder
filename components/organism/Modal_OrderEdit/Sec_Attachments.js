@@ -76,7 +76,7 @@ const Com = ({ className, ...props }) => {
           <table className="table-xs table-bordered table-hover mb-0 table border text-sm">
             <tbody>
               <tr>
-                <td>aaaa.pdf</td>
+                <td className="text-left">aaaa.pdf</td>
                 <td className="text-right">{utils.formatNumber(123123)} KB</td>
                 <td style={{ width: 60 }}>
                   <button
