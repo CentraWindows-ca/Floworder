@@ -37,6 +37,8 @@ const Com = (props) => {
     },
   ];
 
+  debugger
+
   const renderTool = () => {
     return (
       <div className="flex justify-content-between w-full gap-3">
