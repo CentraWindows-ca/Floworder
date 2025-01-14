@@ -34,21 +34,27 @@ const DFDatePicker = ({
       break;
   }
 
-  const dateValue = value ? parse(value, 'yyyy-MM-dd', new Date()): null
+  const dateValue = value ? parse(value, "yyyy-MM-dd", new Date()) : null;
 
   const handleSelect = (v) => {
-    const formattedDate = format(v, 'yyyy-MM-dd'); 
-    onSelect(v, formattedDate)
-  }
+    const formattedDate = v ? format(v, "yyyy-MM-dd") : null;
+    onSelect(v, formattedDate);
+  };
 
   const handleChange = (v) => {
-    const formattedDate = format(v, 'yyyy-MM-dd'); 
-    onChange(v, formattedDate)
-  }
-
+    const formattedDate = v ? format(v, "yyyy-MM-dd") : null;
+    onChange(v, formattedDate);
+  };
 
   return (
-    <div className={cn("form-control", size === "sm" ? styles.containersm : styles.container, className)} style={style}>
+    <div
+      className={cn(
+        "form-control",
+        size === "sm" ? styles.containersm : styles.container,
+        className,
+      )}
+      style={style}
+    >
       <DatePicker
         selected={dateValue}
         onChange={handleChange}

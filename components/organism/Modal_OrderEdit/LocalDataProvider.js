@@ -61,6 +61,7 @@ export const LocalDataProvider = ({ children, orderId, ...props }) => {
   };
 
   const init = async (orderId) => {
+    console.log(orderId)
     // get data by orderId
     if (orderId === 0) {
       setIsEditable(false);

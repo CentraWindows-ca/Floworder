@@ -47,7 +47,7 @@ const Com = (props) => {
           </thead>
           <tbody>
             <tr>
-              <td onClick={() => onEdit({ id: 1 })}>
+              <td onClick={() => onEdit({ id: '11111' })}>
                 <div className={cn(styles.orderNumber)}>123456</div>
               </td>
               <td></td>

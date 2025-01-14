@@ -78,7 +78,7 @@ const Com = ({ className, ...props }) => {
                 id={key}
                 options={[]}
                 value={data?.[key]}
-                onChange={(v) => onChange(v, { key })}
+                onChange={(v) => onChange(v, [key])}
                 disabled={!isEditable}
               />
             </div>
