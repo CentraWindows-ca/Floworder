@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import cn from "classnames";
 import DatePicker from "react-datepicker";
+import { parse, format } from "date-fns";
 // styles
 import styles from "./styles.module.scss";
 
 const DFDatePicker = ({
-  value = new Date(),
+  value = "",
   className,
   onChange,
   onSelect,
@@ -33,12 +34,25 @@ const DFDatePicker = ({
       break;
   }
 
+  const dateValue = value ? parse(value, 'yyyy-MM-dd', new Date()): null
+
+  const handleSelect = (v) => {
+    const formattedDate = format(v, 'yyyy-MM-dd'); 
+    onSelect(v, formattedDate)
+  }
+
+  const handleChange = (v) => {
+    const formattedDate = format(v, 'yyyy-MM-dd'); 
+    onChange(v, formattedDate)
+  }
+
+
   return (
     <div className={cn("form-control", size === "sm" ? styles.containersm : styles.container, className)} style={style}>
       <DatePicker
-        selected={value}
-        onChange={onChange}
-        onSelect={onSelect}
+        selected={dateValue}
+        onChange={handleChange}
+        onSelect={handleSelect}
         className={styles.root}
         readOnly={disabled}
         {...otherProps}

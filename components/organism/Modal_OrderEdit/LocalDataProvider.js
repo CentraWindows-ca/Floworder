@@ -6,9 +6,13 @@ import React, {
   useCallback,
 } from "react";
 import _ from "lodash";
+import { GeneralContext } from "lib/provider/GeneralProvider"
+
+
 export const LocalDataContext = createContext(null);
 
 export const LocalDataProvider = ({ children, orderId, ...props }) => {
+  const generalContext = useContext(GeneralContext)
   const [data, setData] = useState(null);
 
   const [isEditable, setIsEditable] = useState(false);
@@ -66,6 +70,7 @@ export const LocalDataProvider = ({ children, orderId, ...props }) => {
   };
 
   const context = {
+    ...generalContext,
     ...props,
     orderId,
     data,

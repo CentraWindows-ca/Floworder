@@ -40,10 +40,12 @@ const Com = (props) => {
     setExpands,
     data,
     onChange,
+    dictionary
   } = useContext(LocalDataContext);
 
   const router = useRouter();
   const { state } = router?.query || {};
+ 
 
   // use swr later
 

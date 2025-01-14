@@ -10,11 +10,11 @@ import styles from "./styles.module.scss";
 export const EF_Date = ({
   id,
   value,
-  valueType = "date",
   onChange,
   onSelect,
   ...rest
 }) => {
+
   const handleSelect = (d) => {
     const newDate = d; // || new Date()
     onChange(newDate);
@@ -26,7 +26,7 @@ export const EF_Date = ({
       onChange={onChange}
       onSelect={handleSelect}
       value={value}
-      {...rest}
+       {...rest}
     />
   );
 };

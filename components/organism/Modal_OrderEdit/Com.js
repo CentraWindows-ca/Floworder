@@ -65,7 +65,7 @@ export const ToggleFull = ({
   ...props
 }) => {
   const { expands, setExpands } = useContext(LocalDataContext);
-  const toggle = expands[id];
+  const toggle = !expands[id];
 
   const setToggle = () => {
     setExpands((prev) => {
