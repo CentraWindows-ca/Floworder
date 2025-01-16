@@ -32,7 +32,7 @@ import Editable from "components/molecule/Editable";
 
 const Com = (props) => {
   const {
-    orderId,
+    initWorkOrder,
     onHide,
     onAnchor,
     onFetchFromWindowMaker,
@@ -40,28 +40,24 @@ const Com = (props) => {
     setExpands,
     data,
     onChange,
-    dictionary
+    dictionary,
   } = useContext(LocalDataContext);
-
-  const router = useRouter();
-  const { state } = router?.query || {};
- 
 
   // use swr later
 
   const jsxTitle = (
     <div className="align-items-center flex gap-2">
       Work Order #
-      {orderId > 0 ? (
-        data?.workOrderNumber
+      {initWorkOrder?.workOrderNo ? (
+        initWorkOrder?.workOrderNo
       ) : (
         <div>
           <div className="input-group input-group-sm">
             <Editable.EF_Input
-              k="workOrderNumber"
+              k="MASTER.workOrderNo"
               options={[]}
-              value={data?.workOrderNumber}
-              onChange={(v) => onChange(v, "workOrderNumber")}
+              value={data?.MASTER?.workOrderNo}
+              onChange={(v) => onChange(v, "MASTER.workOrderNo")}
             />
             <button
               className="btn btn-sm btn-primary"
@@ -81,7 +77,7 @@ const Com = (props) => {
 
   return (
     <Modal
-      show={orderId !== null}
+      show={initWorkOrder}
       title={jsxTitle}
       size="xl"
       onHide={onHide}

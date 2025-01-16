@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
-import constants, { ProductionStates } from "lib/constants";
+import constants, { ORDER_STATES } from "lib/constants";
 
 import Modal from "components/molecule/Modal";
 import OverlayWrapper from "components/atom/OverlayWrapper";
@@ -10,16 +10,20 @@ import LoadingBlock from "components/atom/LoadingBlock";
 
 // styles
 import styles from "./styles.module.scss";
-
 import { LocalDataContext } from "./LocalDataProvider";
 
 import { DisplayBlock } from "./Com";
 
+
 const Com = ({ className, ...props }) => {
-  const { data, onChange, isEditable, orderId, onHide } =
+  const { data, kind, onChange, onUpdateStatus, isEditable, onHide } =
     useContext(LocalDataContext);
 
-  const { color, label, textColor } = ProductionStates["inProgress"];
+  const { color, label, textColor } = ORDER_STATES[data?.[kind]?.status] || {};
+
+  console.log(data, kind)
+
+  const [toggle, setToggle] = useState(false)
 
   return (
     <>
@@ -30,7 +34,7 @@ const Com = ({ className, ...props }) => {
       >
         <OverlayWrapper
           isLock={!isEditable}
-          renderTrigger={() => (
+          renderTrigger={(onTrigger) => (
             <div
               className={cn(
                 styles.statesContainer,
@@ -44,21 +48,19 @@ const Com = ({ className, ...props }) => {
               </div>
             </div>
           )}
+          toggle = {toggle}
         >
-          <PopoverEdit />
+          <PopoverEdit onChange = {(k) => {
+            onUpdateStatus(k)
+            setToggle(prev => !prev)
+          }}/>
         </OverlayWrapper>
       </div>
     </>
   );
 };
 
-const PopoverEdit = () => {
-  const { data, onChange, orderId, onHide } = useContext(LocalDataContext);
-
-  const handleClick = (k) => {
-    // onChange(k, 'states')
-  };
-
+const PopoverEdit = ({onChange}) => {
   return (
     <div
       className={cn(
@@ -66,14 +68,14 @@ const PopoverEdit = () => {
         "flex-column flex gap-2 p-2",
       )}
     >
-      {_.keys(ProductionStates)?.map((k) => {
-        const { color, label, textColor } = ProductionStates[k] || "--";
+      {ORDER_STATES?.map((a) => {
+        const { key, color, label, textColor } = a
         return (
           <div
-            key={k}
-            className={cn(styles.statesContainer)}
+            key={key}
+            className={cn(styles.statesContainer, styles.statesContainerEditable,)}
             style={{ color: textColor, backgroundColor: color }}
-            onClick={() => handleClick(k)}
+            onClick={() => onChange(key)}
           >
             {label}
           </div>

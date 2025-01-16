@@ -10,7 +10,6 @@ import style from './style'
  * Loadingbar wrapper
  */
 export default style(({className}) => {
-	// const loadingBar = useSelector(state => state.loadingData.loading)
 	const [loadingStatus] = useContext(GeneralContext).loadingBar
 
 	const { animationDuration, isFinished, progress } = useNProgress({

@@ -11,7 +11,7 @@ import { LocalDataContext } from "../LocalDataProvider";
 import { ToggleFull } from "../Com";
 
 const Com = ({ className, ...props }) => {
-  const { data, onChange, isEditable, orderId, onHide } =
+  const { data, onChange, isEditable, onHide } =
     useContext(LocalDataContext);
 
   const jsxClose = (

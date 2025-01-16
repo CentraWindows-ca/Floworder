@@ -11,7 +11,7 @@ import { LocalDataContext } from "../LocalDataProvider";
 import { ToggleBlock } from "../Com";
 
 const Com = ({ className, ...props }) => {
-  const { data, onChange, orderId, onHide } = useContext(LocalDataContext);
+  const { data, onChange, onHide } = useContext(LocalDataContext);
 
   const jsxTitle = (
     <div className="flex gap-2">

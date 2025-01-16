@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import cn from "classnames";
 import _ from "lodash";
+import { ORDER_STATES } from "lib/constants";
 
 // hooks
 import useLoadingBar from "lib/hooks/useLoadingBar";
@@ -9,41 +10,12 @@ import useLoadingBar from "lib/hooks/useLoadingBar";
 // styles
 import styles from "./styles.module.scss";
 
-const defaultTab = "";
-const list = [
-  {
-    label: "All Work orders",
-    key: "",
-  },
-  {
-    label: "Draft",
-    key: "draft",
-  },
-  {
-    label: "Scheduled",
-    key: "scheduled",
-  },
-  {
-    label: "In Progress",
-    key: "inProgress",
-  },
-  {
-    label: "Ready to Ship",
-    key: "readyToShip",
-  },
-  {
-    label: "Shipped",
-    key: "shipped",
-  },
-  {
-    label: "On Hold",
-    key: "onHold",
-  },
-];
+const defaultTab = "0";
+const list = ORDER_STATES;
 
 const Com = (props) => {
   const router = useRouter();
-  const state = router?.query?.state || defaultTab;
+  const status = router?.query?.status || defaultTab;
 
   const handleClick = (v) => {
     const pathname = router?.asPath?.split("?")?.[0];
@@ -51,7 +23,7 @@ const Com = (props) => {
     router.replace(
       {
         pathname,
-        query: { ...router.query, state: v },
+        query: { ...router.query, status: v },
       },
       undefined,
       { shallow: true },
@@ -62,12 +34,12 @@ const Com = (props) => {
     <div className={cn("w-full", styles.root)}>
       {list?.map((a) => {
         const { key, label } = a;
-        const isActive = key === state;
+        const isActive = key?.toString() === status;
 
         return (
           <Item
             item={a}
-            key={label}
+            key={key}
             isActive={isActive}
             onClick={() => {
               handleClick(key);

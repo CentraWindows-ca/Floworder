@@ -21,18 +21,18 @@ import styles from "./styles.module.scss";
 const Com = (props) => {
   const { basePath } = props || {};
   const router = useRouter();
-  const defaultTab = "master";
+  const defaultTab = "MASTER";
   const tabs = [
     {
-      eventKey: "master",
+      eventKey: "MASTER",
       title: "Master Orders",
     },
     {
-      eventKey: "window",
+      eventKey: "WIN",
       title: "Window Orders",
     },
     {
-      eventKey: "door",
+      eventKey: "DOOR",
       title: "Door Orders",
     },
   ];

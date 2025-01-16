@@ -14,65 +14,95 @@ import { LocalDataContext } from "./LocalDataProvider";
 import { DisplayBlock } from "./Com";
 
 const Com = ({ className, ...props }) => {
-  const { data, onChange, isEditable, orderId, onHide, dictionary } =
+  const { data, onChange, isEditable, onHide, dictionary } =
     useContext(LocalDataContext);
+
+    console.log("master", data)
 
   return (
     <div className={cn(styles.columnInputsContainer)}>
-      <DisplayBlock data={data} id="branch">
+      <DisplayBlock data={data} id="MASTER.branchId">
         <label>Branch</label>
         <div>
           <Editable.EF_SelectWithLabel
-            k="branch"
+            k="MASTER.branchId"
             options={constants.WorkOrderSelectOptions.branches}
-            value={data?.branch || ""}
-            onChange={(v) => onChange(v, "branch")}
+            value={data?.MASTER?.branchId || ""}
+            onChange={(v) => onChange(v, "MASTER.branchId")}
             disabled={!isEditable}
           />
         </div>
       </DisplayBlock>
-      <DisplayBlock data={data} id="blockNo">
-        <label>Block NO.</label>
+
+      {/* blockNo Windows and Doors */}
+      <DisplayBlock data={data} id="WINDOW.blockNo">
+        <label>Window Block NO.</label>
         <div>
           <Editable.EF_Input
-            k="blockNo"
-            value={data?.blockNo || ""}
-            onChange={(v) => onChange(v, "blockNo")}
+            k="WINDOW.blockNo"
+            value={data?.WINDOW?.blockNo || ""}
+            onChange={(v) => onChange(v, "WINDOW.blockNo")}
             disabled={!isEditable}
           />
         </div>
       </DisplayBlock>
-      <DisplayBlock data={data} id="batchNo">
-        <label>Batch NO.</label>
+      <DisplayBlock data={data} id="DOOR.blockNo">
+        <label>Door Block NO.</label>
         <div>
           <Editable.EF_Input
-            k="batchNo"
-            value={data?.batchNo || ""}
-            onChange={(v) => onChange(v, "batchNo")}
+            k="DOOR.blockNo"
+            value={data?.DOOR?.blockNo || ""}
+            onChange={(v) => onChange(v, "DOOR?.blockNo")}
             disabled={!isEditable}
           />
         </div>
       </DisplayBlock>
-      <DisplayBlock data={data} id="manufacturingFacility">
+
+      {/* batchNo Windows and Doors*/}
+      <DisplayBlock data={data} id="WINDOW.batchNo">
+        <label>Window Batch NO.</label>
+        <div>
+          <Editable.EF_Input
+            k="DOOR.batchNo"
+            value={data?.WINDOW?.batchNo || ""}
+            onChange={(v) => onChange(v, "WINDOW.batchNo")}
+            disabled={!isEditable}
+          />
+        </div>
+      </DisplayBlock>
+      <DisplayBlock data={data} id="DOOR.batchNo">
+        <label>Door Batch NO.</label>
+        <div>
+          <Editable.EF_Input
+            k="DOOR.batchNo"
+            value={data?.DOOR?.batchNo || ""}
+            onChange={(v) => onChange(v, "DOOR.batchNo")}
+            disabled={!isEditable}
+          />
+        </div>
+      </DisplayBlock>
+
+
+      <DisplayBlock data={data} id="MASTER.manufacturingFacility">
         <label>Manufacturing Facility</label>
         <div>
           <Editable.EF_Select
-            k="manufacturingFacility"
-            options={constants.ManufacturingBuildings}
-            value={data?.manufacturingFacility}
-            onChange={(v) => onChange(v, "manufacturingFacility")}
+            k="MASTER.manufacturingFacility"
+            options={constants.ManufacturingFacilities}
+            value={data?.MASTER?.manufacturingFacility}
+            onChange={(v) => onChange(v, "MASTER.manufacturingFacility")}
             disabled={!isEditable}
           />
         </div>
       </DisplayBlock>
-      <DisplayBlock data={data} id="shippingType">
+      <DisplayBlock data={data} id="MASTER.shippingType">
         <label>Shipping Type</label>
         <div>
           <Editable.EF_SelectWithLabel
-            k="shippingType"
+            k="MASTER.shippingType"
             options={constants.WorkOrderSelectOptions.shippingTypes}
-            value={data?.shippingType}
-            onChange={(v) => onChange(v, "shippingType")}
+            value={data?.MASTER?.shippingType}
+            onChange={(v) => onChange(v, "MASTER.shippingType")}
             disabled={!isEditable}
           />
         </div>

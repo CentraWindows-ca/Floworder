@@ -12,7 +12,7 @@ import { LocalDataContext } from "./LocalDataProvider";
 import { DisplayBlock } from "./Com";
 
 const Com = ({ className, ...props }) => {
-  const { data, onChange, isEditable, orderId, onHide } =
+  const { data, onChange, isEditable, onHide } =
     useContext(LocalDataContext);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -63,7 +63,7 @@ const Com = ({ className, ...props }) => {
 };
 
 const ModalEdit = () => {
-  const { data, onChange, orderId, onHide } = useContext(LocalDataContext);
+  const { data, onChange, onHide } = useContext(LocalDataContext);
 
   return (
     <div className={cn("flex-column flex gap-2")}>

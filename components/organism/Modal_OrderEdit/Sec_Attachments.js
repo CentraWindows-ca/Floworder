@@ -19,7 +19,6 @@ const Com = ({ className, ...props }) => {
     newAttachments,
     setNewAttachments,
     isEditable,
-    orderId,
     onHide,
   } = useContext(LocalDataContext);
   const handleFileChange = (event) => {

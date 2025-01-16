@@ -12,7 +12,7 @@ import { LocalDataContext } from "./LocalDataProvider";
 import { DisplayBlock } from "./Com";
 
 const Com = ({ className, ...props }) => {
-  const { data, onChange, orderId, onHide } = useContext(LocalDataContext);
+  const { data, onChange, onHide } = useContext(LocalDataContext);
 
   return (
     <div className={cn(styles.columnSummaryContainer)}>

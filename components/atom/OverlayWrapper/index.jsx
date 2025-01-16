@@ -13,6 +13,7 @@ const Com = ({
   maxWidth = "800px",
   zIndex = 1070,
   children,
+  toggle = false
 }) => {
   const [show, setShow] = useState(false);
 
@@ -37,8 +38,11 @@ const Com = ({
       };
     }
   }, [show]);
-  
 
+  useEffect(() => {
+    setShow(false);
+  }, [toggle])
+   
   const handleTrigger = () => {
     setShow((prev) => !prev);
   };

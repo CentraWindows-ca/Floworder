@@ -13,7 +13,7 @@ import { LocalDataContext } from "./LocalDataProvider";
 import { DisplayBlock } from "./Com";
 
 const Com = ({ className, ...props }) => {
-  const { data, onChange, isEditable, orderId, onHide } = useContext(LocalDataContext);
+  const { data, onChange, isEditable, onHide } = useContext(LocalDataContext);
 
   return (
     <div className={cn(styles.columnInputsContainer)}>

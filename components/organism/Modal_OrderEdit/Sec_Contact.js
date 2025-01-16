@@ -15,7 +15,7 @@ import { LocalDataContext } from "./LocalDataProvider";
 import { DisplayBlock } from "./Com";
 
 const Com = ({ className, ...props }) => {
-  const { data, onChange, isEditable, orderId, onHide } =
+  const { data, onChange, isEditable,  onHide } =
     useContext(LocalDataContext);
 
   const [isEditing, setIsEditing] = useState(false);
@@ -67,7 +67,7 @@ const Com = ({ className, ...props }) => {
 };
 
 const ModalEdit = () => {
-  const { data, onChange, isEditable, orderId, onHide } =
+  const { data, onChange, isEditable, onHide } =
     useContext(LocalDataContext);
 
   return (

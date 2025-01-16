@@ -13,6 +13,11 @@ import {
   EngineeredIcon,
   RbmIcon,
   VinylWrapIcon,
+  ShapesIcon,
+  GridIcon,
+  WaterResistanceIcon,
+  CustomerPickupIcon
+
 } from "lib/icons";
 // styles
 import styles from "./styles.module.scss";
@@ -61,10 +66,35 @@ const OPTIONS = [
     icon: () => <VinylWrapIcon />,
     key: "vinylWrapIcon",
   },
+  {
+    label: "Shapes Requires",
+    icon: () => <ShapesIcon />,
+    key: "shapesRequires",   
+  },
+  {
+    label: "Grids Required",
+    icon: () => <GridIcon />,
+    key: "gridsRequired",   
+  },
+  {
+    label: "Water Testing Required",
+    icon: () => <WaterResistanceIcon />,
+    key: "waterTestingRequired",   
+  },
+  {
+    label: "Customer Pick-up",
+    icon: () => <CustomerPickupIcon />,
+    key: "customerPickup",   
+  }
 ];
 
+
+
+
+
+
 const Com = ({ className, ...props }) => {
-  const { data, onChange, orderId, isEditable, onHide } =
+  const { data, onChange, isEditable, onHide } =
     useContext(LocalDataContext);
 
   return (
