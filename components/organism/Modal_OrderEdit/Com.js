@@ -6,11 +6,13 @@ import styles from "./styles.module.scss";
 
 import { LocalDataContext } from "./LocalDataProvider";
 
-export const DisplayBlock = ({ children, data, id = 'MASTER',  ...props }) => {
-  const { kind } = useContext(LocalDataContext);
+export const DisplayBlock = ({ children, id = 'MASTER', displayAs,  ...props }) => {
+  const { kind, data } = useContext(LocalDataContext);
   const [ currentKind, currentFieldName ] = id?.split?.('.')
 
-  if (kind === currentKind || currentKind === 'MASTER' || kind === 'MASTER') {
+  const displayKind = displayAs || kind
+
+  if (displayKind === currentKind || currentKind === 'MASTER' || displayKind === 'MASTER') {
     return children;
   } else {
     return null

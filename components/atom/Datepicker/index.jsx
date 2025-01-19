@@ -12,7 +12,7 @@ const DFDatePicker = ({
   onSelect,
   style = { width: "100px" },
   size,
-  viewType = "date",
+  viewType = "",
   disabled,
   ...props
 }) => {
@@ -27,25 +27,31 @@ const DFDatePicker = ({
       };
       break;
     case "date":
-    default:
       otherProps = {
         dateFormat: "yyyy-MM-dd",
       };
       break;
+    default:
+      otherProps = {
+        dateFormat: "MM/dd/yyyy",
+      };
+      break;
   }
 
-  const dateValue = value ? parse(value, "yyyy-MM-dd", new Date()) : null;
+  const dateValue = value
+    ? parse(value, "MM/dd/yyyy HH:mm:ss", new Date())
+    : null;
 
   const handleSelect = (v) => {
-    const formattedDate = v ? format(v, "yyyy-MM-dd") : null;
+    const formattedDate = v ? format(v, "MM/dd/yyyy HH:mm:ss") : null;
     onSelect(v, formattedDate);
   };
 
   const handleChange = (v) => {
-    const formattedDate = v ? format(v, "yyyy-MM-dd") : null;
+    const formattedDate = v ? format(v, "MM/dd/yyyy HH:mm:ss") : null;
     onChange(v, formattedDate);
   };
-
+  // 01/15/2025 14:27:05
   return (
     <div
       className={cn(

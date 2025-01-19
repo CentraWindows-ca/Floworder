@@ -19,6 +19,7 @@ export const LocalDataProvider = ({
   kind = "MASTER",
   facility,
   onSave,
+  onHide,
   ...props
 }) => {
   const generalContext = useContext(GeneralContext);
@@ -29,6 +30,8 @@ export const LocalDataProvider = ({
   // only display. upload/delete will directly call function
   const [existingAttachments, setExistingAttachments] = useState(null);
   const [newAttachments, setNewAttachments] = useState(null);
+  const [windowItems, setWindowItems] = useState(null);
+  const [doorItems, setDoorItems] = useState(null);
 
   // UI purpose
   const [expands, setExpands] = useState({});
@@ -76,7 +79,20 @@ export const LocalDataProvider = ({
     }, 200);
   };
 
+  const handleHide = () => {
+    clear();
+    onHide();
+  };
+
   // ====== api calls
+  const clear = () => {
+    setData(null);
+    setDoorItems(null);
+    setWindowItems(null);
+    setExistingAttachments(null);
+    setNewAttachments(null);
+  };
+
   const init = useLoadingBar(async (initWorkOrderNo) => {
     setData(null);
     // get data by initWorkOrder
@@ -91,24 +107,30 @@ export const LocalDataProvider = ({
       const { prodDoorsSubOrders, prodWindowsSubOrders, ...master } = res;
       console.log(res);
 
-      initAttachmentList(constants.PROD_TYPES.MASTER, res.masterId);
+      const { doorItems, DOOR } = prodDoorsSubOrders || {};
+      const { windowItems, WIN } = prodWindowsSubOrders || {};
+
+      initAttachmentList(res.masterId);
 
       const _orderData = {
-        WIN: prodWindowsSubOrders,
-        DOOR: prodDoorsSubOrders,
+        WIN,
+        DOOR,
         MASTER: master,
       };
 
       setData(_orderData);
+      setDoorItems(doorItems);
+      setWindowItems(windowItems);
     }
   });
 
-  const initAttachmentList = useLoadingBar(async () => {
+  const initAttachmentList = useLoadingBar(async (masterId) => {
     // prodTypeId, recordId
     const res = await OrdersApi.getAttachmentsByRecordIdAsync({
       prodTypeId: constants.PROD_TYPES.MASTER,
-      recordId: data?.MASTER?.masterId,
+      recordId: masterId,
     });
+
     setExistingAttachments(res);
   });
 
@@ -156,14 +178,14 @@ export const LocalDataProvider = ({
       file,
     );
 
-    await initAttachmentList();
+    await initAttachmentList(data?.MASTER?.masterId);
   });
   const doDeleteAttachment = useLoadingBar(async (_file) => {
     const res = await OrdersApi.deleteAttachmentsByIdAsync({
       guid: _file.id,
     });
 
-    await initAttachmentList();
+    await initAttachmentList(data?.MASTER?.masterId);
   });
   const doSave = useLoadingBar(async () => {
     // save master
@@ -189,7 +211,9 @@ export const LocalDataProvider = ({
     onFetchFromWindowMaker: handleFetchFromWindowMaker,
     onUploadAttachment: doUploadAttachment,
     onDeleteAttachment: doDeleteAttachment,
-
+    onHide: handleHide,
+    windowItems,
+    doorItems,
     expands,
     setExpands,
     isEditable,

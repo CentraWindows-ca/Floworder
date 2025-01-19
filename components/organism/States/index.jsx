@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import cn from "classnames";
 import _ from "lodash";
-import { ORDER_STATES } from "lib/constants";
+import { ORDER_STATUS } from "lib/constants";
 
 // hooks
 import useLoadingBar from "lib/hooks/useLoadingBar";
@@ -11,7 +11,7 @@ import useLoadingBar from "lib/hooks/useLoadingBar";
 import styles from "./styles.module.scss";
 
 const defaultTab = "0";
-const list = ORDER_STATES;
+const list = ORDER_STATUS;
 
 const Com = (props) => {
   const router = useRouter();

@@ -10,7 +10,7 @@ import useLoadingBar from "lib/hooks/useLoadingBar";
 
 // styles
 import styles from "./styles.module.scss";
-import { WorkOrderSelectOptions, ORDER_STATES } from "lib/constants";
+import { WorkOrderSelectOptions, ORDER_STATUS } from "lib/constants";
 
 const getValue = (k, arrName) => {
   const arr = WorkOrderSelectOptions[arrName];
@@ -40,12 +40,17 @@ const Com = (props) => {
               <th>Branch</th>
               <th>Job Type</th>
               <th>Shipping Type</th>
-              {jsxNotMaster(<th>Batch No</th>)}
-              {jsxNotMaster(<th>Block No</th>)}
+
+              {jsxWindow(<th>Window Batch No</th>)}
+              {jsxWindow(<th>Window Block No</th>)}
+              {jsxDoor(<th>Door Batch No</th>)}
+              {jsxDoor(<th>Door Block No</th>)}
+
               <th>Current status</th>
               {jsxWindow(<th>Windows</th>)}
               {jsxWindow(<th>Patio Doors</th>)}
               {jsxDoor(<th>Doors</th>)}
+              <th>Others</th>
               <th>INV Status</th>
               <th>Created On</th>
               <th>Created By</th>
@@ -56,39 +61,47 @@ const Com = (props) => {
           <tbody>
             {data?.map((a) => {
               const {
-                workOrderNo,
-                changedBy,
-                branch,
-                branchId,
-                jobType,
-                shippingType,
-                batchNo, // no master
-                blockNo, // no master
-                status,
-                numberOfWindows,
-                numberOfDoors,
-                numberOfOthers,
-                numberOfPatioDoors,
-                invStatus,
-                createdAt,
-                customerDate,
-                glassOrderedDate,
+                m_workOrderNo,
+                m_changedBy,
+                m_branch,
+                m_branchId,
+                m_jobType,
+                m_shippingType,
+
+                w_batchNo, // no master
+                w_blockNo, // no master
+
+                d_batchNo, // no master
+                d_blockNo, // no master
+
+                m_status,
+                m_numberOfWindows,
+                m_numberOfDoors,
+                m_numberOfOthers,
+                m_numberOfPatioDoors,
+                m_invStatus,
+                m_createdAt,
+                m_customerDate,
+                w_glassOrderedDate,
               } = a;
 
-              const statusDisplay = ORDER_STATES?.find(
-                (a) => a.key.toString() === status,
+              const statusDisplay = ORDER_STATUS?.find(
+                (a) => a.key.toString() === m_status,
               );
 
               return (
-                <tr key={workOrderNo}>
+                <tr key={m_workOrderNo}>
                   <td onClick={() => onEdit(a)}>
-                    <div className={cn(styles.orderNumber)}>{workOrderNo}</div>
+                    <div className={cn(styles.orderNumber)}>{m_workOrderNo}</div>
                   </td>
-                  <td>{getValue(branchId, "branches")?.label}</td>
-                  <td>{getValue(jobType, "jobTypes")?.label}</td>
-                  <td>{getValue(shippingType, "shippingTypes")?.label}</td>
-                  {jsxNotMaster(<td>{batchNo}</td>)}
-                  {jsxNotMaster(<td>{blockNo}</td>)}
+                  <td>{getValue(m_branchId, "branches")?.label}</td>
+                  <td>{getValue(m_jobType, "jobTypes")?.label}</td>
+                  <td>{getValue(m_shippingType, "shippingTypes")?.label}</td>
+
+                  {jsxWindow(<td>{w_batchNo}</td>)}
+                  {jsxWindow(<td>{w_blockNo}</td>)}
+                  {jsxDoor(<td>{d_batchNo}</td>)}
+                  {jsxDoor(<td>{d_blockNo}</td>)}
 
                   <td
                     style={{
@@ -99,14 +112,15 @@ const Com = (props) => {
                     {statusDisplay?.label}
                   </td>
 
-                  {jsxWindow(<td>{numberOfWindows}</td>)}
-                  {jsxWindow(<td>{numberOfPatioDoors}</td>)}
-                  {jsxDoor(<td>{numberOfDoors}</td>)}
-                  <td>{invStatus}</td>
-                  <td>{createdAt}</td>
-                  <td>{changedBy}</td>
-                  <td>{customerDate}</td>
-                  {jsxWindow(<td>{glassOrderedDate}</td>)}
+                  {jsxWindow(<td>{m_numberOfWindows}</td>)}
+                  {jsxWindow(<td>{m_numberOfPatioDoors}</td>)}
+                  {jsxDoor(<td>{m_numberOfDoors}</td>)}
+                  <td>{m_numberOfOthers}</td>
+                  <td>{m_invStatus}</td>
+                  <td>{m_createdAt}</td>
+                  <td>{m_changedBy}</td>
+                  <td>{m_customerDate}</td>
+                  {jsxWindow(<td>{w_glassOrderedDate}</td>)}
                 </tr>
               );
             })}

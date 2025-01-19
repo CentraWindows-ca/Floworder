@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
-import constants, { ORDER_STATES } from "lib/constants";
+import constants, { ORDER_STATUS } from "lib/constants";
 
 import Modal from "components/molecule/Modal";
 import OverlayWrapper from "components/atom/OverlayWrapper";
@@ -19,7 +19,7 @@ const Com = ({ className, ...props }) => {
   const { data, kind, onChange, onUpdateStatus, isEditable, onHide } =
     useContext(LocalDataContext);
 
-  const { color, label, textColor } = ORDER_STATES[data?.[kind]?.status] || {};
+  const { color, label, textColor } = ORDER_STATUS[data?.[kind]?.status] || {};
 
   const [toggle, setToggle] = useState(false)
 
@@ -66,7 +66,7 @@ const PopoverEdit = ({onChange}) => {
         "flex-column flex gap-2 p-2",
       )}
     >
-      {ORDER_STATES?.map((a) => {
+      {ORDER_STATUS?.map((a) => {
         const { key, color, label, textColor } = a
         return (
           <div

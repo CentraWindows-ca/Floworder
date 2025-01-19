@@ -135,10 +135,19 @@ const Com = (props) => {
         <hr />
         <div className="flex-column flex gap-2">
           <Toggle_Notes />
-          <Toggle_ProductionItems />
-          <Toggle_RemakeItems />
-          <Toggle_BackorderItems />
-          <Toggle_GlassItems />
+          <Toggle_ProductionItems
+            title={"Production Items"}
+            id={"productionItems"}
+          />
+          <Toggle_ProductionItems title={"Remake Items"} id={"remakeItems"} />
+          <Toggle_ProductionItems
+            title={"Backorder Items"}
+            id={"backorderItems"}
+          />
+
+          {/* <Toggle_RemakeItems />
+          <Toggle_BackorderItems /> */}
+          {/* <Toggle_GlassItems /> */}
         </div>
       </div>
     </Modal>

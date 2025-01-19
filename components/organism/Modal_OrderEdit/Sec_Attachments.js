@@ -48,24 +48,6 @@ const Com = ({ className, ...props }) => {
     });
   };
 
-  const handleDownload = (binaryData) => {
-    const blob = new Blob([binaryData], { type: "application/octet-stream" });
-    const url = URL.createObjectURL(blob);
-
-    // Create a download link
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "file-name.ext"; // Set the desired file name
-    link.textContent = "Download the file";
-
-    // Optionally append the link to the DOM and trigger a click
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link); // Clean up the DOM
-
-    // Release the Blob URL to free memory
-    URL.revokeObjectURL(url);
-  };
 
   return (
     <>
@@ -94,7 +76,7 @@ const Com = ({ className, ...props }) => {
         <div className="p-2">
           <table className="table-xs table-bordered table-hover mb-0 table border text-sm">
             <tbody>
-              {existingAttachments?.map((a) => {
+              {existingAttachments?.map((a, i) => {
                 const {
                   fileName,
                   fileType,
@@ -105,14 +87,11 @@ const Com = ({ className, ...props }) => {
                   submittedBy,
                 } = a;
 
-                const binaryData = new Uint8Array(fileRawData);
-
-                console.log(a);
-                const size = utils.formatNumber(binaryData?.length / 1024 || 0);
+                const size = utils.formatNumber(calculateFileSize(fileRawData) / 1024 || 0);
                 return (
-                  <tr>
+                  <tr key={`${fileName}_${i}`}>
                     <td className="text-left">
-                      <span className="text-blue-500 hover:text-blue-400" style={{cursor: 'pointer'}} onClick={() => handleDownload(binaryData)}>
+                      <span className="text-blue-500 hover:text-blue-400" style={{cursor: 'pointer'}} onClick={() => downloadFile(fileRawData, fileName, fileType)}>
                         {fileName}
                       </span>
                     </td>
@@ -181,6 +160,38 @@ const Com = ({ className, ...props }) => {
       </Modal>
     </>
   );
+};
+
+const calculateFileSize = (base64Data) => {
+  // Remove padding characters (=) at the end
+  const padding = (base64Data.match(/=/g) || []).length;
+  // Calculate the Base64 string length without padding
+  const base64Length = base64Data.length;
+  // Calculate the file size in bytes
+  const fileSizeInBytes = (base64Length * 3) / 4 - padding;
+  return fileSizeInBytes;
+};
+
+const downloadFile = (base64Data, filename, mimeType) => {
+  // Convert Base64 to binary data
+  const binaryData = atob(base64Data); // Decodes the Base64 string
+  const byteNumbers = new Uint8Array(binaryData.length);
+  for (let i = 0; i < binaryData.length; i++) {
+    byteNumbers[i] = binaryData.charCodeAt(i);
+  }
+
+  // Create a Blob from the binary data
+  const blob = new Blob([byteNumbers], { type: mimeType });
+
+  // Create a temporary URL and trigger download
+  const blobUrl = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = blobUrl;
+  link.download = filename; // Specify the filename for the downloaded file
+  link.click();
+
+  // Clean up the URL
+  URL.revokeObjectURL(blobUrl);
 };
 
 export default Com;

@@ -126,7 +126,7 @@ const Com = ({ className, ...props }) => {
         </div>
       </DisplayBlock>
 
-      <DisplayBlock data={data} id="MASTER.installationDate">
+      {/* <DisplayBlock data={data} id="MASTER.installationDate">
         <label className="justify-content-start align-items-center flex">
           Installation Date [???]
         </label>
@@ -138,7 +138,7 @@ const Com = ({ className, ...props }) => {
             disabled={!isEditable}
           />
         </div>
-      </DisplayBlock>
+      </DisplayBlock> */}
     </div>
   );
 };
