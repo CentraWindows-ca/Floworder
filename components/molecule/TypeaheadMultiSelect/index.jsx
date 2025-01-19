@@ -20,7 +20,7 @@ export default React.memo(
       const renderMenuItemChildren = (option, props, index) => {
         let label = option[labelKey];
         const _selected = _.isEmpty(value)? null :value.findIndex((a) => a[valueKey] === option[valueKey]) > -1 ;
-        const renderPrefix =  _selected ? <i className="pr-2 text-green-600 fa-solid fa-square-check" /> : <i className="pr-2 text-blue-400 fa-regular fa-square" />;
+        const renderPrefix =  _selected ? <i className="pr-2 text-green-600 fa-solid fa-square-check" /> : <i className="pr-2 text-blue-500 fa-regular fa-square" />;
         return (
           <>
             {renderPrefix}

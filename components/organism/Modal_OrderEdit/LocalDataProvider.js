@@ -9,6 +9,7 @@ import _ from "lodash";
 import { GeneralContext } from "lib/provider/GeneralProvider";
 import OrdersApi from "lib/api/OrdersApi";
 import useLoadingBar from "lib/hooks/useLoadingBar";
+import constants from "lib/constants";
 
 export const LocalDataContext = createContext(null);
 
@@ -25,19 +26,22 @@ export const LocalDataProvider = ({
 
   const [isEditable, setIsEditable] = useState(false);
 
-  // not messing up with existing files
+  // only display. upload/delete will directly call function
+  const [existingAttachments, setExistingAttachments] = useState(null);
   const [newAttachments, setNewAttachments] = useState(null);
 
   // UI purpose
   const [expands, setExpands] = useState({});
 
   useEffect(() => {
-    init(initWorkOrder?.workOrderNo);
+    if (initWorkOrder?.workOrderNo) {
+      init(initWorkOrder?.workOrderNo);
+    }
   }, [initWorkOrder?.workOrderNo]);
 
   const handleFetchFromWindowMaker = () => {
     // TODO: fetch from window maker
-    doFetchFromWindowMaker()
+    doFetchFromWindowMaker();
   };
 
   const handleUpdateStatus = (k) => {
@@ -74,7 +78,7 @@ export const LocalDataProvider = ({
 
   // ====== api calls
   const init = useLoadingBar(async (initWorkOrderNo) => {
-    setData(null)
+    setData(null);
     // get data by initWorkOrder
     setIsEditable(!!initWorkOrderNo);
     // fetch data
@@ -85,6 +89,9 @@ export const LocalDataProvider = ({
     if (typeof res === "object") {
       // re-assemble data to easier to edit
       const { prodDoorsSubOrders, prodWindowsSubOrders, ...master } = res;
+      console.log(res);
+
+      initAttachmentList(constants.PROD_TYPES.MASTER, res.masterId);
 
       const _orderData = {
         WIN: prodWindowsSubOrders,
@@ -94,6 +101,15 @@ export const LocalDataProvider = ({
 
       setData(_orderData);
     }
+  });
+
+  const initAttachmentList = useLoadingBar(async () => {
+    // prodTypeId, recordId
+    const res = await OrdersApi.getAttachmentsByRecordIdAsync({
+      prodTypeId: constants.PROD_TYPES.MASTER,
+      recordId: data?.MASTER?.masterId,
+    });
+    setExistingAttachments(res);
   });
 
   const doUpdateStatus = useLoadingBar(async (k) => {
@@ -106,18 +122,54 @@ export const LocalDataProvider = ({
     await OrdersApi.updateStatusByGuidAsync({
       kind,
       Id: data[kind][_m[kind]],
-      data: k //data[kind][_m[kind]], // master and sub has different column name for guid
+      data: k, //data[kind][_m[kind]], // master and sub has different column name for guid
     });
 
     await init(initWorkOrder?.workOrderNo);
   });
 
-  const doFetchFromWindowMaker = useLoadingBar(async() => {
-    const _newWorkOrderNo = data?.MASTER?.workOrderNo
-    console.log(_newWorkOrderNo)
-    
+  const doFetchFromWindowMaker = useLoadingBar(async () => {
+    const _newWorkOrderNo = data?.MASTER?.workOrderNo;
+    if (facility === "Langley") {
+      await OrdersApi.sync_BC_WindowMakerByWorkOrderAsync({
+        workOrderNo: _newWorkOrderNo,
+      });
+    } else if (facility === "Calgary") {
+      await OrdersApi.sync_AB_WindowMakerByWorkOrderAsync({
+        workOrderNo: _newWorkOrderNo,
+      });
+    }
 
-  })
+    await init(_newWorkOrderNo);
+  });
+
+  const doUploadAttachment = useLoadingBar(async (_files) => {
+    const { file, notes } = _files[0];
+    const res = await OrdersApi.uploadAttachmentsAsync(
+      {
+        recordId: data?.MASTER?.masterId,
+        prodTypeId: constants.PROD_TYPES.MASTER,
+        kind: "MASTER",
+        uploadingFile: file,
+        notes,
+      },
+      file,
+    );
+
+    await initAttachmentList();
+  });
+  const doDeleteAttachment = useLoadingBar(async (_file) => {
+    const res = await OrdersApi.deleteAttachmentsByIdAsync({
+      guid: _file.id,
+    });
+
+    await initAttachmentList();
+  });
+  const doSave = useLoadingBar(async () => {
+    // save master
+    // save window
+    // save door
+  });
 
   const context = {
     ...generalContext,
@@ -129,10 +181,15 @@ export const LocalDataProvider = ({
     setData,
     newAttachments,
     setNewAttachments,
+    existingAttachments,
+    setExistingAttachments,
     onChange: handleChange,
     onUpdateStatus: handleUpdateStatus,
     onAnchor: handleAnchor,
     onFetchFromWindowMaker: handleFetchFromWindowMaker,
+    onUploadAttachment: doUploadAttachment,
+    onDeleteAttachment: doDeleteAttachment,
+
     expands,
     setExpands,
     isEditable,

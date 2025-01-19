@@ -21,8 +21,6 @@ const Com = ({ className, ...props }) => {
 
   const { color, label, textColor } = ORDER_STATES[data?.[kind]?.status] || {};
 
-  console.log(data, kind)
-
   const [toggle, setToggle] = useState(false)
 
   return (

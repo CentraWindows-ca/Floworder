@@ -253,7 +253,7 @@ export const EF_Checkbox = React.memo(({ onChange, value, ...props }) => {
     onChange(e.target.checked);
   };
 
-  const checked = typeof value === "undefined" ? false : value;
+  const checked = !!value;
 
   return (
     <input

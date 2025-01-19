@@ -75,8 +75,6 @@ const Com = (props) => {
                 glassOrderedDate,
               } = a;
 
-              console.log(a);
-
               const statusDisplay = ORDER_STATES?.find(
                 (a) => a.key.toString() === status,
               );

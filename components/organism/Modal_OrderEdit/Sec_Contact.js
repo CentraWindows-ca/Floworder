@@ -15,10 +15,9 @@ import { LocalDataContext } from "./LocalDataProvider";
 import { DisplayBlock } from "./Com";
 
 const Com = ({ className, ...props }) => {
-  const { data, onChange, isEditable,  onHide } =
-    useContext(LocalDataContext);
+  const { data, onChange, isEditable, onHide } = useContext(LocalDataContext);
 
-  const [isEditing, setIsEditing] = useState(false);
+  const [initValues, setInitValues] = useState(null);
 
   return (
     <>
@@ -28,74 +27,108 @@ const Com = ({ className, ...props }) => {
         )}
       >
         <div>
-          SC: <span className="font-bold">Craig Barnes</span>
+          SC:{" "}
+          <span className="font-bold">{data?.MASTER?.siteContact || "--"}</span>
         </div>
         |
-        <a href="111">
+        <a href={`tel:${data?.MASTER?.sitecontactPhoneNumber}`}>
           <i className="fa-solid fa-phone me-1"></i>
-          236-688-6253
+          {data?.MASTER?.sitecontactPhoneNumber || "--"}
         </a>
         |
-        <a href="111">
-          <i className="fa-solid fa-at me-1"></i>craig@alabasterhomes.ca
+        <a href={`mailto: ${data?.MASTER?.siteContactEmail}`}>
+          <i className="fa-solid fa-at me-1"></i>
+          {data?.MASTER?.siteContactEmail || `--`}
         </a>
         {isEditable && (
           <div>
             <i
               className="fa-solid fa-pen-to-square ms-2 text-blue-500 hover:text-blue-400"
               style={{ cursor: "pointer" }}
-              onClick={() => setIsEditing(true)}
+              onClick={() =>
+                setInitValues({
+                  siteContact: data?.MASTER?.siteContact,
+                  sitecontactPhoneNumber: data?.MASTER?.sitecontactPhoneNumber,
+                  siteContactEmail: data?.MASTER?.siteContactEmail,
+                })
+              }
             ></i>
           </div>
         )}
       </div>
-      <Modal
-        title="Edit site contact"
-        show={isEditing}
-        size="sm"
-        onHide={() => setIsEditing(null)}
-        footer={
-          <>
-            <button className="btn btn-outline-primary px-4">Apply</button>
-          </>
-        }
-      >
-        <ModalEdit />
-      </Modal>
+      <ModalEdit initValues={initValues} onHide={() => setInitValues(null)} />
     </>
   );
 };
 
-const ModalEdit = () => {
-  const { data, onChange, isEditable, onHide } =
-    useContext(LocalDataContext);
+const ModalEdit = ({ initValues, onHide }) => {
+  const { onChange } = useContext(LocalDataContext);
 
+  const [values, setValues] = useState(null);
+
+  useEffect(() => {
+    setValues(initValues);
+  }, [initValues]);
+
+  const handleApply = () => {
+    onChange(values?.siteContact, "MASTER.siteContact");
+    onChange(values?.sitecontactPhoneNumber, "MASTER.sitecontactPhoneNumber");
+    onChange(values?.siteContactEmail, "MASTER.siteContactEmail");
+
+    setValues(null);
+    onHide();
+  };
+
+  const handleChange = (v, k) => {
+    setValues((prev) => ({
+      ...prev,
+      [k]: v,
+    }));
+  };
   return (
-    <div className={cn("flex-column flex gap-2")}>
-      <div className={cn("align-items-center flex flex-row gap-4")}>
+    <Modal
+      title="Edit site contact"
+      size="sm"
+      footer={
+        <>
+          <button
+            className="btn btn-outline-primary px-4"
+            onClick={handleApply}
+          >
+            Apply
+          </button>
+        </>
+      }
+      onHide={onHide}
+      show={!!initValues}
+    >
+      <div className={cn("grid grid-cols-[1fr_3fr] gap-2")}>
         <label>Name</label>
         <div className="flex-grow-1">
           <Editable.EF_Input
-            k="name"
-            options={[]}
-            value={data?.name}
-            onChange={(v) => onChange(v, "name")}
+            k="MASTER.siteContact"
+            value={values?.siteContact}
+            onChange={(v) => handleChange(v, "siteContact")}
           />
         </div>
-      </div>
-
-      <div className={cn("align-items-center flex flex-row gap-4")}>
         <label>Phone</label>
         <div className="flex-grow-1">
           <Editable.EF_Input
-            k="phone"
-            options={[]}
-            value={data?.phone}
-            onChange={(v) => onChange(v, "phone")}
+            k="MASTER.sitecontactPhoneNumber"
+            value={values?.sitecontactPhoneNumber}
+            onChange={(v) => handleChange(v, "sitecontactPhoneNumber")}
+          />
+        </div>
+        <label>Email</label>
+        <div className="flex-grow-1">
+          <Editable.EF_Input
+            k="MASTER.siteContactEmail"
+            value={values?.siteContactEmail}
+            onChange={(v) => handleChange(v, "siteContactEmail")}
           />
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 

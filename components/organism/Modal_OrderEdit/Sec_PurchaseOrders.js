@@ -23,20 +23,26 @@ const Com = ({ className, ...props }) => {
   } = useContext(LocalDataContext);
 
   return (
+    <div className={cn(styles.columnAttachmentsContainer)}>
+      <div className="p-2"> No Date</div>
+    </div>
+  );
+
+  return (
     <>
       <div className={cn(styles.columnAttachmentsContainer)}>
         <div className="p-2">
           <table className="table-xs table-bordered table-hover mb-0 table border text-sm">
-          <thead className="bg-gray-100">
-            <tr>
-              <td>PO#</td>
-              <td>Req. Date</td>
-              <td>Prom. Date</td>
-              <td>Exp. Date</td>
-              <td>Rec. Date</td>
-              <td>Status</td>
-            </tr>
-          </thead>
+            <thead className="bg-gray-100">
+              <tr>
+                <td>PO#</td>
+                <td>Req. Date</td>
+                <td>Prom. Date</td>
+                <td>Exp. Date</td>
+                <td>Rec. Date</td>
+                <td>Status</td>
+              </tr>
+            </thead>
             <tbody>
               <tr>
                 <td>joij</td>
@@ -50,7 +56,6 @@ const Com = ({ className, ...props }) => {
           </table>
         </div>
       </div>
-
     </>
   );
 };

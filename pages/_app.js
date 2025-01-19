@@ -18,7 +18,7 @@ import "react-bootstrap-typeahead/css/Typeahead.css";
 
 import "react-tooltip/dist/react-tooltip.css";
 import "styles/custom_react-tooltip.css";
-import "styles/custom_bootstrap_styles.css"
+import "styles/custom_bootstrap_styles.css";
 import "styles/index.css";
 
 const AuthNav = dynamic(() => import("@centrawindows-ca/authnav"), {
@@ -58,7 +58,7 @@ export default class MyApp extends App {
     super(props);
     this.state = {
       permissions: {},
-      rawAuth: {}
+      rawAuth: {},
     };
   }
 
@@ -95,12 +95,12 @@ export default class MyApp extends App {
   }
 
   handleLoaded = (p, rawAuth) => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       ...prevState,
       permissions: p,
-      rawAuth
+      rawAuth,
     }));
-  }
+  };
 
   render() {
     const { Component, pageProps } = this.props;
@@ -108,12 +108,23 @@ export default class MyApp extends App {
     return (
       <React.Fragment>
         <Head>
-          <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-          <title>Centra Floworder{process.env.NEXT_PUBLIC_ENV !== 'production' ? ` (${process.env.NEXT_PUBLIC_ENV})`:''}</title>
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+          />
+          <title>
+            Centra Floworder
+            {process.env.NEXT_PUBLIC_ENV !== "production"
+              ? ` (${process.env.NEXT_PUBLIC_ENV})`
+              : ""}
+          </title>
         </Head>
         <div className="main_wrapper">
           <ComAuthNav onLoaded={this.handleLoaded} />
-          <Layout permissions={this.state.permissions} rawAuth={this.state.rawAuth}>
+          <Layout
+            permissions={this.state.permissions}
+            rawAuth={this.state.rawAuth}
+          >
             <Component {...pageProps} permissions={this.state.permissions} />
           </Layout>
         </div>
@@ -136,6 +147,7 @@ const ComAuthNav = ({ onLoaded }) => {
     if ((type = "LOADED")) {
       onLoaded(permimssions, rawdata);
       console.log(type, permimssions, rawdata);
+      localStorage.setItem("user_email", rawdata?.email);
     }
   };
 
@@ -151,7 +163,6 @@ const ComAuthNav = ({ onLoaded }) => {
         // isLocalAppOnly: true
         // defaultList: DEFAULT_MENU,
       }}
-
     ></AuthNav>
   );
 };

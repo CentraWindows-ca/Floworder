@@ -13,10 +13,11 @@ import OrderList from "components/organism/OrderList";
 import Modal from "components/molecule/Modal";
 
 import Modal_OrderEdit from "components/organism/Modal_OrderEdit";
+import Modal_OrderCreate from "components/organism/Modal_OrderCreate";
 
 // hooks
 import useLoadingBar from "lib/hooks/useLoadingBar";
-import useDataInit from "lib/hooks/useDataInit";
+import useDataInit, { triggerMutate } from "lib/hooks/useDataInit";
 
 // styles
 import styles from "./styles.module.scss";
@@ -26,6 +27,7 @@ const Com = (props) => {
   const { status, q, p, facility, tab } = router?.query || {};
 
   const [treatedData, setTreatedData] = useState({});
+  const [isShowCreate, setIsShowCreate] = useState(false);
 
   const tabsCall = {
     MASTER: "initGetProdMasterAsync",
@@ -33,15 +35,15 @@ const Com = (props) => {
     DOOR: "initGetProdDoorsAsync",
   };
 
+  const endPoint = OrdersApi[tabsCall[tab] || tabsCall["MASTER"]]({
+    pageNumber: p || 1,
+    pageSize: 30,
+    searchText: q,
+    // manufacturingFacility: facility,
+  });
+
   // use swr later
-  const { data, error } = useDataInit(
-    OrdersApi[tabsCall[tab] || tabsCall["MASTER"]]({
-      pageNumber: p || 1,
-      pageSize: 30,
-      searchText: q,
-      branchId: facility,
-    }),
-  );
+  const { data, error } = useDataInit(endPoint);
 
   useEffect(() => {
     if (data) {
@@ -60,7 +62,15 @@ const Com = (props) => {
   };
 
   const handleCreate = () => {
-    setEditingOrder({});
+    setIsShowCreate(true);
+  };
+
+  const handleCreateDone = async (workOrderNo) => {
+    setEditingOrder({
+      workOrderNo,
+    });
+
+    triggerMutate(endPoint)
   };
 
   // ====== consts
@@ -79,11 +89,21 @@ const Com = (props) => {
       <div className={cn(styles.detail)}>
         <OrderList kind={tab} onEdit={handleEdit} data={treatedData?.data} />
       </div>
+      <button onClick={() =>{
+        setEditingOrder({workOrderNo: 'VKTEST22'})
+      }}>
+        test
+      </button>
       <Modal_OrderEdit
         onHide={() => setEditingOrder(null)}
         initWorkOrder={editingOrder}
         kind={tab}
-        facility = {facility}
+        facility={facility}
+      />
+      <Modal_OrderCreate
+        show={isShowCreate}
+        onCreate={handleCreateDone}
+        onHide={() => setIsShowCreate(false)}
       />
     </div>
   );

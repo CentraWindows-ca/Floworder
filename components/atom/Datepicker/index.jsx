@@ -49,7 +49,7 @@ const DFDatePicker = ({
   return (
     <div
       className={cn(
-        "form-control",
+        "form-control form-control-sm",
         size === "sm" ? styles.containersm : styles.container,
         className,
       )}

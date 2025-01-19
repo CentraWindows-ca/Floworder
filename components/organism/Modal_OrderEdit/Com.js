@@ -1,12 +1,20 @@
 import { useState, useContext } from "react";
 import cn from "classnames";
+import constants, {HEADER_COLUMNS} from "lib/constants";
 // styles
 import styles from "./styles.module.scss";
 
 import { LocalDataContext } from "./LocalDataProvider";
 
-export const DisplayBlock = ({ children, data, id, ...props }) => {
-  return children;
+export const DisplayBlock = ({ children, data, id = 'MASTER',  ...props }) => {
+  const { kind } = useContext(LocalDataContext);
+  const [ currentKind, currentFieldName ] = id?.split?.('.')
+
+  if (kind === currentKind || currentKind === 'MASTER' || kind === 'MASTER') {
+    return children;
+  } else {
+    return null
+  }
 };
 
 export const ToggleBlock = ({
