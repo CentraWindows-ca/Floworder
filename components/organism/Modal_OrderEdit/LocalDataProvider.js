@@ -7,16 +7,23 @@ import React, {
 } from "react";
 import _ from "lodash";
 import { GeneralContext } from "lib/provider/GeneralProvider";
+
+import utils from "lib/utils";
+
 import OrdersApi from "lib/api/OrdersApi";
+import GlassApi from "lib/api/GlassApi";
+
 import useLoadingBar from "lib/hooks/useLoadingBar";
 import constants from "lib/constants";
+
+import { localApi } from "./Com";
 
 export const LocalDataContext = createContext(null);
 
 export const LocalDataProvider = ({
   children,
   initWorkOrder,
-  kind = "MASTER",
+  kind = "m",
   facility,
   onSave,
   onHide,
@@ -29,27 +36,23 @@ export const LocalDataProvider = ({
 
   // only display. upload/delete will directly call function
   const [existingAttachments, setExistingAttachments] = useState(null);
+  
   const [newAttachments, setNewAttachments] = useState(null);
+
   const [windowItems, setWindowItems] = useState(null);
   const [doorItems, setDoorItems] = useState(null);
+  const [glassItems, setGlassItems] = useState(null);
+
+  const [uiOrderType, setUiOrderType] = useState({})
 
   // UI purpose
   const [expands, setExpands] = useState({});
 
   useEffect(() => {
-    if (initWorkOrder?.workOrderNo) {
-      init(initWorkOrder?.workOrderNo);
+    if (initWorkOrder?.m_WorkOrderNo) {
+      init(initWorkOrder?.m_WorkOrderNo);
     }
-  }, [initWorkOrder?.workOrderNo]);
-
-  const handleFetchFromWindowMaker = () => {
-    // TODO: fetch from window maker
-    doFetchFromWindowMaker();
-  };
-
-  const handleUpdateStatus = (k) => {
-    doUpdateStatus(k);
-  };
+  }, [initWorkOrder?.m_WorkOrderNo]);
 
   const handleChange = (v, k) => {
     setData((prev) => {
@@ -91,86 +94,100 @@ export const LocalDataProvider = ({
     setWindowItems(null);
     setExistingAttachments(null);
     setNewAttachments(null);
+    setGlassItems(null);
   };
 
   const init = useLoadingBar(async (initWorkOrderNo) => {
     setData(null);
     // get data by initWorkOrder
     setIsEditable(!!initWorkOrderNo);
+
     // fetch data
-    const res = await OrdersApi.getProdAllByWorkOrderAsync({
-      workOrderNo: initWorkOrderNo,
-    });
+    const [res] = await localApi.getWorkOrder(initWorkOrderNo)
 
     if (typeof res === "object") {
       // re-assemble data to easier to edit
-      const { prodDoorsSubOrders, prodWindowsSubOrders, ...master } = res;
-      console.log(res);
 
-      const { doorItems, DOOR } = prodDoorsSubOrders || {};
-      const { windowItems, WIN } = prodWindowsSubOrders || {};
+      const {keyValue, value} = res
 
-      initAttachmentList(res.masterId);
+      const mergedData = {}
+      mergedData = { ...value?.d, ...value?.m, ...value?.w }
 
-      const _orderData = {
-        WIN,
-        DOOR,
-        MASTER: master,
-      };
+      // if it has door or window or master info (should always has master. here just for consistency)
+      setUiOrderType({
+        m: !!value?.m,
+        d: !!value?.d,
+        w: !!value?.w,
+      })
+    
+      const doorItems = await localApi.getDoorItems(initWorkOrderNo);
+      const windowItems = await localApi.getWindowItems(initWorkOrderNo);
+      initAttachmentList(keyValue);
 
-      setData(_orderData);
+      setData(mergedData);
       setDoorItems(doorItems);
       setWindowItems(windowItems);
+
+      const resGlassItems = await GlassApi.getGlassItems(
+        initWorkOrderNo,
+        mergedData.m_ManufacturingFacility,
+      );
+
+      if (resGlassItems) {
+        const getStatus = (glassItem) => {
+          let result = "Not Ordered";
+
+          if (glassItem?.qty === glassItem?.glassQty) {
+            result = "Received";
+          } else if (glassItem?.orderDate) {
+            result = "Ordered";
+          }
+
+          return result;
+        };
+
+        setGlassItems((x) => {
+          let _glassItems = [...resGlassItems];
+
+          _glassItems?.forEach((g) => {
+            g.status = getStatus(g);
+            g.receivedExpected = `${g.qty} / ${g.glassQty}`;
+            g.shipDate = g.shipDate;
+            g.orderDate = g.orderDate;
+          });
+
+          return _glassItems;
+        });
+      }
     }
   });
 
   const initAttachmentList = useLoadingBar(async (masterId) => {
     // prodTypeId, recordId
-    const res = await OrdersApi.getAttachmentsByRecordIdAsync({
-      prodTypeId: constants.PROD_TYPES.MASTER,
-      recordId: masterId,
-    });
+    // const res = await OrdersApi.getAttachmentsByRecordIdAsync({
+    //   prodTypeId: constants.PROD_TYPES.m,
+    //   recordId: masterId,
+    // });
 
+    const res = await localApi.getAttachments(masterId)
     setExistingAttachments(res);
   });
 
-  const doUpdateStatus = useLoadingBar(async (k) => {
-    const _m = {
-      MASTER: "masterId",
-      DOOR: "id",
-      WIN: "id",
-    };
+  //
+  const doUpdateStatus = useLoadingBar(async (v) => {
+    await localApi.updateWorkOrder(data?.m_MasterId, {
+      [`${kind}_Status`]: v
+    })
 
-    await OrdersApi.updateStatusByGuidAsync({
-      kind,
-      Id: data[kind][_m[kind]],
-      data: k, //data[kind][_m[kind]], // master and sub has different column name for guid
-    });
-
-    await init(initWorkOrder?.workOrderNo);
-  });
-
-  const doFetchFromWindowMaker = useLoadingBar(async () => {
-    const _newWorkOrderNo = data?.MASTER?.workOrderNo;
-    if (facility === "Langley") {
-      await OrdersApi.sync_BC_WindowMakerByWorkOrderAsync({
-        workOrderNo: _newWorkOrderNo,
-      });
-    } else if (facility === "Calgary") {
-      await OrdersApi.sync_AB_WindowMakerByWorkOrderAsync({
-        workOrderNo: _newWorkOrderNo,
-      });
-    }
-
-    await init(_newWorkOrderNo);
+    await init(initWorkOrder?.m_WorkOrderNo);
   });
 
   const doUploadAttachment = useLoadingBar(async (_files) => {
     const { file, notes } = _files[0];
-    const res = await OrdersApi.uploadAttachmentsAsync(
+    await OrdersApi.uploadAttachmentsAsync(
       {
-        recordId: data?.MASTER?.masterId,
-        prodTypeId: constants.PROD_TYPES.MASTER,
+        recordId: data?.m_MasterId,
+        prodTypeId: constants.PROD_TYPES.m,
         kind: "MASTER",
         uploadingFile: file,
         notes,
@@ -178,19 +195,22 @@ export const LocalDataProvider = ({
       file,
     );
 
-    await initAttachmentList(data?.MASTER?.masterId);
+    await initAttachmentList(data?.m_MasterId);
   });
+
   const doDeleteAttachment = useLoadingBar(async (_file) => {
-    const res = await OrdersApi.deleteAttachmentsByIdAsync({
+    await OrdersApi.deleteAttachmentsByIdAsync({
       guid: _file.id,
     });
 
-    await initAttachmentList(data?.MASTER?.masterId);
+    await initAttachmentList(data?.m_MasterId);
   });
+
   const doSave = useLoadingBar(async () => {
-    // save master
-    // save window
-    // save door
+
+
+
+    await localApi.updateWorkOrder(data?.m_MasterId, data)
   });
 
   const context = {
@@ -206,17 +226,19 @@ export const LocalDataProvider = ({
     existingAttachments,
     setExistingAttachments,
     onChange: handleChange,
-    onUpdateStatus: handleUpdateStatus,
+    onUpdateStatus: doUpdateStatus,
     onAnchor: handleAnchor,
-    onFetchFromWindowMaker: handleFetchFromWindowMaker,
     onUploadAttachment: doUploadAttachment,
     onDeleteAttachment: doDeleteAttachment,
     onHide: handleHide,
+    onSave: doSave,
     windowItems,
     doorItems,
+    glassItems,
     expands,
     setExpands,
     isEditable,
+    uiOrderType
   };
   return (
     <LocalDataContext.Provider value={context}>

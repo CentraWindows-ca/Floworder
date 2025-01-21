@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import cn from "classnames";
 import DatePicker from "react-datepicker";
-import { parse, format } from "date-fns";
+import { parse, parseISO, formatISO, format } from "date-fns";
 // styles
 import styles from "./styles.module.scss";
 
@@ -39,16 +39,16 @@ const DFDatePicker = ({
   }
 
   const dateValue = value
-    ? parse(value, "MM/dd/yyyy HH:mm:ss", new Date())
+    ? parseISO(value)
     : null;
 
   const handleSelect = (v) => {
-    const formattedDate = v ? format(v, "MM/dd/yyyy HH:mm:ss") : null;
+    const formattedDate = v ? formatISO(v) : null;
     onSelect(v, formattedDate);
   };
 
   const handleChange = (v) => {
-    const formattedDate = v ? format(v, "MM/dd/yyyy HH:mm:ss") : null;
+    const formattedDate = v ? formatISO(v) : null;
     onChange(v, formattedDate);
   };
   // 01/15/2025 14:27:05

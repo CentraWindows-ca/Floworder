@@ -18,49 +18,49 @@ const Com = ({ className, ...props }) => {
 
   return (
     <div className={cn(styles.columnSummaryContainer)}>
-      <DisplayBlock data = {data} id="MASTER.numberOfWindows">
+      <DisplayBlock data = {data} id="m_NumberOfWindows">
         <label>Total Windows</label>
         <div className={cn(styles.valueContainer)}>
-          {utils.formatNumber(data?.MASTER?.numberOfWindows)}
+          {utils.formatNumber(data?.m_NumberOfWindows)}
         </div>
       </DisplayBlock>
 
-      <DisplayBlock data = {data} id="MASTER.numberOfPatioDoors">
+      <DisplayBlock data = {data} id="m_NumberOfPatioDoors">
         <label>Total Patio Doors</label>
         <div className={cn(styles.valueContainer)}>
-          {utils.formatNumber(data?.MASTER?.numberOfPatioDoors)}
+          {utils.formatNumber(data?.m_NumberOfPatioDoors)}
         </div>
       </DisplayBlock>
 
-      <DisplayBlock data = {data} id="MASTER.numberOfDoors">
+      <DisplayBlock data = {data} id="m_NumberOfDoors">
         <label>Total Doors</label>
         <div className={cn(styles.valueContainer)}>
-          {utils.formatNumber(data?.MASTER?.numberOfDoors)}
+          {utils.formatNumber(data?.m_NumberOfDoors)}
         </div>
       </DisplayBlock>
 
-      <DisplayBlock data = {data} id="MASTER.numberOfOthers">
+      <DisplayBlock data = {data} id="m_NumberOfOthers">
         <label>Others</label>
         <div className={cn(styles.valueContainer)}>
-          {utils.formatNumber(data?.MASTER?.numberOfOthers)}
+          {utils.formatNumber(data?.m_NumberOfOthers)}
         </div>
       </DisplayBlock>
-      <DisplayBlock data = {data} id="WIN.totalPrice">
+      <DisplayBlock data = {data} id="w_TotalPrice">
         <label>Window Sales Amount</label>
         <div className={cn(styles.valueContainer)}>
-          ${utils.formatNumber(data?.WIN?.totalPrice)}
+          ${utils.formatNumber(data?.w_TotalPrice)}
         </div>
       </DisplayBlock>
-      <DisplayBlock data = {data} id="DOOR.totalPrice">
+      <DisplayBlock data = {data} id="d_TotalPrice">
         <label>Door Sales Amount</label>
         <div className={cn(styles.valueContainer)}>
-          ${utils.formatNumber(data?.DOOR?.totalPrice)}
+          ${utils.formatNumber(data?.d_TotalPrice)}
         </div>
       </DisplayBlock>
-      <DisplayBlock data = {data} id="MASTER.totalPrice">
+      <DisplayBlock data = {data} id="m_TotalPrice">
         <label>Total Sales Amount</label>
         <div className={cn(styles.valueContainer)}>
-          ${utils.formatNumber(data?.MASTER?.totalPrice)}
+          ${utils.formatNumber(data?.m_TotalPrice)}
         </div>
       </DisplayBlock>
 

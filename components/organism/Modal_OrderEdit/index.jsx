@@ -5,7 +5,7 @@ import _ from "lodash";
 import Modal from "components/molecule/Modal";
 import LoadingBlock from "components/atom/LoadingBlock";
 
-import Sec_States from "./Sec_States";
+import Sec_Status from "./Sec_Status";
 import Sec_Contact from "./Sec_Contact";
 import Sec_Address from "./Sec_Customer";
 import Sec_OrderInfo from "./Sec_OrderInfo";
@@ -17,8 +17,6 @@ import Sec_Summary from "./Sec_Summary";
 
 import Toggle_Notes from "./Toggle_Notes";
 import Toggle_ProductionItems from "./Toggle_ProductionItems";
-import Toggle_RemakeItems from "./Toggle_RemakeItems";
-import Toggle_BackorderItems from "./Toggle_BackorderItems";
 import Toggle_GlassItems from "./Toggle_GlassItems";
 
 // hooks
@@ -35,7 +33,7 @@ const Com = (props) => {
     initWorkOrder,
     onHide,
     onAnchor,
-    onFetchFromWindowMaker,
+    onSave,
     expands,
     setExpands,
     data,
@@ -47,29 +45,9 @@ const Com = (props) => {
 
   const jsxTitle = (
     <div className="align-items-center flex gap-2">
-      Work Order #
-      {initWorkOrder?.workOrderNo ? (
-        initWorkOrder?.workOrderNo
-      ) : (
-        <div>
-          <div className="input-group input-group-sm">
-            <Editable.EF_Input
-              k="MASTER.workOrderNo"
-              options={[]}
-              value={data?.MASTER?.workOrderNo}
-              onChange={(v) => onChange(v, "MASTER.workOrderNo")}
-            />
-            <button
-              className="btn btn-sm btn-primary"
-              onClick={onFetchFromWindowMaker}
-            >
-              Fetch
-            </button>
-          </div>
-        </div>
-      )}
+      Work Order # {initWorkOrder?.m_WorkOrderNo}
       <div className="align-items-center flex gap-2">
-        <Sec_States />
+        <Sec_Status />
         <Sec_Contact />
       </div>
     </div>
@@ -124,17 +102,20 @@ const Com = (props) => {
             <Sec_Summary />
           </div>
         </div>
+        <div className="flex-column flex mt-2 gap-2">
+          <Toggle_Notes />
+        </div>
         <div className="justify-content-center my-2 flex bg-blueGray-100 p-2">
           <button
             className="btn btn-primary px-4"
-            disabled={!data?.workOrderNumber}
+            disabled={!data?.m_WorkOrderNo}
+            onClick={onSave}
           >
             Save
           </button>
         </div>
         <hr />
         <div className="flex-column flex gap-2">
-          <Toggle_Notes />
           <Toggle_ProductionItems
             title={"Production Items"}
             id={"productionItems"}
@@ -144,10 +125,7 @@ const Com = (props) => {
             title={"Backorder Items"}
             id={"backorderItems"}
           />
-
-          {/* <Toggle_RemakeItems />
-          <Toggle_BackorderItems /> */}
-          {/* <Toggle_GlassItems /> */}
+          <Toggle_GlassItems />
         </div>
       </div>
     </Modal>

@@ -14,26 +14,30 @@ const Com = ({ className, ...props }) => {
   const { data, onChange, isEditable, onHide } = useContext(LocalDataContext);
 
   const displayNotes = {
-    Shipping: data?.MASTER?.shippingNotes,
-    "Window Office Notes": data?.WIN?.officeNotes,
-    "Door Office Notes": data?.DOOR?.officeNotes,
-    "Window Plant Notes": data?.WIN?.plantNotes,
-    "Door Plant Notes": data?.DOOR?.plantNotes,
-    "Project Management": data?.MASTER?.projectNotes,
-    "Door Shop": data?.DOOR?.doorShopNotes,
-    "Window Returned Job": data?.WIN?.returnTripNotes,
-    "Door Returned Job": data?.DOOR?.returnTripNotes,
+    Shipping: "m_ShippingNotes",
+    "Window Office Notes": "w_OfficeNotes",
+    "Door Office Notes": "d_OfficeNotes",
+    "Window Plant Notes": "w_PlantNotes",
+    "Door Plant Notes": "d_PlantNotes",
+    "Project Notes": "m_ProjectManagementNotes",
+    "Door Shop": "d_DoorShopNotes",
+    "Window Returned Job": "w_ReturnTripNotes",
+    "Door Returned Job": "d_ReturnTripNotes",
   };
 
   const jsxClose = (
     <div className="flex-column flex gap-2 p-2 text-left">
       {_.keys(displayNotes)?.map((k) => {
-        if (!displayNotes[k]) return null
+        if (!data?.[displayNotes[k]]) return null;
         return (
-          <div key={k}>
-            <b>[{k}]</b>:{" "}
-            <p dangerouslySetInnerHTML={{ __html: displayNotes[k] }} />
-          </div>
+          <DisplayBlock id={displayNotes[k]} key={displayNotes[k]}>
+            <div className="flex">
+              <b>[{k}]</b>:{" "}
+              <div
+                dangerouslySetInnerHTML={{ __html: data?.[displayNotes[k]] }}
+              />
+            </div>
+          </DisplayBlock>
         );
       })}
     </div>
@@ -48,7 +52,7 @@ const Com = ({ className, ...props }) => {
     >
       <div className="grid grid-cols-2 gap-3 p-2">
         {/* notes */}
-        <DisplayBlock id="MASTER.shippingNotes">
+        <DisplayBlock id="m_ShippingNotes">
           <div>
             <div
               className={cn(
@@ -57,21 +61,21 @@ const Com = ({ className, ...props }) => {
               )}
             >
               <label>Shipping</label>
-              <button disabled={!isEditable} className="btn btn-primary btn-xs">
+              {/* <button disabled={!isEditable} className="btn btn-primary btn-xs">
                 Save
-              </button>
+              </button> */}
             </div>
             <Editable.EF_Text
-              k="MASTER.shippingNotes"
-              value={data?.MASTER?.shippingNotes}
-              onChange={(v) => onChange(v, "MASTER.shippingNotes")}
+              k="m_ShippingNotes"
+              value={data?.m_ShippingNotes}
+              onChange={(v) => onChange(v, "m_ShippingNotes")}
               disabled={!isEditable}
               rows={3}
             />
           </div>
         </DisplayBlock>
         {/* notes */}
-        <DisplayBlock id="WIN.officeNotes">
+        <DisplayBlock id="w_OfficeNotes">
           <div>
             <div
               className={cn(
@@ -80,21 +84,18 @@ const Com = ({ className, ...props }) => {
               )}
             >
               <label>Window Office Notes</label>
-              <button disabled={!isEditable} className="btn btn-primary btn-xs">
-                Save
-              </button>
             </div>
             <Editable.EF_Text
-              k="WIN.officeNotes"
-              value={data?.WIN?.officeNotes}
-              onChange={(v) => onChange(v, "WIN.officeNotes")}
+              k="w_OfficeNotes"
+              value={data?.w_OfficeNotes}
+              onChange={(v) => onChange(v, "w_OfficeNotes")}
               disabled={!isEditable}
               rows={3}
             />
           </div>
         </DisplayBlock>
 
-        <DisplayBlock id="DOOR.officeNotes">
+        <DisplayBlock id="d_OfficeNotes">
           <div>
             <div
               className={cn(
@@ -103,14 +104,11 @@ const Com = ({ className, ...props }) => {
               )}
             >
               <label>Door Office Notes</label>
-              <button disabled={!isEditable} className="btn btn-primary btn-xs">
-                Save
-              </button>
             </div>
             <Editable.EF_Text
-              k="DOOR.officeNotes"
-              value={data?.DOOR?.officeNotes}
-              onChange={(v) => onChange(v, "DOOR.officeNotes")}
+              k="d_OfficeNotes"
+              value={data?.d_OfficeNotes}
+              onChange={(v) => onChange(v, "d_OfficeNotes")}
               disabled={!isEditable}
               rows={3}
             />
@@ -118,7 +116,7 @@ const Com = ({ className, ...props }) => {
         </DisplayBlock>
 
         {/* notes */}
-        <DisplayBlock id="WIN.plantNotes">
+        <DisplayBlock id="w_PlantNotes">
           <div>
             <div
               className={cn(
@@ -127,20 +125,17 @@ const Com = ({ className, ...props }) => {
               )}
             >
               <label>Window Plant Notes</label>
-              <button disabled={!isEditable} className="btn btn-primary btn-xs">
-                Save
-              </button>
             </div>
             <Editable.EF_Text
-              k="WIN.plantNotes"
-              value={data?.WIN?.plantNotes}
-              onChange={(v) => onChange(v, "WIN.plantNotes")}
+              k="w_PlantNotes"
+              value={data?.w_PlantNotes}
+              onChange={(v) => onChange(v, "w_PlantNotes")}
               disabled={!isEditable}
               rows={3}
             />
           </div>
         </DisplayBlock>
-        <DisplayBlock id="DOOR.plantNotes">
+        <DisplayBlock id="d_PlantNotes">
           <div>
             <div
               className={cn(
@@ -148,15 +143,12 @@ const Com = ({ className, ...props }) => {
                 "justify-content-between align-items-center mb-2 flex",
               )}
             >
-              <label>Door Plant Notes</label>
-              <button disabled={!isEditable} className="btn btn-primary btn-xs">
-                Save
-              </button>
+              <label>Door Plant Notes</label>{" "}
             </div>
             <Editable.EF_Text
-              k="DOOR.plantNotes"
-              value={data?.DOOR?.plantNotes}
-              onChange={(v) => onChange(v, "DOOR.plantNotes")}
+              k="d_PlantNotes"
+              value={data?.d_PlantNotes}
+              onChange={(v) => onChange(v, "d_PlantNotes")}
               disabled={!isEditable}
               rows={3}
             />
@@ -164,7 +156,7 @@ const Com = ({ className, ...props }) => {
         </DisplayBlock>
 
         {/* notes */}
-        <DisplayBlock id="MASTER.projectNotes">
+        <DisplayBlock id="m_ProjectManagementNotes">
           <div>
             <div
               className={cn(
@@ -173,21 +165,18 @@ const Com = ({ className, ...props }) => {
               )}
             >
               <label>Project Notes</label>
-              <button disabled={!isEditable} className="btn btn-primary btn-xs">
-                Save
-              </button>
             </div>
             <Editable.EF_Text
-              k="MASTER.projectNotes"
-              value={data?.MASTER?.projectNotes}
-              onChange={(v) => onChange(v, "MASTER.projectNotes")}
+              k="m_ProjectManagementNotes"
+              value={data?.m_ProjectManagementNotes}
+              onChange={(v) => onChange(v, "m_ProjectManagementNotes")}
               disabled={!isEditable}
               rows={3}
             />
           </div>
         </DisplayBlock>
         {/* notes */}
-        <DisplayBlock id="MASTER.doorShopNotes">
+        <DisplayBlock id="d_DoorShopNotes">
           <div>
             <div
               className={cn(
@@ -196,21 +185,18 @@ const Com = ({ className, ...props }) => {
               )}
             >
               <label>Door Shop</label>
-              <button disabled={!isEditable} className="btn btn-primary btn-xs">
-                Save
-              </button>
             </div>
             <Editable.EF_Text
-              k="DOOR.doorShopNotes"
-              value={data?.DOOR?.doorShopNotes}
-              onChange={(v) => onChange(v, "DOOR.doorShopNotes")}
+              k="d_DoorShopNotes"
+              value={data?.d_DoorShopNotes}
+              onChange={(v) => onChange(v, "d_DoorShopNotes")}
               disabled={!isEditable}
               rows={3}
             />
           </div>
         </DisplayBlock>
         {/* notes */}
-        <DisplayBlock id="WIN.returnTripNotes">
+        <DisplayBlock id="w_ReturnTripNotes">
           <div>
             <div
               className={cn(
@@ -218,59 +204,21 @@ const Com = ({ className, ...props }) => {
                 "justify-content-between align-items-center mb-2 flex",
               )}
             >
-              <label>Window Returned Job</label>
-              {/* <div className="flex gap-2">
-              <Editable.EF_Date
+              <label>Returned Job</label>
+              <div className="flex gap-2">
+                {/* <Editable.EF_Date
                 k="productionStart"
                 value={data?.productionStart}
                 onChange={(v) => onChange(v, "productionStart")}
                 disabled={!isEditable}
                 size={"sm"}
-              />
-              <button disabled={!isEditable} className="btn btn-primary btn-xs">
-                Save
-              </button>
-            </div> */}
+              /> */}
+              </div>
             </div>
             <Editable.EF_Text
-              k="WIN.returnTripNotes"
-              value={data?.WIN?.returnTripNotes}
-              onChange={(v) => onChange(v, "WIN.returnTripNotes")}
-              disabled={!isEditable}
-              rows={3}
-            />
-          </div>
-        </DisplayBlock>
-
-        <DisplayBlock id="DOOR.returnTripNotes">
-          <div>
-            <div
-              className={cn(
-                styles.notesHeader,
-                "justify-content-between align-items-center mb-2 flex",
-              )}
-            >
-              <label>Door Returned Job</label>
-              {/* <div className="flex gap-2">
-                <Editable.EF_Date
-                  k="productionStart"
-                  value={data?.productionStart}
-                  onChange={(v) => onChange(v, "productionStart")}
-                  disabled={!isEditable}
-                  size={"sm"}
-                />
-                <button
-                  disabled={!isEditable}
-                  className="btn btn-primary btn-xs"
-                >
-                  Save
-                </button>
-              </div> */}
-            </div>
-            <Editable.EF_Text
-              k="DOOR.returnTripNotes"
-              value={data?.DOOR?.returnTripNotes}
-              onChange={(v) => onChange(v, "DOOR.returnTripNotes")}
+              k="m_ReturnTripNotes"
+              value={data?.m_ReturnTripNotes}
+              onChange={(v) => onChange(v, "m_ReturnTripNotes")}
               disabled={!isEditable}
               rows={3}
             />

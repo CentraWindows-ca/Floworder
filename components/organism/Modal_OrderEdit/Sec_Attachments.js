@@ -78,24 +78,24 @@ const Com = ({ className, ...props }) => {
             <tbody>
               {existingAttachments?.map((a, i) => {
                 const {
-                  fileName,
-                  fileType,
-                  fileRawData,
-                  recordId,
-                  prodTypeId,
-                  notes,
-                  submittedBy,
+                  FileName,
+                  FileType,
+                  FileRawData,
+                  Notes
                 } = a;
 
-                const size = utils.formatNumber(calculateFileSize(fileRawData) / 1024 || 0);
+                const size = utils.formatNumber(calculateFileSize(FileRawData) / 1024 || 0);
                 return (
-                  <tr key={`${fileName}_${i}`}>
+                  <tr key={`${FileName}_${i}`}>
                     <td className="text-left">
-                      <span className="text-blue-500 hover:text-blue-400" style={{cursor: 'pointer'}} onClick={() => downloadFile(fileRawData, fileName, fileType)}>
-                        {fileName}
+                      <span className="text-blue-500 hover:text-blue-400" style={{cursor: 'pointer'}} onClick={() => downloadFile(FileRawData, FileName, FileType)}>
+                        {FileName}
                       </span>
                     </td>
                     <td className="text-right">{size} KB</td>
+                    <td>
+                      {Notes || ''}
+                    </td>
                     <td style={{ width: 60 }}>
                       <button
                         className="btn btn-xs btn-danger"
@@ -133,7 +133,7 @@ const Com = ({ className, ...props }) => {
                   const { file, notes } = a;
                   const { name, size } = file;
                   return (
-                    <tr>
+                    <tr key={`${name}_${i}`}>
                       <td>{name}</td>
                       <td className="text-right">
                         {utils.formatNumber(size)} KB

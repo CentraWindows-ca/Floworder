@@ -253,13 +253,13 @@ export const EF_Checkbox = React.memo(({ onChange, value, ...props }) => {
     onChange(e.target.checked);
   };
 
-  const checked = !!value;
+  const checked = value === true || value === "true"; // can be true or "true"
 
   return (
     <input
       className="form-check-input"
       type="checkbox"
-      value={checked}
+      checked = {checked}
       onChange={handleChange}
       {...props}
     />

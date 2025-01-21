@@ -1,21 +1,35 @@
 import { useState, useContext } from "react";
 import cn from "classnames";
-import constants, {HEADER_COLUMNS} from "lib/constants";
+import constants, { HEADER_COLUMNS } from "lib/constants";
 // styles
 import styles from "./styles.module.scss";
-
+import OrdersApi from "lib/api/OrdersApi";
+import GlassApi from "lib/api/GlassApi";
 import { LocalDataContext } from "./LocalDataProvider";
 
-export const DisplayBlock = ({ children, id = 'MASTER', displayAs,  ...props }) => {
-  const { kind, data } = useContext(LocalDataContext);
-  const [ currentKind, currentFieldName ] = id?.split?.('.')
+export const DisplayBlock = ({ children, id = "m", displayAs, ...props }) => {
+  const { uiOrderType, kind, data } = useContext(LocalDataContext);
 
-  const displayKind = displayAs || kind
+  let currentKind = "m";
+  if (id?.startsWith("m_")) currentKind = "m";
+  else if (id?.startsWith("w_")) currentKind = "w";
+  else if (id?.startsWith("d_")) currentKind = "d";
 
-  if (displayKind === currentKind || currentKind === 'MASTER' || displayKind === 'MASTER') {
+  const displayKind = displayAs || kind;
+
+  // dont show fields if its not certain type of order
+  if (!uiOrderType?.m && currentKind === 'm') return null
+  if (!uiOrderType?.w && currentKind === 'w') return null
+  if (!uiOrderType?.d && currentKind === 'd') return null
+
+  if (
+    displayKind === currentKind ||
+    currentKind === "m" ||
+    displayKind === "m"
+  ) {
     return children;
   } else {
-    return null
+    return null;
   }
 };
 
@@ -110,4 +124,75 @@ export const ToggleFull = ({
       )}
     </div>
   );
+};
+
+export const localApi = {
+  getAttachments: async (masterId) => {
+    return OrdersApi.queryAnyTableAsync(null, {
+      table: "Prod_Files",
+      filters: [
+        {
+          field: "MasterId",
+          operator: "Equals",
+          value: masterId,
+        },
+        {
+          field: "ProdTypeId",
+          operator: "Equals",
+          value: constants.PROD_TYPES.m.toString(),
+        },
+      ],
+    });
+  },
+
+  getDoorItems: async (WorkOrderNo) => {
+    return OrdersApi.queryAnyTableAsync(null, {
+      table: "ProdDoorItems",
+      filters: [
+        {
+          field: "WorkOrderNo",
+          operator: "Equals",
+          value: WorkOrderNo,
+        },
+      ],
+    });
+  },
+
+  getWindowItems: async (WorkOrderNo) => {
+    return OrdersApi.queryAnyTableAsync(null, {
+      table: "ProdWindowItems",
+      filters: [
+        {
+          field: "WorkOrderNo",
+          operator: "Equals",
+          value: WorkOrderNo,
+        },
+      ],
+    });
+  },
+
+  getWorkOrder: async (initWorkOrderNo) => {
+    return (
+      OrdersApi.queryWorkOrderHeaderWithPrefixAsync(null, {
+        pageSize: 1,
+        page: 1,
+        filters: [
+          {
+            field: "m_WorkOrderNo",
+            operator: constants.FILTER_OPERATOR.Equals,
+            value: initWorkOrderNo,
+          },
+        ],
+        kind: "m",
+      }) || {}
+    );
+  },
+  updateWorkOrder: async (m_MasterId, fields) => {
+    return (
+      OrdersApi.updateWorkOrderHeaderWithPrefixAsync(null, {
+        keyValue: m_MasterId,
+        fields,
+      }) || {}
+    );
+  },
 };

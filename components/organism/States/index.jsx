@@ -10,7 +10,7 @@ import useLoadingBar from "lib/hooks/useLoadingBar";
 // styles
 import styles from "./styles.module.scss";
 
-const defaultTab = "0";
+const defaultTab = "";
 const list = ORDER_STATUS;
 
 const Com = (props) => {
@@ -34,7 +34,7 @@ const Com = (props) => {
     <div className={cn("w-full", styles.root)}>
       {list?.map((a) => {
         const { key, label } = a;
-        const isActive = key?.toString() === status;
+        const isActive = key?.toString() === status?.toString();
 
         return (
           <Item

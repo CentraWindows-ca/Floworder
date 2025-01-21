@@ -27,116 +27,86 @@ import { DisplayBlock } from "./Com";
 
 const OPTIONS = [
   {
-    label: "Rush Order",
+    label: "Window Rush Order",
     icon: () => <RushIcon />,
-    key: "rushOrder",
-    kind: "MASTER",
+    key: "w_RushOrder",
   },
   {
-    label: "Paint Icon",
+    label: "Door Rush Order",
+    icon: () => <RushIcon />,
+    key: "d_RushOrder",
+  },
+  {
+    label: "Window Paint Icon",
     icon: () => <PaintIcon />,
-    key: "paintIcon",
-    kind: "WIN",
+    key: "w_PaintIcon",
   },
   {
     label: "Door Paint Icon",
     icon: () => <DoorPaintIcon />,
-    key: "doorPaintIcon",
-    kind: "DOOW",
+    key: "d_PaintIcon",
   },
   {
     label: "Capstock Icon",
     icon: () => <CapStockIcon />,
-    key: "capstockIcon",
-    kind: "WIN",
+    key: "w_CapstockIcon",
   },
   {
     label: "Window Miniblind Icon",
     icon: () => <MiniBlindIcon />,
-    key: "miniblindIcon",
-    kind: "WIN",
-  },
-  {
-    label: "Door Miniblind Icon",
-    icon: () => <MiniBlindIcon />,
-    key: "miniblindIcon",
-    kind: "DOOR",
+    key: "w_MiniblindIcon",
   },
   {
     label: "Window Engineered Order Icon",
     icon: () => <EngineeredIcon />,
-    key: "engineeredOrderIcon",
-    kind: "WIN",
-  },
-  {
-    label: "Door Engineered Order Icon",
-    icon: () => <EngineeredIcon />,
-    key: "engineeredOrderIcon",
-    kind: "DOOR",
+    key: "w_EngineeredIcon",
   },
 
   {
     label: "Window RBM Icon",
     icon: () => <RbmIcon />,
-    key: "rBMIcon",
-    kind: "WIN",
+    key: "w_RBMIcon",
   },
   {
     label: "Door RBM Icon",
     icon: () => <RbmIcon />,
-    key: "rBMIcon",
-    kind: "DOOR",
+    key: "d_RBMIcon",
   },
-
   {
     label: "Vinyl Wrap Icon",
     icon: () => <VinylWrapIcon />,
-    key: "vinylWrapIcon",
-    kind: "WIN",
+    key: "w_VinylWrapIcon",
   },
-
   {
     label: "Window Shapes Requires",
     icon: () => <ShapesIcon />,
-    key: "shapesRequires",
-    kind: "WIN",
-  },
-  {
-    label: "Door Shapes Requires",
-    icon: () => <ShapesIcon />,
-    key: "shapesRequires",
-    kind: "DOOR",
+    key: "w_ShapesRequires",
   },
   {
     label: "Window Grids Required",
     icon: () => <GridIcon />,
-    key: "gridsRequired",
-    kind: "WIN",
+    key: "w_GridIcon",
   },
   {
     label: "Door Grids Required",
     icon: () => <GridIcon />,
-    key: "gridsRequired",
-    kind: "DOOR",
+    key: "d_GridIcon",
   },
   {
     label: "Water Testing Required",
     icon: () => <WaterTestingIcon />,
-    key: "waterTestingRequired",
-    kind: "WIN",
+    key: "w_WaterTestingRequired",
   },
   {
     label: "Water Penetration Resistance",
     icon: () => <WaterResistanceIcon />,
-    key: "waterResistance",
-    kind: "WIN",
+    key: "w_WaterPenetrationResistance",
   },
 
   {
     label: "Customer Pick-up",
     icon: () => <CustomerPickupIcon />,
-    key: "customerPickup",
-    kind: "MASTER",
+    key: "m_CustomerPickup",
   },
 ];
 
@@ -147,18 +117,18 @@ const Com = ({ className, ...props }) => {
   return (
     <div className={cn(styles.columnOptionsContainer)}>
       {OPTIONS?.map((a) => {
-        const { kind, label, icon, key } = a;
+        const { label, icon, key } = a;
         return (
           <DisplayBlock
             data={data}
-            id={`${kind}.${key}`}
-            key={`${kind}.${key}`}
+            id={key}
+            key={key}
           >
             <div>
               <Editable.EF_Checkbox
                 id={key}
-                value={data?.[kind]?.[key]}
-                onChange={(v) => onChange(v, `${kind}.${key}`)}
+                value={data?.[key]}
+                onChange={(v) => onChange(v, key)}
                 disabled={!isEditable}
               />
             </div>

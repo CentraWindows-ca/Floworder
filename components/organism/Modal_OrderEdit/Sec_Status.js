@@ -14,14 +14,21 @@ import { LocalDataContext } from "./LocalDataProvider";
 
 import { DisplayBlock } from "./Com";
 
+const STATUS = {
+  m: "m_Status",
+  w: "w_Status",
+  d: "d_Status",
+};
 
 const Com = ({ className, ...props }) => {
   const { data, kind, onChange, onUpdateStatus, isEditable, onHide } =
     useContext(LocalDataContext);
 
-  const { color, label, textColor } = ORDER_STATUS[data?.[kind]?.status] || {};
+  const _statusKey = STATUS[kind];
 
-  const [toggle, setToggle] = useState(false)
+  const { color, label, textColor } = ORDER_STATUS[data?.[_statusKey]] || {};
+
+  const [toggle, setToggle] = useState(false);
 
   return (
     <>
@@ -46,19 +53,21 @@ const Com = ({ className, ...props }) => {
               </div>
             </div>
           )}
-          toggle = {toggle}
+          toggle={toggle}
         >
-          <PopoverEdit onChange = {(k) => {
-            onUpdateStatus(k)
-            setToggle(prev => !prev)
-          }}/>
+          <PopoverEdit
+            onChange={(v) => {
+              onUpdateStatus(v);
+              setToggle((prev) => !prev);
+            }}
+          />
         </OverlayWrapper>
       </div>
     </>
   );
 };
 
-const PopoverEdit = ({onChange}) => {
+const PopoverEdit = ({ onChange }) => {
   return (
     <div
       className={cn(
@@ -67,11 +76,14 @@ const PopoverEdit = ({onChange}) => {
       )}
     >
       {ORDER_STATUS?.map((a) => {
-        const { key, color, label, textColor } = a
+        const { key, color, label, textColor } = a;
         return (
           <div
             key={key}
-            className={cn(styles.statesContainer, styles.statesContainerEditable,)}
+            className={cn(
+              styles.statesContainer,
+              styles.statesContainerEditable,
+            )}
             style={{ color: textColor, backgroundColor: color }}
             onClick={() => onChange(key)}
           >

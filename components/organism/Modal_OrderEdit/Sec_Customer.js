@@ -19,25 +19,25 @@ const Com = ({ className, ...props }) => {
     <>
       <div className={cn("flex-column flex")}>
         <div>
-          <b>{data?.MASTER?.customerName || "--"}</b> |{" "}
-          {data?.MASTER?.projectName || "--"} |
-          {data?.MASTER?.projectManager || "--"}
+          <b>{data?.m_CustomerName || "--"}</b> |{" "}
+          {data?.m_ProjectName || "--"} |
+          {data?.m_ProjectManager || "--"}
           
         </div>
         <div className="align-items-center flex flex-row gap-2 text-sm">
           <div className="align-items-center flex flex-row gap-1">
             <i className="fa-solid fa-house text-blueGray-400"></i>
-            {data?.MASTER?.address || "--"}
+            {data?.m_Address || "--"}
           </div>
           |
-          <a href={`tel:${data?.MASTER?.phoneNumber}`}>
+          <a href={`tel:${data?.m_PhoneNumber}`}>
             <i className="fa-solid fa-phone me-1 text-blueGray-400"></i>{" "}
-            {data?.MASTER?.phoneNumber || "--"}
+            {data?.m_PhoneNumber || "--"}
           </a>
           |
-          <a href={`tel:${data?.MASTER?.email}`}>
+          <a href={`tel:${data?.m_Email}`}>
             <i className="fa-solid fa-at me-1 text-blueGray-400"></i>{" "}
-            {data?.MASTER?.email || "--"}
+            {data?.m_Email || "--"}
           </a>
           |
           <span>
@@ -47,12 +47,12 @@ const Com = ({ className, ...props }) => {
                 style={{ cursor: "pointer" }}
                 onClick={() =>
                   setInitValues({
-                    customerName: data?.MASTER?.customerName,
-                    projectName: data?.MASTER?.projectName,
-                    projectManager: data?.MASTER?.projectManager,
-                    phoneNumber: data?.MASTER?.phoneNumber,
-                    email: data?.MASTER?.email,                    
-                    address: data?.MASTER?.address,
+                    customerName: data?.m_CustomerName,
+                    projectName: data?.m_ProjectName,
+                    projectManager: data?.m_ProjectManager,
+                    phoneNumber: data?.m_PhoneNumber,
+                    email: data?.m_Email,                    
+                    address: data?.m_Address,
                   })
                 }
               ></i>
@@ -77,12 +77,12 @@ const ModalEdit = ({ initValues, onHide }) => {
 
   const handleApply = () => {
 
-    onChange(values?.customerName, "MASTER.customerName");
-    onChange(values?.projectName, "MASTER.projectName");
-    onChange(values?.projectManager, "MASTER.projectManager");   
-    onChange(values?.phoneNumber, "MASTER.phoneNumber");
-    onChange(values?.email, "MASTER.email");
-    onChange(values?.address, "MASTER.address");
+    onChange(values?.customerName, "m_CustomerName");
+    onChange(values?.projectName, "m_ProjectName");
+    onChange(values?.projectManager, "m_ProjectManager");   
+    onChange(values?.phoneNumber, "m_PhoneNumber");
+    onChange(values?.email, "m_Email");
+    onChange(values?.address, "m_Address");
 
     setValues(null);
     onHide();
@@ -115,7 +115,7 @@ const ModalEdit = ({ initValues, onHide }) => {
         <label>Customer Name</label>
         <div className="flex-grow-1">
           <Editable.EF_Input
-            k="MASTER.customerName"
+            k="m_CustomerName"
             value={values?.customerName}
             onChange={(v) => handleChange(v, "customerName")}
           />
@@ -123,7 +123,7 @@ const ModalEdit = ({ initValues, onHide }) => {
         <label>Project Name</label>
         <div className="flex-grow-1">
           <Editable.EF_Input
-            k="MASTER.projectName"
+            k="m_ProjectName"
             value={values?.projectName}
             onChange={(v) => handleChange(v, "projectName")}
           />
@@ -131,7 +131,7 @@ const ModalEdit = ({ initValues, onHide }) => {
         <label>Project Manager</label>
         <div className="flex-grow-1">
           <Editable.EF_Input
-            k="MASTER.projectManager"
+            k="m_ProjectManager"
             value={values?.projectManager}
             onChange={(v) => handleChange(v, "projectManager")}
           />
@@ -142,7 +142,7 @@ const ModalEdit = ({ initValues, onHide }) => {
         <label>Address</label>
         <div className="flex-grow-1">
           <Editable.EF_Input
-            k="MASTER.address"
+            k="m_Address"
             value={values?.address}
             onChange={(v) => handleChange(v, "address")}
           />
@@ -150,7 +150,7 @@ const ModalEdit = ({ initValues, onHide }) => {
         <label>Phone Number</label>
         <div className="flex-grow-1">
           <Editable.EF_Input
-            k="MASTER.phoneNumber"
+            k="m_PhoneNumber"
             value={values?.phoneNumber}
             onChange={(v) => handleChange(v, "phoneNumber")}
           />
@@ -158,7 +158,7 @@ const ModalEdit = ({ initValues, onHide }) => {
         <label>Email</label>
         <div className="flex-grow-1">
           <Editable.EF_Input
-            k="MASTER.email"
+            k="m_Email"
             value={values?.email}
             onChange={(v) => handleChange(v, "email")}
           />

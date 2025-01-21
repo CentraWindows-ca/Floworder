@@ -23,6 +23,7 @@ const Com = ({ className, title, id, ...props }) => {
     </div>
   );
 
+
   return (
     <ToggleBlock title={jsxTitle} id={id}>
       {!_.isEmpty(windowItems) && (
@@ -47,25 +48,26 @@ const Com = ({ className, title, id, ...props }) => {
               <tbody>
                 {windowItems?.map((a) => {
                   const {
-                    item,
-                    size,
-                    quantity,
-                    system,
-                    description,
-                    notes,
-                    status,
-                    id,
+                    Item,
+                    Size,
+                    Quantity,
+                    System,
+                    Description,
+                    Notes,
+                    Status,
+                    Id,
                   } = a;
+
                   return (
-                    <tr key={id}>
-                      <td>{item}</td>
-                      <td>{size}</td>
-                      <td>{quantity}</td>
+                    <tr key={`${Id}`}>
+                      <td>{Item}</td>
+                      <td>{Size}</td>
+                      <td>{Quantity}</td>
                       <td>-</td>
-                      <td>{system}</td>
-                      <td>{description}</td>
-                      <td>{notes}</td>
-                      <td>{status}</td>
+                      <td>{System}</td>
+                      <td>{Description}</td>
+                      <td>{Notes}</td>
+                      <td>{Status}</td>
                     </tr>
                   );
                 })}
@@ -96,25 +98,25 @@ const Com = ({ className, title, id, ...props }) => {
               <tbody>
                 {doorItems?.map((a) => {
                   const {
-                    item,
-                    size,
-                    quantity,
-                    system,
-                    description,
-                    notes,
-                    status,
-                    id,
+                    Item,
+                    Size,
+                    Quantity,
+                    System,
+                    Description,
+                    Notes,
+                    Status,
+                    Id,
                   } = a;
                   return (
-                    <tr key={id}>
-                      <td>{item}</td>
-                      <td>{size}</td>
-                      <td>{quantity}</td>
+                    <tr key={`${title}_${Id}`}>
+                      <td>{Item}</td>
+                      <td>{Size}</td>
+                      <td>{Quantity}</td>
                       <td>-</td>
-                      <td>{system}</td>
-                      <td>{description}</td>
-                      <td>{notes}</td>
-                      <td>{status}</td>
+                      <td>{System}</td>
+                      <td>{Description}</td>
+                      <td>{Notes}</td>
+                      <td>{Status}</td>
                     </tr>
                   );
                 })}

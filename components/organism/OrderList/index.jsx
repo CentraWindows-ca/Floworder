@@ -20,9 +20,14 @@ const getValue = (k, arrName) => {
 const Com = (props) => {
   const { onEdit, data, kind } = props;
 
-  const jsxNotMaster = (jsx) => (kind !== "MASTER" ? jsx : null);
-  const jsxWindow = (jsx) => (kind === "WIN" || kind === "MASTER" ? jsx : null);
-  const jsxDoor = (jsx) => (kind === "DOOR" || kind === "MASTER" ? jsx : null);
+  const jsxNotMaster = (jsx) => (kind !== "m" ? jsx : null);
+  const jsxWindow = (jsx) => (kind === "w" || kind === "m" ? jsx : null);
+  const jsxDoor = (jsx) => (kind === "d" || kind === "m" ? jsx : null);
+
+  const jsxWindowOnly = (jsx) => (kind === "w" ? jsx : null);
+  const jsxDoorOnly = (jsx) => (kind === "d" ? jsx : null);
+
+  console.log(data)
 
   return (
     <div className={cn("w-full", styles.root)}>
@@ -47,6 +52,10 @@ const Com = (props) => {
               {jsxDoor(<th>Door Block No</th>)}
 
               <th>Current status</th>
+
+              {jsxWindow(<th>Windows status</th>)}
+              {jsxDoor(<th>Doors status</th>)}
+
               {jsxWindow(<th>Windows</th>)}
               {jsxWindow(<th>Patio Doors</th>)}
               {jsxDoor(<th>Doors</th>)}
@@ -60,67 +69,101 @@ const Com = (props) => {
           </thead>
           <tbody>
             {data?.map((a) => {
+              const { keyValue, value } = a;
+              const merged =  { ...value?.d, ...value?.m, ...value?.w }
               const {
-                m_workOrderNo,
-                m_changedBy,
-                m_branch,
-                m_branchId,
-                m_jobType,
-                m_shippingType,
+                m_WorkOrderNo,
+                m_ChangedBy,
+                m_Branch,
+                m_BranchId,
+                m_JobType,
+                m_ShippingType,
 
-                w_batchNo, // no master
-                w_blockNo, // no master
+                w_BatchNo, // no master
+                w_BlockNo, // no master
 
-                d_batchNo, // no master
-                d_blockNo, // no master
+                d_BatchNo, // no master
+                d_BlockNo, // no master
 
-                m_status,
-                m_numberOfWindows,
-                m_numberOfDoors,
-                m_numberOfOthers,
-                m_numberOfPatioDoors,
-                m_invStatus,
-                m_createdAt,
-                m_customerDate,
-                w_glassOrderedDate,
-              } = a;
+                m_Status,
+                w_Status,
+                d_Status,
+                m_NumberOfWindows,
+                m_NumberOfDoors,
+                m_NumberOfOthers,
+                m_NumberOfPatioDoors,
+                m_InvStatus,
+                m_CreatedAt,
+                m_CustomerDate,
+                w_GlassOrderedDate,
+              } = merged;
 
-              const statusDisplay = ORDER_STATUS?.find(
-                (a) => a.key.toString() === m_status,
+              const m_statusDisplay = ORDER_STATUS?.find(
+                (a) => a.key.toString() === m_Status?.toString(),
               );
-
+              const w_statusDisplay = ORDER_STATUS?.find(
+                (a) => a.key.toString() === w_Status?.toString(),
+              );
+              const d_statusDisplay = ORDER_STATUS?.find(
+                (a) => a.key.toString() === d_Status?.toString(),
+              );
+          
               return (
-                <tr key={m_workOrderNo}>
-                  <td onClick={() => onEdit(a)}>
-                    <div className={cn(styles.orderNumber)}>{m_workOrderNo}</div>
+                <tr key={keyValue}>
+                  <td onClick={() => onEdit(merged)}>
+                    <div className={cn(styles.orderNumber)}>
+                      {m_WorkOrderNo}
+                    </div>
                   </td>
-                  <td>{getValue(m_branchId, "branches")?.label}</td>
-                  <td>{getValue(m_jobType, "jobTypes")?.label}</td>
-                  <td>{getValue(m_shippingType, "shippingTypes")?.label}</td>
+                  <td>{getValue(m_BranchId, "branches")?.label}</td>
+                  <td>{getValue(m_JobType, "jobTypes")?.label}</td>
+                  <td>{getValue(m_ShippingType, "shippingTypes")?.label}</td>
 
-                  {jsxWindow(<td>{w_batchNo}</td>)}
-                  {jsxWindow(<td>{w_blockNo}</td>)}
-                  {jsxDoor(<td>{d_batchNo}</td>)}
-                  {jsxDoor(<td>{d_blockNo}</td>)}
+                  {jsxWindow(<td>{w_BatchNo}</td>)}
+                  {jsxWindow(<td>{w_BlockNo}</td>)}
+                  {jsxDoor(<td>{d_BatchNo}</td>)}
+                  {jsxDoor(<td>{d_BlockNo}</td>)}
 
                   <td
                     style={{
-                      color: statusDisplay?.textColor,
-                      backgroundColor: statusDisplay?.color,
+                      color: m_statusDisplay?.textColor,
+                      backgroundColor: m_statusDisplay?.color,
                     }}
                   >
-                    {statusDisplay?.label}
+                    {m_statusDisplay?.label}
                   </td>
 
-                  {jsxWindow(<td>{m_numberOfWindows}</td>)}
-                  {jsxWindow(<td>{m_numberOfPatioDoors}</td>)}
-                  {jsxDoor(<td>{m_numberOfDoors}</td>)}
-                  <td>{m_numberOfOthers}</td>
-                  <td>{m_invStatus}</td>
-                  <td>{m_createdAt}</td>
-                  <td>{m_changedBy}</td>
-                  <td>{m_customerDate}</td>
-                  {jsxWindow(<td>{w_glassOrderedDate}</td>)}
+                  {jsxWindow(
+                    <td
+                      style={{
+                        color: w_statusDisplay?.textColor,
+                        backgroundColor: w_statusDisplay?.color,
+                      }}
+                    >
+                      {w_statusDisplay?.label}
+                    </td>,
+                  )}
+
+                  {jsxDoor(
+                    <td
+                      style={{
+                        color: d_statusDisplay?.textColor,
+                        backgroundColor: d_statusDisplay?.color,
+                      }}
+                    >
+                      {d_statusDisplay?.label}
+                    </td>,
+                  )}
+
+                  {jsxWindow(<td>{m_NumberOfWindows}</td>)}
+                  {jsxWindow(<td>{m_NumberOfPatioDoors}</td>)}
+                  {jsxDoor(<td>{m_NumberOfDoors}</td>)}
+                  <td>{m_NumberOfOthers}</td>
+                  <td>{m_InvStatus}</td>
+                  <td>{m_CreatedAt}</td>
+                  <td>{m_ChangedBy}</td>
+                  <td>{m_CustomerDate}</td>
+                  {jsxWindow(<td>{w_GlassOrderedDate}</td>)}
                 </tr>
               );
             })}

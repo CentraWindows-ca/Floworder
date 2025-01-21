@@ -28,17 +28,17 @@ const Com = ({ className, ...props }) => {
       >
         <div>
           SC:{" "}
-          <span className="font-bold">{data?.MASTER?.siteContact || "--"}</span>
+          <span className="font-bold">{data?.m_SiteContact || "--"}</span>
         </div>
         |
-        <a href={`tel:${data?.MASTER?.sitecontactPhoneNumber}`}>
+        <a href={`tel:${data?.m_SitecontactPhoneNumber}`}>
           <i className="fa-solid fa-phone me-1"></i>
-          {data?.MASTER?.sitecontactPhoneNumber || "--"}
+          {data?.m_SitecontactPhoneNumber || "--"}
         </a>
         |
-        <a href={`mailto: ${data?.MASTER?.siteContactEmail}`}>
+        <a href={`mailto: ${data?.m_SiteContactEmail}`}>
           <i className="fa-solid fa-at me-1"></i>
-          {data?.MASTER?.siteContactEmail || `--`}
+          {data?.m_SiteContactEmail || `--`}
         </a>
         {isEditable && (
           <div>
@@ -47,9 +47,9 @@ const Com = ({ className, ...props }) => {
               style={{ cursor: "pointer" }}
               onClick={() =>
                 setInitValues({
-                  siteContact: data?.MASTER?.siteContact,
-                  sitecontactPhoneNumber: data?.MASTER?.sitecontactPhoneNumber,
-                  siteContactEmail: data?.MASTER?.siteContactEmail,
+                  siteContact: data?.m_SiteContact,
+                  sitecontactPhoneNumber: data?.m_SitecontactPhoneNumber,
+                  siteContactEmail: data?.m_SiteContactEmail,
                 })
               }
             ></i>
@@ -71,9 +71,9 @@ const ModalEdit = ({ initValues, onHide }) => {
   }, [initValues]);
 
   const handleApply = () => {
-    onChange(values?.siteContact, "MASTER.siteContact");
-    onChange(values?.sitecontactPhoneNumber, "MASTER.sitecontactPhoneNumber");
-    onChange(values?.siteContactEmail, "MASTER.siteContactEmail");
+    onChange(values?.siteContact, "m_SiteContact");
+    onChange(values?.sitecontactPhoneNumber, "m_SitecontactPhoneNumber");
+    onChange(values?.siteContactEmail, "m_SiteContactEmail");
 
     setValues(null);
     onHide();
@@ -106,7 +106,7 @@ const ModalEdit = ({ initValues, onHide }) => {
         <label>Name</label>
         <div className="flex-grow-1">
           <Editable.EF_Input
-            k="MASTER.siteContact"
+            k="m_SiteContact"
             value={values?.siteContact}
             onChange={(v) => handleChange(v, "siteContact")}
           />
@@ -114,7 +114,7 @@ const ModalEdit = ({ initValues, onHide }) => {
         <label>Phone</label>
         <div className="flex-grow-1">
           <Editable.EF_Input
-            k="MASTER.sitecontactPhoneNumber"
+            k="m_SitecontactPhoneNumber"
             value={values?.sitecontactPhoneNumber}
             onChange={(v) => handleChange(v, "sitecontactPhoneNumber")}
           />
@@ -122,7 +122,7 @@ const ModalEdit = ({ initValues, onHide }) => {
         <label>Email</label>
         <div className="flex-grow-1">
           <Editable.EF_Input
-            k="MASTER.siteContactEmail"
+            k="m_SiteContactEmail"
             value={values?.siteContactEmail}
             onChange={(v) => handleChange(v, "siteContactEmail")}
           />

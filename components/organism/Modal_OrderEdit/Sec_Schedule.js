@@ -17,124 +17,124 @@ const Com = ({ className, ...props }) => {
 
   return (
     <div className={cn(styles.columnInputsContainer)}>
-      <DisplayBlock data={data} id="WIN.productionStart">
+      <DisplayBlock data={data} id="w_ProductionStartDate">
         <label className="justify-content-start align-items-center flex">
           {" "}
           Windows Production Start
         </label>
         <div className="justify-content-end align-items-center flex">
           <Editable.EF_Date
-            k="WIN.productionStart"
-            value={data?.WIN?.productionStart}
-            onChange={(v) => onChange(v, "WIN.productionStartDate")}
+            k="w_ProductionStartDate"
+            value={data?.w_ProductionStartDate}
+            onChange={(v) => onChange(v, "w_ProductionStartDate")}
             disabled={!isEditable}
           />
         </div>
       </DisplayBlock>
-      <DisplayBlock data={data} id="WIN.productionEndDate">
+      <DisplayBlock data={data} id="w_ProductionEndDate">
         <label className="justify-content-start align-items-center flex">
           {" "}
           Windows Production End
         </label>
         <div className="justify-content-end align-items-center flex">
           <Editable.EF_Date
-            k="WIN.productionEndDate"
-            value={data?.WIN?.productionEndDate}
-            onChange={(v) => onChange(v, "WIN.productionEndDate")}
+            k="w_ProductionEndDate"
+            value={data?.w_ProductionEndDate}
+            onChange={(v) => onChange(v, "w_ProductionEndDate")}
             disabled={!isEditable}
           />
         </div>
       </DisplayBlock>
-      <DisplayBlock data={data} id="DOOR.productionStartDate">
+      <DisplayBlock data={data} id="d_ProductionStartDate">
         <label className="justify-content-start align-items-center flex">
           {" "}
           Doors Production Start
         </label>
         <div className="justify-content-end align-items-center flex">
           <Editable.EF_Date
-            k="DOOR.productionStartDate"
-            value={data?.DOOR?.productionStartDate}
-            onChange={(v) => onChange(v, "DOOR.productionStartDate")}
+            k="d_ProductionStartDate"
+            value={data?.d_ProductionStartDate}
+            onChange={(v) => onChange(v, "d_ProductionStartDate")}
             disabled={!isEditable}
           />
         </div>
       </DisplayBlock>
-      <DisplayBlock data={data} id="DOOR.productionEndDate">
+      <DisplayBlock data={data} id="d_ProductionEndDate">
         <label className="justify-content-start align-items-center flex">
           {" "}
           Doors Production End
         </label>
         <div className="justify-content-end align-items-center flex">
           <Editable.EF_Date
-            k="DOOR.productionEndDate"
-            value={data?.DOOR?.productionEndDate}
-            onChange={(v) => onChange(v, "DOOR.productionEndDate")}
+            k="d_ProductionEndDate"
+            value={data?.d_ProductionEndDate}
+            onChange={(v) => onChange(v, "d_ProductionEndDate")}
             disabled={!isEditable}
           />
         </div>
       </DisplayBlock>
-      <DisplayBlock data={data} id="MASTER.shippingStartDate">
+      <DisplayBlock data={data} id="m_ShippingStartDate">
         <label className="justify-content-start align-items-center flex">
           Shipping Start
         </label>
         <div className="justify-content-end align-items-center flex">
           <Editable.EF_Date
-            k="MASTER.shippingStartDate"
-            value={data?.MASTER?.shippingStartDate}
-            onChange={(v) => onChange(v, "MASTER.shippingStartDate")}
+            k="m_ShippingStartDate"
+            value={data?.m_ShippingStartDate}
+            onChange={(v) => onChange(v, "m_ShippingStartDate")}
             disabled={!isEditable}
           />
         </div>
       </DisplayBlock>
-      <DisplayBlock data={data} id="MASTER.shippingEndDate">
+      <DisplayBlock data={data} id="m_ShippingEndDate">
         <label className="justify-content-start align-items-center flex">
           Shipping End
         </label>
         <div className="justify-content-end align-items-center flex">
           <Editable.EF_Date
-            k="MASTER.shippingEndDate"
-            value={data?.MASTER?.shippingEndDate}
-            onChange={(v) => onChange(v, "MASTER.shippingEndDate")}
+            k="m_ShippingEndDate"
+            value={data?.m_ShippingEndDate}
+            onChange={(v) => onChange(v, "m_ShippingEndDate")}
             disabled={!isEditable}
           />
         </div>
       </DisplayBlock>
-      <DisplayBlock data={data} id="MASTER.customerDate">
+      <DisplayBlock data={data} id="m_CustomerDate">
         <label className="justify-content-start align-items-center flex">
           Customer Date
         </label>
         <div className="justify-content-end align-items-center flex">
           <Editable.EF_Date
-            k="MASTER.customerDate"
-            value={data?.MASTER?.customerDate}
-            onChange={(v) => onChange(v, "MASTER.customerDate")}
+            k="m_CustomerDate"
+            value={data?.m_CustomerDate}
+            onChange={(v) => onChange(v, "m_CustomerDate")}
             disabled={!isEditable}
           />
         </div>
       </DisplayBlock>
-      <DisplayBlock data={data} id="MASTER.RevisedDeliveryDate">
+      <DisplayBlock data={data} id="m_RevisedDeliveryDate">
         <label className="justify-content-start align-items-center flex">
           Revised Delivery Date
         </label>
         <div className="justify-content-end align-items-center flex">
           <Editable.EF_Date
-            k="MASTER.RevisedDeliveryDate"
-            value={data?.MASTER?.RevisedDeliveryDate}
-            onChange={(v) => onChange(v, "MASTER.RevisedDeliveryDate")}
+            k="m_RevisedDeliveryDate"
+            value={data?.m_RevisedDeliveryDate}
+            onChange={(v) => onChange(v, "m_RevisedDeliveryDate")}
             disabled={!isEditable}
           />
         </div>
       </DisplayBlock>
 
-      {/* <DisplayBlock data={data} id="MASTER.installationDate">
+      {/* <DisplayBlock data={data} id="m_InstallationDate">
         <label className="justify-content-start align-items-center flex">
           Installation Date [???]
         </label>
         <div className="justify-content-end align-items-center flex">
           <Editable.EF_Date
-            k="MASTER.installationDate"
-            value={data?.MASTER?.installationDate}
-            onChange={(v) => onChange(v, "MASTER.installationDate")}
+            k="m_InstallationDate"
+            value={data?.m_InstallationDate}
+            onChange={(v) => onChange(v, "m_InstallationDate")}
             disabled={!isEditable}
           />
         </div>

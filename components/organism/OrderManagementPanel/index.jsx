@@ -29,17 +29,40 @@ const Com = (props) => {
   const [treatedData, setTreatedData] = useState({});
   const [isShowCreate, setIsShowCreate] = useState(false);
 
-  const tabsCall = {
-    MASTER: "initGetProdMasterAsync",
-    WIN: "initGetProdWindowsAsync",
-    DOOR: "initGetProdDoorsAsync",
-  };
 
-  const endPoint = OrdersApi[tabsCall[tab] || tabsCall["MASTER"]]({
-    pageNumber: p || 1,
-    pageSize: 30,
-    searchText: q,
-    // manufacturingFacility: facility,
+  const filtersObj = {};
+  if (q) {
+    filtersObj["m_WorkOrderNo"] = {
+      operator: constants.FILTER_OPERATOR.Contains,
+      value: q,
+    };
+  }
+
+  if (facility) {
+    filtersObj[tab + "_ManufacturingFacility"] = {
+      operator: constants.FILTER_OPERATOR.Equals,
+      value: facility,
+    }; 
+  }
+
+  if (status) {
+    filtersObj[tab + "_Status"] = {
+      operator: constants.FILTER_OPERATOR.Equals,
+      value: status,
+    };  
+  }
+
+  const endPoint = OrdersApi.initQueryWorkOrderHeaderWithPrefixAsync({
+    page: p || 1,
+    pageSize: 50,
+    filters: _.keys(filtersObj)?.map((k) => {
+      return {
+        ...filtersObj[k],
+        field: k,
+      };
+    }),
+    kind: tab,
+    isDescending: true
   });
 
   // use swr later
@@ -65,12 +88,12 @@ const Com = (props) => {
     setIsShowCreate(true);
   };
 
-  const handleCreateDone = async (workOrderNo) => {
+  const handleCreateDone = async (m_WorkOrderNo) => {
     setEditingOrder({
-      workOrderNo,
+      m_WorkOrderNo,
     });
 
-    triggerMutate(endPoint)
+    triggerMutate(endPoint);
   };
 
   // ====== consts
@@ -89,9 +112,11 @@ const Com = (props) => {
       <div className={cn(styles.detail)}>
         <OrderList kind={tab} onEdit={handleEdit} data={treatedData?.data} />
       </div>
-      <button onClick={() =>{
-        setEditingOrder({workOrderNo: 'VKTEST22'})
-      }}>
+      <button
+        onClick={() => {
+          setEditingOrder({ m_WorkOrderNo: "VKTEST22" });
+        }}
+      >
         test
       </button>
       <Modal_OrderEdit
