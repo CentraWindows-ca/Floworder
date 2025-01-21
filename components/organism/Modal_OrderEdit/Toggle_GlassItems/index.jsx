@@ -156,21 +156,23 @@ const MultiRow = ({ data }) => {
     receivedExpected,
   } = data;
 
+  const rowSpan = rackInfo?.length
+
   return rackInfo?.map((ri) => {
     const { rackID, rackType, qty: rackQty } = ri;
     return (
       <tr key={`glass_${workOrderNumber}_${item}_${rackID}`}>
-        <td>{receivedExpected}</td>
+        <td rowSpan={rowSpan}>{receivedExpected}</td>
         <td>{rackID}</td>
         <td>{rackType}</td>
         <td>{rackQty}</td>
-        <td>{item}</td>
-        <td>{description}</td>
-        <td>{orderDate}</td>
-        <td>{shipDate}</td>
-        <td>{size}</td>
-        <td>{position}</td>
-        <td>{status}</td>
+        <td rowSpan={rowSpan}>{item}</td>
+        <td rowSpan={rowSpan}>{description}</td>
+        <td rowSpan={rowSpan}>{orderDate}</td>
+        <td rowSpan={rowSpan}>{shipDate}</td>
+        <td rowSpan={rowSpan}>{size}</td>
+        <td rowSpan={rowSpan}>{position}</td>
+        <td rowSpan={rowSpan}>{status}</td>
       </tr>
     );
   });

@@ -120,11 +120,11 @@ const Com = (props) => {
             title={"Production Items"}
             id={"productionItems"}
           />
-          <Toggle_ProductionItems title={"Remake Items"} id={"remakeItems"} />
+          {/* <Toggle_ProductionItems title={"Remake Items"} id={"remakeItems"} />
           <Toggle_ProductionItems
             title={"Backorder Items"}
             id={"backorderItems"}
-          />
+          /> */}
           <Toggle_GlassItems />
         </div>
       </div>
