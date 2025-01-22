@@ -24,7 +24,7 @@ import styles from "./styles.module.scss";
 
 const Com = (props) => {
   const router = useRouter();
-  const { status, q, p, facility, tab } = router?.query || {};
+  const { status, q, p = 1, facility, tab = 'm' } = router?.query || {};
 
   const [treatedData, setTreatedData] = useState({});
   const [isShowCreate, setIsShowCreate] = useState(false);
@@ -53,7 +53,7 @@ const Com = (props) => {
   }
 
   const endPoint = OrdersApi.initQueryWorkOrderHeaderWithPrefixAsync({
-    page: p || 1,
+    page: p,
     pageSize: 50,
     filters: _.keys(filtersObj)?.map((k) => {
       return {
