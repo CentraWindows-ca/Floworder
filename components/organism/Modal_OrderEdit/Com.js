@@ -191,6 +191,7 @@ export const localApi = {
     return (
       OrdersApi.updateWorkOrderHeaderWithPrefixAsync(null, {
         keyValue: m_MasterId,
+        masterId: m_MasterId,
         fields,
       }) || {}
     );

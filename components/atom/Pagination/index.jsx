@@ -102,8 +102,8 @@ const ExportedComponent = ({
           {pageList?.[0]?.i > 0 && (
             <>
               <li className="page-item">
-                <Link href={first} className="page-link" aria-label="Previous">
-                  {/* <Icon.First/> */}1
+                <Link href={first} aria-label="Previous">
+                  <a className="page-link">{1}</a>
                 </Link>
               </li>
               {pageList?.[0]?.i > 1 && <li className="page-link">...</li>}

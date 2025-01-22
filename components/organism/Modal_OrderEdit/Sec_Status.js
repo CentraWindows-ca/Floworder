@@ -26,7 +26,7 @@ const Com = ({ className, ...props }) => {
 
   const _statusKey = STATUS[kind];
 
-  const { color, label, textColor } = ORDER_STATUS[data?.[_statusKey]] || {};
+  const { color, label, textColor } = ORDER_STATUS?.find(a => a.key === data?.[_statusKey]) || {};
 
   const [toggle, setToggle] = useState(false);
 

@@ -33,7 +33,7 @@ const Com = (props) => {
     router.replace(
       {
         pathname,
-        query: { ...router.query, q: keyword },
+        query: { ...router.query, p: 0, q: keyword },
       },
       undefined,
       { shallow: true },
@@ -46,7 +46,7 @@ const Com = (props) => {
     router.replace(
       {
         pathname,
-        query: { ...router.query, q: "" },
+        query: { ...router.query, p: 0, q: "" },
       },
       undefined,
       { shallow: true },

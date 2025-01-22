@@ -31,7 +31,7 @@ const Com = ({ className, ...props }) => {
         if (!data?.[displayNotes[k]]) return null;
         return (
           <DisplayBlock id={displayNotes[k]} key={displayNotes[k]}>
-            <div className="flex">
+            <div className="flex gap-2">
               <b>[{k}]</b>:{" "}
               <div
                 dangerouslySetInnerHTML={{ __html: data?.[displayNotes[k]] }}

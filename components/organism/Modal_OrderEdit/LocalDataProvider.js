@@ -108,7 +108,7 @@ export const LocalDataProvider = ({
     if (typeof res === "object") {
       // re-assemble data to easier to edit
 
-      const {keyValue, value} = res
+      const {value} = res
 
       const mergedData = {}
       mergedData = { ...value?.d, ...value?.m, ...value?.w }
@@ -122,7 +122,7 @@ export const LocalDataProvider = ({
     
       const doorItems = await localApi.getDoorItems(initWorkOrderNo);
       const windowItems = await localApi.getWindowItems(initWorkOrderNo);
-      initAttachmentList(keyValue);
+      initAttachmentList(value?.m_MasterId);
 
       setData(mergedData);
       setDoorItems(doorItems);
@@ -180,6 +180,7 @@ export const LocalDataProvider = ({
     })
 
     await init(initWorkOrder?.m_WorkOrderNo);
+    onSave()
   });
 
   const doUploadAttachment = useLoadingBar(async (_files) => {
@@ -207,10 +208,8 @@ export const LocalDataProvider = ({
   });
 
   const doSave = useLoadingBar(async () => {
-
-
-
     await localApi.updateWorkOrder(data?.m_MasterId, data)
+    onSave()
   });
 
   const context = {

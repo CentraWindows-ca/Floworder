@@ -11,6 +11,7 @@ import useLoadingBar from "lib/hooks/useLoadingBar";
 // styles
 import styles from "./styles.module.scss";
 import { WorkOrderSelectOptions, ORDER_STATUS } from "lib/constants";
+import utils from "lib/utils";
 
 const getValue = (k, arrName) => {
   const arr = WorkOrderSelectOptions[arrName];
@@ -27,7 +28,6 @@ const Com = (props) => {
   const jsxWindowOnly = (jsx) => (kind === "w" ? jsx : null);
   const jsxDoorOnly = (jsx) => (kind === "d" ? jsx : null);
 
-  console.log(data)
 
   return (
     <div className={cn("w-full", styles.root)}>
@@ -69,9 +69,10 @@ const Com = (props) => {
           </thead>
           <tbody>
             {data?.map((a) => {
-              const { keyValue, value } = a;
+              const { value } = a;
               const merged =  { ...value?.d, ...value?.m, ...value?.w }
               const {
+                m_MasterId,
                 m_WorkOrderNo,
                 m_ChangedBy,
                 m_Branch,
@@ -109,7 +110,7 @@ const Com = (props) => {
               );
           
               return (
-                <tr key={keyValue}>
+                <tr key={m_MasterId}>
                   <td onClick={() => onEdit(merged)}>
                     <div className={cn(styles.orderNumber)}>
                       {m_WorkOrderNo}
@@ -160,9 +161,9 @@ const Com = (props) => {
                   {jsxDoor(<td>{m_NumberOfDoors}</td>)}
                   <td>{m_NumberOfOthers}</td>
                   <td>{m_InvStatus}</td>
-                  <td>{m_CreatedAt}</td>
+                  <td>{utils.formatDate(m_CreatedAt)}</td>
                   <td>{m_ChangedBy}</td>
-                  <td>{m_CustomerDate}</td>
+                  <td>{utils.formatDate(m_CustomerDate)}</td>
                   {jsxWindow(<td>{w_GlassOrderedDate}</td>)}
                 </tr>
               );

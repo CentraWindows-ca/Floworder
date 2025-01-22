@@ -24,7 +24,7 @@ import styles from "./styles.module.scss";
 
 const Com = (props) => {
   const router = useRouter();
-  const { status, q, p = 1, facility, tab = 'm' } = router?.query || {};
+  const { status, q, p = 0, facility, tab = 'm' } = router?.query || {};
 
   const [treatedData, setTreatedData] = useState({});
   const [isShowCreate, setIsShowCreate] = useState(false);
@@ -53,7 +53,7 @@ const Com = (props) => {
   }
 
   const endPoint = OrdersApi.initQueryWorkOrderHeaderWithPrefixAsync({
-    page: p,
+    page: (parseInt(p) || 0) + 1,
     pageSize: 50,
     filters: _.keys(filtersObj)?.map((k) => {
       return {
@@ -96,6 +96,10 @@ const Com = (props) => {
     triggerMutate(endPoint);
   };
 
+  const handleSaveDone = async () => {
+    triggerMutate(endPoint);
+  };
+
   // ====== consts
   return (
     <div className={cn("w-full", styles.root)}>
@@ -106,21 +110,15 @@ const Com = (props) => {
           </button>
         </div>
         <div>
-          <Pagination count={data?.totalCount} />
+          <Pagination count={treatedData?.total} />
         </div>
       </div>
       <div className={cn(styles.detail)}>
         <OrderList kind={tab} onEdit={handleEdit} data={treatedData?.data} />
       </div>
-      <button
-        onClick={() => {
-          setEditingOrder({ m_WorkOrderNo: "VKTEST22" });
-        }}
-      >
-        test
-      </button>
       <Modal_OrderEdit
         onHide={() => setEditingOrder(null)}
+        onSave = {handleSaveDone}
         initWorkOrder={editingOrder}
         kind={tab}
         facility={facility}

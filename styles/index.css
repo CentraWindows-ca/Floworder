@@ -62,3 +62,14 @@ button {
 button:hover {
   background-color: aliceblue;
 }
+.Toastify__progress-bar--success {
+  background-color: #4caf50 !important; /* Green */
+}
+
+.Toastify__progress-bar--error {
+  background-color: #f44336 !important; /* Red */
+}
+
+.Toastify__progress-bar--info {
+  background-color: #2196f3 !important; /* Blue */
+}
