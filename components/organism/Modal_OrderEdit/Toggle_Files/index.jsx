@@ -1,31 +1,27 @@
 import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
-import Modal from "components/molecule/Modal";
-import utils from "lib/utils";
 import _ from "lodash";
 
+import Modal from "components/molecule/Modal";
 import Editable from "components/molecule/Editable";
 import LoadingBlock from "components/atom/LoadingBlock";
 // styles
-import styles from "./styles.module.scss";
+import styles from "../styles.module.scss";
+import utils from "lib/utils";
 
-import { LocalDataContext } from "./LocalDataProvider";
-import { DisplayBlock } from "./Com";
+import { LocalDataContext } from "../LocalDataProvider";
+import { ToggleBlock, DisplayBlock } from "../Com";
 
-const Com = ({ className, ...props }) => {
+const Com = ({ className, title, id, ...props }) => {
   const {
-    data,
-    onChange,
     newAttachments,
     setNewAttachments,
     existingAttachments,
-    isEditable,
     onUploadAttachment,
-    onDeleteAttachment,
-    onHide,
+    isEditable,
   } = useContext(LocalDataContext);
 
-  const handleFileChange = (event) => {
+  const handleImageChange = (event) => {
     const files = Array.from(event.target.files); // Convert FileList to Array
 
     setNewAttachments(
@@ -48,18 +44,25 @@ const Com = ({ className, ...props }) => {
     });
   };
 
+  const jsxTitle = (
+    <div className="flex gap-2">
+      {title}
+      <div className="text-primary font-normal">
+        ({existingAttachments?.length || 0})
+      </div>
+    </div>
+  );
 
   return (
-    <>
-      <div className={cn(styles.sectionTitle)}>
-        <span>Attachments</span>
-        {isEditable && (
+    <ToggleBlock title={jsxTitle} id={id}>
+      <div className="p-2">
+        <div className="justify-content-between align-items-center mb-2 flex">
           <div>
             <label
               htmlFor="file-upload"
               className="btn btn-outline-secondary btn-xs"
             >
-              Upload
+              Upload Files
             </label>
 
             <input
@@ -67,51 +70,59 @@ const Com = ({ className, ...props }) => {
               type="file"
               // multiple
               className="d-none"
-              onChange={handleFileChange}
+              onChange={handleImageChange}
             />
           </div>
-        )}
-      </div>
-      <div className={cn(styles.columnAttachmentsContainer)}>
-        <div className="p-2">
-          <table className="table-xs table-bordered table-hover mb-0 table border text-sm">
-            <tbody>
-              {existingAttachments?.map((a, i) => {
-                const {
-                  fileName,
-                  fileType,
-                  fileRawData,
-                  notes,
-                  id
-                } = a;
-
-                const size = utils.formatNumber(utils.calculateFileSize(fileRawData) / 1024 || 0);
-                return (
-                  <tr key={`${fileName}_${id}`}>
-                    <td className="text-left">
-                      <span className="text-blue-500 hover:text-blue-400" style={{cursor: 'pointer'}} onClick={() => utils.downloadFile(fileRawData, fileName, fileType)}>
-                        {fileName}
-                      </span>
-                    </td>
-                    <td className="text-right">{size} KB</td>
-                    <td>
-                      {notes || ''}
-                    </td>
-                    <td style={{ width: 60 }}>
-                      <button
-                        className="btn btn-xs btn-danger"
-                        disabled={!isEditable}
-                        onClick={() => onDeleteAttachment(a)}
-                      >
-                        delete
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
         </div>
+        <table className="table-xs table-bordered table-hover mb-0 table border text-sm">
+          <tbody>
+            {existingAttachments?.map((a) => {
+              const {
+                submittedBy,
+                fileName,
+                fileType,
+                fileRawData,
+                notes,
+                id,
+              } = a;
+              const size = utils.formatNumber(
+                utils.calculateFileSize(fileRawData) / 1024 || 0,
+              );
+
+              return (
+                <tr key={`${title}_${id}`}>
+                  <td className="text-center" style={{ width: 120 }}>
+                    <span
+                      className="text-blue-500 hover:text-blue-400"
+                      style={{ cursor: "pointer" }}
+                      onClick={() =>
+                        utils.downloadFile(fileRawData, fileName, fileType)
+                      }
+                    >
+                      {fileName}
+                    </span>
+                  </td>
+                  <td className="text-right" style={{ width: 120 }}>
+                    {size} KB
+                  </td>
+                  <td className="text-left">
+                    <b>[{submittedBy}]:</b>
+                    <br /> {notes || "--"}
+                  </td>
+                  <td style={{ width: 60 }}>
+                    <button
+                      className="btn btn-xs btn-danger"
+                      disabled={!isEditable}
+                      onClick={() => onDeleteAttachment(a)}
+                    >
+                      delete
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
 
       <Modal
@@ -124,7 +135,7 @@ const Com = ({ className, ...props }) => {
             <table className="table-sm table-bordered table-hover table border text-sm">
               <thead>
                 <tr>
-                  <th>File</th>
+                  <th>File Name</th>
                   <th>Size</th>
                   <th>Note/Alias</th>
                 </tr>
@@ -159,10 +170,8 @@ const Com = ({ className, ...props }) => {
           </div>
         </div>
       </Modal>
-    </>
+    </ToggleBlock>
   );
 };
-
-
 
 export default Com;

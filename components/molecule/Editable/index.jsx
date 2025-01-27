@@ -220,13 +220,13 @@ export const EF_MultiSelect = React.memo(
   preventUpdate
 );
 
-export const EF_Input = React.memo(({ onChange, value, ...props }) => {
+export const EF_Input = React.memo(({ onChange, value, className, ...props }) => {
   const handleChange = (e) => {
     onChange(e.target.value);
   };
   return (
     <input
-      className="form-control form-control-sm"
+      className={cn("form-control form-control-sm", className)}
       onChange={handleChange}
       value={value || ""}
       {...props}

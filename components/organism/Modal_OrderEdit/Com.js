@@ -7,29 +7,53 @@ import OrdersApi from "lib/api/OrdersApi";
 import GlassApi from "lib/api/GlassApi";
 import { LocalDataContext } from "./LocalDataProvider";
 
-export const DisplayBlock = ({ children, id = "m", displayAs, ...props }) => {
-  const { uiOrderType, kind, data } = useContext(LocalDataContext);
-
+const _ifDisplay = ({ kind, uiOrderType, id, displayAs }) => {
   let currentKind = "m";
   if (id?.startsWith("m_")) currentKind = "m";
   else if (id?.startsWith("w_")) currentKind = "w";
   else if (id?.startsWith("d_")) currentKind = "d";
-
-  const displayKind = displayAs || kind;
+  currentKind = displayAs || currentKind;
 
   // dont show fields if its not certain type of order
-  if (!uiOrderType?.m && currentKind === 'm') return null
-  if (!uiOrderType?.w && currentKind === 'w') return null
-  if (!uiOrderType?.d && currentKind === 'd') return null
+  if (!uiOrderType?.m && currentKind === "m") return null;
+  if (!uiOrderType?.w && currentKind === "w") return null;
+  if (!uiOrderType?.d && currentKind === "d") return null;
 
-  if (
-    displayKind === currentKind ||
-    currentKind === "m" ||
-    displayKind === "m"
-  ) {
-    return children;
+  if (currentKind === kind || currentKind === "m" || kind === "m") {
+    return true;
   } else {
-    return null;
+    return false;
+  }
+};
+
+export const displayFilter = (itemList, { kind, uiOrderType }) => {
+  return itemList?.filter((a) => {
+    const { id = "m", displayAs } = a;
+    // currentKind is data kind
+    return _ifDisplay({
+      kind,
+      uiOrderType,
+      id,
+      displayAs,
+    });
+  });
+};
+
+export const DisplayBlock = ({ children, id = "m", displayAs, ...props }) => {
+  // kind is UI selected kind
+  const { uiOrderType, kind, data } = useContext(LocalDataContext);
+
+  const display = _ifDisplay({
+    kind,
+    uiOrderType,
+    id,
+    displayAs,
+  })
+
+  if (display) {
+    return children
+  } else {
+    return null
   }
 };
 
@@ -127,9 +151,26 @@ export const ToggleFull = ({
 };
 
 export const localApi = {
-  getAttachments: async (masterId) => {
+  getFiles: async (masterId) => {
     return OrdersApi.queryAnyTableAsync(null, {
-      table: "Prod_Files",
+      table: "Prod_UploadingFiles",
+      filters: [
+        {
+          field: "MasterId",
+          operator: "Equals",
+          value: masterId,
+        },
+        {
+          field: "ProdTypeId",
+          operator: "Equals",
+          value: constants.PROD_TYPES.m.toString(),
+        },
+      ],
+    });
+  },
+  getImages: async (masterId) => {
+    return OrdersApi.queryAnyTableAsync(null, {
+      table: "Prod_UploadingImages",
       filters: [
         {
           field: "MasterId",

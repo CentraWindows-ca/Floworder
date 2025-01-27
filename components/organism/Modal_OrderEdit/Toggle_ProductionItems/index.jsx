@@ -14,15 +14,54 @@ const Com = ({ className, title, id, ...props }) => {
   const { data, windowItems, doorItems, onChange, onHide } =
     useContext(LocalDataContext);
 
+  const [stats, setStats] = useState({});
+
+  useEffect(() => {
+    const _stats = {
+      W: 0,
+      PD: 0,
+      VD: 0,
+      ED: 0,
+      GL: 0,
+    };
+
+    /*
+      W: not 52PD, 61DR
+      PD: 52PD
+      VD: 61DR
+      ED: door items
+      GL: GL01
+    */
+    windowItems?.map((a) => {
+      const { System } = a;
+      switch (System) {
+        case "52PD":
+          _stats["PD"] = _stats["PD"] + 1;
+          break;
+        case "61DR":
+          _stats["VD"] = _stats["VD"] + 1;
+          break;
+        case "GL01":
+          _stats["GL"] = _stats["GL"] + 1;
+          break;
+        default:
+          _stats["W"] = _stats["W"] + 1;
+          break;
+      }
+    });
+    _stats["ED"] = doorItems?.length;
+    setStats(_stats);
+  }, [windowItems, doorItems]);
+
   const jsxTitle = (
     <div className="flex gap-2">
       {title}
       <div className="text-primary font-normal">
-        {/* W: 8 | PD: 0 | VD: 0 | ED: 4 | GL: 0 */}
+        W: {stats.W} | PD: {stats.PD} | VD: {stats.VD} | ED: {stats.ED} | GL:{" "}
+        {stats.GL}
       </div>
     </div>
   );
-
 
   return (
     <ToggleBlock title={jsxTitle} id={id}>

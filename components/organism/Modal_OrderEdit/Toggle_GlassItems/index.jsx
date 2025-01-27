@@ -11,27 +11,14 @@ import { LocalDataContext } from "../LocalDataProvider";
 import { ToggleBlock, DisplayBlock } from "../Com";
 
 const Com = ({ className, ...props }) => {
-  const { data, glassItems, onChange, onHide } = useContext(LocalDataContext);
-
-  const total =
-    glassItems?.reduce(
-      (prev, curr) => {
-        return {
-          qty: prev.qty + parseInt(curr.qty) || 0,
-          glassQty: prev.glassQty + parseInt(curr.glassQty) || 0,
-        };
-      },
-      {
-        qty: 0,
-        glassQty: 0,
-      },
-    ) || {};
+  const { data, glassTotal, glassItems, onChange, onHide } =
+    useContext(LocalDataContext);
 
   const jsxTitle = (
     <div className="flex gap-2">
       Glass Items
       <div className="text-primary font-normal">
-        {total?.qty || 0} / {total?.glassQty || 0}
+        ({glassTotal?.qty || 0} / {glassTotal?.glassQty || 0})
       </div>
     </div>
   );
@@ -156,23 +143,28 @@ const MultiRow = ({ data }) => {
     receivedExpected,
   } = data;
 
-  const rowSpan = rackInfo?.length
-
-  return rackInfo?.map((ri) => {
+  let rowSpan = rackInfo?.length;
+  return rackInfo?.map((ri, j) => {
     const { rackID, rackType, qty: rackQty } = ri;
+
     return (
       <tr key={`glass_${workOrderNumber}_${item}_${rackID}`}>
-        <td rowSpan={rowSpan}>{receivedExpected}</td>
+        {j === 0 && <td rowSpan={rowSpan}>{receivedExpected}</td>}
+
         <td>{rackID}</td>
         <td>{rackType}</td>
         <td>{rackQty}</td>
-        <td rowSpan={rowSpan}>{item}</td>
-        <td rowSpan={rowSpan}>{description}</td>
-        <td rowSpan={rowSpan}>{orderDate}</td>
-        <td rowSpan={rowSpan}>{shipDate}</td>
-        <td rowSpan={rowSpan}>{size}</td>
-        <td rowSpan={rowSpan}>{position}</td>
-        <td rowSpan={rowSpan}>{status}</td>
+        {j === 0 && (
+          <>
+            <td rowSpan={rowSpan}>{item}</td>
+            <td rowSpan={rowSpan}>{description}</td>
+            <td rowSpan={rowSpan}>{orderDate}</td>
+            <td rowSpan={rowSpan}>{shipDate}</td>
+            <td rowSpan={rowSpan}>{size}</td>
+            <td rowSpan={rowSpan}>{position}</td>
+            <td rowSpan={rowSpan}>{status}</td>
+          </>
+        )}
       </tr>
     );
   });

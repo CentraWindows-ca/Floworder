@@ -14,19 +14,11 @@ import { LocalDataContext } from "./LocalDataProvider";
 
 import { DisplayBlock } from "./Com";
 
-const STATUS = {
-  m: "m_Status",
-  w: "w_Status",
-  d: "d_Status",
-};
-
 const Com = ({ className, ...props }) => {
-  const { data, kind, onChange, onUpdateStatus, isEditable, onHide } =
+  const { uIstatusObj, onUpdateStatus, isEditable } =
     useContext(LocalDataContext);
 
-  const _statusKey = STATUS[kind];
-
-  const { color, label, textColor } = ORDER_STATUS?.find(a => a.key === data?.[_statusKey]) || {};
+  const { color, label, textColor } = uIstatusObj
 
   const [toggle, setToggle] = useState(false);
 

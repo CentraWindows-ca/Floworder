@@ -14,11 +14,17 @@ import OrdersApi from "lib/api/OrdersApi";
 import GlassApi from "lib/api/GlassApi";
 
 import useLoadingBar from "lib/hooks/useLoadingBar";
-import constants from "lib/constants";
+import constants, { ORDER_STATUS } from "lib/constants";
 
 import { localApi } from "./Com";
 
 export const LocalDataContext = createContext(null);
+
+const STATUS = {
+  m: "m_Status",
+  w: "w_Status",
+  d: "d_Status",
+};
 
 export const LocalDataProvider = ({
   children,
@@ -36,14 +42,17 @@ export const LocalDataProvider = ({
 
   // only display. upload/delete will directly call function
   const [existingAttachments, setExistingAttachments] = useState(null);
+  const [existingImages, setExistingImages] = useState(null);
   
   const [newAttachments, setNewAttachments] = useState(null);
+  const [newImages, setNewImages] = useState(null);
 
   const [windowItems, setWindowItems] = useState(null);
   const [doorItems, setDoorItems] = useState(null);
   const [glassItems, setGlassItems] = useState(null);
 
   const [uiOrderType, setUiOrderType] = useState({})
+  const [initData, setInitData] = useState(null)
 
   // UI purpose
   const [expands, setExpands] = useState({});
@@ -94,7 +103,12 @@ export const LocalDataProvider = ({
     setWindowItems(null);
     setExistingAttachments(null);
     setNewAttachments(null);
+    setExistingImages(null)
+    setNewImages(null)
+
     setGlassItems(null);
+
+    setInitData(null)
   };
 
   const init = useLoadingBar(async (initWorkOrderNo) => {
@@ -119,12 +133,15 @@ export const LocalDataProvider = ({
         d: !!value?.d,
         w: !!value?.w,
       })
-    
+
       const doorItems = await localApi.getDoorItems(initWorkOrderNo);
       const windowItems = await localApi.getWindowItems(initWorkOrderNo);
-      initAttachmentList(value?.m_MasterId);
+      initAttachmentList(mergedData?.m_MasterId);
+      initImageList(mergedData?.m_MasterId)
 
       setData(mergedData);
+      setInitData(JSON.parse(JSON.stringify(mergedData)))
+
       setDoorItems(doorItems);
       setWindowItems(windowItems);
 
@@ -163,14 +180,24 @@ export const LocalDataProvider = ({
   });
 
   const initAttachmentList = useLoadingBar(async (masterId) => {
-    // prodTypeId, recordId
-    // const res = await OrdersApi.getAttachmentsByRecordIdAsync({
-    //   prodTypeId: constants.PROD_TYPES.m,
-    //   recordId: masterId,
-    // });
+    // const res = await localApi.getFiles(masterId)
 
-    const res = await localApi.getAttachments(masterId)
+    const res = await OrdersApi.getUploadFileByRecordIdAsync({
+      MasterId: masterId,
+      ProdTypeId:constants.PROD_TYPES.m,
+    })
+
     setExistingAttachments(res);
+  });
+
+  const initImageList = useLoadingBar(async (masterId) => {
+    // const res = await localApi.getImages(masterId)
+
+    const res = await OrdersApi.getUploadImageByRecordIdAsync({
+      MasterId: masterId,
+      ProdTypeId:constants.PROD_TYPES.m,
+    })
+    setExistingImages(res);
   });
 
   //
@@ -185,32 +212,75 @@ export const LocalDataProvider = ({
 
   const doUploadAttachment = useLoadingBar(async (_files) => {
     const { file, notes } = _files[0];
-    await OrdersApi.uploadAttachmentsAsync(
+    await OrdersApi.uploadFileAsync(
       {
-        recordId: data?.m_MasterId,
+        masterId: data?.m_MasterId,
         prodTypeId: constants.PROD_TYPES.m,
-        kind: "MASTER",
         uploadingFile: file,
         notes,
       },
-      file,
     );
 
     await initAttachmentList(data?.m_MasterId);
   });
 
   const doDeleteAttachment = useLoadingBar(async (_file) => {
-    await OrdersApi.deleteAttachmentsByIdAsync({
-      guid: _file.id,
+    await OrdersApi.deleteUploadFileByIdAsync({
+      id: _file.id,
     });
 
     await initAttachmentList(data?.m_MasterId);
   });
 
+  const doUploadImage = useLoadingBar(async (_files) => {
+
+    console.log("upload images?")
+    const { file, notes } = _files[0];
+    await OrdersApi.uploadImageAsync(
+      {
+        masterId: data?.m_MasterId,
+        prodTypeId: constants.PROD_TYPES.m,
+        uploadingFile: file,
+        notes,
+      },
+    );
+
+    await initImageList(data?.m_MasterId);
+  });
+
+  const doDeleteImage = useLoadingBar(async (_file) => {
+    await OrdersApi.deleteUploadImageByIdAsync({
+      id: _file.id,
+    });
+
+    await initImageList(data?.m_MasterId);
+  });
+
   const doSave = useLoadingBar(async () => {
-    await localApi.updateWorkOrder(data?.m_MasterId, data)
+    // identify changed data:
+    const changedData = utils.findChanges(initData, data)
+
+    await localApi.updateWorkOrder(data?.m_MasterId, changedData)
     onSave()
   });
+
+  // calculations
+
+  const glassTotal =
+  glassItems?.reduce(
+    (prev, curr) => {
+      return {
+        qty: prev.qty + parseInt(curr.qty) || 0,
+        glassQty: prev.glassQty + parseInt(curr.glassQty) || 0,
+      };
+    },
+    {
+      qty: 0,
+      glassQty: 0,
+    },
+  ) || {};
+
+  const uIstatusObj = ORDER_STATUS?.find(a => a.key === data?.[STATUS[kind]]) || {};
 
   const context = {
     ...generalContext,
@@ -224,11 +294,17 @@ export const LocalDataProvider = ({
     setNewAttachments,
     existingAttachments,
     setExistingAttachments,
+    newImages,
+    setNewImages,
+    existingImages,
+    setExistingImages,
     onChange: handleChange,
     onUpdateStatus: doUpdateStatus,
     onAnchor: handleAnchor,
     onUploadAttachment: doUploadAttachment,
     onDeleteAttachment: doDeleteAttachment,
+    onUploadImage: doUploadImage,
+    onDeleteImage: doDeleteImage,
     onHide: handleHide,
     onSave: doSave,
     windowItems,
@@ -237,7 +313,9 @@ export const LocalDataProvider = ({
     expands,
     setExpands,
     isEditable,
-    uiOrderType
+    uiOrderType,
+    glassTotal,
+    uIstatusObj
   };
   return (
     <LocalDataContext.Provider value={context}>
@@ -245,5 +323,8 @@ export const LocalDataProvider = ({
     </LocalDataContext.Provider>
   );
 };
+
+
+
 
 export default LocalDataProvider;

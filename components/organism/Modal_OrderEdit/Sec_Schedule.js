@@ -10,136 +10,156 @@ import styles from "./styles.module.scss";
 
 import { LocalDataContext } from "./LocalDataProvider";
 
-import { DisplayBlock } from "./Com";
+import { DisplayBlock, displayFilter } from "./Com";
+
+const COMMON_ITEMS = [
+  {
+    title: "Shipping Start",
+    id: "m_ShippingStartDate",
+  },
+
+  {
+    title: "Shipping End",
+    id: "m_ShippingEndDate",
+  },
+  {
+    title: "Customer Date",
+    id: "m_CustomerDate",
+  },
+  {
+    title: "Revised Delivery Date",
+    id: "m_RevisedDeliveryDate",
+  },
+];
+const WINDOW_ITEMS = [
+  {
+    title: "Windows Production Start",
+    id: "w_ProductionStartDate",
+  },
+  {
+    title: "Windows Production End",
+    id: "w_ProductionEndDate",
+  },
+  {
+    title: "Window Paint Start",
+    id: "w_PaintStartDate",
+  },
+  {
+    title: "Window Paint End",
+    id: "w_PaintEndDate",
+  },
+  {
+    title: "Window Glass Order Date",
+    id: "w_GlassOrderDate",
+  },
+  {
+    title: "Window Glass Receive Date",
+    id: "w_GlassRecDate",
+  },
+];
+const DOOR_ITEMS = [
+  {
+    title: "Doors Production Start",
+    id: "d_ProductionStartDate",
+  },
+  {
+    title: "Doors Production End",
+    id: "d_ProductionEndDate",
+  },
+  {
+    title: "Door Paint Start",
+    id: "d_PaintStartDate",
+  },
+  {
+    title: "Door Paint End",
+    id: "d_PaintEndDate",
+  },
+  {
+    title: "Door Glass Order Date",
+    id: "d_GlassOrderDate",
+  },
+];
 
 const Com = ({ className, ...props }) => {
-  const { data, onChange, isEditable, onHide } = useContext(LocalDataContext);
+  const { data, kind, uiOrderType } =
+    useContext(LocalDataContext);
+
+  const [doorInputs, setDoorInputs] = useState(null);
+  const [windowInputs, setWindowInputs] = useState(null);
+
+  useEffect(() => {
+    setDoorInputs(
+      displayFilter(DOOR_ITEMS, {
+        kind,
+        uiOrderType,
+      }),
+    );
+
+    setWindowInputs(
+      displayFilter(WINDOW_ITEMS, {
+        kind,
+        uiOrderType,
+      }),
+    );
+  }, [kind, uiOrderType]);
 
   return (
-    <div className={cn(styles.columnInputsContainer)}>
-      <DisplayBlock data={data} id="w_ProductionStartDate">
-        <label className="justify-content-start align-items-center flex">
-          {" "}
-          Windows Production Start
-        </label>
-        <div className="justify-content-end align-items-center flex">
-          <Editable.EF_Date
-            k="w_ProductionStartDate"
-            value={data?.w_ProductionStartDate}
-            onChange={(v) => onChange(v, "w_ProductionStartDate")}
-            disabled={!isEditable}
-          />
-        </div>
-      </DisplayBlock>
-      <DisplayBlock data={data} id="w_ProductionEndDate">
-        <label className="justify-content-start align-items-center flex">
-          {" "}
-          Windows Production End
-        </label>
-        <div className="justify-content-end align-items-center flex">
-          <Editable.EF_Date
-            k="w_ProductionEndDate"
-            value={data?.w_ProductionEndDate}
-            onChange={(v) => onChange(v, "w_ProductionEndDate")}
-            disabled={!isEditable}
-          />
-        </div>
-      </DisplayBlock>
-      <DisplayBlock data={data} id="d_ProductionStartDate">
-        <label className="justify-content-start align-items-center flex">
-          {" "}
-          Doors Production Start
-        </label>
-        <div className="justify-content-end align-items-center flex">
-          <Editable.EF_Date
-            k="d_ProductionStartDate"
-            value={data?.d_ProductionStartDate}
-            onChange={(v) => onChange(v, "d_ProductionStartDate")}
-            disabled={!isEditable}
-          />
-        </div>
-      </DisplayBlock>
-      <DisplayBlock data={data} id="d_ProductionEndDate">
-        <label className="justify-content-start align-items-center flex">
-          {" "}
-          Doors Production End
-        </label>
-        <div className="justify-content-end align-items-center flex">
-          <Editable.EF_Date
-            k="d_ProductionEndDate"
-            value={data?.d_ProductionEndDate}
-            onChange={(v) => onChange(v, "d_ProductionEndDate")}
-            disabled={!isEditable}
-          />
-        </div>
-      </DisplayBlock>
-      <DisplayBlock data={data} id="m_ShippingStartDate">
-        <label className="justify-content-start align-items-center flex">
-          Shipping Start
-        </label>
-        <div className="justify-content-end align-items-center flex">
-          <Editable.EF_Date
-            k="m_ShippingStartDate"
-            value={data?.m_ShippingStartDate}
-            onChange={(v) => onChange(v, "m_ShippingStartDate")}
-            disabled={!isEditable}
-          />
-        </div>
-      </DisplayBlock>
-      <DisplayBlock data={data} id="m_ShippingEndDate">
-        <label className="justify-content-start align-items-center flex">
-          Shipping End
-        </label>
-        <div className="justify-content-end align-items-center flex">
-          <Editable.EF_Date
-            k="m_ShippingEndDate"
-            value={data?.m_ShippingEndDate}
-            onChange={(v) => onChange(v, "m_ShippingEndDate")}
-            disabled={!isEditable}
-          />
-        </div>
-      </DisplayBlock>
-      <DisplayBlock data={data} id="m_CustomerDate">
-        <label className="justify-content-start align-items-center flex">
-          Customer Date
-        </label>
-        <div className="justify-content-end align-items-center flex">
-          <Editable.EF_Date
-            k="m_CustomerDate"
-            value={data?.m_CustomerDate}
-            onChange={(v) => onChange(v, "m_CustomerDate")}
-            disabled={!isEditable}
-          />
-        </div>
-      </DisplayBlock>
-      <DisplayBlock data={data} id="m_RevisedDeliveryDate">
-        <label className="justify-content-start align-items-center flex">
-          Revised Delivery Date
-        </label>
-        <div className="justify-content-end align-items-center flex">
-          <Editable.EF_Date
-            k="m_RevisedDeliveryDate"
-            value={data?.m_RevisedDeliveryDate}
-            onChange={(v) => onChange(v, "m_RevisedDeliveryDate")}
-            disabled={!isEditable}
-          />
-        </div>
-      </DisplayBlock>
+    <>
+      <div className={cn(styles.columnInputsContainer)}>
+        {COMMON_ITEMS?.map((a) => {
+          const { title, id } = a;
+          return <DisplayDate key={id} id={id} title={title} />;
+        })}
+      </div>
 
-      {/* <DisplayBlock data={data} id="m_InstallationDate">
-        <label className="justify-content-start align-items-center flex">
-          Installation Date [???]
-        </label>
-        <div className="justify-content-end align-items-center flex">
-          <Editable.EF_Date
-            k="m_InstallationDate"
-            value={data?.m_InstallationDate}
-            onChange={(v) => onChange(v, "m_InstallationDate")}
-            disabled={!isEditable}
-          />
-        </div>
-      </DisplayBlock> */}
-    </div>
+      {!_.isEmpty(windowInputs) && (
+        <>
+          <div className={styles.subTitle}>
+            <label className="text-sky-600">Window</label>
+          </div>
+          <div className={cn(styles.columnInputsContainer)}>
+            {windowInputs?.map((a) => {
+              const { title, id } = a;
+              return <DisplayDate key={id} id={id} title={title} />;
+            })}
+          </div>
+        </>
+      )}
+
+      {!_.isEmpty(doorInputs) && (
+        <>
+          <div className={styles.subTitle}>
+            <label className="text-sky-600">Door</label>
+          </div>
+          <div className={cn(styles.columnInputsContainer)}>
+            {doorInputs?.map((a) => {
+              const { title, id } = a;
+              return <DisplayDate key={id} id={id} title={title} />;
+            })}
+          </div>
+        </>
+      )}
+    </>
+  );
+};
+
+const DisplayDate = ({ id, title }) => {
+  const { data, onChange, isEditable } = useContext(LocalDataContext);
+
+  return (
+    <DisplayBlock id={id}>
+      <label className="justify-content-start align-items-center flex">
+        {title}
+      </label>
+      <div className="justify-content-end align-items-center flex">
+        <Editable.EF_Date
+          k={id}
+          value={data?.[id]}
+          onChange={(v) => onChange(v, id)}
+          disabled={!isEditable}
+        />
+      </div>
+    </DisplayBlock>
   );
 };
 

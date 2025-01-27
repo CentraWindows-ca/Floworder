@@ -7,10 +7,12 @@
 
 .statesContainerEditable {
     cursor: pointer;
+
     &:hover {
         opacity: .8;
     }
 }
+
 .statesContainer {
     border-radius: 4px;
     padding: 4px 10px;
@@ -24,37 +26,40 @@
 .gridsOfMainInfo {
     display: grid;
     gap: 5px;
+    grid-template-columns: repeat(2, 1fr);
+
+    margin-bottom: 5px;
+
+    // .grid-1 {
+    //     grid-column: 1;
+
+    // }
+
+    // .grid-2 {
+    //     grid-column: 1;
+    // }
+}
+
+
+.gridsOfBelowInfo {
+    display: grid;
+    gap: 5px;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, auto);
 
     .mainItem-1 {
         grid-column: 1;
-        grid-row: span 2;
     }
 
     .mainItem-2 {
         grid-column: 2;
-        grid-row: span 2;
     }
 
     .mainItem-3 {
         grid-column: 3;
-        grid-row: 1;
     }
 
     .mainItem-4 {
-        grid-column: 3;
-        grid-row: 2;
-    }
-
-    .mainItem-5 {
         grid-column: 4;
-        grid-row: 1;
-    }
-
-    .mainItem-6 {
-        grid-column: 4;
-        grid-row: 2;
     }
 }
 
@@ -78,9 +83,19 @@
     align-items: center;
 
 }
+
+.subTitle {
+    text-align: left;
+    font-weight: bold;
+    margin-top: 5px;
+    padding: 5px 10px 2px 10px;
+    border-top: 5px solid $color_background;
+}
+
 .toggleFullClose {
     cursor: pointer;
 }
+
 .toggleTitle {
     text-align: left;
     font-weight: bold;
@@ -99,11 +114,10 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     align-items: center;
+    gap: 5px;
     label {
         text-align: left;
     }
-
-    gap:5px;
 }
 
 .columnOptionsContainer {
@@ -125,6 +139,7 @@
     padding: 10px;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
 
     label {
         text-align: left;
@@ -138,10 +153,12 @@
 .anchors {
     display: flex;
     gap: 10px;
+
     span {
         cursor: pointer;
         padding: 5px;
         color: $color_centraBlue;
+
         &:hover {
             color: $color_centraBlue_hover;
             text-decoration: underline;

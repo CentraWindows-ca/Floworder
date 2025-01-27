@@ -16,9 +16,9 @@ const Com = ({ className, ...props }) => {
   const {
     data,
     onChange,
-    newAttachments,
-    setNewAttachments,
-    existingAttachments,
+    newImages,
+    setNewImages,
+    existingImages,
     isEditable,
     onUploadAttachment,
     onDeleteAttachment,
@@ -28,7 +28,7 @@ const Com = ({ className, ...props }) => {
   const handleFileChange = (event) => {
     const files = Array.from(event.target.files); // Convert FileList to Array
 
-    setNewAttachments(
+    setNewImages(
       files?.map((a) => ({
         file: a,
       })),
@@ -36,12 +36,12 @@ const Com = ({ className, ...props }) => {
   };
 
   const handleSave = async () => {
-    await onUploadAttachment(_.cloneDeep(newAttachments));
-    setNewAttachments(null);
+    await onUploadAttachment(_.cloneDeep(newImages));
+    setNewImages(null);
   };
 
   const handleChangeNote = (i, e) => {
-    setNewAttachments((prev) => {
+    setNewImages((prev) => {
       const _newV = _.cloneDeep(prev); // use lodash to keep object
       _.set(_newV, [i, "notes"], e.target.value);
       return _newV;
@@ -52,7 +52,7 @@ const Com = ({ className, ...props }) => {
   return (
     <>
       <div className={cn(styles.sectionTitle)}>
-        <span>Attachments</span>
+        <span>Images</span>
         {isEditable && (
           <div>
             <label
@@ -72,24 +72,23 @@ const Com = ({ className, ...props }) => {
           </div>
         )}
       </div>
-      <div className={cn(styles.columnAttachmentsContainer)}>
+      <div className={cn(styles.columnImagesContainer)}>
         <div className="p-2">
           <table className="table-xs table-bordered table-hover mb-0 table border text-sm">
             <tbody>
-              {existingAttachments?.map((a, i) => {
+              {existingImages?.map((a, i) => {
                 const {
                   fileName,
                   fileType,
                   fileRawData,
-                  notes,
-                  id
+                  notes
                 } = a;
 
-                const size = utils.formatNumber(utils.calculateFileSize(fileRawData) / 1024 || 0);
+                const size = utils.formatNumber(calculateFileSize(fileRawData) / 1024 || 0);
                 return (
-                  <tr key={`${fileName}_${id}`}>
+                  <tr key={`${fileName}_${i}`}>
                     <td className="text-left">
-                      <span className="text-blue-500 hover:text-blue-400" style={{cursor: 'pointer'}} onClick={() => utils.downloadFile(fileRawData, fileName, fileType)}>
+                      <span className="text-blue-500 hover:text-blue-400" style={{cursor: 'pointer'}} onClick={() => downloadFile(fileRawData, fileName, fileType)}>
                         {fileName}
                       </span>
                     </td>
@@ -115,9 +114,9 @@ const Com = ({ className, ...props }) => {
       </div>
 
       <Modal
-        show={newAttachments}
+        show={newImages}
         size="md"
-        onHide={() => setNewAttachments(null)}
+        onHide={() => setNewImages(null)}
       >
         <div>
           <div>
@@ -130,7 +129,7 @@ const Com = ({ className, ...props }) => {
                 </tr>
               </thead>
               <tbody>
-                {newAttachments?.map((a, i) => {
+                {newImages?.map((a, i) => {
                   const { file, notes } = a;
                   const { name, size } = file;
                   return (
@@ -163,6 +162,36 @@ const Com = ({ className, ...props }) => {
   );
 };
 
+const calculateFileSize = (base64Data) => {
+  // Remove padding characters (=) at the end
+  const padding = (base64Data.match(/=/g) || []).length;
+  // Calculate the Base64 string length without padding
+  const base64Length = base64Data.length;
+  // Calculate the file size in bytes
+  const fileSizeInBytes = (base64Length * 3) / 4 - padding;
+  return fileSizeInBytes;
+};
 
+const downloadFile = (base64Data, filename, mimeType) => {
+  // Convert Base64 to binary data
+  const binaryData = atob(base64Data); // Decodes the Base64 string
+  const byteNumbers = new Uint8Array(binaryData.length);
+  for (let i = 0; i < binaryData.length; i++) {
+    byteNumbers[i] = binaryData.charCodeAt(i);
+  }
+
+  // Create a Blob from the binary data
+  const blob = new Blob([byteNumbers], { type: mimeType });
+
+  // Create a temporary URL and trigger download
+  const blobUrl = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = blobUrl;
+  link.download = filename; // Specify the filename for the downloaded file
+  link.click();
+
+  // Clean up the URL
+  URL.revokeObjectURL(blobUrl);
+};
 
 export default Com;
