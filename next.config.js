@@ -30,5 +30,7 @@ module.exports = {
   images: {
     unoptimized: true,
   },
-  styledComponents: true
+  styledComponents: true,
+  basePath: '/production',
+  assetPrefix: '/production'
 };
