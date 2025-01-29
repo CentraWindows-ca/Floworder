@@ -3,6 +3,11 @@ const colors = require("tailwindcss/colors");
 
 module.exports = {
   content: ["./pages/**/*.{html,js,jsx}", "./components/**/*.{js,ts,jsx,tsx}"],
+  future: {
+    // Suppress deprecation warnings for renamed colors
+    removeDeprecatedGapUtilities: true,
+    purgeLayersByDefault: true,
+  },
   theme: {
     colors: {
       ...colors,

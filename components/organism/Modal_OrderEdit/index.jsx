@@ -154,7 +154,7 @@ const Com = (props) => {
           <Toggle_Notes />
         </div>
 
-        <div className="justify-content-center my-2 flex bg-blueGray-100 p-2">
+        <div className="justify-content-center my-2 flex bg-slate-100 p-2">
           <button
             className="btn btn-primary px-4"
             disabled={!data?.m_WorkOrderNo}

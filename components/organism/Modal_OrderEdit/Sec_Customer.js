@@ -26,17 +26,17 @@ const Com = ({ className, ...props }) => {
         </div>
         <div className="align-items-center flex flex-row gap-2 text-sm">
           <div className="align-items-center flex flex-row gap-1">
-            <i className="fa-solid fa-house text-blueGray-400"></i>
+            <i className="fa-solid fa-house text-slate-400"></i>
             {data?.m_Address || "--"}
           </div>
           |
           <a href={`tel:${data?.m_PhoneNumber}`}>
-            <i className="fa-solid fa-phone me-1 text-blueGray-400"></i>{" "}
+            <i className="fa-solid fa-phone me-1 text-slate-400"></i>{" "}
             {data?.m_PhoneNumber || "--"}
           </a>
           |
           <a href={`tel:${data?.m_Email}`}>
-            <i className="fa-solid fa-at me-1 text-blueGray-400"></i>{" "}
+            <i className="fa-solid fa-at me-1 text-slate-400"></i>{" "}
             {data?.m_Email || "--"}
           </a>
           |
