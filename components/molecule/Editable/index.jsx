@@ -257,7 +257,7 @@ export const EF_Checkbox = React.memo(({ onChange, value, ...props }) => {
 
   return (
     <input
-      className="form-check-input"
+      className="form-check-input cursor-pointer"
       type="checkbox"
       checked = {checked}
       onChange={handleChange}

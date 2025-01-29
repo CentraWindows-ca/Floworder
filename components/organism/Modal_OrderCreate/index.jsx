@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useRouter } from "next/router";
+import { List } from "antd";
 import cn from "classnames";
 import _ from "lodash";
 import Modal from "components/molecule/Modal";
@@ -43,7 +44,7 @@ const Com = (props) => {
     <Modal
       show={show}
       title={"Create work order from Windowmaker"}
-      size="md"
+      size="lg"
       onHide={handleHide}
     >
       {!windowMakerData ? (
@@ -76,6 +77,11 @@ const Com = (props) => {
   );
 };
 
+const FACILITY = {
+  WM_AB: "Calgary",
+  WM_BC: "Langley",
+};
+
 const Screen1 = ({
   setManufacturingFacility,
   workOrderNo,
@@ -85,27 +91,36 @@ const Screen1 = ({
 }) => {
   const { toast } = useContext(GeneralContext);
 
+  const [resList, setResList] = useState();
+
   const doRead = useLoadingBar(async () => {
-    const resLangley = await External_FromApi.getWindowMakerWorkerOrder(
-      workOrderNo,
-      'Langley',
-    );
+    const _resList = [
+      await External_FromApi.getWindowMakerWorkerOrder(workOrderNo, "WM_BC"),
+      await External_FromApi.getWindowMakerWorkerOrder(workOrderNo, "WM_BC"),
+    ]?.filter((a) => a);
 
-    const resCalgary = await External_FromApi.getWindowMakerWorkerOrder(
-      workOrderNo,
-      'Calgary',
-    );
+    setResList(_resList);
 
-
-    if (resLangley || resCalgary) {
-      setManufacturingFacility(manufacturingFacility);
-      setWindowMakerData(res);
+    if (_resList?.length === 1) {
+      setWindowMakerData(_resList[0]);
+      setManufacturingFacility(FACILITY[_resList[0]?.dataSource]);
+    } else if (_resList?.length > 1) {
     } else {
-      toast(<>Could not find order <b className="px-2">{workOrderNo}</b> from {manufacturingFacility}</>, {
-        type: "error",
-      });
+      toast(
+        <>
+          Could not find order <b className="px-2">{workOrderNo}</b>
+        </>,
+        {
+          type: "error",
+        },
+      );
     }
   });
+
+  const handleSelect = (wm_record) => {
+    setWindowMakerData(wm_record);
+    setManufacturingFacility(FACILITY[wm_record?.dataSource]);
+  };
 
   return (
     <>
@@ -119,6 +134,26 @@ const Screen1 = ({
           />
         </div>
       </div>
+      {resList?.length > 1 && (
+        <>
+          <hr />
+          <List
+            size="small"
+            // header={<>Select:</>}
+            bordered
+            dataSource={resList}
+            renderItem={(item) => (
+              <List.Item
+                className="cursor-pointer hover:bg-blue-100"
+                onClick={() => handleSelect(item)}
+              >
+                <b>[{item.dataSource}]</b> {item.name} | {item.city} 
+              </List.Item>
+            )}
+          />
+        </>
+      )}
+
       <hr />
       <div className="justify-content-center mt-2 flex gap-2">
         <button
@@ -126,7 +161,7 @@ const Screen1 = ({
           onClick={() => doRead()}
           disabled={!workOrderNo}
         >
-          Fetch From Calgary
+          Fetch From Windowmaker
         </button>
       </div>
     </>
@@ -188,8 +223,8 @@ const Screen2 = ({
     <div className="flex-column flex gap-2">
       {isWindow && (
         <div className="form-group row">
-          <label className="col-lg-6">Window Production Date</label>
-          <div className="col-lg-6 justify-content-center flex">
+          <label className="col-lg-3">Window Production Date</label>
+          <div className="col-lg-3 justify-content-center flex">
             <Editable.EF_Date
               id="WinStartDate"
               value={initValues?.WinStartDate}
@@ -205,8 +240,8 @@ const Screen2 = ({
       )}
       {isDoor && (
         <div className="form-group row">
-          <label className="col-lg-6">Door Production Date</label>
-          <div className="col-lg-6 justify-content-center flex">
+          <label className="col-lg-3">Door Production Date</label>
+          <div className="col-lg-3 justify-content-center flex">
             <Editable.EF_Date
               id="DoorStartDate "
               value={initValues?.DoorStartDate}
@@ -221,8 +256,8 @@ const Screen2 = ({
         </div>
       )}
       <div className="form-group row">
-        <label className="col-lg-6">Reservation</label>
-        <div className="col-lg-6 justify-content-center flex">
+        <label className="col-lg-3">Reservation</label>
+        <div className="col-lg-3 justify-content-center flex">
           <Editable.EF_Checkbox
             id="reservation"
             value={isReservation}
@@ -233,92 +268,92 @@ const Screen2 = ({
 
       <hr />
       <div className="form-group row">
-        <label className="col-lg-6 font-bold">Work Order Number</label>
-        <div className="col-lg-6 border-b border-gray-200">
+        <label className="col-lg-4 font-bold">Work Order Number</label>
+        <div className="col-lg-8 border-b border-gray-200">
           {windowMakerData?.workOrderNumber}
         </div>
       </div>
       <div className="form-group row">
-        <label className="col-lg-6 font-bold">Status</label>
-        <div className="col-lg-6 border-b border-gray-200 font-bold">
-          {isReservation? "Draft Reservation": "Draft"}
+        <label className="col-lg-4 font-bold">Status</label>
+        <div className="col-lg-8 border-b border-gray-200 font-bold">
+          {isReservation ? "Draft Reservation" : "Draft"}
         </div>
-      </div>     
+      </div>
       <div className="form-group row">
-        <label className="col-lg-6 font-bold">Customer Number</label>
-        <div className="col-lg-6 border-b border-gray-200">
+        <label className="col-lg-4 font-bold">Customer Number</label>
+        <div className="col-lg-8 border-b border-gray-200">
           {windowMakerData?.customerNo || "--"}
         </div>
       </div>
       <div className="form-group row">
-        <label className="col-lg-6 font-bold">Customer Name</label>
-        <div className="col-lg-6 border-b border-gray-200">
+        <label className="col-lg-4 font-bold">Customer Name</label>
+        <div className="col-lg-8 border-b border-gray-200">
           {windowMakerData?.name || "--"}
         </div>
       </div>
       <div className="form-group row">
-        <label className="col-lg-6 font-bold">Telephone</label>
-        <div className="col-lg-6 border-b border-gray-200">
+        <label className="col-lg-4 font-bold">Telephone</label>
+        <div className="col-lg-8 border-b border-gray-200">
           {windowMakerData?.telephone || "--"}
         </div>
       </div>
       <div className="form-group row">
-        <label className="col-lg-6 font-bold">Email</label>
-        <div className="col-lg-6 border-b border-gray-200">
+        <label className="col-lg-4 font-bold">Email</label>
+        <div className="col-lg-8 border-b border-gray-200">
           {windowMakerData?.email || "--"}
         </div>
       </div>
       <div className="form-group row">
-        <label className="col-lg-6 font-bold">Address</label>
-        <div className="col-lg-6 border-b border-gray-200">
+        <label className="col-lg-4 font-bold">Address</label>
+        <div className="col-lg-8 border-b border-gray-200">
           {windowMakerData?.address || "--"}
         </div>
       </div>
       <div className="form-group row">
-        <label className="col-lg-6 font-bold">City</label>
-        <div className="col-lg-6 border-b border-gray-200">
+        <label className="col-lg-4 font-bold">City</label>
+        <div className="col-lg-8 border-b border-gray-200">
           {windowMakerData?.city || "--"}
         </div>
       </div>
       <div className="form-group row">
-        <label className="col-lg-6 font-bold">Zip Code</label>
-        <div className="col-lg-6 border-b border-gray-200">
+        <label className="col-lg-4 font-bold">Zip Code</label>
+        <div className="col-lg-8 border-b border-gray-200">
           {windowMakerData?.zipcode || "--"}
         </div>
       </div>
       <div className="form-group row">
-        <label className="col-lg-6 font-bold">Work Type</label>
-        <div className="col-lg-6 border-b border-gray-200">
+        <label className="col-lg-4 font-bold">Work Type</label>
+        <div className="col-lg-8 border-b border-gray-200">
           {windowMakerData?.workType || "--"}
         </div>
       </div>
       <div className="form-group row">
-        <label className="col-lg-6 font-bold">Branch</label>
-        <div className="col-lg-6 border-b border-gray-200">
+        <label className="col-lg-4 font-bold">Branch</label>
+        <div className="col-lg-8 border-b border-gray-200">
           {windowMakerData?.branchName || "--"}
         </div>
       </div>
       <div className="form-group row">
-        <label className="col-lg-6 font-bold">Number of Windows</label>
-        <div className="col-lg-6 border-b border-gray-200">
+        <label className="col-lg-4 font-bold">Number of Windows</label>
+        <div className="col-lg-8 border-b border-gray-200">
           {windowMakerData?.wmWindows || "--"}
         </div>
       </div>
       <div className="form-group row">
-        <label className="col-lg-6 font-bold">Number of Patio Doors</label>
-        <div className="col-lg-6 border-b border-gray-200">
+        <label className="col-lg-4 font-bold">Number of Patio Doors</label>
+        <div className="col-lg-8 border-b border-gray-200">
           {windowMakerData?.wmPatioDoors || "--"}
         </div>
       </div>
       <div className="form-group row">
-        <label className="col-lg-6 font-bold">Number of Doors</label>
-        <div className="col-lg-6 border-b border-gray-200">
+        <label className="col-lg-4 font-bold">Number of Doors</label>
+        <div className="col-lg-8 border-b border-gray-200">
           {windowMakerData?.wmDoors || "--"}
         </div>
       </div>
       <div className="form-group row">
-        <label className="col-lg-6 font-bold">Job Type</label>
-        <div className="col-lg-6 border-b border-gray-200">
+        <label className="col-lg-4 font-bold">Job Type</label>
+        <div className="col-lg-8 border-b border-gray-200">
           {windowMakerData?.jobType || "--"}
         </div>
       </div>
