@@ -42,7 +42,7 @@ const Com = (props) => {
   return (
     <Modal
       show={show}
-      title={"Create work order from Window Maker"}
+      title={"Create work order from Windowmaker"}
       size="md"
       onHide={handleHide}
     >
@@ -85,13 +85,19 @@ const Screen1 = ({
 }) => {
   const { toast } = useContext(GeneralContext);
 
-  const doRead = useLoadingBar(async (manufacturingFacility) => {
-    const res = await External_FromApi.getWindowMakerWorkerOrder(
+  const doRead = useLoadingBar(async () => {
+    const resLangley = await External_FromApi.getWindowMakerWorkerOrder(
       workOrderNo,
-      manufacturingFacility,
+      'Langley',
     );
 
-    if (res) {
+    const resCalgary = await External_FromApi.getWindowMakerWorkerOrder(
+      workOrderNo,
+      'Calgary',
+    );
+
+
+    if (resLangley || resCalgary) {
       setManufacturingFacility(manufacturingFacility);
       setWindowMakerData(res);
     } else {
@@ -117,18 +123,10 @@ const Screen1 = ({
       <div className="justify-content-center mt-2 flex gap-2">
         <button
           className="btn btn-primary"
-          onClick={() => doRead("Calgary")}
+          onClick={() => doRead()}
           disabled={!workOrderNo}
         >
           Fetch From Calgary
-        </button>
-
-        <button
-          className="btn btn-primary"
-          onClick={() => doRead("Langley")}
-          disabled={!workOrderNo}
-        >
-          Fetch From Langley
         </button>
       </div>
     </>

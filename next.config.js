@@ -31,6 +31,6 @@ module.exports = {
     unoptimized: true,
   },
   styledComponents: true,
-  basePath: '/production',
-  assetPrefix: '/production'
+  // basePath: '/production',
+  // assetPrefix: '/production'
 };

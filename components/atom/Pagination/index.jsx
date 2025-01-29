@@ -52,7 +52,6 @@ const ExportedComponent = ({
     let lastPage = totalPages;
     const _basepath = window.location.pathname;
 
-
     // if page > totalPages, redirect to last page
     // if (page > totalPages) {
     //   router.push(generatePath(basepath || _basepath, search, { p: totalPages }));

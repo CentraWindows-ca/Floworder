@@ -110,7 +110,7 @@ const Com = (props) => {
           </button>
         </div>
         <div>
-          <Pagination count={treatedData?.total} />
+          <Pagination count={treatedData?.total} basepath={'/'} />
         </div>
       </div>
       <div className={cn(styles.detail)}>
