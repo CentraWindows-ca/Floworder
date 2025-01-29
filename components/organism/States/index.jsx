@@ -19,7 +19,6 @@ const Com = (props) => {
 
   const handleClick = (v) => {
     const pathname = router?.asPath?.split("?")?.[0];
-
     router.replace(
       {
         pathname,

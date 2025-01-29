@@ -34,7 +34,7 @@ const ExportedComponent = ({
       ...utils.parse(search),
       ...params,
     });
-    console.log(base, search, params, newSearch)
+
     return `${base}?${newSearch}`;
   };
 

@@ -46,7 +46,7 @@ const Com = (props) => {
       fixed: "left",
       render: (record) => {
         return (
-          <td onClick={() => onEdit(record)}>
+          <td onClick={() => onEdit(record?.m_WorkOrderNo)}>
             <div className={cn(styles.orderNumber)}>{record.m_WorkOrderNo}</div>
           </td>
         );
@@ -274,7 +274,7 @@ const Com = (props) => {
                   {columns?.map((b) => {
                     const { key, dataIndex, render, className } = b;
                     if (typeof render === "function") {
-                      return <React.Fragment>{render(a, b)}</React.Fragment>;
+                      return <React.Fragment key={key}>{render(a, b)}</React.Fragment>;
                     }
                     return <td className={className} key={key}><LabelDisplay>{a[dataIndex]}</LabelDisplay></td>;
                   })}

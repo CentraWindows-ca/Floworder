@@ -147,7 +147,7 @@ const Com = ({ className, ...props }) => {
     <>
       <div className={cn(styles.columnOptionsContainer)}>
         {COMMON_ITEMS?.map((a) => {
-          return <Block inputData={a} id={a.key} key={a.key} />;
+          return <Block inputData={a} id={a.id} key={a.id} />;
         })}
       </div>
 

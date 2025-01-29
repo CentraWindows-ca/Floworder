@@ -24,11 +24,18 @@ import styles from "./styles.module.scss";
 
 const Com = (props) => {
   const router = useRouter();
-  const { status, q, p = 0, facility, tab = 'm' } = router?.query || {};
+  const { status, q, p = 0, facility, tab = 'm', order } = router?.query || {};
 
   const [treatedData, setTreatedData] = useState({});
   const [isShowCreate, setIsShowCreate] = useState(false);
+  const [editingOrder, setEditingOrder] = useState(null);
 
+  useEffect(() => {
+    if (order) {
+      setEditingOrder(order)
+    }
+  }, [order])
+  
 
   const filtersObj = {};
   if (q) {
@@ -78,10 +85,23 @@ const Com = (props) => {
     return data;
   };
 
-  const [editingOrder, setEditingOrder] = useState(null);
-
   const handleEdit = (order) => {
-    setEditingOrder(order);
+    // setEditingOrder(order);
+    const pathname = router?.asPath?.split("?")?.[0];
+
+    const query = { ...router.query, order }
+    if (!order) {
+      delete query.order
+    }
+
+    router.replace(
+      {
+        pathname,
+        query,
+      },
+      undefined,
+      { shallow: true },
+    );
   };
 
   const handleCreate = () => {
@@ -89,9 +109,7 @@ const Com = (props) => {
   };
 
   const handleCreateDone = async (m_WorkOrderNo) => {
-    setEditingOrder({
-      m_WorkOrderNo,
-    });
+    handleEdit(m_WorkOrderNo);
 
     triggerMutate(endPoint);
   };
@@ -117,7 +135,7 @@ const Com = (props) => {
         <OrderList kind={tab} onEdit={handleEdit} data={treatedData?.data} />
       </div>
       <Modal_OrderEdit
-        onHide={() => setEditingOrder(null)}
+        onHide={() => handleEdit()}
         onSave = {handleSaveDone}
         initWorkOrder={editingOrder}
         kind={tab}

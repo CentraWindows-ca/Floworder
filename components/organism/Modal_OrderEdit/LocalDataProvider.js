@@ -58,10 +58,10 @@ export const LocalDataProvider = ({
   const [expands, setExpands] = useState({});
 
   useEffect(() => {
-    if (initWorkOrder?.m_WorkOrderNo) {
-      init(initWorkOrder?.m_WorkOrderNo);
+    if (initWorkOrder) {
+      init(initWorkOrder);
     }
-  }, [initWorkOrder?.m_WorkOrderNo]);
+  }, [initWorkOrder]);
 
   const handleChange = (v, k) => {
     setData((prev) => {
@@ -206,7 +206,7 @@ export const LocalDataProvider = ({
       [`${kind}_Status`]: v
     })
 
-    await init(initWorkOrder?.m_WorkOrderNo);
+    await init(initWorkOrder);
     onSave()
   });
 

@@ -66,7 +66,7 @@ const Com = (props) => {
 
   const jsxTitle = (
     <div className="align-items-center flex gap-2">
-      Work Order # {initWorkOrder?.m_WorkOrderNo} {KindDisplay[kind]}
+      Work Order # {initWorkOrder} {KindDisplay[kind]}
       <div className="align-items-center flex gap-2">
         <Sec_Status />
         {/* <Sec_Contact /> */}
