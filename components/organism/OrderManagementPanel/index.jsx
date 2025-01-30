@@ -33,6 +33,8 @@ const Com = (props) => {
   useEffect(() => {
     if (order) {
       setEditingOrder(order)
+    } else {
+      setEditingOrder(null)
     }
   }, [order])
   

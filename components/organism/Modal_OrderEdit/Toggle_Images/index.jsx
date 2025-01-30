@@ -18,6 +18,7 @@ const Com = ({ className, title, id, ...props }) => {
     setNewImages,
     existingImages,
     onUploadImage,
+    onDeleteImage ,
     isEditable,
     onChange,
     onHide,
@@ -108,7 +109,7 @@ const Com = ({ className, title, id, ...props }) => {
                     <button
                       className="btn btn-xs btn-danger"
                       disabled={!isEditable}
-                      onClick={() => onDeleteAttachment(a)}
+                      onClick={() => onDeleteImage(a)}
                     >
                       delete
                     </button>

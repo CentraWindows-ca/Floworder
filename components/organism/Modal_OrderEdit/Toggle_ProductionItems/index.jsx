@@ -63,6 +63,10 @@ const Com = ({ className, title, id, ...props }) => {
     </div>
   );
 
+  const handleShowItem = () => {
+
+  }
+
   return (
     <ToggleBlock title={jsxTitle} id={id}>
       {!_.isEmpty(windowItems) && (
@@ -132,6 +136,7 @@ const Com = ({ className, title, id, ...props }) => {
                   <td>Description</td>
                   <td>Notes</td>
                   <td>Status</td>
+                  {/* <td></td> */}
                 </tr>
               </thead>
               <tbody>
@@ -156,6 +161,9 @@ const Com = ({ className, title, id, ...props }) => {
                       <td>{Description}</td>
                       <td>{Notes}</td>
                       <td>{Status}</td>
+                      {/* <td>
+                        <button onClick={() => handleShowItem(a)} >Detail</button>
+                      </td> */}
                     </tr>
                   );
                 })}

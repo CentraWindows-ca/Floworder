@@ -18,6 +18,7 @@ const Com = ({ className, title, id, ...props }) => {
     setNewAttachments,
     existingAttachments,
     onUploadAttachment,
+    onDeleteAttachment,
     isEditable,
   } = useContext(LocalDataContext);
 
