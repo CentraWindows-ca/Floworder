@@ -25,7 +25,7 @@ import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
 import { DisplayBlock, displayFilter } from "./Com";
 
-const COMMON_ITEMS = [
+const COMMON_FIELDS = [
   {
     label: "Customer Pick-up",
     icon: () => <CustomerPickupIcon />,
@@ -33,7 +33,7 @@ const COMMON_ITEMS = [
   },
 ];
 
-const WINDOW_ITEMS = [
+const WINDOW_FIELDS = [
   {
     label: "Window Rush Order",
     icon: () => <RushIcon />,
@@ -90,7 +90,7 @@ const WINDOW_ITEMS = [
     id: "w_WaterPenetrationResistance",
   },
 ];
-const DOOR_ITEMS = [
+const DOOR_FIELDS = [
   {
     label: "Door Rush Order",
     icon: () => <RushIcon />,
@@ -127,14 +127,14 @@ const Com = ({ className, ...props }) => {
 
   useEffect(() => {
     setDoorInputs(
-      displayFilter(DOOR_ITEMS, {
+      displayFilter(DOOR_FIELDS, {
         kind,
         uiOrderType,
       }),
     );
 
     setWindowInputs(
-      displayFilter(WINDOW_ITEMS, {
+      displayFilter(WINDOW_FIELDS, {
         kind,
         uiOrderType,
       }),
@@ -146,7 +146,7 @@ const Com = ({ className, ...props }) => {
   return (
     <>
       <div className={cn(styles.columnOptionsContainer)}>
-        {COMMON_ITEMS?.map((a) => {
+        {COMMON_FIELDS?.map((a) => {
           return <Block inputData={a} id={a.id} key={a.id} />;
         })}
       </div>

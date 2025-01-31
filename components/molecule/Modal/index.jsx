@@ -10,7 +10,7 @@ export default style(
     ({
       show,
       onHide = () => {},
-      onExited= () => {},
+      onExited = () => {},
       size = "lg",
       title,
       subtitle,
@@ -20,10 +20,29 @@ export default style(
       footer,
       className,
       fullscreen,
+      layer = 0,
+      style,
       ...rest
     }) => {
+      const styleWithLayer = {...style}
+
+      if (layer) {
+
+      }
+
       return (
-        <Modal show={show} fullscreen = {fullscreen} className={className} onHide={onHide} onExited={onExited} size={size} aria-labelledby="modal" {...rest}>
+        <Modal
+          show={show}
+          fullscreen={fullscreen}
+          className={className}
+          onHide={onHide}
+          onExited={onExited}
+          size={size}
+          aria-labelledby="modal"
+          style={styleWithLayer}
+
+          {...rest}
+        >
           <Modal.Header closeButton={closeButton}>
             <Modal.Title> {title} </Modal.Title> {subtitle}
           </Modal.Header>
@@ -31,6 +50,6 @@ export default style(
           {footer ? <Modal.Footer>{footer}</Modal.Footer> : null}
         </Modal>
       );
-    }
-  )
+    },
+  ),
 );

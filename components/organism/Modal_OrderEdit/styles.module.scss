@@ -115,6 +115,7 @@
     grid-template-columns: repeat(2, 1fr);
     align-items: center;
     gap: 5px;
+
     label {
         text-align: left;
     }
@@ -147,6 +148,31 @@
 
     .valueContainer {
         text-align: right;
+    }
+}
+
+.columnItemInputsContainer {
+    padding: 10px;
+    align-items: center;
+    width: 100%;
+
+    .itemRow {
+        width: 100%;
+        padding: 10px 0px;
+        display: grid;
+        grid-template-columns: 150px auto;
+        border-bottom: 1px solid $color_gray;
+        gap: 5px;
+
+        label {
+            text-align: left;
+            width: 100%;
+        }
+
+        .columnInput {
+            // border-bottom: 1px solid $color_gray;
+
+        }
     }
 }
 

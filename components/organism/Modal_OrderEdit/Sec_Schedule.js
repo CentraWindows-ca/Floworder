@@ -12,7 +12,7 @@ import { LocalDataContext } from "./LocalDataProvider";
 
 import { DisplayBlock, displayFilter } from "./Com";
 
-const COMMON_ITEMS = [
+const COMMON_FIELDS = [
   {
     title: "Shipping Start",
     id: "m_ShippingStartDate",
@@ -31,7 +31,7 @@ const COMMON_ITEMS = [
     id: "m_RevisedDeliveryDate",
   },
 ];
-const WINDOW_ITEMS = [
+const WINDOW_FIELDS = [
   {
     title: "Windows Production Start",
     id: "w_ProductionStartDate",
@@ -57,7 +57,7 @@ const WINDOW_ITEMS = [
     id: "w_GlassRecDate",
   },
 ];
-const DOOR_ITEMS = [
+const DOOR_FIELDS = [
   {
     title: "Doors Production Start",
     id: "d_ProductionStartDate",
@@ -89,14 +89,14 @@ const Com = ({ className, ...props }) => {
 
   useEffect(() => {
     setDoorInputs(
-      displayFilter(DOOR_ITEMS, {
+      displayFilter(DOOR_FIELDS, {
         kind,
         uiOrderType,
       }),
     );
 
     setWindowInputs(
-      displayFilter(WINDOW_ITEMS, {
+      displayFilter(WINDOW_FIELDS, {
         kind,
         uiOrderType,
       }),
@@ -106,7 +106,7 @@ const Com = ({ className, ...props }) => {
   return (
     <>
       <div className={cn(styles.columnInputsContainer)}>
-        {COMMON_ITEMS?.map((a) => {
+        {COMMON_FIELDS?.map((a) => {
           const { title, id } = a;
           return <DisplayDate key={id} id={id} title={title} />;
         })}

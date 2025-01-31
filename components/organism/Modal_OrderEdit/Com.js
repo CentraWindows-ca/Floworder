@@ -228,6 +228,31 @@ export const localApi = {
       }) || {}
     );
   },
+
+  updateWindowItem: async(m_MasterId, Id, fields) => {
+    return (
+      OrdersApi.updateAnyTableAsync(null, {
+        table: "ProdWindowItems",
+        keyColumn: "Id",
+        keyValue: Id,
+        masterId: m_MasterId,
+        fields,
+      }) || {}
+    );
+  },
+
+  updateDoorItem: async(m_MasterId, Id, fields) => {
+    return (
+      OrdersApi.updateAnyTableAsync(null, {
+        table: "ProdDoorItems",
+        keyColumn: "Id",
+        keyValue: Id,
+        masterId: m_MasterId,
+        fields,
+      }) || {}
+    );
+  }, 
+
   updateWorkOrder: async (m_MasterId, fields) => {
     return (
       OrdersApi.updateWorkOrderHeaderWithPrefixAsync(null, {

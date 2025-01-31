@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import cn from 'classnames'
+import cn from "classnames";
 import { Typeahead, Highlighter } from "react-bootstrap-typeahead";
 
 // styles
@@ -14,10 +14,9 @@ const sm_inputStyle = {
 };
 
 const sm_closeStyle = {
-  height: '5px',
-  width: '5px',
+  height: "5px",
+  width: "5px",
 };
-
 
 /**
  * Typeahead wrapper
@@ -41,14 +40,17 @@ export default React.memo(
           className,
           ...rest
         },
-        ref
+        ref,
       ) => {
         const filterBy = (option, state) => {
           if (state.selected.length) {
             return true;
           }
-          return option[labelKey].toLowerCase().indexOf(state.text.toLowerCase()) > -1;
-        }
+          return (
+            option[labelKey].toLowerCase().indexOf(state.text.toLowerCase()) >
+            -1
+          );
+        };
 
         const selectedValue = options.find((item, i) => {
           if (valueKey) {
@@ -59,29 +61,32 @@ export default React.memo(
         });
 
         const handleOnChange = (selected) => {
-          const selectedKey = valueKey ? selected?.[0]?.[valueKey] : selected?.[0];
+          const selectedKey = valueKey
+            ? selected?.[0]?.[valueKey]
+            : selected?.[0];
           onChange(selectedKey, selected);
         };
 
-        const renderMenuItemChildren = 
-          (option, props, index) => {
-            let label;
-            if (!labelKey) {
-              label = option;
-            } else if (typeof labelKey === "function") {
-              label = labelKey(option, index);
-            } else {
-              label = option[labelKey];
-            }
+        const renderMenuItemChildren = (option, props, index) => {
+          let label;
+          if (!labelKey) {
+            label = option;
+          } else if (typeof labelKey === "function") {
+            label = labelKey(option, index);
+          } else {
+            label = option[labelKey];
+          }
 
-            return (
-              <>
+          return (
+            <div className="btn-toolbar justify-content-between">
+              <div>
                 {renderPrefix ? renderPrefix(option) : null}
                 <Highlighter search={props.text}>{label}</Highlighter>
-                {renderSuffix ? renderSuffix(option) : null}
-              </>
-            );
-          }
+              </div>
+              {renderSuffix ? renderSuffix(option) : null}
+            </div>
+          );
+        };
 
         const input_style = {
           ...(size === "sm" ? sm_inputStyle : {}),
@@ -91,7 +96,7 @@ export default React.memo(
         const close_style = {
           ...(size === "sm" ? sm_closeStyle : {}),
         };
-        
+
         return (
           <Typeahead
             onFocus={(e) => {
@@ -105,13 +110,16 @@ export default React.memo(
             //			filterBy={['name', 'title', ...]}
             placeholder={placeholder}
             renderMenuItemChildren={renderMenuItemChildren}
-            inputProps={{ ...inputProps, style: input_style }}  
+            inputProps={{ ...inputProps, style: input_style }}
             className={cn(className, size)}
             filterBy={filterBy}
             {...rest}
           >
             {({ onClear, selected }) => (
-              <div className="rbt-aux" style={{width: size === "sm" ? '1.5rem': '2rem'}}>
+              <div
+                className="rbt-aux"
+                style={{ width: size === "sm" ? "1.5rem" : "2rem" }}
+              >
                 {!!selected.length && (
                   <button
                     onClick={onClear}
@@ -120,14 +128,14 @@ export default React.memo(
                     type="button"
                     style={{ marginTop: "0px", ...close_style }}
                   >
-                    <span className="sr-only visually-hidden">Clear</span>
+                    <span className="visually-hidden sr-only">Clear</span>
                   </button>
                 )}
               </div>
             )}
           </Typeahead>
         );
-      }
-    )
-  )
+      },
+    ),
+  ),
 );

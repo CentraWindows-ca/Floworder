@@ -13,7 +13,7 @@ import { LocalDataContext } from "./LocalDataProvider";
 
 import { DisplayBlock, displayFilter } from "./Com";
 
-const COMMON_ITEMS = [
+const COMMON_FIELDS = [
   {
     Component: Editable.EF_SelectWithLabel,
     title: "Branch",
@@ -79,7 +79,7 @@ const COMMON_ITEMS = [
   },
 ];
 
-const WINDOW_ITEMS = [
+const WINDOW_FIELDS = [
   {
     Component: Editable.EF_Input,
     title: "Window Block NO.",
@@ -116,7 +116,7 @@ const WINDOW_ITEMS = [
   },
 ];
 
-const DOOR_ITEMS = [
+const DOOR_FIELDS = [
   {
     Component: Editable.EF_Input,
     title: "Door Block NO.",
@@ -156,14 +156,14 @@ const Com = ({ className, ...props }) => {
 
   useEffect(() => {
     setDoorInputs(
-      displayFilter(DOOR_ITEMS, {
+      displayFilter(DOOR_FIELDS, {
         kind,
         uiOrderType,
       }),
     );
 
     setWindowInputs(
-      displayFilter(WINDOW_ITEMS, {
+      displayFilter(WINDOW_FIELDS, {
         kind,
         uiOrderType,
       }),
@@ -173,7 +173,7 @@ const Com = ({ className, ...props }) => {
   return (
     <>
       <div className={cn(styles.columnInputsContainer)}>
-        {COMMON_ITEMS?.map((a) => {
+        {COMMON_FIELDS?.map((a) => {
           return <Block key={a.id} inputData={a} />;
         })}
       </div>
