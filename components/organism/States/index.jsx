@@ -22,7 +22,7 @@ const Com = (props) => {
     router.replace(
       {
         pathname,
-        query: { ...router.query, status: v },
+        query: { ...router.query, status: v, p:undefined },
       },
       undefined,
       { shallow: true },
