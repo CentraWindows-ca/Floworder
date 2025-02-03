@@ -96,7 +96,7 @@ const Screen1 = ({
   const doRead = useLoadingBar(async () => {
     const _resList = [
       await External_FromApi.getWindowMakerWorkerOrder(workOrderNo, "WM_BC"),
-      await External_FromApi.getWindowMakerWorkerOrder(workOrderNo, "WM_BC"),
+      await External_FromApi.getWindowMakerWorkerOrder(workOrderNo, "WM_AB"),
     ]?.filter((a) => a);
 
     setResList(_resList);
