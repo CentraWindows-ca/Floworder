@@ -135,36 +135,40 @@ const Com = (props) => {
             <i className="fa-solid fa-circle-plus me-2"></i>
             Create
           </button>
-          <div className="align-items-center flex gap-2">
-            <div>
-              <Editable.EF_Checkbox
-                id={"ui_window"}
-                value={uiIsShowWindow}
-                onChange={(v) => setUiIsShowWindow(v)}
-              />
-            </div>
-            <label
-              htmlFor={"ui_window"}
-              className="align-items-center flex gap-1"
-            >
-              Window Info
-            </label>
-          </div>
-          <div className="align-items-center flex gap-2">
-            <div>
-              <Editable.EF_Checkbox
-                id={"ui_door"}
-                value={uiIsShowDoor}
-                onChange={(v) => setUiIsShowDoor(v)}
-              />
-            </div>
-            <label
-              htmlFor={"ui_door"}
-              className="align-items-center flex gap-1"
-            >
-              Door Info
-            </label>
-          </div>
+          {tab === "m" && (
+            <>
+              <div className="align-items-center flex gap-2">
+                <div>
+                  <Editable.EF_Checkbox
+                    id={"ui_window"}
+                    value={uiIsShowWindow}
+                    onChange={(v) => setUiIsShowWindow(v)}
+                  />
+                </div>
+                <label
+                  htmlFor={"ui_window"}
+                  className="align-items-center flex gap-1"
+                >
+                  Window Info
+                </label>
+              </div>
+              <div className="align-items-center flex gap-2">
+                <div>
+                  <Editable.EF_Checkbox
+                    id={"ui_door"}
+                    value={uiIsShowDoor}
+                    onChange={(v) => setUiIsShowDoor(v)}
+                  />
+                </div>
+                <label
+                  htmlFor={"ui_door"}
+                  className="align-items-center flex gap-1"
+                >
+                  Door Info
+                </label>
+              </div>
+            </>
+          )}
         </div>
         <div>
           <Pagination count={treatedData?.total} basepath={"/"} />

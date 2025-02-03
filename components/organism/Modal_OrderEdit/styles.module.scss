@@ -181,8 +181,9 @@
 
 .anchors {
     display: flex;
-    gap: 10px;
-
+    align-items: center;
+    gap: 5px;
+    color: $color_gray_dark;
     span {
         cursor: pointer;
         padding: 5px;

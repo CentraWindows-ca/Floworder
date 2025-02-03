@@ -112,15 +112,19 @@ export const ToggleFull = ({
   jsxClose = null,
   ...props
 }) => {
-  const { expands, setExpands } = useContext(LocalDataContext);
+  const { onAnchor, expands, setExpands } = useContext(LocalDataContext);
   const toggle = !expands[id];
 
   const setToggle = () => {
-    setExpands((prev) => {
-      const _v = JSON.parse(JSON.stringify(prev || {}));
-      _v[id] = !_v[id];
-      return _v;
-    });
+    if (expands[id]) {
+      setExpands((prev) => {
+        const _v = JSON.parse(JSON.stringify(prev || {}));
+        _v[id] = !_v[id];
+        return _v;
+      });
+    } else {
+      onAnchor(id);
+    }
   };
 
   return (

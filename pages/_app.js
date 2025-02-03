@@ -157,7 +157,7 @@ const ComAuthNav = ({ onLoaded }) => {
         zIndex: 999,
         onRoute: handleOnRoute,
         onAction: handleAction,
-        appCode: "DF",
+        appCode: "ORPD",
         isExternal: false,
         // baseURL: "https://vgtest.centra.ca"
         // isLocalAppOnly: true

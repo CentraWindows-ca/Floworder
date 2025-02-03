@@ -7,21 +7,38 @@
 
 .orderTable {
     .orderNumber {
-        cursor: pointer;
-        color: $color_centraBlue;
-        text-decoration: underline;
+        span {
+            cursor: pointer;
+            color: $color_centraBlue;
+            text-decoration: underline;
+
+            &:hover {
+                color: $color_centraBlue_hover;
+            }
+        }
 
         i {
             display: none;
         }
 
         &:hover {
-            color: $color_centraBlue_hover;
-
             i {
+
                 display: inline-block;
             }
 
         }
+    }
+
+    i {
+        color: $color_gray_dark;
+        cursor: pointer;
+        &:hover {
+            color: $color_centraBlue_hover;
+        }
+    }
+
+    i.copiedIcon {
+        display: inline-block;
     }
 }

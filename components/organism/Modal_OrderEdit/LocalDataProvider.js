@@ -212,6 +212,16 @@ export const LocalDataProvider = ({
     onSave();
   });
 
+  const doUpdateTransferredLocation = useLoadingBar(async () => {
+    const m_TransferredLocation = data?.m_TransferredLocation
+    await localApi.updateWorkOrder(data?.m_MasterId, {
+      m_TransferredLocation
+    });
+
+    await init(initWorkOrder);
+    onSave();
+  });
+
   const doUploadAttachment = useLoadingBar(async (_files) => {
     const { file, notes } = _files[0];
     await OrdersApi.uploadFileAsync({
@@ -308,6 +318,7 @@ export const LocalDataProvider = ({
     setExistingImages,
     onChange: handleChange,
     onUpdateStatus: doUpdateStatus,
+    onUpdateTransferredLocation: doUpdateTransferredLocation ,
     onAnchor: handleAnchor,
     onUploadAttachment: doUploadAttachment,
     onDeleteAttachment: doDeleteAttachment,
@@ -317,6 +328,7 @@ export const LocalDataProvider = ({
     onUpdateDoorItem: doUpdateDoorItem,
     onHide: handleHide,
     onSave: doSave,
+
     windowItems,
     doorItems,
     glassItems,
@@ -328,6 +340,7 @@ export const LocalDataProvider = ({
     setUiShowMore,
     glassTotal,
     uIstatusObj,
+    initData
   };
   return (
     <LocalDataContext.Provider value={context}>

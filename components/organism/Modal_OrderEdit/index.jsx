@@ -56,9 +56,12 @@ const Com = (props) => {
     uIstatusObj,
     uiShowMore,
     setUiShowMore,
+    initData,
+    onUpdateTransferredLocation
   } = useContext(LocalDataContext);
 
   // use swr later
+  console.log(uIstatusObj?.key);
 
   const KindDisplay = {
     m: null,
@@ -66,21 +69,35 @@ const Com = (props) => {
     d: <b className="text-amber-100">[Door]</b>,
   };
 
+  console.log(data?.m_TransferredLocation, initData?.m_TransferredLocation);
+
   const jsxTitle = (
     <div className="align-items-center flex gap-2">
       Work Order # {initWorkOrder} {KindDisplay[kind]}
       <div className="align-items-center flex gap-2">
         <Sec_Status />
         {/* <Sec_Contact /> */}
-        {["Ready to Ship"].includes(uIstatusObj?.key) && (
+        {["Ready To Ship"].includes(uIstatusObj?.key) && (
           <DisplayBlock id="m_TransferredLocation">
             <div>
-              <Editable.EF_Input
-                k="m_TransferredLocation"
-                value={data?.m_TransferredLocation || ""}
-                onChange={(v) => onChange(v, "m_TransferredLocation")}
-                placeholder={"Transferred Location"}
-              />
+              <div className="input-group input-group-sm">
+                <Editable.EF_Input
+                  k="m_TransferredLocation"
+                  value={data?.m_TransferredLocation || ""}
+                  onChange={(v) => onChange(v, "m_TransferredLocation")}
+                  placeholder={"Transferred Location"}
+                />
+                <button
+                  className="btn btn-primary"
+                  disabled={
+                    initData?.m_TransferredLocation ===
+                    data?.m_TransferredLocation
+                  }
+                  onClick={onUpdateTransferredLocation}
+                >
+                  Save
+                </button>
+              </div>
             </div>
           </DisplayBlock>
         )}
@@ -108,8 +125,6 @@ const Com = (props) => {
       <div className="text-sm">
         <div className="justify-content-between align-items-center mb-2 flex">
           <div>
-            {/* <Sec_Customer /> */}
-
             <div className="input-group input-group-sm">
               <button
                 className={cn(
@@ -132,20 +147,22 @@ const Com = (props) => {
             </div>
           </div>
           <div className={cn(styles.anchors)}>
-            <span onClick={() => onAnchor("notes", true)}>Notes</span>
             <span onClick={() => onAnchor("images", true)}>
               Images ({existingImages?.length || 0})
-            </span>
+            </span>{" "}
+            |
             <span onClick={() => onAnchor("files", true)}>
               Attachment Files ({existingAttachments?.length || 0})
-            </span>
-
+            </span>{" "}
+            |
             <span onClick={() => onAnchor("productionItems", true)}>
               Items ({windowItems?.length || 0 + (doorItems?.length || 0)})
-            </span>
+            </span>{" "}
+            |
             <span onClick={() => onAnchor("glassItems", true)}>
-              Glass ({glassTotal?.qty || 0} / {glassTotal?.glassQty || 0})
-            </span>
+              Glass ({glassTotal?.qty || 0}/{glassTotal?.glassQty || 0})
+            </span>{" "}
+            |<span onClick={() => onAnchor("notes", true)}>Notes</span>
           </div>
         </div>
         <div className={cn(styles.gridsOfMainInfo)}>
@@ -189,10 +206,11 @@ const Com = (props) => {
           </div>
         </div>
         <div className="flex-column flex" style={{ marginTop: "5px" }}>
-          <div className={cn(styles.mainItem)}>
+          <Toggle_Notes />
+          {/* <div className={cn(styles.mainItem)}>
             <div className={cn(styles.sectionTitle)}>Notes</div>
             <Toggle_Notes />
-          </div>
+          </div> */}
         </div>
         <div
           className="justify-content-center flex bg-slate-100 p-2"

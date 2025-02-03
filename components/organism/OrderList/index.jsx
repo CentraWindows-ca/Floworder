@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Table } from "antd";
 import { useRouter } from "next/router";
 import cn from "classnames";
 import _ from "lodash";
+import { GeneralContext } from "lib/provider/GeneralProvider";
 
 import LoadingBlock from "components/atom/LoadingBlock";
 import LabelDisplay from "components/atom/LabelDisplay";
@@ -23,6 +24,8 @@ const getValue = (k, arrName) => {
 const Com = (props) => {
   const { onEdit, data, kind, uiIsShowWindow, uiIsShowDoor } = props;
 
+  const { toast } = useContext(GeneralContext);
+
   const isNotMaster = kind !== "m";
   const isWindow = kind === "w" || (kind === "m" && uiIsShowWindow);
   const isDoor = kind === "d" || (kind === "m" && uiIsShowDoor);
@@ -31,12 +34,28 @@ const Com = (props) => {
   const jisDoorOnly = kind === "d";
 
   const [treatedData, setTreatedData] = useState(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (data) {
       runTreatement(data);
     }
   }, [data]);
+
+  const copyToClipboard = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(text);
+      toast(
+        <div>
+          <b>{text}</b> Copied To Clipboard
+        </div>,
+        {
+          type: "info",
+        },
+      );
+    } catch (err) {}
+  };
 
   const columns = [
     {
@@ -46,15 +65,26 @@ const Com = (props) => {
       fixed: "left",
       render: (record) => {
         return (
-          <td onClick={() => onEdit(record?.m_WorkOrderNo)}>
+          <td>
             <div className={cn(styles.orderNumber)}>
-              {record.m_WorkOrderNo}
-              <i className="fa-solid fa-pen-to-square ms-1"></i>
+              <span onClick={() => onEdit(record?.m_WorkOrderNo)}>
+                {record.m_WorkOrderNo}
+              </span>
+              {copied === record?.m_WorkOrderNo ? (
+                <i
+                  className={cn("fa-solid fa-check ms-1", styles.copiedIcon)}
+                />
+              ) : (
+                <i
+                  className={cn("fa-solid fa-copy ms-1")}
+                  onClick={() => copyToClipboard(record?.m_WorkOrderNo)}
+                />
+              )}
             </div>
           </td>
         );
       },
-      // width: 80,
+      width: 100,
     },
     {
       title: "Branch",

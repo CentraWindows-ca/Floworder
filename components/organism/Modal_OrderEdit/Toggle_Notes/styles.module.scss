@@ -5,11 +5,16 @@
     gap: 5px;
 }
 
+.collapsedContainer {
+    padding: 10px;
+}
+
 .title {
-    background-color: #fbffc6;
+    background-color: $color_background_yellow;
 }
 
 .notesHeader {
     color: $color_centraBlue;
     margin-bottom: 5px;
 }
+
