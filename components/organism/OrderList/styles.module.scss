@@ -10,8 +10,18 @@
         cursor: pointer;
         color: $color_centraBlue;
         text-decoration: underline;
+
+        i {
+            display: none;
+        }
+
         &:hover {
             color: $color_centraBlue_hover;
+
+            i {
+                display: inline-block;
+            }
+
         }
     }
 }

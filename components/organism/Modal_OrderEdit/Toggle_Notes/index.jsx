@@ -44,20 +44,22 @@ const Com = ({ className, ...props }) => {
   );
 
   return (
-    <ToggleFull
-      title={"Notes"}
-      titleClass={styles.title}
-      jsxClose={jsxClose}
-      id={"notes"}
-    >
-      <div className="grid grid-cols-2 gap-3 p-2">
+    <>
+      {/* <ToggleFull
+          title={"Notes"}
+          titleClass={styles.title}
+          jsxClose={jsxClose}
+          id={"notes"}
+        >
+        </ToggleFull> */}
+      <div className={cn("grid grid-cols-2", styles.notesContainer)}>
         {/* notes */}
         <DisplayBlock id="m_ShippingNotes">
           <div>
             <div
               className={cn(
                 styles.notesHeader,
-                "justify-content-between align-items-center mb-2 flex",
+                "justify-content-between align-items-center flex",
               )}
             >
               <label>Shipping</label>
@@ -80,7 +82,7 @@ const Com = ({ className, ...props }) => {
             <div
               className={cn(
                 styles.notesHeader,
-                "justify-content-between align-items-center mb-2 flex",
+                "justify-content-between align-items-center flex",
               )}
             >
               <label>Window Office Notes</label>
@@ -100,7 +102,7 @@ const Com = ({ className, ...props }) => {
             <div
               className={cn(
                 styles.notesHeader,
-                "justify-content-between align-items-center mb-2 flex",
+                "justify-content-between align-items-center flex",
               )}
             >
               <label>Door Office Notes</label>
@@ -121,7 +123,7 @@ const Com = ({ className, ...props }) => {
             <div
               className={cn(
                 styles.notesHeader,
-                "justify-content-between align-items-center mb-2 flex",
+                "justify-content-between align-items-center flex",
               )}
             >
               <label>Window Plant Notes</label>
@@ -140,7 +142,7 @@ const Com = ({ className, ...props }) => {
             <div
               className={cn(
                 styles.notesHeader,
-                "justify-content-between align-items-center mb-2 flex",
+                "justify-content-between align-items-center flex",
               )}
             >
               <label>Door Plant Notes</label>{" "}
@@ -161,7 +163,7 @@ const Com = ({ className, ...props }) => {
             <div
               className={cn(
                 styles.notesHeader,
-                "justify-content-between align-items-center mb-2 flex",
+                "justify-content-between align-items-center flex",
               )}
             >
               <label>Project Notes</label>
@@ -181,7 +183,7 @@ const Com = ({ className, ...props }) => {
             <div
               className={cn(
                 styles.notesHeader,
-                "justify-content-between align-items-center mb-2 flex",
+                "justify-content-between align-items-center flex",
               )}
             >
               <label>Door Shop</label>
@@ -201,7 +203,7 @@ const Com = ({ className, ...props }) => {
             <div
               className={cn(
                 styles.notesHeader,
-                "justify-content-between align-items-center mb-2 flex",
+                "justify-content-between align-items-center flex",
               )}
             >
               <label>Returned Job</label>
@@ -225,7 +227,7 @@ const Com = ({ className, ...props }) => {
           </div>
         </DisplayBlock>
       </div>
-    </ToggleFull>
+    </>
   );
 };
 

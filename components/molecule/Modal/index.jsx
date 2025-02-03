@@ -19,6 +19,7 @@ export default style(
       hasModalBody = true,
       footer,
       className,
+      bodyClassName,
       fullscreen,
       layer = 0,
       style,
@@ -46,7 +47,7 @@ export default style(
           <Modal.Header closeButton={closeButton}>
             <Modal.Title> {title} </Modal.Title> {subtitle}
           </Modal.Header>
-          {hasModalBody ? <Modal.Body>{children}</Modal.Body> : children}
+          {hasModalBody ? <Modal.Body className={bodyClassName}>{children}</Modal.Body> : children}
           {footer ? <Modal.Footer>{footer}</Modal.Footer> : null}
         </Modal>
       );

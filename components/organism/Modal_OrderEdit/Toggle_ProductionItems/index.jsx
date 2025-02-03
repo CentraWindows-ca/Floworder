@@ -97,7 +97,7 @@ const Com = ({ className, title, id, ...props }) => {
           <DisplayBlock id="WIN.windowItems">
             <div className="p-2">
               <div className="mb-2 text-left">
-                <label className="text-sky-600">Windows</label>
+                <label >Windows</label>
               </div>
               <table className="table-xs table-bordered table-hover mb-0 table border text-sm">
                 <thead className="bg-gray-100">
@@ -139,7 +139,7 @@ const Com = ({ className, title, id, ...props }) => {
           <DisplayBlock id="DOOR.doorItems">
             <div className="p-2">
               <div className="mb-2 text-left">
-                <label className="text-sky-600">Doors</label>
+                <label >Doors</label>
               </div>
               <table className="table-xs table-bordered table-hover mb-0 table border text-sm">
                 <thead className="bg-gray-100">

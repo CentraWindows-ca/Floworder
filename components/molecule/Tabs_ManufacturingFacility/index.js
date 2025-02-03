@@ -46,7 +46,6 @@ const Com = (props) => {
       <span className="input-group-text" id="">
         Manufacturing Facility:
       </span>
-
       {tabs?.map((a) => {
         const { title, eventKey } = a;
         const isActive = eventKey === facility;

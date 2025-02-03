@@ -52,6 +52,8 @@ export const LocalDataProvider = ({
   const [glassItems, setGlassItems] = useState(null);
 
   const [uiOrderType, setUiOrderType] = useState({});
+  const [uiShowMore, setUiShowMore] = useState(false);
+
   const [initData, setInitData] = useState(null);
 
   // UI purpose
@@ -105,13 +107,11 @@ export const LocalDataProvider = ({
     setNewAttachments(null);
     setExistingImages(null);
     setNewImages(null);
-
     setGlassItems(null);
-
     setInitData(null);
   };
 
-  const init = useLoadingBar(async (initWorkOrderNo) => {
+  const init = async (initWorkOrderNo) => {
     setData(null);
     // get data by initWorkOrder
     setIsEditable(!!initWorkOrderNo);
@@ -126,6 +126,8 @@ export const LocalDataProvider = ({
 
       const mergedData = {};
       mergedData = { ...value?.d, ...value?.m, ...value?.w };
+      setData(mergedData);
+      setInitData(JSON.parse(JSON.stringify(mergedData)));
 
       // if it has door or window or master info (should always has master. here just for consistency)
       setUiOrderType({
@@ -135,12 +137,8 @@ export const LocalDataProvider = ({
       });
 
       await initItems(initWorkOrderNo);
-
       initAttachmentList(mergedData?.m_MasterId);
       initImageList(mergedData?.m_MasterId);
-
-      setData(mergedData);
-      setInitData(JSON.parse(JSON.stringify(mergedData)));
 
       const resGlassItems = await GlassApi.getGlassItems(
         initWorkOrderNo,
@@ -174,7 +172,7 @@ export const LocalDataProvider = ({
         });
       }
     }
-  });
+  };
 
   const initItems = useLoadingBar(async (initWorkOrderNo) => {
     const doorItems = await localApi.getDoorItems(initWorkOrderNo);
@@ -326,6 +324,8 @@ export const LocalDataProvider = ({
     setExpands,
     isEditable,
     uiOrderType,
+    uiShowMore, 
+    setUiShowMore,
     glassTotal,
     uIstatusObj,
   };

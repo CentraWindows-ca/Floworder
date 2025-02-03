@@ -22,7 +22,7 @@ const Com = (props) => {
     router.replace(
       {
         pathname,
-        query: { ...router.query, status: v, p:undefined },
+        query: { ...router.query, status: v, p: undefined },
       },
       undefined,
       { shallow: true },
@@ -51,14 +51,15 @@ const Com = (props) => {
 };
 
 const Item = ({ onClick, item, isActive }) => {
-  const { label } = item;
+  const { label, color, icon } = item;
 
   return (
     <div
       className={cn(styles.item, isActive && styles.active)}
       onClick={onClick}
     >
-      {label}
+      <label className="align-items-center flex gap-1 text-sm">{label}</label>
+      <div> {icon}</div>
     </div>
   );
 };

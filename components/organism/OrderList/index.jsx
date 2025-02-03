@@ -21,11 +21,11 @@ const getValue = (k, arrName) => {
 };
 
 const Com = (props) => {
-  const { onEdit, data, kind } = props;
+  const { onEdit, data, kind, uiIsShowWindow, uiIsShowDoor } = props;
 
   const isNotMaster = kind !== "m";
-  const isWindow = kind === "w" || kind === "m";
-  const isDoor = kind === "d" || kind === "m";
+  const isWindow = kind === "w" || (kind === "m" && uiIsShowWindow);
+  const isDoor = kind === "d" || (kind === "m" && uiIsShowDoor);
 
   const isWindowOnly = kind === "w";
   const jisDoorOnly = kind === "d";
@@ -47,44 +47,54 @@ const Com = (props) => {
       render: (record) => {
         return (
           <td onClick={() => onEdit(record?.m_WorkOrderNo)}>
-            <div className={cn(styles.orderNumber)}>{record.m_WorkOrderNo}</div>
+            <div className={cn(styles.orderNumber)}>
+              {record.m_WorkOrderNo}
+              <i className="fa-solid fa-pen-to-square ms-1"></i>
+            </div>
           </td>
         );
       },
+      // width: 80,
     },
     {
       title: "Branch",
       dataIndex: "m_Branch",
       key: "m_Branch",
+      // width: 70,
     },
     {
       title: "Job Type",
       dataIndex: "m_JobType",
       key: "m_JobType",
+      // width: 60,
     },
     {
-      title: "Window Batch No",
+      title: "Window Batch#",
       dataIndex: "w_BatchNo",
       key: "w_BatchNo",
       display: isWindow,
+      width: 100,
     },
     {
-      title: "Window Block No",
+      title: "Window Block#",
       dataIndex: "w_BlockNo",
       key: "w_BlockNo",
       display: isWindow,
+      width: 100,
     },
     {
-      title: "Door Batch No",
+      title: "Door Batch#",
       dataIndex: "d_BatchNo",
       key: "d_BatchNo",
       display: isDoor,
+      width: 90,
     },
     {
-      title: "Door Block No",
+      title: "Door Block#",
       dataIndex: "d_BlockNo",
       key: "d_BlockNo",
       display: isDoor,
+      width: 90,
     },
     {
       title: "Current status",
@@ -144,27 +154,27 @@ const Com = (props) => {
       dataIndex: "m_NumberOfWindows",
       key: "m_NumberOfWindows",
       display: isWindow,
-      className: 'text-right'
+      className: "text-right",
     },
     {
       title: "Patio Doors",
       dataIndex: "m_NumberOfPatioDoors",
       key: "m_NumberOfPatioDoors",
       display: isWindow,
-      className: 'text-right'
+      className: "text-right",
     },
     {
       title: "Doors",
       dataIndex: "m_NumberOfDoors",
       key: "m_NumberOfDoors",
       display: isDoor,
-      className: 'text-right'
+      className: "text-right",
     },
     {
       title: "Others",
       dataIndex: "m_NumberOfOthers",
       key: "m_NumberOfOthers",
-      className: 'text-right'
+      className: "text-right",
     },
     {
       title: "INV Status",
@@ -255,13 +265,17 @@ const Com = (props) => {
             styles.orderTable,
             "table-sm table-bordered table-hover table border text-xs",
           )}
-          style={{ minWidth: 1500 }}
+          // style={{ minWidth: 1500 }}
         >
           <thead className="sticky top-0 bg-gray-100">
             <tr>
               {columns?.map((a) => {
-                const { title, key, dataIndex } = a;
-                return <th key={key}>{title}</th>;
+                const { title, key, dataIndex, width } = a;
+                return (
+                  <th key={key} style={{ width: width || "auto" }}>
+                    {title}
+                  </th>
+                );
               })}
             </tr>
           </thead>
@@ -274,9 +288,17 @@ const Com = (props) => {
                   {columns?.map((b) => {
                     const { key, dataIndex, render, className } = b;
                     if (typeof render === "function") {
-                      return <React.Fragment key={key}>{render(a, b)}</React.Fragment>;
+                      return (
+                        <React.Fragment key={key}>
+                          {render(a, b)}
+                        </React.Fragment>
+                      );
                     }
-                    return <td className={className} key={key}><LabelDisplay>{a[dataIndex]}</LabelDisplay></td>;
+                    return (
+                      <td className={className} key={key}>
+                        <LabelDisplay>{a[dataIndex]}</LabelDisplay>
+                      </td>
+                    );
                   })}
                 </tr>
               );

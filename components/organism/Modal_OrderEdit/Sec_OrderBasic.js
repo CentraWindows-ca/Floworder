@@ -33,11 +33,13 @@ const LIST = [
     Component: Editable.EF_Text,
     title: "Customer Name",
     id: "m_CustomerName",
+    rows: 1,
   },
   {
     Component: Editable.EF_Text,
     title: "Project Name",
     id: "m_ProjectName",
+    rows: 1,
   },
   {
     Component: Editable.EF_Input,
@@ -58,6 +60,7 @@ const LIST = [
     Component: Editable.EF_Text,
     title: "Address",
     id: "m_Address",
+    rows: 1,
   },
   {
     Component: Editable.EF_Input,
@@ -83,7 +86,7 @@ const Com = ({ className, ...props }) => {
   return (
     <div className={cn(styles.columnInputsContainer)}>
       {LIST?.map((a, i) => {
-        const { id, Component, title } = a;
+        const { id, Component, title, ...rest } = a;
         return (
           <DisplayBlock id={id} key={id}>
             <label>{title}</label>
@@ -93,6 +96,7 @@ const Com = ({ className, ...props }) => {
                 value={data?.[id] || ""}
                 onChange={(v) => onChange(v, id)}
                 disabled={!isEditable}
+                {...rest}
               />
             </div>
           </DisplayBlock>

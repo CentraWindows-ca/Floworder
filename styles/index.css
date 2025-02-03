@@ -62,3 +62,22 @@ button {
 button:hover {
   background-color: aliceblue;
 }
+
+:root {
+  --bs-primary: #005db9; /* Replace with your new primary color */
+  --bs-pagination-active-bg: #005db9;
+}
+
+.btn-primary {
+  background-color: #005db9 !important;
+  border-color: #005db9 !important;
+}
+
+.btn-primary:hover {
+  background-color: #1b7ada !important; /* Darker shade for hover effect */
+  border-color: #1b7ada !important;
+}
+
+.active>.page-link {
+  background-color: #005db9 !important;
+}

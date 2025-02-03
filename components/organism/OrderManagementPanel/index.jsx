@@ -11,6 +11,7 @@ import PageContainer from "components/atom/PageContainer";
 import Pagination from "components/atom/Pagination";
 import OrderList from "components/organism/OrderList";
 import Modal from "components/molecule/Modal";
+import Editable from "components/molecule/Editable";
 
 import Modal_OrderEdit from "components/organism/Modal_OrderEdit";
 import Modal_OrderCreate from "components/organism/Modal_OrderCreate";
@@ -24,20 +25,22 @@ import styles from "./styles.module.scss";
 
 const Com = (props) => {
   const router = useRouter();
-  const { status, q, p = 0, facility, tab = 'm', order } = router?.query || {};
+  const { status, q, p = 0, facility, tab = "m", order } = router?.query || {};
 
   const [treatedData, setTreatedData] = useState({});
   const [isShowCreate, setIsShowCreate] = useState(false);
   const [editingOrder, setEditingOrder] = useState(null);
 
+  const [uiIsShowWindow, setUiIsShowWindow] = useState(false);
+  const [uiIsShowDoor, setUiIsShowDoor] = useState(false);
+
   useEffect(() => {
     if (order) {
-      setEditingOrder(order)
+      setEditingOrder(order);
     } else {
-      setEditingOrder(null)
+      setEditingOrder(null);
     }
-  }, [order])
-  
+  }, [order]);
 
   const filtersObj = {};
   if (q) {
@@ -51,14 +54,14 @@ const Com = (props) => {
     filtersObj[tab + "_ManufacturingFacility"] = {
       operator: constants.FILTER_OPERATOR.Equals,
       value: facility,
-    }; 
+    };
   }
 
   if (status) {
     filtersObj[tab + "_Status"] = {
       operator: constants.FILTER_OPERATOR.Equals,
       value: status,
-    };  
+    };
   }
 
   const endPoint = OrdersApi.initQueryWorkOrderHeaderWithPrefixAsync({
@@ -71,7 +74,7 @@ const Com = (props) => {
       };
     }),
     kind: tab,
-    isDescending: true
+    isDescending: true,
   });
 
   // use swr later
@@ -91,9 +94,9 @@ const Com = (props) => {
     // setEditingOrder(order);
     const pathname = router?.asPath?.split("?")?.[0];
 
-    const query = { ...router.query, order }
+    const query = { ...router.query, order };
     if (!order) {
-      delete query.order
+      delete query.order;
     }
 
     router.replace(
@@ -124,21 +127,60 @@ const Com = (props) => {
   return (
     <div className={cn("w-full", styles.root)}>
       <div className={cn(styles.topBar)}>
-        <div>
-          <button className="btn btn-success" onClick={handleCreate}>
+        <div className="align-items-center flex gap-2">
+          <button
+            className="btn btn-sm btn-success me-2 px-2"
+            onClick={handleCreate}
+          >
+            <i className="fa-solid fa-circle-plus me-2"></i>
             Create
           </button>
+          <div className="align-items-center flex gap-2">
+            <div>
+              <Editable.EF_Checkbox
+                id={"ui_window"}
+                value={uiIsShowWindow}
+                onChange={(v) => setUiIsShowWindow(v)}
+              />
+            </div>
+            <label
+              htmlFor={"ui_window"}
+              className="align-items-center flex gap-1"
+            >
+              Window Info
+            </label>
+          </div>
+          <div className="align-items-center flex gap-2">
+            <div>
+              <Editable.EF_Checkbox
+                id={"ui_door"}
+                value={uiIsShowDoor}
+                onChange={(v) => setUiIsShowDoor(v)}
+              />
+            </div>
+            <label
+              htmlFor={"ui_door"}
+              className="align-items-center flex gap-1"
+            >
+              Door Info
+            </label>
+          </div>
         </div>
         <div>
-          <Pagination count={treatedData?.total} basepath={'/'} />
+          <Pagination count={treatedData?.total} basepath={"/"} />
         </div>
       </div>
       <div className={cn(styles.detail)}>
-        <OrderList kind={tab} onEdit={handleEdit} data={treatedData?.data} />
+        <OrderList
+          kind={tab}
+          onEdit={handleEdit}
+          data={treatedData?.data}
+          {...{ uiIsShowWindow, uiIsShowDoor }}
+        />
       </div>
       <Modal_OrderEdit
         onHide={() => handleEdit()}
-        onSave = {handleSaveDone}
+        onSave={handleSaveDone}
         initWorkOrder={editingOrder}
         kind={tab}
         facility={facility}

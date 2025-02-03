@@ -27,7 +27,7 @@ const WINDOW_FIELDS = [
     id: "w__26CA",
   },
   {
-    title: "26CAMin",
+    title: "26CA Min",
     id: "w__26CAMin",
   },
   {
@@ -35,7 +35,7 @@ const WINDOW_FIELDS = [
     id: "w__26HY",
   },
   {
-    title: "26HYMin",
+    title: "26HY Min",
     id: "w__26HYMin",
   },
   {
@@ -43,7 +43,7 @@ const WINDOW_FIELDS = [
     id: "w__27DS",
   },
   {
-    title: "27DSMin",
+    title: "27DS Min",
     id: "w__27DSMin",
   },
   {
@@ -51,7 +51,7 @@ const WINDOW_FIELDS = [
     id: "w__29CA",
   },
   {
-    title: "29CAMin",
+    title: "29CA Min",
     id: "w__29CAMin",
   },
   {
@@ -59,7 +59,7 @@ const WINDOW_FIELDS = [
     id: "w__29CM",
   },
   {
-    title: "29CMMin",
+    title: "29CM Min",
     id: "w__29CMMin",
   },
   {
@@ -67,7 +67,7 @@ const WINDOW_FIELDS = [
     id: "w__52PD",
   },
   {
-    title: "52PDMin",
+    title: "52PD Min",
     id: "w__52PDMin",
   },
 
@@ -76,7 +76,7 @@ const WINDOW_FIELDS = [
     id: "w__61DR",
   },
   {
-    title: "61DRMin",
+    title: "61DR Min",
     id: "w__61DRMin",
   },
 
@@ -85,7 +85,7 @@ const WINDOW_FIELDS = [
     id: "w__68CA",
   },
   {
-    title: "68CAMin",
+    title: "68CA Min",
     id: "w__68CAMin",
   },
   {
@@ -93,7 +93,7 @@ const WINDOW_FIELDS = [
     id: "w__68SL",
   },
   {
-    title: "68SLMin",
+    title: "68SL Min",
     id: "w__68SLMin",
   },
   {
@@ -101,7 +101,7 @@ const WINDOW_FIELDS = [
     id: "w__68VS",
   },
   {
-    title: "68VSMin",
+    title: "68VS Min",
     id: "w__68VSMin",
   },
 ];
@@ -148,7 +148,7 @@ const Com = ({ className, ...props }) => {
       {!_.isEmpty(windowInputs) && (
         <>
           <div className={styles.subTitle}>
-            <label className="text-sky-600">Window</label>
+            <label >Window</label>
           </div>
           <div className={cn(styles.columnSummaryContainer)}>
             {windowInputs?.map((a) => {
@@ -162,7 +162,7 @@ const Com = ({ className, ...props }) => {
       {!_.isEmpty(doorInputs) && (
         <>
           <div className={styles.subTitle}>
-            <label className="text-sky-600">Door</label>
+            <label >Door</label>
           </div>
           <div className={cn(styles.columnSummaryContainer)}>
             {doorInputs?.map((a) => {

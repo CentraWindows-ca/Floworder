@@ -56,7 +56,7 @@ const Com = (props) => {
         {/* layout of panels */}
         <div className={styles.mainContainer}>
           <div className={styles.tabContainer}>
-            <TabLinksFull {...{ defaultTab, tabs, renderTool }}></TabLinksFull>
+            <TabLinksFull {...{ defaultTab, tabs, renderTool }}/>
           </div>
           <div className={styles.twoColumns}>
             <div className={styles.columnOfItems}>

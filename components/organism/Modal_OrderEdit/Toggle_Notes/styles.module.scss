@@ -1,9 +1,15 @@
 @use "styles/theme" as *;
 
+.notesContainer {
+    padding: 10px;
+    gap: 5px;
+}
+
 .title {
     background-color: #fbffc6;
 }
 
 .notesHeader {
     color: $color_centraBlue;
+    margin-bottom: 5px;
 }

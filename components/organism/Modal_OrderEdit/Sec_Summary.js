@@ -32,7 +32,7 @@ const Com = ({ className, ...props }) => {
       </div>
       <DisplayBlock displayAs={"w"}>
         <div className={styles.subTitle}>
-          <label className="text-sky-600">Window</label>
+          <label >Window</label>
         </div>
         <div className={cn(styles.columnSummaryContainer)}>
           <DisplayBlock id="m_NumberOfWindows" displayAs={"w"}>
@@ -59,7 +59,7 @@ const Com = ({ className, ...props }) => {
       </DisplayBlock>
       <DisplayBlock displayAs={"d"}>
         <div className={styles.subTitle}>
-          <label className="text-sky-600">Door</label>
+          <label >Door</label>
         </div>
 
         <div className={cn(styles.columnSummaryContainer)}>

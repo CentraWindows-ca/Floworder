@@ -54,6 +54,8 @@ const Com = (props) => {
     glassItems,
     glassTotal,
     uIstatusObj,
+    uiShowMore,
+    setUiShowMore,
   } = useContext(LocalDataContext);
 
   // use swr later
@@ -86,7 +88,7 @@ const Com = (props) => {
         {["Shipped"].includes(uIstatusObj?.key) &&
           data?.m_TransferredLocation && (
             <DisplayBlock id="m_TransferredLocation">
-              <label className="font-normal text-base">Transferred to: </label>
+              <label className="text-base font-normal">Transferred to: </label>
               <div className="text-base">{data?.m_TransferredLocation}</div>
             </DisplayBlock>
           )}
@@ -101,10 +103,34 @@ const Com = (props) => {
       size="xl"
       onHide={onHide}
       fullscreen={true}
+      bodyClassName={styles.modalBody}
     >
-      <div>
+      <div className="text-sm">
         <div className="justify-content-between align-items-center mb-2 flex">
-          <div>{/* <Sec_Customer /> */}</div>
+          <div>
+            {/* <Sec_Customer /> */}
+
+            <div className="input-group input-group-sm">
+              <button
+                className={cn(
+                  "btn",
+                  uiShowMore ? "btn-primary" : "btn-outline-primary",
+                )}
+                onClick={() => setUiShowMore(true)}
+              >
+                Show More
+              </button>
+              <button
+                className={cn(
+                  "btn",
+                  uiShowMore ? "btn-outline-primary" : "btn-primary",
+                )}
+                onClick={() => setUiShowMore(false)}
+              >
+                Show Less
+              </button>
+            </div>
+          </div>
           <div className={cn(styles.anchors)}>
             <span onClick={() => onAnchor("notes", true)}>Notes</span>
             <span onClick={() => onAnchor("images", true)}>
@@ -125,36 +151,53 @@ const Com = (props) => {
         <div className={cn(styles.gridsOfMainInfo)}>
           <div className={cn(styles.mainItem, styles["grid-1"])}>
             <div className={cn(styles.sectionTitle)}>Order Information</div>
-            <Sec_OrderInfo />
+            <CollapseContainer id="orderInformation">
+              <Sec_OrderInfo />
+            </CollapseContainer>
+          </div>
+          <div className={cn(styles.mainItem, styles["mainItem-1"])}>
+            <div className={cn(styles.sectionTitle)}>Order Options</div>
+            <CollapseContainer id="orderOptions">
+              <Sec_OrderOptions />
+            </CollapseContainer>
           </div>
           <div className={cn(styles.mainItem, styles["grid-2"])}>
             <div className={cn(styles.sectionTitle)}>Basic Information</div>
-            <Sec_OrderBasic />
+            <CollapseContainer id="basicInformation">
+              <Sec_OrderBasic />
+            </CollapseContainer>
           </div>
         </div>
         <div className={cn(styles.gridsOfBelowInfo)}>
-          <div className={cn(styles.mainItem, styles["mainItem-1"])}>
-            <div className={cn(styles.sectionTitle)}>Order Options</div>
-            <Sec_OrderOptions />
-          </div>
           <div className={cn(styles.mainItem, styles["mainItem-2"])}>
             <div className={cn(styles.sectionTitle)}>Schedule</div>
-            <Sec_Schedule />
+            <CollapseContainer id="schedule">
+              <Sec_Schedule />
+            </CollapseContainer>
           </div>
           <div className={cn(styles.mainItem, styles["mainItem-3"])}>
             <div className={cn(styles.sectionTitle)}>Summary</div>
-            <Sec_Summary />
+            <CollapseContainer id="summary">
+              <Sec_Summary />
+            </CollapseContainer>
           </div>
           <div className={cn(styles.mainItem, styles["mainItem-4"])}>
             <div className={cn(styles.sectionTitle)}>Lbr.</div>
-            <Sec_Lbr />
+            <CollapseContainer id="lbr">
+              <Sec_Lbr />
+            </CollapseContainer>
           </div>
         </div>
-        <div className="flex-column mt-2 flex gap-2">
-          <Toggle_Notes />
+        <div className="flex-column flex" style={{ marginTop: "5px" }}>
+          <div className={cn(styles.mainItem)}>
+            <div className={cn(styles.sectionTitle)}>Notes</div>
+            <Toggle_Notes />
+          </div>
         </div>
-
-        <div className="justify-content-center my-2 flex bg-slate-100 p-2">
+        <div
+          className="justify-content-center flex bg-slate-100 p-2"
+          style={{ margin: "5px 0px" }}
+        >
           <button
             className="btn btn-primary px-4"
             disabled={!data?.m_WorkOrderNo}
@@ -163,10 +206,7 @@ const Com = (props) => {
             Save
           </button>
         </div>
-
-        <hr />
-
-        <div className="flex-column flex gap-2">
+        <div className="flex-column flex" style={{ gap: "5px" }}>
           <Toggle_Images title={"Images"} id={"images"} />
           <Toggle_Files title={"Attachment Files"} id={"files"} />
           <Toggle_ProductionItems
@@ -177,6 +217,33 @@ const Com = (props) => {
         </div>
       </div>
     </Modal>
+  );
+};
+
+const CollapseContainer = ({ id, children }) => {
+  const { uiShowMore, setUiShowMore } = useContext(LocalDataContext);
+
+  const handleClick = () => {
+    setUiShowMore((prev) => ({
+      ...prev,
+      [id]: prev?.id,
+    }));
+  };
+
+  return (
+    <>
+      <div
+        className={cn(
+          styles.collapseContainer,
+          uiShowMore ? styles.showingContainer : styles.hiddingContainer,
+        )}
+      >
+        {children}
+      </div>
+      {/* <div className={styles.showmore} onClick={handleClick}>
+        Show More
+      </div> */}
+    </>
   );
 };
 
