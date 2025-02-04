@@ -141,8 +141,6 @@ const Com = ({ className, ...props }) => {
     );
   }, [kind, uiOrderType]);
 
-
-  
   return (
     <>
       <div className={cn(styles.columnOptionsContainer)}>
@@ -154,7 +152,7 @@ const Com = ({ className, ...props }) => {
       {!_.isEmpty(windowInputs) && (
         <>
           <div className={styles.subTitle}>
-            <label >Window</label>
+            <label>Window</label>
           </div>
           <div className={cn(styles.columnOptionsContainer)}>
             {windowInputs?.map((a) => {
@@ -167,7 +165,7 @@ const Com = ({ className, ...props }) => {
       {!_.isEmpty(doorInputs) && (
         <>
           <div className={styles.subTitle}>
-            <label >Door</label>
+            <label>Door</label>
           </div>
           <div className={cn(styles.columnOptionsContainer)}>
             {doorInputs?.map((a) => {
@@ -187,7 +185,7 @@ const Block = ({ inputData }) => {
   return (
     <DisplayBlock id={id} key={id}>
       <div>
-        <Editable.EF_Checkbox
+        <Editable.EF_Checkbox_Yesno
           id={id}
           value={data?.[id]}
           onChange={(v) => onChange(v, id)}
