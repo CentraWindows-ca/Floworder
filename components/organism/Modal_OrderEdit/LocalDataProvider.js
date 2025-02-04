@@ -266,6 +266,15 @@ export const LocalDataProvider = ({
     // identify changed data:
     const changedData = utils.findChanges(initData, data);
 
+    // process customized
+    if (changedData.w_ProductionStartDate) {
+      changedData.w_ProductionEndDate = changedData.w_ProductionStartDate
+    }
+
+    if (changedData.d_ProductionStartDate) {
+      changedData.d_ProductionEndDate = changedData.d_ProductionStartDate
+    }
+
     await localApi.updateWorkOrder(data?.m_MasterId, changedData);
     onSave();
   });

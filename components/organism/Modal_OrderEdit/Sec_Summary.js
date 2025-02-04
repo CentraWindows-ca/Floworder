@@ -11,28 +11,31 @@ import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
 import { DisplayBlock } from "./Com";
 
+const COMMON_FIELDS = [
+  {
+    title: "Others",
+    id: "m_NumberOfOthers",
+  },
+  {
+    title: "Total Sales Amount",
+    id: "m_TotalPrice",
+    render: (v) => `$${utils.formatNumber(v)}`,
+  },
+];
+
 const Com = ({ className, ...props }) => {
   const { data, onChange, onHide } = useContext(LocalDataContext);
 
   return (
     <>
       <div className={cn(styles.columnSummaryContainer)}>
-        <DisplayBlock id="m_NumberOfOthers">
-          <label>Others</label>
-          <div className={cn(styles.valueContainer)}>
-            {utils.formatNumber(data?.m_NumberOfOthers)}
-          </div>
-        </DisplayBlock>
-        <DisplayBlock id="m_TotalPrice">
-          <label>Total Sales Amount</label>
-          <div className={cn(styles.valueContainer)}>
-            ${utils.formatNumber(data?.m_TotalPrice)}
-          </div>
-        </DisplayBlock>
+        {COMMON_FIELDS?.map((a) => {
+          return <Block key={a.id} inputData={a} />;
+        })}
       </div>
       <DisplayBlock displayAs={"w"}>
         <div className={styles.subTitle}>
-          <label >Window</label>
+          <label>Window</label>
         </div>
         <div className={cn(styles.columnSummaryContainer)}>
           <DisplayBlock id="m_NumberOfWindows" displayAs={"w"}>
@@ -59,7 +62,7 @@ const Com = ({ className, ...props }) => {
       </DisplayBlock>
       <DisplayBlock displayAs={"d"}>
         <div className={styles.subTitle}>
-          <label >Door</label>
+          <label>Door</label>
         </div>
 
         <div className={cn(styles.columnSummaryContainer)}>
@@ -78,6 +81,20 @@ const Com = ({ className, ...props }) => {
         </div>
       </DisplayBlock>
     </>
+  );
+};
+
+const Block = ({ inputData }) => {
+  const { data } = useContext(LocalDataContext);
+
+  const { id, title, render } = inputData;
+  return (
+    <DisplayBlock id={id}>
+      <label>{title}</label>
+      <div className={cn(styles.valueContainer)}>
+        {render ? render(data?.[id]) : utils.formatNumber(data?.[id])}
+      </div>
+    </DisplayBlock>
   );
 };
 

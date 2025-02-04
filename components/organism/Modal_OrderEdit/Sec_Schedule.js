@@ -36,10 +36,11 @@ const WINDOW_FIELDS = [
     title: "Windows Production Start",
     id: "w_ProductionStartDate",
   },
-  {
-    title: "Windows Production End",
-    id: "w_ProductionEndDate",
-  },
+  // auto update by start
+  // {
+  //   title: "Windows Production End",
+  //   id: "w_ProductionEndDate",
+  // },
   {
     title: "Window Paint Start",
     id: "w_PaintStartDate",
@@ -62,10 +63,10 @@ const DOOR_FIELDS = [
     title: "Doors Production Start",
     id: "d_ProductionStartDate",
   },
-  {
-    title: "Doors Production End",
-    id: "d_ProductionEndDate",
-  },
+  // {
+  //   title: "Doors Production End",
+  //   id: "d_ProductionEndDate",
+  // },
   {
     title: "Door Paint Start",
     id: "d_PaintStartDate",

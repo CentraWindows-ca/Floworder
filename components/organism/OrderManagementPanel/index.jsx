@@ -31,8 +31,8 @@ const Com = (props) => {
   const [isShowCreate, setIsShowCreate] = useState(false);
   const [editingOrder, setEditingOrder] = useState(null);
 
-  const [uiIsShowWindow, setUiIsShowWindow] = useState(false);
-  const [uiIsShowDoor, setUiIsShowDoor] = useState(false);
+  const [uiIsShowWindow, setUiIsShowWindow] = useState(true);
+  const [uiIsShowDoor, setUiIsShowDoor] = useState(true);
 
   useEffect(() => {
     if (order) {

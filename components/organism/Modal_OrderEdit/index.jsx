@@ -61,7 +61,6 @@ const Com = (props) => {
   } = useContext(LocalDataContext);
 
   // use swr later
-  console.log(uIstatusObj?.key);
 
   const KindDisplay = {
     m: null,
@@ -122,7 +121,7 @@ const Com = (props) => {
       fullscreen={true}
       bodyClassName={styles.modalBody}
     >
-      <div className="text-sm">
+      <div className="">
         <div className="justify-content-between align-items-center mb-2 flex">
           <div>
             <div className="input-group input-group-sm">

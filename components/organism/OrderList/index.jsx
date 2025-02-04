@@ -87,46 +87,6 @@ const Com = (props) => {
       width: 100,
     },
     {
-      title: "Branch",
-      dataIndex: "m_Branch",
-      key: "m_Branch",
-      // width: 70,
-    },
-    {
-      title: "Job Type",
-      dataIndex: "m_JobType",
-      key: "m_JobType",
-      // width: 60,
-    },
-    {
-      title: "Window Batch#",
-      dataIndex: "w_BatchNo",
-      key: "w_BatchNo",
-      display: isWindow,
-      width: 100,
-    },
-    {
-      title: "Window Block#",
-      dataIndex: "w_BlockNo",
-      key: "w_BlockNo",
-      display: isWindow,
-      width: 100,
-    },
-    {
-      title: "Door Batch#",
-      dataIndex: "d_BatchNo",
-      key: "d_BatchNo",
-      display: isDoor,
-      width: 90,
-    },
-    {
-      title: "Door Block#",
-      dataIndex: "d_BlockNo",
-      key: "d_BlockNo",
-      display: isDoor,
-      width: 90,
-    },
-    {
       title: "Current status",
       dataIndex: "m_Status_display",
       key: "m_Status_display",
@@ -178,6 +138,47 @@ const Com = (props) => {
           </td>
         );
       },
+    },
+    {
+      title: "Branch",
+      dataIndex: "m_Branch",
+      key: "m_Branch",
+      // width: 70,
+    },
+    {
+      title: "Job Type",
+      dataIndex: "m_JobType",
+      key: "m_JobType",
+      // width: 60,
+    },
+
+    {
+      title: "Window Batch#",
+      dataIndex: "w_BatchNo",
+      key: "w_BatchNo",
+      display: isWindow,
+      width: 100,
+    },
+    {
+      title: "Window Block#",
+      dataIndex: "w_BlockNo",
+      key: "w_BlockNo",
+      display: isWindow,
+      width: 100,
+    },
+    {
+      title: "Door Batch#",
+      dataIndex: "d_BatchNo",
+      key: "d_BatchNo",
+      display: isDoor,
+      width: 90,
+    },
+    {
+      title: "Door Block#",
+      dataIndex: "d_BlockNo",
+      key: "d_BlockNo",
+      display: isDoor,
+      width: 90,
     },
     {
       title: "Windows",
