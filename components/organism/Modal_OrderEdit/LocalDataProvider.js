@@ -16,7 +16,7 @@ import GlassApi from "lib/api/GlassApi";
 import useLoadingBar from "lib/hooks/useLoadingBar";
 import constants, { ORDER_STATUS } from "lib/constants";
 
-import { localApi } from "./Com";
+import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
 
 export const LocalDataContext = createContext(null);
 
@@ -33,6 +33,7 @@ export const LocalDataProvider = ({
   facility,
   onSave,
   onHide,
+  initIsEditable,
   ...props
 }) => {
   const generalContext = useContext(GeneralContext);
@@ -113,11 +114,11 @@ export const LocalDataProvider = ({
 
   const init = async (initWorkOrderNo) => {
     setData(null);
-    // get data by initWorkOrder
-    setIsEditable(!!initWorkOrderNo);
+
+    setIsEditable(initIsEditable);
 
     // fetch data
-    const [res] = await localApi.getWorkOrder(initWorkOrderNo);
+    const [res] = await Wrapper_OrdersApi.getWorkOrder(initWorkOrderNo);
 
     if (typeof res === "object") {
       // re-assemble data to easier to edit
@@ -175,14 +176,14 @@ export const LocalDataProvider = ({
   };
 
   const initItems = useLoadingBar(async (initWorkOrderNo) => {
-    const doorItems = await localApi.getDoorItems(initWorkOrderNo);
-    const windowItems = await localApi.getWindowItems(initWorkOrderNo);
+    const doorItems = await Wrapper_OrdersApi.getDoorItems(initWorkOrderNo);
+    const windowItems = await Wrapper_OrdersApi.getWindowItems(initWorkOrderNo);
     setDoorItems(doorItems);
     setWindowItems(windowItems);
   });
 
   const initAttachmentList = useLoadingBar(async (masterId) => {
-    // const res = await localApi.getFiles(masterId)
+    // const res = await Wrapper_OrdersApi.getFiles(masterId)
 
     const res = await OrdersApi.getUploadFileByRecordIdAsync({
       MasterId: masterId,
@@ -193,7 +194,7 @@ export const LocalDataProvider = ({
   });
 
   const initImageList = useLoadingBar(async (masterId) => {
-    // const res = await localApi.getImages(masterId)
+    // const res = await Wrapper_OrdersApi.getImages(masterId)
 
     const res = await OrdersApi.getUploadImageByRecordIdAsync({
       MasterId: masterId,
@@ -204,7 +205,7 @@ export const LocalDataProvider = ({
 
   //
   const doUpdateStatus = useLoadingBar(async (v) => {
-    await localApi.updateWorkOrder(data?.m_MasterId, {
+    await Wrapper_OrdersApi.updateWorkOrder(data?.m_MasterId, {
       [`${kind}_Status`]: v,
     });
 
@@ -214,7 +215,7 @@ export const LocalDataProvider = ({
 
   const doUpdateTransferredLocation = useLoadingBar(async () => {
     const m_TransferredLocation = data?.m_TransferredLocation
-    await localApi.updateWorkOrder(data?.m_MasterId, {
+    await Wrapper_OrdersApi.updateWorkOrder(data?.m_MasterId, {
       m_TransferredLocation
     });
 
@@ -275,19 +276,19 @@ export const LocalDataProvider = ({
       changedData.d_ProductionEndDate = changedData.d_ProductionStartDate
     }
 
-    await localApi.updateWorkOrder(data?.m_MasterId, changedData);
+    await Wrapper_OrdersApi.updateWorkOrder(data?.m_MasterId, changedData);
     onSave();
   });
 
   const doUpdateWindowItem = useLoadingBar(async (Id, item) => {
     if (_.isEmpty(item)) return null;
-    await localApi.updateWindowItem(item?.MasterId, Id, item);
+    await Wrapper_OrdersApi.updateWindowItem(item?.MasterId, Id, item);
     await initItems(initWorkOrder);
   });
 
   const doUpdateDoorItem = useLoadingBar(async (Id, item) => {
     if (_.isEmpty(item)) return null;
-    await localApi.updateDoorItem(item?.MasterId, Id, item);
+    await Wrapper_OrdersApi.updateDoorItem(item?.MasterId, Id, item);
     await initItems(initWorkOrder);
   });
 

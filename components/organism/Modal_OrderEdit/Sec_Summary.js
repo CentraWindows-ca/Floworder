@@ -23,6 +23,57 @@ const COMMON_FIELDS = [
   },
 ];
 
+const WINDOW_FIELDS = [
+  {
+    title: "Total Windows",
+    id: "m_NumberOfWindows",
+    displayAs: "w",
+  },
+  {
+    title: "Total Patio Doors",
+    id: "m_NumberOfPatioDoors",
+    displayAs: "w",
+  },
+  {
+    title: "Window Total Box Qty",
+    id: "w_TotalBoxQty",
+    displayAs: "w",
+  },
+  {
+    title: "Window Glass Qty",
+    id: "w_TotalGlassQty",
+    displayAs: "w",
+  },
+  {
+    title: "Window Sales Amount",
+    id: "w_TotalPrice",
+    render: (v) => `$${utils.formatNumber(v)}`,
+  },
+];
+
+const DOOR_FIELDS = [
+  {
+    title: "Total Doors",
+    id: "m_NumberOfDoors",
+    displayAs: "w",
+  },
+  {
+    title: "Door Total Box Qty",
+    id: "d_TotalBoxQty",
+    displayAs: "w",
+  },
+  {
+    title: "Door Glass Qty",
+    id: "d_TotalGlassQty",
+    displayAs: "w",
+  },
+  {
+    title: "Door Sales Amount",
+    id: "d_TotalPrice",
+    render: (v) => `$${utils.formatNumber(v)}`,
+  },
+];
+
 const Com = ({ className, ...props }) => {
   const { data, onChange, onHide } = useContext(LocalDataContext);
 
@@ -38,46 +89,19 @@ const Com = ({ className, ...props }) => {
           <label>Window</label>
         </div>
         <div className={cn(styles.columnSummaryContainer)}>
-          <DisplayBlock id="m_NumberOfWindows" displayAs={"w"}>
-            <label>Total Windows</label>
-            <div className={cn(styles.valueContainer)}>
-              {utils.formatNumber(data?.m_NumberOfWindows)}
-            </div>
-          </DisplayBlock>
-
-          <DisplayBlock id="m_NumberOfPatioDoors" displayAs={"w"}>
-            <label>Total Patio Doors</label>
-            <div className={cn(styles.valueContainer)}>
-              {utils.formatNumber(data?.m_NumberOfPatioDoors)}
-            </div>
-          </DisplayBlock>
-
-          <DisplayBlock id="w_TotalPrice" displayAs={"w"}>
-            <label>Window Sales Amount</label>
-            <div className={cn(styles.valueContainer)}>
-              ${utils.formatNumber(data?.w_TotalPrice)}
-            </div>
-          </DisplayBlock>
+          {WINDOW_FIELDS?.map((a) => {
+            return <Block key={a.id} inputData={a} />;
+          })}
         </div>
       </DisplayBlock>
       <DisplayBlock displayAs={"d"}>
         <div className={styles.subTitle}>
           <label>Door</label>
         </div>
-
         <div className={cn(styles.columnSummaryContainer)}>
-          <DisplayBlock id="m_NumberOfDoors" displayAs={"d"}>
-            <label>Total Doors</label>
-            <div className={cn(styles.valueContainer)}>
-              {utils.formatNumber(data?.m_NumberOfDoors)}
-            </div>
-          </DisplayBlock>
-          <DisplayBlock id="d_TotalPrice" displayAs={"d"}>
-            <label>Door Sales Amount</label>
-            <div className={cn(styles.valueContainer)}>
-              ${utils.formatNumber(data?.d_TotalPrice)}
-            </div>
-          </DisplayBlock>
+          {DOOR_FIELDS?.map((a) => {
+            return <Block key={a.id} inputData={a} />;
+          })}
         </div>
       </DisplayBlock>
     </>

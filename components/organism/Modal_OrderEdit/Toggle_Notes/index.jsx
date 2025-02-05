@@ -50,7 +50,7 @@ const Com = ({ className, ...props }) => {
               </DisplayBlock>
             );
           })
-        : <div className="text-blueGray-400 text-center">-- Click To Create Notes --</div>}
+        : <div className="text-blueGray-400 text-center">-- No Note Created --</div>}
     </div>
   );
 

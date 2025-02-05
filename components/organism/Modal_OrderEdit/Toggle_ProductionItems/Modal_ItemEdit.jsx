@@ -267,7 +267,7 @@ const DOOR_FIELDS = [
 
 
 const Com = (props) => {
-  const { onHide, initItem, onSave } = props;
+  const { onHide, initItem, onSave, isEditable } = props;
   const [item, setItem] = useState(null);
 
   useEffect(() => {
@@ -303,12 +303,13 @@ const Com = (props) => {
               setItem={setItem}
               key={`item_${a.id}`}
               inputData={a}
+              isEditable = {isEditable}
             />
           );
         })}
       </div>
       <div className="justify-content-center my-2 flex bg-slate-100 p-2">
-        <button className="btn btn-primary px-4" onClick={handleSave}>
+        <button className="btn btn-primary px-4" onClick={handleSave} disabled={!isEditable}>
           Save
         </button>
       </div>
@@ -316,7 +317,7 @@ const Com = (props) => {
   );
 };
 
-const Block = ({ item, setItem, inputData }) => {
+const Block = ({ item, setItem, inputData, isEditable }) => {
   let { Component, title, id, options, ...rest } = inputData;
   const handleChange = (v, id) => {
     setItem((prev) => ({
@@ -334,122 +335,13 @@ const Block = ({ item, setItem, inputData }) => {
           value={item?.[id]}
           onChange={(v) => handleChange(v, id)}
           options={options}
+          disabled = {!isEditable}
           {...rest}
         />
       </div>
     </div>
   );
 };
-
-// const sample = {
-//   Id: "4951c126-86c6-4f01-b47f-01c5e613b140",
-//   ParentId: "d59af26f-09d9-4502-819d-424e6b378a37",
-//   WorkOrderNo: "VKTEST25",
-
-//   Price: 3893.5,
-
-//   Discount: 0,
-//   Nett: 3893.5,
-//   Cost: 1167.31,
-//   StartItemTime: "2025-01-27T15:36:23.607",
-//   EndItemTime: null,
-//   StartItemOnHoldTime: null,
-//   EndItemOnHoldTime: null,
-
-//   BTONotes: null,
-//   CustomNotes: null,
-//   PaintedColor: "",
-//   PaintedColorNotes: null,
-//   PaintedType: "",
-//   BackOrderFlag: null,
-
-//   ApprovalStatus: null,
-//   Status: "In Progress",
-//   CreatedAt: "2025-01-22T16:32:14.58",
-//   ChangedBy: "",
-//   ChangedAt: "2025-01-27T15:07:34",
-//   IsActive: true,
-//   MasterId: "4a8b733b-c37d-4303-a3c2-fc1709a56b2e",
-// };
-
-const door = {
-  "Id": "9cc583ea-000a-47db-8324-3fa9299006a8",
-  "ParentId": "31626e44-4d68-4927-b836-ccd31168773e",
-  "WorkOrderNo": "VKTEST25",
-  "Item": "0018",
-  "System": "CDLD",
-  "Description": "Residential Door",
-  "Size": "36.0000 x   80.0000",
-  "Quantity": 1,
-  "BoxQty": 0,
-  "GlassQty": 0,
-  "Price": 6347.06,
-  "LBRMin": 0,
-  "RackLocation": "007",
-  "TransomCount": 0,
-  "SideliteCount": 0,
-  "SingleDoorCount": 0,
-  "DoubleDoorCount": 0,
-  "Discount": 0,
-  "Nett": 5094.66,
-  "Cost": 6958.08,
-  "Notes": "testinggg ED upd - 2.1.5",
-  "BTONotes": "test BTO note",
-  "CustomNotes": null,
-  "PaintedColor": "test color",
-  "Painted": "1",
-  "PaintedColorNotes": "test paint note",
-  "DoorType": "DS",
-  "BTOPlannedOrderDate": "2025-01-14T20:33:54.417",
-  "BTOPlannedReceiptEnd": "2025-01-27T20:33:57.647",
-  "BTOActualReceiptDate": null,
-  "SlabPrep": null,
-  "SlabPrepPlannedStartDate": null,
-  "SlabPrepPlannedEndDate": null,
-  "SlabPrepActualEndDate": null,
-  "Assembly": null,
-  "AssemblyPlannedStartDate": null,
-  "AssemblyPlannedEndDate": null,
-  "AssemblyActualEndDate": null,
-  "MillingDept": null,
-  "MillingDeptPlannedStartDate": null,
-  "MillingDeptPlannedReceiptEnd": null,
-  "MillingDeptActualReceiptDate": null,
-  "PaintPlannedStartDate": "2025-01-15T20:35:24.11",
-  "PaintPlannedEndDate": "2025-01-22T20:35:28.977",
-  "PaintActualEndDate": null,
-  "PaintedType": "asdfasfdasd",
-  "DoorCutout": null,
-  "BTO": "Yes",
-  "BackOrderFlag": null,
-  "Lites": "Multi Lite",
-  "QA": null,
-  "CustomMilling": "1",
-  "TempSlab": null,
-  "CustomSlabPrep": null,
-  "CustomSlabPrepPlannedStartDate": null,
-  "CustomSlabPrepPlannedEndDate": null,
-  "CustomSlabPrepActualEndDate": null,
-  "CustomMillingPlannedStartDate": "2025-01-22T20:35:31.91",
-  "CustomMillingPlannedEndDate": null,
-  "CustomMillingActualEndDate": "2025-01-30T20:35:34.047",
-  "TempSlabPlannedStartDate": null,
-  "TempSlabPlannedEndDate": null,
-  "TempSlabActualEndDate": null,
-  "ApprovalStatus": null,
-  "Status": "In Progress",
-  "CreatedAt": "2025-01-22T16:32:14.633",
-  "ChangedBy": "zluo@centra.ca",
-  "ChangedAt": "2025-01-31T11:55:04",
-  "IsActive": true,
-  "MasterId": "4a8b733b-c37d-4303-a3c2-fc1709a56b2e",
-  "StartItemTime": null,
-  "EndItemTime": null,
-  "StartItemOnHoldTime": null,
-  "EndItemOnHoldTime": null,
-  "Stock": "1",
-  "kind": "d"
-}
 
 
 export default Com;

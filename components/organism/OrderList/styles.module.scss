@@ -42,3 +42,18 @@
         display: inline-block;
     }
 }
+
+.workorderActionsContainer {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    gap:5px;
+    // align-items: flex-start;
+}
+
+.workorderActionsContainer button {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    text-align: left;
+  }

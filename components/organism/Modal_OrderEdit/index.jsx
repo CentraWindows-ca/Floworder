@@ -7,12 +7,10 @@ import LoadingBlock from "components/atom/LoadingBlock";
 
 import Sec_Status from "./Sec_Status";
 
-// import Sec_Customer from "./Sec_Customer";
+
 import Sec_OrderInfo from "./Sec_OrderInfo";
 import Sec_OrderBasic from "./Sec_OrderBasic";
 import Sec_OrderOptions from "./Sec_OrderOptions";
-// import Sec_Attachments from "./Sec_Attachments";
-
 import Sec_Lbr from "./Sec_Lbr";
 
 import Sec_Schedule from "./Sec_Schedule";
@@ -57,7 +55,7 @@ const Com = (props) => {
     uiShowMore,
     setUiShowMore,
     initData,
-    onUpdateTransferredLocation
+    onUpdateTransferredLocation,
   } = useContext(LocalDataContext);
 
   // use swr later
@@ -90,7 +88,7 @@ const Com = (props) => {
                   className="btn btn-primary"
                   disabled={
                     initData?.m_TransferredLocation ===
-                    data?.m_TransferredLocation
+                      data?.m_TransferredLocation || !isEditable
                   }
                   onClick={onUpdateTransferredLocation}
                 >
@@ -217,7 +215,7 @@ const Com = (props) => {
         >
           <button
             className="btn btn-primary px-4"
-            disabled={!data?.m_WorkOrderNo}
+            disabled={!data?.m_WorkOrderNo || !isEditable}
             onClick={onSave}
           >
             Save

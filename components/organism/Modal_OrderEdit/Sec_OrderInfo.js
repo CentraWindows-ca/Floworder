@@ -102,18 +102,6 @@ const WINDOW_FIELDS = [
     id: "w_GlassOptions",
     options: constants.WorkOrderSelectOptions.glassOptions,
   },
-  {
-    Component: Editable.EF_Input,
-    title: "Window Total Box Qty",
-    id: "w_TotalBoxQty",
-    className: "text-right",
-  },
-  {
-    Component: Editable.EF_Input,
-    title: "Window Glass Qty",
-    id: "w_TotalGlassQty",
-    className: "text-right",
-  },
 ];
 
 const DOOR_FIELDS = [
@@ -132,18 +120,6 @@ const DOOR_FIELDS = [
     title: "Door Glass Supplier",
     id: "d_GlassSupplier",
     options: constants.WorkOrderSelectOptions.glassSuppliers,
-  },
-  {
-    Component: Editable.EF_Input,
-    title: "Door Total Box Qty",
-    id: "d_TotalBoxQty",
-    className: "text-right",
-  },
-  {
-    Component: Editable.EF_Input,
-    title: "Door Glass Qty",
-    id: "d_TotalGlassQty",
-    className: "text-right",
   },
 ];
 

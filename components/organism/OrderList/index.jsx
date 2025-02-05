@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Table } from "antd";
+import { Table, Button } from "antd";
 import { useRouter } from "next/router";
 import cn from "classnames";
 import _ from "lodash";
 import { GeneralContext } from "lib/provider/GeneralProvider";
+
+import Dropdown_Custom from "components/atom/Dropdown_Custom";
 
 import LoadingBlock from "components/atom/LoadingBlock";
 import LabelDisplay from "components/atom/LabelDisplay";
@@ -13,6 +15,7 @@ import useLoadingBar from "lib/hooks/useLoadingBar";
 
 // styles
 import styles from "./styles.module.scss";
+import Dropdown_WorkOrderActions from "./Dropdown_WorkOrderActions";
 import { WorkOrderSelectOptions, ORDER_STATUS } from "lib/constants";
 import utils from "lib/utils";
 
@@ -22,16 +25,12 @@ const getValue = (k, arrName) => {
 };
 
 const Com = (props) => {
-  const { onEdit, data, kind, uiIsShowWindow, uiIsShowDoor } = props;
+  const { onEdit, onView, onUpdate, data, kind, uiIsShowWindow, uiIsShowDoor } = props;
 
   const { toast } = useContext(GeneralContext);
 
-  const isNotMaster = kind !== "m";
   const isWindow = kind === "w" || (kind === "m" && uiIsShowWindow);
   const isDoor = kind === "d" || (kind === "m" && uiIsShowDoor);
-
-  const isWindowOnly = kind === "w";
-  const jisDoorOnly = kind === "d";
 
   const [treatedData, setTreatedData] = useState(null);
   const [copied, setCopied] = useState(false);
@@ -67,9 +66,15 @@ const Com = (props) => {
         return (
           <td>
             <div className={cn(styles.orderNumber)}>
-              <span onClick={() => onEdit(record?.m_WorkOrderNo)}>
-                {record.m_WorkOrderNo}
-              </span>
+              <Dropdown_WorkOrderActions
+                data={record}
+                {...{
+                  onEdit: () => onEdit(record?.m_WorkOrderNo),
+                  onView: () => onView(record?.m_WorkOrderNo),
+                  onUpdate
+                }}
+              />
+
               {copied === record?.m_WorkOrderNo ? (
                 <i
                   className={cn("fa-solid fa-check ms-1", styles.copiedIcon)}
@@ -340,7 +345,5 @@ const Com = (props) => {
     </div>
   );
 };
-
-const ColumnLogic = () => {};
 
 export default Com;

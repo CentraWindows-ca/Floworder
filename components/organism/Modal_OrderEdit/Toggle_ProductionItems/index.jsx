@@ -20,6 +20,7 @@ const Com = ({ className, title, id, ...props }) => {
     onHide,
     onUpdateDoorItem,
     onUpdateWindowItem,
+    isEditable,
   } = useContext(LocalDataContext);
 
   const [stats, setStats] = useState({});
@@ -167,6 +168,7 @@ const Com = ({ className, title, id, ...props }) => {
                         kind="d"
                         onShowEdit={handleShowItem}
                         onSave={handleSaveItem}
+                        isEditable = {isEditable}
                       />
                     );
                   })}
@@ -180,12 +182,13 @@ const Com = ({ className, title, id, ...props }) => {
         onSave={handleSaveItem}
         onHide={handleCloseItem}
         initItem={editingItem}
+        isEditable = {isEditable}
       />
     </>
   );
 };
 
-const TableRowWindow = ({ data, kind, onShowEdit, onSave }) => {
+const TableRowWindow = ({ data, kind, onShowEdit, onSave, isEditable }) => {
   const {
     Item,
     Size,
@@ -224,6 +227,7 @@ const TableRowWindow = ({ data, kind, onShowEdit, onSave }) => {
             id: "HighRisk",
             value: HighRisk,
             onChange: (v) => handleChange(v, "HighRisk"),
+            disabled: !isEditable
           }}
         />
       </td>
@@ -233,6 +237,7 @@ const TableRowWindow = ({ data, kind, onShowEdit, onSave }) => {
             id: "Custom",
             value: Custom,
             onChange: (v) => handleChange(v, "Custom"),
+            disabled: !isEditable
           }}
         />
       </td>
@@ -242,6 +247,7 @@ const TableRowWindow = ({ data, kind, onShowEdit, onSave }) => {
             id: "BTO",
             value: BTO,
             onChange: (v) => handleChange(v, "BTO"),
+            disabled: !isEditable
           }}
         />
       </td>
@@ -255,7 +261,7 @@ const TableRowWindow = ({ data, kind, onShowEdit, onSave }) => {
   );
 };
 
-const TableRowDoor = ({ data, kind, onShowEdit, onSave }) => {
+const TableRowDoor = ({ data, kind, onShowEdit, onSave, isEditable }) => {
   const {
     Item,
     Size,
@@ -294,6 +300,7 @@ const TableRowDoor = ({ data, kind, onShowEdit, onSave }) => {
             id: "BTO",
             value: BTO,
             onChange: (v) => handleChange(v, "BTO"),
+            disabled: !isEditable
           }}
         />
       </td>

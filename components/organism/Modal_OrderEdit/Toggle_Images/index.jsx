@@ -18,7 +18,7 @@ const Com = ({ className, title, id, ...props }) => {
     setNewImages,
     existingImages,
     onUploadImage,
-    onDeleteImage ,
+    onDeleteImage,
     isEditable,
     onChange,
     onHide,
@@ -60,34 +60,43 @@ const Com = ({ className, title, id, ...props }) => {
     <ToggleBlock title={jsxTitle} id={id}>
       <div className="p-2">
         <div className="justify-content-between align-items-center mb-2 flex">
-          <div>
-            <label
-              htmlFor="image-upload"
-              className="btn btn-outline-secondary btn-xs"
-            >
-              Upload Images
-            </label>
+          {isEditable && (
+            <div>
+              <label
+                htmlFor="image-upload"
+                className="btn btn-outline-secondary btn-xs"
+              >
+                Upload Images
+              </label>
 
-            <input
-              id="image-upload"
-              type="file"
-              // multiple
-              className="d-none"
-              onChange={handleImageChange}
-            />
-          </div>
+              <input
+                id="image-upload"
+                type="file"
+                // multiple
+                className="d-none"
+                onChange={handleImageChange}
+              />
+            </div>
+          )}
         </div>
         <table className="table-xs table-bordered table-hover mb-0 table border text-sm">
           <tbody>
             {existingImages?.map((a) => {
-              const { submittedBy, fileName, fileType, fileRawData, notes, id } = a;
+              const {
+                submittedBy,
+                fileName,
+                fileType,
+                fileRawData,
+                notes,
+                id,
+              } = a;
               const size = utils.formatNumber(
                 utils.calculateFileSize(fileRawData) / 1024 || 0,
               );
 
               return (
                 <tr key={`${title}_${id}`}>
-                  <td className="text-center" style={{width: 120}}>
+                  <td className="text-center" style={{ width: 120 }}>
                     {/* <span
                       className="text-blue-500 hover:text-blue-400"
                       style={{ cursor: "pointer" }}
@@ -103,8 +112,13 @@ const Com = ({ className, title, id, ...props }) => {
                       mimeType={fileType}
                     />
                   </td>
-                  <td className="text-right"  style={{width: 120}}>{size} KB</td>
-                  <td className="text-left"><b>[{submittedBy}]:</b><br/> {notes || "--"}</td>
+                  <td className="text-right" style={{ width: 120 }}>
+                    {size} KB
+                  </td>
+                  <td className="text-left">
+                    <b>[{submittedBy}]:</b>
+                    <br /> {notes || "--"}
+                  </td>
                   <td style={{ width: 60 }}>
                     <button
                       className="btn btn-xs btn-danger"
@@ -175,7 +189,7 @@ const ImagePreview = ({ base64Data, mimeType }) => {
     const newTab = window.open();
     if (newTab) {
       newTab.document.write(
-        `<img src="${imageUrl}" alt="Full Image" style="max-width:100%; height:auto;" />`
+        `<img src="${imageUrl}" alt="Full Image" style="max-width:100%; height:auto;" />`,
       );
       newTab.document.title = "Image Preview";
       newTab.document.close();

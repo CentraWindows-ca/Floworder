@@ -58,22 +58,24 @@ const Com = ({ className, title, id, ...props }) => {
     <ToggleBlock title={jsxTitle} id={id}>
       <div className="p-2">
         <div className="justify-content-between align-items-center mb-2 flex">
-          <div>
-            <label
-              htmlFor="file-upload"
-              className="btn btn-outline-secondary btn-xs"
-            >
-              Upload Files
-            </label>
+          {isEditable && (
+            <div>
+              <label
+                htmlFor="file-upload"
+                className="btn btn-outline-secondary btn-xs"
+              >
+                Upload Files
+              </label>
 
-            <input
-              id="file-upload"
-              type="file"
-              // multiple
-              className="d-none"
-              onChange={handleImageChange}
-            />
-          </div>
+              <input
+                id="file-upload"
+                type="file"
+                // multiple
+                className="d-none"
+                onChange={handleImageChange}
+              />
+            </div>
+          )}
         </div>
         <table className="table-xs table-bordered table-hover mb-0 table border text-sm">
           <tbody>

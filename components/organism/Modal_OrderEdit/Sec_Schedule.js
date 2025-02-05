@@ -23,15 +23,15 @@ const COMMON_FIELDS = [
     id: "m_ShippingEndDate",
   },
   {
-    title: "Customer Date",
-    id: "m_CustomerDate",
-  },
-  {
     title: "Revised Delivery Date",
     id: "m_RevisedDeliveryDate",
   },
 ];
 const WINDOW_FIELDS = [
+  {
+    title: "Window Customer Date",
+    id: "w_CustomerDate",
+  },
   {
     title: "Windows Production Start",
     id: "w_ProductionStartDate",
@@ -49,6 +49,7 @@ const WINDOW_FIELDS = [
     title: "Window Paint End",
     id: "w_PaintEndDate",
   },
+
   {
     title: "Window Glass Order Date",
     id: "w_GlassOrderDate",
@@ -59,6 +60,10 @@ const WINDOW_FIELDS = [
   },
 ];
 const DOOR_FIELDS = [
+  {
+    title: "Door Customer Date",
+    id: "d_CustomerDate",
+  },
   {
     title: "Doors Production Start",
     id: "d_ProductionStartDate",

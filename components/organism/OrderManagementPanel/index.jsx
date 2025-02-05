@@ -18,18 +18,28 @@ import Modal_OrderCreate from "components/organism/Modal_OrderCreate";
 
 // hooks
 import useLoadingBar from "lib/hooks/useLoadingBar";
-import useDataInit, { triggerMutate } from "lib/hooks/useDataInit";
+import useDataInit from "lib/hooks/useDataInit";
 
 // styles
 import styles from "./styles.module.scss";
 
 const Com = (props) => {
   const router = useRouter();
-  const { status, q, p = 0, facility, tab = "m", order } = router?.query || {};
+  const {
+    status,
+    q,
+    p = 0,
+    facility,
+    tab = "m",
+    order,
+    isEdit,
+  } = router?.query || {};
 
   const [treatedData, setTreatedData] = useState({});
   const [isShowCreate, setIsShowCreate] = useState(false);
+
   const [editingOrder, setEditingOrder] = useState(null);
+  const [isEditable, setIsEditable] = useState(false);
 
   const [uiIsShowWindow, setUiIsShowWindow] = useState(true);
   const [uiIsShowDoor, setUiIsShowDoor] = useState(true);
@@ -37,10 +47,11 @@ const Com = (props) => {
   useEffect(() => {
     if (order) {
       setEditingOrder(order);
+      setIsEditable(isEdit);
     } else {
       setEditingOrder(null);
     }
-  }, [order]);
+  }, [order, isEdit]);
 
   const filtersObj = {};
   if (q) {
@@ -78,7 +89,7 @@ const Com = (props) => {
   });
 
   // use swr later
-  const { data, error } = useDataInit(endPoint);
+  const { data, error, mutate } = useDataInit(endPoint);
 
   useEffect(() => {
     if (data) {
@@ -90,13 +101,16 @@ const Com = (props) => {
     return data;
   };
 
-  const handleEdit = (order) => {
+  const handleEdit = (order, isEdit) => {
     // setEditingOrder(order);
     const pathname = router?.asPath?.split("?")?.[0];
 
-    const query = { ...router.query, order };
+    const query = { ...router.query, order, isEdit };
     if (!order) {
       delete query.order;
+    }
+    if (!isEdit) {
+      delete query.isEdit;
     }
 
     router.replace(
@@ -114,14 +128,16 @@ const Com = (props) => {
   };
 
   const handleCreateDone = async (m_WorkOrderNo) => {
-    handleEdit(m_WorkOrderNo);
-
-    triggerMutate(endPoint);
+    handleEdit(m_WorkOrderNo, true);
+    mutate('*');
+    // endPoint
   };
 
   const handleSaveDone = async () => {
-    triggerMutate(endPoint);
+    mutate('*');
+    // endPoint
   };
+
 
   // ====== consts
   return (
@@ -172,12 +188,15 @@ const Com = (props) => {
         </div>
         <div>
           <Pagination count={treatedData?.total} basepath={"/"} />
+          <button onClick={() =>handleSaveDone()}>test</button>
         </div>
       </div>
       <div className={cn(styles.detail)}>
         <OrderList
           kind={tab}
-          onEdit={handleEdit}
+          onEdit={(wo) => handleEdit(wo, 1)}
+          onView={(wo) => handleEdit(wo)}
+          onUpdate={handleSaveDone}
           data={treatedData?.data}
           {...{ uiIsShowWindow, uiIsShowDoor }}
         />
@@ -188,6 +207,7 @@ const Com = (props) => {
         initWorkOrder={editingOrder}
         kind={tab}
         facility={facility}
+        initIsEditable={isEditable}
       />
       <Modal_OrderCreate
         show={isShowCreate}

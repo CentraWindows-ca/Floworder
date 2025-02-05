@@ -283,6 +283,7 @@ export const EF_Rack = React.memo(
     placeholder,
     className = "mr-1",
     size = "md",
+    ...props
   }) => {
     const { dictionary } = useContext(GeneralContext);
 
@@ -318,6 +319,7 @@ export const EF_Rack = React.memo(
         }}
         value={value}
         placeholder={placeholder}
+        {...props}
       />
     );
   },
