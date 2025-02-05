@@ -224,8 +224,8 @@ const Com = (props) => {
     },
     {
       title: "Created By",
-      dataIndex: "m_ChangedBy",
-      key: "m_ChangedBy",
+      dataIndex: "m_CreatedBy",
+      key: "m_CreatedBy",
     },
     {
       title: "Customer Date",
