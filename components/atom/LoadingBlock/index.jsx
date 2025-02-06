@@ -3,9 +3,17 @@ import _ from "lodash";
 // styles
 import styles from "./styles.module.scss";
 
-const Com = ({ className, isLoading, children, loadingText, error }) => {
+const Com = ({
+  className,
+  isLoading,
+  children,
+  wrapper,
+  loadingText,
+  error,
+}) => {
+  let jsxLoading = null;
   if (Array.isArray(error) && error.some((a) => a)) {
-    return (
+    jsxLoading = (
       <div
         className={cn(className, styles.root)}
         style={{ flexDirection: "column" }}
@@ -19,13 +27,12 @@ const Com = ({ className, isLoading, children, loadingText, error }) => {
         })}
       </div>
     );
-  }
-
-  if (typeof error === "string" && error) {
-    return <div className={cn(className, styles.root)}>{error || "Error"}</div>;
-  }
-  if (isLoading) {
-    return (
+  } else if (typeof error === "string" && error) {
+    jsxLoading = (
+      <div className={cn(className, styles.root)}>{error || "Error"}</div>
+    );
+  } else if (isLoading) {
+    jsxLoading = (
       <div className={cn(className, styles.root)}>
         <svg
           aria-hidden="true"
@@ -46,7 +53,15 @@ const Com = ({ className, isLoading, children, loadingText, error }) => {
         {loadingText ? <>{loadingText}</> : null}
       </div>
     );
+  } 
+  if (jsxLoading) {
+    if (wrapper) {
+      jsxLoading = wrapper(jsxLoading);
+    }
+
+    return jsxLoading;
   }
+
   return children;
 };
 

@@ -125,7 +125,7 @@ export const LocalDataProvider = ({
 
       const { value } = res;
 
-      const mergedData = {};
+      let mergedData = {};
       mergedData = { ...value?.d, ...value?.m, ...value?.w };
       setData(mergedData);
       setInitData(JSON.parse(JSON.stringify(mergedData)));
@@ -205,7 +205,7 @@ export const LocalDataProvider = ({
 
   //
   const doUpdateStatus = useLoadingBar(async (v) => {
-    await Wrapper_OrdersApi.updateWorkOrder(data?.m_MasterId, {
+    await Wrapper_OrdersApi.updateWorkOrder(data, {
       [`${kind}_Status`]: v,
     });
 
@@ -215,7 +215,7 @@ export const LocalDataProvider = ({
 
   const doUpdateTransferredLocation = useLoadingBar(async () => {
     const m_TransferredLocation = data?.m_TransferredLocation
-    await Wrapper_OrdersApi.updateWorkOrder(data?.m_MasterId, {
+    await Wrapper_OrdersApi.updateWorkOrder(data, {
       m_TransferredLocation
     });
 
@@ -276,7 +276,7 @@ export const LocalDataProvider = ({
       changedData.d_ProductionEndDate = changedData.d_ProductionStartDate
     }
 
-    await Wrapper_OrdersApi.updateWorkOrder(data?.m_MasterId, changedData);
+    await Wrapper_OrdersApi.updateWorkOrder(data, changedData);
     onSave();
   });
 

@@ -1,11 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import cn from "classnames";
 import _ from "lodash";
+import { RedoOutlined } from "@ant-design/icons";
+import { Button } from "antd";
 
+import constants from "lib/constants";
+
+import OrdersApi from "lib/api/OrdersApi";
 // components
 import PageContainer from "components/atom/PageContainer";
-import Search from "components/molecule/Search";
+// import Search from "components/molecule/bak_Search";
 import Tabs_ManufacturingFacility from "components/molecule/Tabs_ManufacturingFacility";
 
 import TabLinksFull from "components/atom/TabLinksFull";
@@ -14,13 +19,18 @@ import OrderManagementPanel from "components/organism/OrderManagementPanel";
 
 // hooks
 import useLoadingBar from "lib/hooks/useLoadingBar";
+import useDataInit from "lib/hooks/useDataInit";
 
 // styles
 import styles from "./styles.module.scss";
 
 const Com = (props) => {
-  const { basePath } = props || {};
   const router = useRouter();
+
+  // ====== search
+  const [filters, setFilters] = useState({});
+  const { status, q, p = 0, facility, tab = "m" } = router?.query || {};
+
   const defaultTab = "m";
   const tabs = [
     {
@@ -36,15 +46,80 @@ const Com = (props) => {
       title: "Door Orders",
     },
   ];
+  const filtersObj = {};
+  if (q) {
+    filtersObj["m_WorkOrderNo"] = {
+      operator: constants.FILTER_OPERATOR.Contains,
+      value: q,
+    };
+  }
 
+  if (facility) {
+    filtersObj[tab + "_ManufacturingFacility"] = {
+      operator: constants.FILTER_OPERATOR.Equals,
+      value: facility,
+    };
+  }
+
+  if (status) {
+    filtersObj[tab + "_Status"] = {
+      operator: constants.FILTER_OPERATOR.Equals,
+      value: status,
+    };
+  }
+
+  const conditions = [
+    ..._.keys(filtersObj)?.map((k) => {
+      return {
+        ...filtersObj[k],
+        field: k,
+      };
+    }),
+    ..._.keys(filters)?.map((k) => {
+      return {
+        operator: constants.FILTER_OPERATOR.Contains,
+        value: filters[k],
+        field: k,
+      };
+    }),
+  ];
+
+  const endPoint = OrdersApi.initQueryWorkOrderHeaderWithPrefixAsync({
+    page: (parseInt(p) || 0) + 1,
+    pageSize: 50,
+    filterGroup: conditions?.length
+      ? {
+          logicOp: "AND",
+          conditions,
+        }
+      : undefined,
+    // orderByItems: [],
+    kind: tab,
+  });
+
+  // use swr
+  const { data, error, mutate } = useDataInit(endPoint);
+
+  const handleRefreshWorkOrderList = () => {
+    mutate("*");
+  };
+
+  // ======
   const renderTool = () => {
     return (
-      <div className="flex justify-content-between w-full gap-3">
+      <div className="justify-content-between flex w-full gap-3">
+        <div></div>
         <div className={cn(styles.manufacturingFacilityContainer)}>
           <Tabs_ManufacturingFacility />
         </div>
         <div>
-          <Search />
+          <button
+            className="btn btn-primary btn-sm flex gap-1 align-items-center"
+            onClick={handleRefreshWorkOrderList}
+          >
+            <RedoOutlined />
+            Refresh
+          </button>
         </div>
       </div>
     );
@@ -56,7 +131,7 @@ const Com = (props) => {
         {/* layout of panels */}
         <div className={styles.mainContainer}>
           <div className={styles.tabContainer}>
-            <TabLinksFull {...{ defaultTab, tabs, renderTool }}/>
+            <TabLinksFull {...{ defaultTab, tabs, renderTool }} />
           </div>
           <div className={styles.twoColumns}>
             <div className={styles.columnOfItems}>
@@ -65,7 +140,14 @@ const Com = (props) => {
               </div>
             </div>
             <div className={styles.columnOfDetailPanel}>
-              <OrderManagementPanel />
+              <OrderManagementPanel
+                {...{
+                  filters,
+                  setFilters,
+                  data,
+                  mutate,
+                }}
+              />
             </div>
           </div>
         </div>

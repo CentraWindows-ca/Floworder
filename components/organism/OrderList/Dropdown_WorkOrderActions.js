@@ -14,12 +14,13 @@ import cn from "classnames";
 import _ from "lodash";
 import { GeneralContext } from "lib/provider/GeneralProvider";
 import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
+import OrdersApi from "lib/api/OrdersApi";
 import Dropdown_Custom from "components/atom/Dropdown_Custom";
 
 import LoadingBlock from "components/atom/LoadingBlock";
 import LabelDisplay from "components/atom/LabelDisplay";
 
-import {ORDER_STATUS} from "lib/constants";
+import { ORDER_STATUS } from "lib/constants";
 
 // hooks
 import useLoadingBar from "lib/hooks/useLoadingBar";
@@ -28,36 +29,39 @@ import useLoadingBar from "lib/hooks/useLoadingBar";
 import styles from "./styles.module.scss";
 import utils from "lib/utils";
 
-// View Order - permission based
-// Edit Order - permission based
-// Progress to Status - permission based
-// Back to Status - permission based
-// Delete Order - permission based
-// View Order History - permission based
-
-const WorkOrderActions = ({ data, onEdit, onView, onUpdate }) => {
+const WorkOrderActions = ({ data, onEdit, onView, onUpdate, kind }) => {
   const { m_WorkOrderNo, m_Status } = data;
 
   // statusIndex
-  const statusIndex = ORDER_STATUS.findIndex((a) => a.key === m_Status);
+  let statusIndex = ORDER_STATUS.findIndex((a) => a.key === m_Status);
+
+  if (statusIndex === -1) statusIndex = 0
+
+  const nextStatus = ORDER_STATUS[statusIndex + 1]?.key || "";
+  const previousStatus = ORDER_STATUS[statusIndex - 1]?.key || "";
 
   const handleProgress = useLoadingBar(async () => {
-    await Wrapper_OrdersApi.updateWorkOrder(data?.m_MasterId, {
-      [`m_Status`]: ORDER_STATUS[statusIndex + 1]?.key,
+    await Wrapper_OrdersApi.updateWorkOrder(data, {
+      [`${kind}_Status`]: nextStatus,
     });
     onUpdate();
   });
 
   const handleBack = useLoadingBar(async () => {
-    await Wrapper_OrdersApi.updateWorkOrder(data?.m_MasterId, {
-      [`m_Status`]: ORDER_STATUS[statusIndex - 1]?.key,
+    await Wrapper_OrdersApi.updateWorkOrder(data, {
+      [`${kind}_Status`]: previousStatus,
     });
     onUpdate();
   });
 
-  const handleDelete = () => {
+  const handleDelete = useLoadingBar(async () => {
+    if (!window.confirm(`Are you sure to delete [${data?.m_WorkOrderNo}]?`)) {
+      return null;
+    }
+
+    await OrdersApi.deleteProductionsWorkOrderByWO(data);
     onUpdate();
-  };
+  });
 
   const actions = (
     <div className={cn(styles.workorderActionsContainer)}>
@@ -67,30 +71,36 @@ const WorkOrderActions = ({ data, onEdit, onView, onUpdate }) => {
       <Button type="text" icon={<EditOutlined />} onClick={onEdit}>
         Edit Order
       </Button>
+      {nextStatus && (
+        <Button
+          type="text"
+          icon={<ArrowRightOutlined />}
+          onClick={handleProgress}
+        >
+          Progress to: <b>{nextStatus}</b>
+        </Button>
+      )}
+
+      {previousStatus && (
+        <Button type="text" icon={<ArrowLeftOutlined />} onClick={handleBack}>
+          Back to: <b>{previousStatus}</b>
+        </Button>
+      )}
+
       <Button
         type="text"
-        icon={<ArrowRightOutlined />}
-        onClick={handleProgress}
-        disabled={statusIndex >= ORDER_STATUS.length - 1}
-      >
-        Progress to Status
-      </Button>
-      <Button
-        type="text"
-        icon={<ArrowLeftOutlined />}
-        onClick={handleBack}
-        disabled={statusIndex <= 0}
-      >
-        Back to Status
-      </Button>
-      <Button type="text" icon={<DeleteOutlined />} onClick={handleDelete} disabled={true}
-      title="not implemented"
+        icon={<DeleteOutlined />}
+        onClick={handleDelete}
+        disabled={true}
+        title="not implemented"
       >
         Delete Order
       </Button>
-      <Button type="text" icon={<HistoryOutlined />} disabled={true}
-      title="not implemented"
-      
+      <Button
+        type="text"
+        icon={<HistoryOutlined />}
+        disabled={true}
+        title="not implemented"
       >
         View Order History
       </Button>
@@ -101,7 +111,7 @@ const WorkOrderActions = ({ data, onEdit, onView, onUpdate }) => {
     <Dropdown_Custom
       renderTrigger={(onClick) => {
         return (
-          <span style={{ cursor: "pointer", color: "blue" }} onClick={onClick}>
+          <span style={{ cursor: "pointer", }} onClick={onClick}>
             {m_WorkOrderNo}
           </span>
         );

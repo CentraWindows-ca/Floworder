@@ -5,6 +5,7 @@ import cn from "classnames";
 import Datepicker from "components/atom/Datepicker";
 import TypeaheadMultiSelect from "components/molecule/TypeaheadMultiSelect";
 import Typeahead from "components/atom/Typeahead";
+import DebouncedInput from "components/atom/DebouncedInput";
 import { GeneralContext } from "lib/provider/GeneralProvider";
 
 // styles
@@ -221,6 +222,24 @@ export const EF_Input = React.memo(
   preventUpdate,
 );
 
+export const EF_InputDebounce = React.memo(
+  ({ onChange, value, className, ...props }) => {
+    const handleChange = (e) => {
+      onChange(e.target.value);
+    };
+
+    return (
+      <DebouncedInput
+        className={cn("", className, value ? "bg-blue-100": null)}
+        onChange={handleChange}
+        value={value || ""}
+        {...props}
+      />
+    );
+  },
+  preventUpdate,
+);
+
 export const EF_Text = React.memo(({ onChange, value, ...props }) => {
   const handleChange = (e) => {
     onChange(e.target.value);
@@ -332,6 +351,7 @@ export const Editable = {
   EF_SelectWithLabel,
   EF_MultiSelect,
   EF_Input,
+  EF_InputDebounce,
   EF_Text,
   EF_Checkbox,
   EF_Checkbox_Yesno,

@@ -1,6 +1,13 @@
 /* @tailwind base; */
 
 /* @tailwind components; */
+:root {
+  --default-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --centraBlue: "#005db9";
+  --centraDark: "#3b444b";
+}
+
 
 @tailwind utilities;
 
@@ -45,7 +52,7 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+  font-family: var(--default-font),
   "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
   "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji",
   'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
@@ -82,4 +89,68 @@ button:hover {
 
 .active>.page-link {
   background-color: #005db9 !important;
+}
+
+
+
+/* antd style overrides */
+.ant-table table {
+  font-size: 0.8rem;
+}
+
+.ant-table
+  .ant-table-container
+  .ant-table-content
+  table
+  thead.ant-table-thead
+  .ant-table-cell {
+  color: var(--centraDark);
+  padding: 0px;
+}
+
+.ant-table-cell {
+  vertical-align: top !important;
+}
+
+.ant-btn-link {
+  color: var(--centraBlue) !important;
+}
+
+/* .ant-table-thead .ant-table-cell.ant-table-row-expand-icon-cell {
+  width: 120px !important;
+  display: flex;
+} */
+
+/* .ant-table-thead .ant-table-cell.ant-table-row-expand-icon-cell::after {
+  content: "PM Notes";
+  text-align: center;
+} */
+
+.ant-divider-horizontal {
+  margin: 15px 0px !important;
+}
+
+/* .ant-table-wrapper {
+  height: 100%;
+  overflow: hidden;
+
+  .ant-spin-nested-loading {
+    height: 100%;
+
+    .ant-spin-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+
+      .ant-table {
+        height: 100%;
+        overflow: auto;
+      }
+    }
+  }
+} */
+
+.ant-list-vertical .ant-list-item .ant-list-item-meta {
+  margin-block-end: 0 !important;
 }

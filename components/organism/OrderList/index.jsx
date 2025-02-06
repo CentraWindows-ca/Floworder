@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import { Table, Button } from "antd";
+import TableFullHeight from "components/atom/TableFullHeight";
+import Editable from "components/molecule/Editable";
 import { useRouter } from "next/router";
 import cn from "classnames";
 import _ from "lodash";
@@ -25,7 +27,18 @@ const getValue = (k, arrName) => {
 };
 
 const Com = (props) => {
-  const { onEdit, onView, onUpdate, data, kind, uiIsShowWindow, uiIsShowDoor } = props;
+  const {
+    onEdit,
+    onView,
+    onUpdate,
+    data,
+    kind,
+    uiIsShowWindow,
+    uiIsShowDoor,
+    filters,
+    onFilterChange,
+    isLoading,
+  } = props;
 
   const { toast } = useContext(GeneralContext);
 
@@ -62,49 +75,51 @@ const Com = (props) => {
       dataIndex: "m_WorkOrderNo",
       key: "m_WorkOrderNo",
       fixed: "left",
-      render: (record) => {
+      render: (text, record) => {
         return (
-          <td>
-            <div className={cn(styles.orderNumber)}>
-              <Dropdown_WorkOrderActions
-                data={record}
-                {...{
-                  onEdit: () => onEdit(record?.m_WorkOrderNo),
-                  onView: () => onView(record?.m_WorkOrderNo),
-                  onUpdate
-                }}
-              />
+          <div className={cn(styles.orderNumber)}>
+            <Dropdown_WorkOrderActions
+              data={record}
+              {...{
+                onEdit: () => onEdit(record?.m_WorkOrderNo),
+                onView: () => onView(record?.m_WorkOrderNo),
+                onUpdate,
+                kind,
+              }}
+            />
 
-              {copied === record?.m_WorkOrderNo ? (
-                <i
-                  className={cn("fa-solid fa-check ms-1", styles.copiedIcon)}
-                />
-              ) : (
-                <i
-                  className={cn("fa-solid fa-copy ms-1")}
-                  onClick={() => copyToClipboard(record?.m_WorkOrderNo)}
-                />
-              )}
-            </div>
-          </td>
+            {copied === record?.m_WorkOrderNo ? (
+              <i className={cn("fa-solid fa-check ms-1", styles.copiedIcon)} />
+            ) : (
+              <i
+                className={cn("fa-solid fa-copy ms-1")}
+                onClick={() => copyToClipboard(record?.m_WorkOrderNo)}
+              />
+            )}
+          </div>
         );
       },
-      width: 100,
+      width: 120,
     },
     {
       title: "Current status",
       dataIndex: "m_Status_display",
       key: "m_Status_display",
-      render: (record) => {
+      initKey: "m_Status",
+      onCell: (record) => ({
+        style: {
+          backgroundColor: record?.m_Status_display?.color,
+        },
+      }),
+      render: (text, record) => {
         return (
-          <td
+          <div
             style={{
-              color: record.m_Status_display?.textColor,
-              backgroundColor: record.m_Status_display?.color,
+              color: record?.m_Status_display?.textColor,
             }}
           >
-            <LabelDisplay>{record.m_Status_display?.label}</LabelDisplay>
-          </td>
+            <LabelDisplay>{record?.m_Status_display?.label}</LabelDisplay>
+          </div>
         );
       },
     },
@@ -112,17 +127,22 @@ const Com = (props) => {
       title: "Windows status",
       dataIndex: "w_Status_display",
       key: "w_Status_display",
+      initKey: "w_Status",
       display: isWindow,
-      render: (record) => {
+      onCell: (record) => ({
+        style: {
+          backgroundColor: record?.w_Status_display?.color,
+        },
+      }),
+      render: (text, record) => {
         return (
-          <td
+          <div
             style={{
-              color: record.w_Status_display?.textColor,
-              backgroundColor: record.w_Status_display?.color,
+              color: record?.w_Status_display?.textColor,
             }}
           >
-            <LabelDisplay>{record.w_Status_display?.label}</LabelDisplay>
-          </td>
+            <LabelDisplay>{record?.w_Status_display?.label}</LabelDisplay>
+          </div>
         );
       },
     },
@@ -130,17 +150,22 @@ const Com = (props) => {
       title: "Doors status",
       dataIndex: "d_Status_display",
       key: "d_Status_display",
+      initKey: "d_Status",
       display: isDoor,
-      render: (record) => {
+      onCell: (record) => ({
+        style: {
+          backgroundColor: record?.d_Status_display?.color,
+        },
+      }),
+      render: (text, record) => {
         return (
-          <td
+          <div
             style={{
-              color: record.d_Status_display?.textColor,
-              backgroundColor: record.d_Status_display?.color,
+              color: record?.d_Status_display?.textColor,
             }}
           >
-            <LabelDisplay> {record.d_Status_display?.label}</LabelDisplay>
-          </td>
+            <LabelDisplay>{record?.d_Status_display?.label}</LabelDisplay>
+          </div>
         );
       },
     },
@@ -154,7 +179,7 @@ const Com = (props) => {
       title: "Job Type",
       dataIndex: "m_JobType",
       key: "m_JobType",
-      // width: 60,
+      width: 80,
     },
 
     {
@@ -236,7 +261,9 @@ const Com = (props) => {
       title: "Glass Ordered Date",
       dataIndex: "w_GlassOrderedDate_display",
       key: "w_GlassOrderedDate_display",
+      initKey: "w_GlassOrderedDate",
       display: isWindow,
+      minWidth: 50,
     },
   ]?.filter((a) => a.display === undefined || a.display);
 
@@ -288,28 +315,55 @@ const Com = (props) => {
 
   return (
     <div className={cn("w-full", styles.root)}>
-      <LoadingBlock isLoading={!data}>
-        {/* <Table
+      <LoadingBlock isLoading={false}>
+        {/* <TableFullHeight
           size="small"
           dataSource={treatedData}
           columns={columns}
           pagination={false}
-          scroll={{ y: '100%' }} 
-        /> */}
+          className={cn(styles.orderTable)}
+          components={{
+            header: {
+              wrapper: (props) => (
+                <thead {...props}>
+                  {props.children}
+                  <CustomHeader />
+                </thead>
+              ),
+            },
+          }}
+        />  */}
         <table
           className={cn(
             styles.orderTable,
-            "table-sm table-bordered table-hover table border text-xs",
+            "table-sm table-hover table text-xs",
           )}
-          // style={{ minWidth: 1500 }}
+          style={{ width: "max-content" }}
         >
-          <thead className="sticky top-0 bg-gray-100">
+          <thead>
             <tr>
               {columns?.map((a) => {
                 const { title, key, dataIndex, width } = a;
                 return (
                   <th key={key} style={{ width: width || "auto" }}>
-                    {title}
+                    <div className={cn(styles.tableTitle)}>{title}</div>
+                  </th>
+                );
+              })}
+            </tr>
+            <tr>
+              {columns?.map((a) => {
+                const { key, initKey } = a;
+                return (
+                  <th key={`filter_${a.key}`}>
+                    <div style={{ padding: 2 }}>
+                      <Editable.EF_InputDebounce
+                        value={filters?.[initKey || key]}
+                        onChange={(v) => onFilterChange(v, initKey || key)}
+                        style={{ width: "100%" }}
+                        placeholder='--'
+                      />
+                    </div>
                   </th>
                 );
               })}
@@ -322,17 +376,22 @@ const Com = (props) => {
               return (
                 <tr key={m_MasterId}>
                   {columns?.map((b) => {
-                    const { key, dataIndex, render, className } = b;
+                    const { key, dataIndex, render, onCell, className } = b;
+
+                    let cell = onCell ? onCell(a) : null;
+
                     if (typeof render === "function") {
                       return (
                         <React.Fragment key={key}>
-                          {render(a, b)}
+                          <td {...cell}>{render("", a, b)}</td>
                         </React.Fragment>
                       );
                     }
                     return (
-                      <td className={className} key={key}>
-                        <LabelDisplay>{a[dataIndex]}</LabelDisplay>
+                      <td className={className} key={key} {...cell}>
+                        <div>
+                          <LabelDisplay>{a[dataIndex]}</LabelDisplay>
+                        </div>
                       </td>
                     );
                   })}

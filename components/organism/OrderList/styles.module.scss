@@ -3,9 +3,65 @@
 .root {
     overflow: auto;
     height: 100%;
+    border: 1px solid $color_border_table;
+    border-radius: 4px;
 }
-
+.orderTable>:not(caption)>*>* {
+    border-bottom-width: 0;
+    padding: 0px;
+    &>div {
+        padding: 5px;
+    }
+}
 .orderTable {
+    .tableTitle {
+        transition: background-color 0.3s;
+        &:hover {
+            transition: background-color 0.3s;
+            background-color: $color_background_lightBlue;
+            cursor: pointer;
+        }
+    }
+    thead {
+        position: sticky;    
+        top: 0;
+        z-index: 2;
+    }
+    thead {
+        th,
+        td {
+            background-color: $color_background_tableHeader;
+            &>div {
+                border-right: 1px solid $color_border_table;
+                border-bottom: 1px solid $color_border_table;   
+            }
+            z-index: 2;
+        }
+    }
+
+    th:first-child,
+    td:first-child {
+        position: sticky;
+        left: 0;
+        background-color: white; // Prevents content from being overlapped  
+          
+        &>div {
+            border-right: 3px double $color_gray;  
+        }
+    }
+    td:first-child  {
+        z-index: 1; // Ensures it stays above other columns when scrolling
+    }
+
+
+    th:first-child {
+        background-color: $color_background_tableHeader;
+    }
+
+    tbody td {
+        border-bottom: 1px solid $color_border_table;
+    }
+
     .orderNumber {
         span {
             cursor: pointer;
@@ -33,6 +89,7 @@
     i {
         color: $color_gray_dark;
         cursor: pointer;
+
         &:hover {
             color: $color_centraBlue_hover;
         }
@@ -47,7 +104,7 @@
     display: flex;
     flex-direction: column;
     text-align: left;
-    gap:5px;
+    gap: 5px;
     // align-items: flex-start;
 }
 
@@ -56,4 +113,4 @@
     justify-content: flex-start;
     width: 100%;
     text-align: left;
-  }
+}

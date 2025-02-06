@@ -23,7 +23,7 @@ import useDataInit from "lib/hooks/useDataInit";
 // styles
 import styles from "./styles.module.scss";
 
-const Com = (props) => {
+const Com = ({ data, error, mutate, filters, setFilters }) => {
   const router = useRouter();
   const {
     status,
@@ -52,44 +52,6 @@ const Com = (props) => {
       setEditingOrder(null);
     }
   }, [order, isEdit]);
-
-  const filtersObj = {};
-  if (q) {
-    filtersObj["m_WorkOrderNo"] = {
-      operator: constants.FILTER_OPERATOR.Contains,
-      value: q,
-    };
-  }
-
-  if (facility) {
-    filtersObj[tab + "_ManufacturingFacility"] = {
-      operator: constants.FILTER_OPERATOR.Equals,
-      value: facility,
-    };
-  }
-
-  if (status) {
-    filtersObj[tab + "_Status"] = {
-      operator: constants.FILTER_OPERATOR.Equals,
-      value: status,
-    };
-  }
-
-  const endPoint = OrdersApi.initQueryWorkOrderHeaderWithPrefixAsync({
-    page: (parseInt(p) || 0) + 1,
-    pageSize: 50,
-    filters: _.keys(filtersObj)?.map((k) => {
-      return {
-        ...filtersObj[k],
-        field: k,
-      };
-    }),
-    kind: tab,
-    isDescending: true,
-  });
-
-  // use swr later
-  const { data, error, mutate } = useDataInit(endPoint);
 
   useEffect(() => {
     if (data) {
@@ -123,21 +85,27 @@ const Com = (props) => {
     );
   };
 
+  const handleFilterChange = (v, k) => {
+    setFilters((prev) => ({
+      ...prev,
+      [k]: v,
+    }));
+  };
+
   const handleCreate = () => {
     setIsShowCreate(true);
   };
 
   const handleCreateDone = async (m_WorkOrderNo) => {
     handleEdit(m_WorkOrderNo, true);
-    mutate('*');
+    mutate("*");
     // endPoint
   };
 
   const handleSaveDone = async () => {
-    mutate('*');
+    mutate("*");
     // endPoint
   };
-
 
   // ====== consts
   return (
@@ -188,7 +156,6 @@ const Com = (props) => {
         </div>
         <div>
           <Pagination count={treatedData?.total} basepath={"/"} />
-          <button onClick={() =>handleSaveDone()}>test</button>
         </div>
       </div>
       <div className={cn(styles.detail)}>
@@ -197,8 +164,15 @@ const Com = (props) => {
           onEdit={(wo) => handleEdit(wo, 1)}
           onView={(wo) => handleEdit(wo)}
           onUpdate={handleSaveDone}
-          data={treatedData?.data}
-          {...{ uiIsShowWindow, uiIsShowDoor }}
+          isLoading={!data}
+          count={treatedData?.total}
+          {...{
+            uiIsShowWindow,
+            uiIsShowDoor,
+            data: treatedData?.data,
+            filters,
+            onFilterChange: handleFilterChange,
+          }}
         />
       </div>
       <Modal_OrderEdit
