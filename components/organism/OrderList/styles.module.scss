@@ -6,35 +6,57 @@
     border: 1px solid $color_border_table;
     border-radius: 4px;
 }
+
 .orderTable>:not(caption)>*>* {
     border-bottom-width: 0;
     padding: 0px;
+
     &>div {
         padding: 5px;
     }
 }
+
 .orderTable {
+    width: max-content;
+    table-layout: fixed;
+    min-width: 100%;
+
     .tableTitle {
         transition: background-color 0.3s;
+
         &:hover {
             transition: background-color 0.3s;
             background-color: $color_background_lightBlue;
             cursor: pointer;
         }
     }
+
+    .sortableTitle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 5px;
+
+        .sortIcon {}
+    }
+
     thead {
-        position: sticky;    
+        position: sticky;
         top: 0;
         z-index: 2;
     }
+
     thead {
+
         th,
         td {
             background-color: $color_background_tableHeader;
+
             &>div {
                 border-right: 1px solid $color_border_table;
-                border-bottom: 1px solid $color_border_table;   
+                border-bottom: 1px solid $color_border_table;
             }
+
             z-index: 2;
         }
     }
@@ -44,12 +66,13 @@
         position: sticky;
         left: 0;
         background-color: white; // Prevents content from being overlapped  
-          
+
         &>div {
-            border-right: 3px double $color_gray;  
+            border-right: 3px double $color_gray;
         }
     }
-    td:first-child  {
+
+    td:first-child {
         z-index: 1; // Ensures it stays above other columns when scrolling
     }
 
@@ -73,30 +96,27 @@
             }
         }
 
-        i {
+        i.copiedIcon {
             display: none;
         }
 
         &:hover {
-            i {
-
+            i.copiedIcon {
                 display: inline-block;
             }
-
         }
     }
 
-    i {
+    i {}
+
+    i.notCopiedIcon, i.copiedIcon {
+        display: inline-block;
         color: $color_gray_dark;
         cursor: pointer;
 
         &:hover {
             color: $color_centraBlue_hover;
         }
-    }
-
-    i.copiedIcon {
-        display: inline-block;
     }
 }
 

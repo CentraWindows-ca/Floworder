@@ -33,6 +33,7 @@ const Com = ({ data, error, mutate, filters, setFilters }) => {
     tab = "m",
     order,
     isEdit,
+    sort
   } = router?.query || {};
 
   const [treatedData, setTreatedData] = useState({});
@@ -91,6 +92,39 @@ const Com = ({ data, error, mutate, filters, setFilters }) => {
       [k]: v,
     }));
   };
+
+  const handleSortChange = (k) => {
+    const pathname = router?.asPath?.split("?")?.[0];
+    const newSortObj = {}
+    // only 1 sorting field currently
+    // JSON.parse(JSON.stringify(sortObj || {}))
+    const [sortBy, dir] = sort?.split(":") || []
+    const sortObj = {
+      [sortBy]: dir
+    }
+    switch (sortObj[k]) {
+      case 'asc':
+        newSortObj[k] = 'desc'
+        break;
+      case 'desc':
+        delete newSortObj[k]
+        break;    
+      default:
+        newSortObj[k] = 'asc'
+        break;
+    }
+
+    // assemble to like--- "w_Id:desc,m_WorkOrderNo:asc"
+    let newSort = _.keys(newSortObj)?.map(k =>  `${k}:${newSortObj[k]}`).join(',')
+    router.replace(
+      {
+        pathname,
+        query: { ...router.query, sort: newSort, p: undefined },
+      },
+      undefined,
+      { shallow: true },
+    );
+  }
 
   const handleCreate = () => {
     setIsShowCreate(true);
@@ -172,6 +206,8 @@ const Com = ({ data, error, mutate, filters, setFilters }) => {
             data: treatedData?.data,
             filters,
             onFilterChange: handleFilterChange,
+            sort,
+            onSort: handleSortChange
           }}
         />
       </div>

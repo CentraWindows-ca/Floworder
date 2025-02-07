@@ -8,6 +8,7 @@ import _ from "lodash";
 import { GeneralContext } from "lib/provider/GeneralProvider";
 
 import Dropdown_Custom from "components/atom/Dropdown_Custom";
+import SortingHead from "components/atom/SortingHead"
 
 import LoadingBlock from "components/atom/LoadingBlock";
 import LabelDisplay from "components/atom/LabelDisplay";
@@ -37,6 +38,8 @@ const Com = (props) => {
     uiIsShowDoor,
     filters,
     onFilterChange,
+    sort,
+    onSort,
     isLoading,
   } = props;
 
@@ -89,10 +92,14 @@ const Com = (props) => {
             />
 
             {copied === record?.m_WorkOrderNo ? (
-              <i className={cn("fa-solid fa-check ms-1", styles.copiedIcon)} />
+              <i
+                title="copy work order number"
+                className={cn("fa-solid fa-check ms-1", styles.notCopiedIcon)}
+              />
             ) : (
               <i
-                className={cn("fa-solid fa-copy ms-1")}
+                title="copy work order number"
+                className={cn("fa-solid fa-copy ms-1", styles.copiedIcon)}
                 onClick={() => copyToClipboard(record?.m_WorkOrderNo)}
               />
             )}
@@ -173,7 +180,7 @@ const Com = (props) => {
       title: "Branch",
       dataIndex: "m_Branch",
       key: "m_Branch",
-      // width: 70,
+      width: 70,
     },
     {
       title: "Job Type",
@@ -187,14 +194,14 @@ const Com = (props) => {
       dataIndex: "w_BatchNo",
       key: "w_BatchNo",
       display: isWindow,
-      width: 100,
+      width: 110,
     },
     {
       title: "Window Block#",
       dataIndex: "w_BlockNo",
       key: "w_BlockNo",
       display: isWindow,
-      width: 100,
+      width: 110,
     },
     {
       title: "Door Batch#",
@@ -216,6 +223,7 @@ const Com = (props) => {
       key: "m_NumberOfWindows",
       display: isWindow,
       className: "text-right",
+      width: 80,
     },
     {
       title: "Patio Doors",
@@ -223,6 +231,7 @@ const Com = (props) => {
       key: "m_NumberOfPatioDoors",
       display: isWindow,
       className: "text-right",
+      width: 90,
     },
     {
       title: "Doors",
@@ -230,22 +239,26 @@ const Com = (props) => {
       key: "m_NumberOfDoors",
       display: isDoor,
       className: "text-right",
+      width: 80,
     },
     {
       title: "Others",
       dataIndex: "m_NumberOfOthers",
       key: "m_NumberOfOthers",
       className: "text-right",
+      width: 80,
     },
     {
       title: "INV Status",
       dataIndex: "m_InvStatus",
       key: "m_InvStatus",
+      width: 80,
     },
     {
       title: "Created On",
       dataIndex: "m_CreatedAt_display",
       key: "m_CreatedAt_display",
+      width: 105
     },
     {
       title: "Created By",
@@ -256,6 +269,7 @@ const Com = (props) => {
       title: "Customer Date",
       dataIndex: "m_CustomerDate_display",
       key: "m_CustomerDate_display",
+      width: 105
     },
     {
       title: "Glass Ordered Date",
@@ -338,15 +352,27 @@ const Com = (props) => {
             styles.orderTable,
             "table-sm table-hover table text-xs",
           )}
-          style={{ width: "max-content" }}
         >
           <thead>
             <tr>
               {columns?.map((a) => {
-                const { title, key, dataIndex, width } = a;
+                const { title, key, dataIndex, width, initKey } = a;
+                const sortKey = initKey || key
                 return (
                   <th key={key} style={{ width: width || "auto" }}>
-                    <div className={cn(styles.tableTitle)}>{title}</div>
+                    <div
+                      className={cn(styles.tableTitle, styles.sortableTitle)}
+                      onClick={() => onSort(sortKey)}
+                      title={`sort this column`}
+                    >
+                      <span>{title}</span>
+                      <span className={cn(styles.sortIcon)}>
+                        <OrderByIcon
+                        orderBy = {sort}
+                        col = {sortKey}
+                        />
+                      </span>
+                    </div>
                   </th>
                 );
               })}
@@ -361,7 +387,7 @@ const Com = (props) => {
                         value={filters?.[initKey || key]}
                         onChange={(v) => onFilterChange(v, initKey || key)}
                         style={{ width: "100%" }}
-                        placeholder='--'
+                        placeholder="--"
                       />
                     </div>
                   </th>
@@ -404,5 +430,35 @@ const Com = (props) => {
     </div>
   );
 };
+
+const OrderByIcon = ({ orderBy, col }) => {
+  const [curr_col, dir] = orderBy?.split(':') || [];
+
+  let iconClass = "";
+  if (curr_col !== col) {
+    iconClass = "fa-solid fa-sort text-blueGray-300";
+  } else if (dir === "asc") {
+    iconClass = "fa-solid fa-sort-up text-blue-600";
+  } else {
+    iconClass = "fa-solid fa-sort-down text-blue-600";
+  }
+
+  return (
+    <div
+      className={cn("inline-block")}
+      style={{ position: "relative", width: "10px", height: "10px", verticalAlign: "middle" }}
+    >
+      <i
+        className={cn("fa-solid fa-sort text-blueGray-200")}
+        style={{ fontSize: "10px", position: "absolute", left: "0px", right: "0px" }}
+      />
+      <i
+        className={cn(iconClass)}
+        style={{ fontSize: "10px", position: "absolute", left: "0px", right: "0px" }}
+      />
+    </div>
+  );
+};
+
 
 export default Com;

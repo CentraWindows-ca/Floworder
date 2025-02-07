@@ -29,7 +29,7 @@ const Com = (props) => {
 
   // ====== search
   const [filters, setFilters] = useState({});
-  const { status, q, p = 0, facility, tab = "m" } = router?.query || {};
+  const { status, q, p = 0, facility, tab = "m", sort } = router?.query || {};
 
   const defaultTab = "m";
   const tabs = [
@@ -46,7 +46,11 @@ const Com = (props) => {
       title: "Door Orders",
     },
   ];
+
   const filtersObj = {};
+  const sortObj = {}
+  let sortArr = []
+
   if (q) {
     filtersObj["m_WorkOrderNo"] = {
       operator: constants.FILTER_OPERATOR.Contains,
@@ -66,6 +70,18 @@ const Com = (props) => {
       operator: constants.FILTER_OPERATOR.Equals,
       value: status,
     };
+  }
+
+  if (sort) {
+    sort?.split(',')?.map((sortKey) => {
+      const [field, dir] = sortKey?.split(":")
+      sortObj[field] = dir
+    })
+
+    sortArr = _.keys(sortObj)?.map(k => ({
+      field: k,
+      isDescending: sortObj[k]?.toLocaleLowerCase() === 'desc'
+    }))
   }
 
   const conditions = [
@@ -90,10 +106,10 @@ const Com = (props) => {
     filterGroup: conditions?.length
       ? {
           logicOp: "AND",
-          conditions,
+          conditions: conditions?.filter(a => a.value),
         }
       : undefined,
-    // orderByItems: [],
+    orderByItems: sortArr,
     kind: tab,
   });
 
@@ -146,6 +162,7 @@ const Com = (props) => {
                   setFilters,
                   data,
                   mutate,
+                  sortObj
                 }}
               />
             </div>
