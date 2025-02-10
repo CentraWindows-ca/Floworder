@@ -16,16 +16,16 @@ const Com = (props) => {
 
   const tabs = [
     {
-      eventKey: "",
-      title: "All",
-    },
-    {
       eventKey: "langley",
       title: "Langley",
     },
     {
       eventKey: "calgary",
       title: "Calgary",
+    },
+    {
+      eventKey: "",
+      title: "All",
     },
   ];
 
@@ -42,8 +42,9 @@ const Com = (props) => {
   };
   // ====== consts
   return (
-    <div className="input-group input-group-sm">
-      <span className="input-group-text" id="">
+    <div className="input-group input-group-sm bg-white">
+      <span className="input-group-text text-primary flex align-items-center gap-2" id="">
+        <i className="fas fa-tools"></i>
         Manufacturing Facility:
       </span>
       {tabs?.map((a) => {
@@ -52,7 +53,10 @@ const Com = (props) => {
         return (
           <button
             key={eventKey}
-            className={cn("btn", isActive ? "btn-primary" : "btn-outline-info")}
+            className={cn(
+              "btn",
+              isActive ? "btn-primary" : "btn-outline-primary",
+            )}
             onClick={() => handleClick(eventKey)}
           >
             {title}

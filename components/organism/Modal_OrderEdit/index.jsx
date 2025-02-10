@@ -7,7 +7,6 @@ import LoadingBlock from "components/atom/LoadingBlock";
 
 import Sec_Status from "./Sec_Status";
 
-
 import Sec_OrderInfo from "./Sec_OrderInfo";
 import Sec_OrderBasic from "./Sec_OrderBasic";
 import Sec_OrderOptions from "./Sec_OrderOptions";
@@ -66,8 +65,6 @@ const Com = (props) => {
     d: <b className="text-amber-100">[Door]</b>,
   };
 
-  console.log(data?.m_TransferredLocation, initData?.m_TransferredLocation);
-
   const jsxTitle = (
     <div className="align-items-center flex gap-2">
       Work Order # {initWorkOrder} {KindDisplay[kind]}
@@ -122,7 +119,7 @@ const Com = (props) => {
       <div className="">
         <div className="justify-content-between align-items-center mb-2 flex">
           <div>
-            <div className="input-group input-group-sm">
+            {/* <div className="input-group input-group-sm">
               <button
                 className={cn(
                   "btn",
@@ -141,7 +138,7 @@ const Com = (props) => {
               >
                 Show Less
               </button>
-            </div>
+            </div> */}
           </div>
           <div className={cn(styles.anchors)}>
             <span onClick={() => onAnchor("images", true)}>
@@ -181,26 +178,26 @@ const Com = (props) => {
               <Sec_OrderBasic />
             </CollapseContainer>
           </div>
-        </div>
-        <div className={cn(styles.gridsOfBelowInfo)}>
           <div className={cn(styles.mainItem, styles["mainItem-2"])}>
             <div className={cn(styles.sectionTitle)}>Schedule</div>
             <CollapseContainer id="schedule">
               <Sec_Schedule />
             </CollapseContainer>
           </div>
+        </div>
+        <div>
           <div className={cn(styles.mainItem, styles["mainItem-3"])}>
             <div className={cn(styles.sectionTitle)}>Summary</div>
             <CollapseContainer id="summary">
               <Sec_Summary />
             </CollapseContainer>
           </div>
-          <div className={cn(styles.mainItem, styles["mainItem-4"])}>
+          {/* <div className={cn(styles.mainItem, styles["mainItem-4"])}>
             <div className={cn(styles.sectionTitle)}>Lbr.</div>
             <CollapseContainer id="lbr">
               <Sec_Lbr />
             </CollapseContainer>
-          </div>
+          </div> */}
         </div>
         <div className="flex-column flex" style={{ marginTop: "5px" }}>
           <Toggle_Notes />

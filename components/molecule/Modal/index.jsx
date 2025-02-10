@@ -25,31 +25,44 @@ export default style(
       style,
       ...rest
     }) => {
-      const styleWithLayer = {...style}
+      const styleWithLayer = { ...style };
+      let styleBackdrop = "";
 
       if (layer) {
-
+        styleWithLayer["zIndex"] = 1055 + (layer * 10);
+        styleBackdrop = `
+          .custom-backdrop_${layer} {
+            z-index: ${1050 + (layer * 10)} !important;
+          }
+        `;
       }
 
       return (
-        <Modal
-          show={show}
-          fullscreen={fullscreen}
-          className={className}
-          onHide={onHide}
-          onExited={onExited}
-          size={size}
-          aria-labelledby="modal"
-          style={styleWithLayer}
-
-          {...rest}
-        >
-          <Modal.Header closeButton={closeButton}>
-            <Modal.Title> {title} </Modal.Title> {subtitle}
-          </Modal.Header>
-          {hasModalBody ? <Modal.Body className={bodyClassName}>{children}</Modal.Body> : children}
-          {footer ? <Modal.Footer>{footer}</Modal.Footer> : null}
-        </Modal>
+        <>
+          <Modal
+            show={show}
+            fullscreen={fullscreen}
+            className={className}
+            onHide={onHide}
+            onExited={onExited}
+            size={size}
+            aria-labelledby="modal"
+            style={styleWithLayer}
+            backdropClassName={`custom-backdrop_${layer}`}
+            {...rest}
+          >
+            <Modal.Header closeButton={closeButton}>
+              <Modal.Title> {title} </Modal.Title> {subtitle}
+            </Modal.Header>
+            {hasModalBody ? (
+              <Modal.Body className={bodyClassName}>{children}</Modal.Body>
+            ) : (
+              children
+            )}
+            {footer ? <Modal.Footer>{footer}</Modal.Footer> : null}
+          </Modal>
+          <style>{styleBackdrop}</style>
+        </>
       );
     },
   ),

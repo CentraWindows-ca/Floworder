@@ -1,0 +1,16 @@
+@use "styles/theme" as *;
+
+.sortIcon {
+    cursor: pointer;
+    padding: 5px;
+    transition: background-color 0.3s;
+    border-left: 1px solid $color_white;
+    // background-color: $color_background_lightBlue;
+    &:hover {
+        transition: background-color 0.3s;
+        background-color: $color_background_lightBlue;
+        i.iconBehind {
+            color: $color_orange;
+        }
+    }
+}

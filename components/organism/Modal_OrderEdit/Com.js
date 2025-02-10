@@ -48,12 +48,12 @@ export const DisplayBlock = ({ children, id = "m", displayAs, ...props }) => {
     uiOrderType,
     id,
     displayAs,
-  })
+  });
 
   if (display) {
-    return children
+    return children;
   } else {
-    return null
+    return null;
   }
 };
 
@@ -152,4 +152,8 @@ export const ToggleFull = ({
       )}
     </div>
   );
+};
+
+export const NoData = ({ title = "No Data" }) => {
+  return <div className="text-center text-blueGray-400">-- {title} --</div>;
 };

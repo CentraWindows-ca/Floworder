@@ -23,7 +23,15 @@ import useDataInit from "lib/hooks/useDataInit";
 // styles
 import styles from "./styles.module.scss";
 
-const Com = ({ data, error, mutate, filters, setFilters }) => {
+const Com = ({
+  data,
+  error,
+  mutate,
+  filters,
+  setFilters,
+  applyFilter,
+  setApplyFilter,
+}) => {
   const router = useRouter();
   const {
     status,
@@ -33,7 +41,7 @@ const Com = ({ data, error, mutate, filters, setFilters }) => {
     tab = "m",
     order,
     isEdit,
-    sort
+    sort,
   } = router?.query || {};
 
   const [treatedData, setTreatedData] = useState({});
@@ -86,45 +94,32 @@ const Com = ({ data, error, mutate, filters, setFilters }) => {
     );
   };
 
-  const handleFilterChange = (v, k) => {
-    setFilters((prev) => ({
-      ...prev,
-      [k]: v,
-    }));
-  };
 
-  const handleSortChange = (k) => {
+  const handleSortChange = (newSortObj) => {
     const pathname = router?.asPath?.split("?")?.[0];
-    const newSortObj = {}
+    // const newSortObj = {};
     // only 1 sorting field currently
     // JSON.parse(JSON.stringify(sortObj || {}))
-    const [sortBy, dir] = sort?.split(":") || []
-    const sortObj = {
-      [sortBy]: dir
-    }
-    switch (sortObj[k]) {
-      case 'asc':
-        newSortObj[k] = 'desc'
-        break;
-      case 'desc':
-        delete newSortObj[k]
-        break;    
-      default:
-        newSortObj[k] = 'asc'
-        break;
-    }
 
     // assemble to like--- "w_Id:desc,m_WorkOrderNo:asc"
-    let newSort = _.keys(newSortObj)?.map(k =>  `${k}:${newSortObj[k]}`).join(',')
+    let newSort = undefined
+    if (newSortObj) {
+      newSort = `${newSortObj?.sortBy}:${newSortObj?.dir}`;
+    } 
+    const newQuery = { ...router.query, sort: newSort, p: undefined }
+    _.keys(newQuery)?.map(k => {
+      if (!newQuery[k]) delete newQuery[k]
+    })
+
     router.replace(
       {
         pathname,
-        query: { ...router.query, sort: newSort, p: undefined },
+        query: newQuery,
       },
       undefined,
       { shallow: true },
     );
-  }
+  };
 
   const handleCreate = () => {
     setIsShowCreate(true);
@@ -140,6 +135,8 @@ const Com = ({ data, error, mutate, filters, setFilters }) => {
     mutate("*");
     // endPoint
   };
+
+  const [sortBy, dir] = sort?.split(":") || [];
 
   // ====== consts
   return (
@@ -204,13 +201,19 @@ const Com = ({ data, error, mutate, filters, setFilters }) => {
             uiIsShowWindow,
             uiIsShowDoor,
             data: treatedData?.data,
+            applyFilter,
             filters,
-            onFilterChange: handleFilterChange,
-            sort,
-            onSort: handleSortChange
+            setFilters,
+            sort: {
+              sortBy,
+              dir,
+            }, 
+            onApplyFilter: (v) => setApplyFilter(v),
+            setSort: handleSortChange,
           }}
         />
       </div>
+
       <Modal_OrderEdit
         onHide={() => handleEdit()}
         onSave={handleSaveDone}

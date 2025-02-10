@@ -29,6 +29,7 @@ const Com = (props) => {
 
   // ====== search
   const [filters, setFilters] = useState({});
+  const [applyFilter, setApplyFilter] = useState(true)
   const { status, q, p = 0, facility, tab = "m", sort } = router?.query || {};
 
   const defaultTab = "m";
@@ -91,7 +92,7 @@ const Com = (props) => {
         field: k,
       };
     }),
-    ..._.keys(filters)?.map((k) => {
+    ..._.keys(applyFilter ? filters : {})?.map((k) => {
       return {
         operator: constants.FILTER_OPERATOR.Contains,
         value: filters[k],
@@ -160,6 +161,7 @@ const Com = (props) => {
                 {...{
                   filters,
                   setFilters,
+                  applyFilter, setApplyFilter,
                   data,
                   mutate,
                   sortObj

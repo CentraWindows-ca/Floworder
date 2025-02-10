@@ -8,7 +8,9 @@ import _ from "lodash";
 import { GeneralContext } from "lib/provider/GeneralProvider";
 
 import Dropdown_Custom from "components/atom/Dropdown_Custom";
-import SortingHead from "components/atom/SortingHead"
+import OrderByIcon from "components/atom/OrderByIcon";
+import TableSortable from "components/atom/TableSortable";
+import FiltersManager from "components/atom/TableSortable/FilterManager";
 
 import LoadingBlock from "components/atom/LoadingBlock";
 import LabelDisplay from "components/atom/LabelDisplay";
@@ -37,9 +39,11 @@ const Com = (props) => {
     uiIsShowWindow,
     uiIsShowDoor,
     filters,
-    onFilterChange,
+    setFilters,
+    applyFilter,
+    onApplyFilter,
     sort,
-    onSort,
+    setSort,
     isLoading,
   } = props;
 
@@ -75,7 +79,6 @@ const Com = (props) => {
   const columns = [
     {
       title: "Work Order",
-      dataIndex: "m_WorkOrderNo",
       key: "m_WorkOrderNo",
       fixed: "left",
       render: (text, record) => {
@@ -110,7 +113,6 @@ const Com = (props) => {
     },
     {
       title: "Current status",
-      dataIndex: "m_Status_display",
       key: "m_Status_display",
       initKey: "m_Status",
       onCell: (record) => ({
@@ -132,7 +134,6 @@ const Com = (props) => {
     },
     {
       title: "Windows status",
-      dataIndex: "w_Status_display",
       key: "w_Status_display",
       initKey: "w_Status",
       display: isWindow,
@@ -155,7 +156,6 @@ const Com = (props) => {
     },
     {
       title: "Doors status",
-      dataIndex: "d_Status_display",
       key: "d_Status_display",
       initKey: "d_Status",
       display: isDoor,
@@ -178,48 +178,41 @@ const Com = (props) => {
     },
     {
       title: "Branch",
-      dataIndex: "m_Branch",
       key: "m_Branch",
       width: 70,
     },
     {
       title: "Job Type",
-      dataIndex: "m_JobType",
       key: "m_JobType",
       width: 80,
     },
 
     {
       title: "Window Batch#",
-      dataIndex: "w_BatchNo",
       key: "w_BatchNo",
       display: isWindow,
       width: 110,
     },
     {
       title: "Window Block#",
-      dataIndex: "w_BlockNo",
       key: "w_BlockNo",
       display: isWindow,
       width: 110,
     },
     {
       title: "Door Batch#",
-      dataIndex: "d_BatchNo",
       key: "d_BatchNo",
       display: isDoor,
-      width: 90,
+      width: 100,
     },
     {
       title: "Door Block#",
-      dataIndex: "d_BlockNo",
       key: "d_BlockNo",
       display: isDoor,
-      width: 90,
+      width: 100,
     },
     {
       title: "Windows",
-      dataIndex: "m_NumberOfWindows",
       key: "m_NumberOfWindows",
       display: isWindow,
       className: "text-right",
@@ -227,7 +220,6 @@ const Com = (props) => {
     },
     {
       title: "Patio Doors",
-      dataIndex: "m_NumberOfPatioDoors",
       key: "m_NumberOfPatioDoors",
       display: isWindow,
       className: "text-right",
@@ -235,45 +227,40 @@ const Com = (props) => {
     },
     {
       title: "Doors",
-      dataIndex: "m_NumberOfDoors",
       key: "m_NumberOfDoors",
       display: isDoor,
       className: "text-right",
-      width: 80,
+      width: 70,
     },
     {
       title: "Others",
-      dataIndex: "m_NumberOfOthers",
       key: "m_NumberOfOthers",
       className: "text-right",
-      width: 80,
+      width: 70,
     },
     {
       title: "INV Status",
-      dataIndex: "m_InvStatus",
       key: "m_InvStatus",
-      width: 80,
+      width: 90,
     },
     {
       title: "Created On",
-      dataIndex: "m_CreatedAt_display",
       key: "m_CreatedAt_display",
-      width: 105
+      initKey: "m_CreatedAt",
+      width: 105,
     },
     {
       title: "Created By",
-      dataIndex: "m_CreatedBy",
       key: "m_CreatedBy",
     },
     {
       title: "Customer Date",
-      dataIndex: "m_CustomerDate_display",
       key: "m_CustomerDate_display",
-      width: 105
+      initKey: "m_CustomerDate",
+      width: 105,
     },
     {
       title: "Glass Ordered Date",
-      dataIndex: "w_GlassOrderedDate_display",
       key: "w_GlassOrderedDate_display",
       initKey: "w_GlassOrderedDate",
       display: isWindow,
@@ -328,9 +315,33 @@ const Com = (props) => {
   };
 
   return (
-    <div className={cn("w-full", styles.root)}>
-      <LoadingBlock isLoading={false}>
-        {/* <TableFullHeight
+    <>
+      <TableSortable
+        {...{
+          data: treatedData,
+          filters,
+          applyFilter,
+          setFilters,
+          columns,
+          sort,
+          setSort,
+          className: styles.table
+        }}
+      />
+      <FiltersManager
+        {...{
+          columns,
+          filters,
+          applyFilter,
+          onApplyFilter,
+          setFilters
+        }}
+      />
+    </>
+  );
+};
+
+/* <TableFullHeight
           size="small"
           dataSource={treatedData}
           columns={columns}
@@ -346,119 +357,5 @@ const Com = (props) => {
               ),
             },
           }}
-        />  */}
-        <table
-          className={cn(
-            styles.orderTable,
-            "table-sm table-hover table text-xs",
-          )}
-        >
-          <thead>
-            <tr>
-              {columns?.map((a) => {
-                const { title, key, dataIndex, width, initKey } = a;
-                const sortKey = initKey || key
-                return (
-                  <th key={key} style={{ width: width || "auto" }}>
-                    <div
-                      className={cn(styles.tableTitle, styles.sortableTitle)}
-                      onClick={() => onSort(sortKey)}
-                      title={`sort this column`}
-                    >
-                      <span>{title}</span>
-                      <span className={cn(styles.sortIcon)}>
-                        <OrderByIcon
-                        orderBy = {sort}
-                        col = {sortKey}
-                        />
-                      </span>
-                    </div>
-                  </th>
-                );
-              })}
-            </tr>
-            <tr>
-              {columns?.map((a) => {
-                const { key, initKey } = a;
-                return (
-                  <th key={`filter_${a.key}`}>
-                    <div style={{ padding: 2 }}>
-                      <Editable.EF_InputDebounce
-                        value={filters?.[initKey || key]}
-                        onChange={(v) => onFilterChange(v, initKey || key)}
-                        style={{ width: "100%" }}
-                        placeholder="--"
-                      />
-                    </div>
-                  </th>
-                );
-              })}
-            </tr>
-          </thead>
-          <tbody>
-            {treatedData?.map((a) => {
-              const { m_MasterId } = a;
-
-              return (
-                <tr key={m_MasterId}>
-                  {columns?.map((b) => {
-                    const { key, dataIndex, render, onCell, className } = b;
-
-                    let cell = onCell ? onCell(a) : null;
-
-                    if (typeof render === "function") {
-                      return (
-                        <React.Fragment key={key}>
-                          <td {...cell}>{render("", a, b)}</td>
-                        </React.Fragment>
-                      );
-                    }
-                    return (
-                      <td className={className} key={key} {...cell}>
-                        <div>
-                          <LabelDisplay>{a[dataIndex]}</LabelDisplay>
-                        </div>
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </LoadingBlock>
-    </div>
-  );
-};
-
-const OrderByIcon = ({ orderBy, col }) => {
-  const [curr_col, dir] = orderBy?.split(':') || [];
-
-  let iconClass = "";
-  if (curr_col !== col) {
-    iconClass = "fa-solid fa-sort text-blueGray-300";
-  } else if (dir === "asc") {
-    iconClass = "fa-solid fa-sort-up text-blue-600";
-  } else {
-    iconClass = "fa-solid fa-sort-down text-blue-600";
-  }
-
-  return (
-    <div
-      className={cn("inline-block")}
-      style={{ position: "relative", width: "10px", height: "10px", verticalAlign: "middle" }}
-    >
-      <i
-        className={cn("fa-solid fa-sort text-blueGray-200")}
-        style={{ fontSize: "10px", position: "absolute", left: "0px", right: "0px" }}
-      />
-      <i
-        className={cn(iconClass)}
-        style={{ fontSize: "10px", position: "absolute", left: "0px", right: "0px" }}
-      />
-    </div>
-  );
-};
-
-
+        />  */
 export default Com;

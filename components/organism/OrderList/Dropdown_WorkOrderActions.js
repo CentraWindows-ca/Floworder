@@ -59,7 +59,7 @@ const WorkOrderActions = ({ data, onEdit, onView, onUpdate, kind }) => {
       return null;
     }
 
-    await OrdersApi.deleteProductionsWorkOrderByWO(data);
+    await OrdersApi.softDeleteProductionsWorkOrder(data);
     onUpdate();
   });
 
@@ -91,7 +91,7 @@ const WorkOrderActions = ({ data, onEdit, onView, onUpdate, kind }) => {
         type="text"
         icon={<DeleteOutlined />}
         onClick={handleDelete}
-        disabled={true}
+        // disabled={true}
         title="not implemented"
       >
         Delete Order

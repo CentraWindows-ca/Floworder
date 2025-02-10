@@ -4,6 +4,8 @@ import _ from "lodash";
 
 import Editable from "components/molecule/Editable";
 import LoadingBlock from "components/atom/LoadingBlock";
+import { TableHeader } from "components/atom/TableSortable";
+
 // styles
 import styles from "../styles.module.scss";
 
@@ -14,6 +16,9 @@ const Com = ({ className, ...props }) => {
   const { data, glassTotal, glassItems, onChange, onHide } =
     useContext(LocalDataContext);
 
+  const [sort, setSort] = useState(null);
+  const [filters, setFilters] = useState(null);
+
   const jsxTitle = (
     <div className="flex gap-2">
       Glass Items
@@ -23,16 +28,98 @@ const Com = ({ className, ...props }) => {
     </div>
   );
 
+  const columns = [
+    {
+      title: "Received / Expected",
+      key: "receivedExpected",
+      width: 135,
+    },
+    {
+      title: "Rack ID",
+      key: "rackID",
+    },
+    {
+      title: "Rack Type",
+      key: "rackType",
+    },
+    {
+      title: "Qty On Rack",
+      key: "qty",
+    },
+    {
+      title: "Item",
+      key: "item",
+    },
+    {
+      title: "Description",
+      key: "description",
+    },
+    {
+      title: "Order Date",
+      key: "orderDate",
+    },
+    {
+      title: "Shipping Date",
+      key: "shipDate",
+    },
+    {
+      title: "Size",
+      key: "size",
+    },
+    {
+      title: "Position",
+      key: "position",
+    },
+    {
+      title: "Status",
+      key: "status",
+    },
+  ];
+
+  let sortedList = JSON.parse(JSON.stringify(glassItems || []));
+
+  // apply filter
+  sortedList = _.orderBy(sortedList, [sort?.sortBy], [sort?.dir])?.filter(
+    (a) => {
+      return _.every(
+        _.keys(filters)?.map((filterBy) => {
+          const filterValue = filters[filterBy];
+          if (!filterValue) return true;
+
+          switch (filterBy) {
+            case "rackID":
+            case "rackType":
+            case "qty":
+              const filteredRack = a?.rackInfo?.filter((ri) => {
+                return ri[filterBy]
+                  ?.toString()
+                  ?.toLowerCase()
+                  ?.includes(filterValue?.toLowerCase());
+              });
+              a.rackInfo = filteredRack;
+
+              console.log("rackinfo", filteredRack);
+
+              return !_.isEmpty(filteredRack);
+            default:
+              return a[filterBy]
+                ?.toLowerCase()
+                ?.includes(filterValue?.toLowerCase());
+          }
+        }),
+      );
+    },
+  );
+
   return (
     <ToggleBlock title={jsxTitle} id={"glassItems"}>
       {!_.isEmpty(glassItems) ? (
-        <div className="p-2">
-          <div className="mb-2 text-left">
-            <label >Windows</label>
+        <div className={styles.togglePadding}>
+          <div className={styles.itemSubTitle}>
+            <label>Windows</label>
           </div>
-          <table className="table-xs table-bordered table-hover mb-0 table border text-sm">
-            <thead className="bg-gray-100">
-              <tr>
+          <table className="table-xs table-bordered table-hover mb-0 table border text-xs">
+            {/* <thead className="bg-gray-100"><tr>
                 <td>Received / Expected</td>
                 <td>Rack ID</td>
                 <td>Rack Type</td>
@@ -44,26 +131,21 @@ const Com = ({ className, ...props }) => {
                 <td>Size</td>
                 <td>Position</td>
                 <td>Status</td>
-              </tr>
-            </thead>
+              </tr> </thead>*/}
+
+            <TableHeader
+              {...{
+                columns,
+                sort,
+                setSort,
+                filters,
+                setFilters,
+              }}
+            />
+
             <tbody>
-              {glassItems?.map((a, i) => {
-                const {
-                  workOrderNumber,
-                  item,
-                  shipDate,
-                  qty,
-                  glassQty,
-                  description,
-                  positionOption,
-                  size,
-                  position,
-                  supplierNo,
-                  orderDate,
-                  rackInfo,
-                  status,
-                  receivedExpected,
-                } = a;
+              {sortedList?.map((a, i) => {
+                const { workOrderNumber, item, rackInfo } = a;
 
                 if (_.isEmpty(rackInfo))
                   return (
@@ -113,7 +195,7 @@ const SingleRow = ({ data }) => {
       <td>{receivedExpected}</td>
       <td>--</td>
       <td>--</td>
-      <td>0</td>
+      <td className="text-right">0</td>
       <td>{item}</td>
       <td>{description}</td>
       <td>{orderDate}</td>
@@ -153,7 +235,7 @@ const MultiRow = ({ data }) => {
 
         <td>{rackID}</td>
         <td>{rackType}</td>
-        <td>{rackQty}</td>
+        <td className="text-right">{rackQty}</td>
         {j === 0 && (
           <>
             <td rowSpan={rowSpan}>{item}</td>

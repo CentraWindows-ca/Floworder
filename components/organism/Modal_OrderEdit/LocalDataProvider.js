@@ -53,7 +53,7 @@ export const LocalDataProvider = ({
   const [glassItems, setGlassItems] = useState(null);
 
   const [uiOrderType, setUiOrderType] = useState({});
-  const [uiShowMore, setUiShowMore] = useState(false);
+  const [uiShowMore, setUiShowMore] = useState(true);
 
   const [initData, setInitData] = useState(null);
 

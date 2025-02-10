@@ -10,7 +10,7 @@ import styles from "../styles.module.scss";
 import utils from "lib/utils";
 
 import { LocalDataContext } from "../LocalDataProvider";
-import { ToggleBlock, DisplayBlock } from "../Com";
+import { ToggleBlock, DisplayBlock, NoData } from "../Com";
 
 const Com = ({ className, title, id, ...props }) => {
   const {
@@ -56,13 +56,13 @@ const Com = ({ className, title, id, ...props }) => {
 
   return (
     <ToggleBlock title={jsxTitle} id={id}>
-      <div className="p-2">
-        <div className="justify-content-between align-items-center mb-2 flex">
-          {isEditable && (
+      <div className={styles.togglePadding}>
+        {isEditable && (
+          <div className="justify-content-between align-items-center mb-2 flex pb-2 border-b border-gray-200">
             <div>
               <label
                 htmlFor="file-upload"
-                className="btn btn-outline-secondary btn-xs"
+                className="btn btn-success btn-sm"
               >
                 Upload Files
               </label>
@@ -75,67 +75,71 @@ const Com = ({ className, title, id, ...props }) => {
                 onChange={handleImageChange}
               />
             </div>
-          )}
-        </div>
-        <table className="table-xs table-bordered table-hover mb-0 table border text-sm">
-          <tbody>
-            {existingAttachments?.map((a) => {
-              const {
-                submittedBy,
-                fileName,
-                fileType,
-                fileRawData,
-                notes,
-                id,
-              } = a;
-              const size = utils.formatNumber(
-                utils.calculateFileSize(fileRawData) / 1024 || 0,
-              );
+          </div>
+        )}
+        {!_.isEmpty(existingAttachments) ? (
+          <table className="table-xs table-bordered table-hover mb-0 table border text-xs">
+            <tbody>
+              {existingAttachments?.map((a) => {
+                const {
+                  submittedBy,
+                  fileName,
+                  fileType,
+                  fileRawData,
+                  notes,
+                  id,
+                } = a;
+                const size = utils.formatNumber(
+                  utils.calculateFileSize(fileRawData) / 1024 || 0,
+                );
 
-              return (
-                <tr key={`${title}_${id}`}>
-                  <td className="text-center" style={{ width: 120 }}>
-                    <span
-                      className="text-blue-500 hover:text-blue-400"
-                      style={{ cursor: "pointer" }}
-                      onClick={() =>
-                        utils.downloadFile(fileRawData, fileName, fileType)
-                      }
-                    >
-                      {fileName}
-                    </span>
-                  </td>
-                  <td className="text-right" style={{ width: 120 }}>
-                    {size} KB
-                  </td>
-                  <td className="text-left">
-                    <b>[{submittedBy}]:</b>
-                    <br /> {notes || "--"}
-                  </td>
-                  <td style={{ width: 60 }}>
-                    <button
-                      className="btn btn-xs btn-danger"
-                      disabled={!isEditable}
-                      onClick={() => onDeleteAttachment(a)}
-                    >
-                      delete
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                return (
+                  <tr key={`${title}_${id}`}>
+                    <td className="text-center" style={{ width: 120 }}>
+                      <span
+                        className="text-blue-500 hover:text-blue-400"
+                        style={{ cursor: "pointer" }}
+                        onClick={() =>
+                          utils.downloadFile(fileRawData, fileName, fileType)
+                        }
+                      >
+                        {fileName}
+                      </span>
+                    </td>
+                    <td className="text-right" style={{ width: 120 }}>
+                      {size} KB
+                    </td>
+                    <td className="text-left">
+                      <b>[{submittedBy}]:</b>
+                      <br /> {notes || "--"}
+                    </td>
+                    <td style={{ width: 60 }}>
+                      <button
+                        className="btn btn-xs btn-danger"
+                        disabled={!isEditable}
+                        onClick={() => onDeleteAttachment(a)}
+                      >
+                        delete
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        ) : (
+          <NoData />
+        )}
       </div>
 
       <Modal
         show={newAttachments}
-        size="md"
+        size="lg"
         onHide={() => setNewAttachments(null)}
       >
         <div>
           <div>
-            <table className="table-sm table-bordered table-hover table border text-sm">
+            <table className="table-xs table-bordered table-hover table border text-xs">
               <thead>
                 <tr>
                   <th>File Name</th>

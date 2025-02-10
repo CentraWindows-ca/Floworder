@@ -223,16 +223,17 @@ export const EF_Input = React.memo(
 );
 
 export const EF_InputDebounce = React.memo(
-  ({ onChange, value, className, ...props }) => {
+  ({ onChange, value, className, disabled, ...props }) => {
     const handleChange = (e) => {
       onChange(e.target.value);
     };
 
     return (
       <DebouncedInput
-        className={cn("", className, value ? "bg-blue-100": null)}
+        className={cn("", className, (value && !disabled) ? "bg-blue-100": null)}
         onChange={handleChange}
         value={value || ""}
+        disabled = {disabled}
         {...props}
       />
     );
@@ -254,7 +255,7 @@ export const EF_Text = React.memo(({ onChange, value, ...props }) => {
   );
 }, preventUpdate);
 
-export const EF_Checkbox = React.memo(({ onChange, value, ...props }) => {
+export const EF_Checkbox = React.memo(({ onChange, value, className, ...props }) => {
   const handleChange = (e) => {
     onChange(e.target.checked);
   };
@@ -263,7 +264,7 @@ export const EF_Checkbox = React.memo(({ onChange, value, ...props }) => {
 
   return (
     <input
-      className="form-check-input cursor-pointer"
+      className={cn("form-check-input cursor-pointer", className)}
       type="checkbox"
       checked={checked}
       onChange={handleChange}

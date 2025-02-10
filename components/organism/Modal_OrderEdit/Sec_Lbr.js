@@ -12,16 +12,10 @@ import { LocalDataContext } from "./LocalDataProvider";
 import { DisplayBlock , displayFilter} from "./Com";
 
 const COMMON_FIELDS = [
-  {
-    title: "Total LBR Min",
-    id: "m_TotalLBRMin",
-  },
+
 ];
 const WINDOW_FIELDS = [
-  {
-    title: "Window LBR Min",
-    id: "w_TotalLBRMin",
-  },
+
   {
     title: "26CA",
     id: "w__26CA",
@@ -106,10 +100,7 @@ const WINDOW_FIELDS = [
   },
 ];
 const DOOR_FIELDS = [
-  {
-    title: "Door LBR Min",
-    id: "d_TotalLBRMin",
-  },
+
 ];
 
 const Com = ({ className, ...props }) => {

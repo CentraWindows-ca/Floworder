@@ -1,0 +1,110 @@
+@use "styles/theme" as *;
+
+.root {
+    border: 1px solid $color_border_table;
+    border-top: none;
+    border-bottom: none;
+}
+
+.orderTable>:not(caption)>*>* {
+    border-bottom-width: 0;
+    padding: 0px;
+
+    &>div {
+        padding: 5px;
+    }
+}
+
+.thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    th,
+    td {
+        background-color: $color_background_tableHeader;
+        padding: 0px;
+        &>div {
+            // border-right: 1px solid $color_border_table;
+            border-bottom: 1px solid $color_border_table;
+        }
+
+        z-index: 2;
+    }
+
+    tr:first-child {
+
+        th>div,
+        td>div {
+            border-top: 1px solid $color_border_table;
+        }
+    }
+
+    th:last-child,
+    td:last-child {
+        border-right: none
+    }
+
+    .tableTitle {
+        transition: background-color 0.3s;
+    }
+
+    .sortableTitle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0;
+
+        .sortTitle {
+            padding-left: 5px;
+        }
+    }
+
+
+}
+
+.orderTable {
+    width: max-content;
+    table-layout: fixed;
+    min-width: 100%;
+
+
+    th:first-child,
+    td:first-child {
+        position: sticky;
+        left: 0;
+        background-color: white; // Prevents content from being overlapped  
+
+        &>div {
+            border-right: 3px double $color_gray;
+        }
+    }
+
+    td:first-child {
+        z-index: 1; // Ensures it stays above other columns when scrolling
+    }
+
+
+    th:first-child {
+        background-color: $color_background_tableHeader;
+    }
+
+    tbody td {
+        border-bottom: 1px solid $color_border_table;
+    }
+}
+
+.FiltersManager {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding-top: 10px;
+
+    .filterBadge {
+        &:hover {
+            i {
+                color: $color_red;
+            }
+        }
+    }
+}

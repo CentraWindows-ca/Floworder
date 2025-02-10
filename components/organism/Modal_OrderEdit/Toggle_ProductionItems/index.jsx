@@ -4,6 +4,7 @@ import _ from "lodash";
 
 import Editable from "components/molecule/Editable";
 import LoadingBlock from "components/atom/LoadingBlock";
+import TableSortable from "components/atom/TableSortable";
 // styles
 import styles from "../styles.module.scss";
 
@@ -13,11 +14,8 @@ import Modal_ItemEdit from "./Modal_ItemEdit";
 
 const Com = ({ className, title, id, ...props }) => {
   const {
-    data,
     windowItems,
     doorItems,
-    onChange,
-    onHide,
     onUpdateDoorItem,
     onUpdateWindowItem,
     isEditable,
@@ -35,13 +33,6 @@ const Com = ({ className, title, id, ...props }) => {
       GL: 0,
     };
 
-    /*
-      W: not 52PD, 61DR
-      PD: 52PD
-      VD: 61DR
-      ED: door items
-      GL: GL01
-    */
     windowItems?.map((a) => {
       const { System } = a;
       switch (System) {
@@ -63,16 +54,6 @@ const Com = ({ className, title, id, ...props }) => {
     setStats(_stats);
   }, [windowItems, doorItems]);
 
-  const jsxTitle = (
-    <div className="flex gap-2">
-      {title}
-      <div className="text-primary font-normal">
-        W: {stats.W} | PD: {stats.PD} | VD: {stats.VD} | ED: {stats.ED} | GL:{" "}
-        {stats.GL}
-      </div>
-    </div>
-  );
-
   const handleShowItem = (item, kind) => {
     setEditingItem({ ...item, kind });
   };
@@ -91,229 +72,331 @@ const Com = ({ className, title, id, ...props }) => {
     setEditingItem(null);
   };
 
+  const jsxTitle = (
+    <div className="flex gap-2">
+      {title}
+      <div className="text-primary font-normal">
+        W: {stats.W} | PD: {stats.PD} | VD: {stats.VD} | ED: {stats.ED} | GL:{" "}
+        {stats.GL}
+      </div>
+    </div>
+  );
+
   return (
     <>
       <ToggleBlock title={jsxTitle} id={id}>
-        {!_.isEmpty(windowItems) && (
-          <DisplayBlock id="WIN.windowItems">
-            <div className="p-2">
-              <div className="mb-2 text-left">
-                <label >Windows</label>
-              </div>
-              <table className="table-xs table-bordered table-hover mb-0 table border text-sm">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <td style={{width: 60}}>Item</td>
-                    <td style={{width: 160}}>Size</td>
-                    <td style={{width: 60}}>Qty</td>
-                    <td style={{width: 60}}>SubQty</td>
-                    <td style={{width: 70}}>System</td>
-                    <td style={{width: 160}}>Description</td>
-                    <td style={{width: 80}}>High Risk</td>
-                    <td style={{width: 60}}>Custom</td>
-                    <td style={{width: 60}}>BTO</td>
-                    <td>Notes</td>
-                    <td style={{width: 60}}>Location</td>
-                    <td style={{width: 120}}>Status</td>
-                    <td style={{width: 80}}></td>
-                  </tr>
-                </thead>
-                <tbody>
-                  {windowItems?.map((a) => {
-                    const { Id } = a;
-                    return (
-                      <TableRowWindow
-                        key={`${title}_${Id}`}
-                        data={a}
-                        kind="w"
-                        onShowEdit={handleShowItem}
-                        onSave={handleSaveItem}
-                      />
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </DisplayBlock>
-        )}
-        {!_.isEmpty(doorItems) && (
-          <DisplayBlock id="DOOR.doorItems">
-            <div className="p-2">
-              <div className="mb-2 text-left">
-                <label >Doors</label>
-              </div>
-              <table className="table-xs table-bordered table-hover mb-0 table border text-sm">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <td style={{width: 60}}>Item</td>
-                    <td style={{width: 160}}>Size</td>
-                    <td style={{width: 60}}>Qty</td>
-                    <td style={{width: 60}}>SubQty</td>
-                    <td style={{width: 70}}>System</td>
-                    <td style={{width: 160}}>Description</td>
-                    <td style={{width: 60}}>BTO</td>
-                    <td >Notes</td>
-                    <td style={{width: 60}}>Location</td>
-                    <td style={{width: 120}}>Status</td>
-                    <td style={{width: 80}}></td>
-                  </tr>
-                </thead>
-                <tbody>
-                  {doorItems?.map((a) => {
-                    const { Id } = a;
-                    return (
-                      <TableRowDoor
-                        key={`${title}_${Id}`}
-                        data={a}
-                        kind="d"
-                        onShowEdit={handleShowItem}
-                        onSave={handleSaveItem}
-                        isEditable = {isEditable}
-                      />
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </DisplayBlock>
-        )}
+        <TableWindow
+          {...{
+            handleShowItem,
+          }}
+        />
+        <TableDoor
+          {...{
+            handleShowItem,
+          }}
+        />
+        
       </ToggleBlock>
       <Modal_ItemEdit
         onSave={handleSaveItem}
         onHide={handleCloseItem}
         initItem={editingItem}
-        isEditable = {isEditable}
+        isEditable={isEditable}
       />
     </>
   );
 };
 
-const TableRowWindow = ({ data, kind, onShowEdit, onSave, isEditable }) => {
+const TableWindow = ({ handleShowItem }) => {
   const {
-    Item,
-    Size,
-    Quantity,
-    SubQty,
-    System,
-    Description,
-    HighRisk,
-    Custom,
-    BTO,
-    Notes,
-    RackLocation,
-    Status,
-    Id,
-  } = data;
-  const handleChange = async (v, id) => {
-    onSave(
-      Id,
-      {
-        [id]: v,
+    windowItems,
+    doorItems,
+    onUpdateDoorItem,
+    onUpdateWindowItem,
+    isEditable,
+  } = useContext(LocalDataContext);
+
+  const data = windowItems
+
+  const [filters, setFilters] = useState({});
+  const [sort, setSort] = useState({});
+  const columnsWindow = [
+    {
+      title: "Item",
+      key: "Item",
+      width: 60,
+    },
+    {
+      title: "Size",
+      key: "Size",
+      width: 160,
+    },
+    {
+      title: "Qty",
+      key: "Quantity",
+      width: 60,
+    },
+    {
+      title: "SubQty",
+      key: "SubQty",
+      width: 70,
+    },
+    {
+      title: "System",
+      key: "System",
+      width: 70,
+    },
+    {
+      title: "Description",
+      key: "Description",
+    },
+    {
+      title: "High Risk",
+      key: "HighRisk",
+      width: 80,
+      render: (t, record) => {
+        return (
+          <Editable.EF_Checkbox_Yesno
+            {...{
+              id: "wi_HighRisk",
+              value: record.HighRisk,
+              onChange: (v) =>
+                onUpdateWindowItem(record?.Id, { HighRisk: v }, "w"),
+              disabled: !isEditable,
+            }}
+          />
+        );
       },
-      kind,
-    );
-  };
+    },
+    {
+      title: "Custom",
+      key: "Custom",
+      width: 70,
+      render: (t, record) => {
+        return (
+          <Editable.EF_Checkbox_Yesno
+            {...{
+              id: "wi_Custom",
+              value: record.Custom,
+              onChange: (v) =>
+                onUpdateWindowItem(record?.Id, { Custom: v }, "w"),
+              disabled: !isEditable,
+            }}
+          />
+        );
+      },
+    },
+    {
+      title: "BTO",
+      key: "BTO",
+      width: 50,
+      render: (t, record) => {
+        return (
+          <Editable.EF_Checkbox_Yesno
+            {...{
+              id: "wi_BTO",
+              value: record.BTO,
+              onChange: (v) => onUpdateWindowItem(record?.Id, { BTO: v }, "w"),
+              disabled: !isEditable,
+            }}
+          />
+        );
+      },
+    },
+
+    {
+      title: "Notes",
+      key: "Notes",
+    },
+    {
+      title: "Location",
+      key: "RackLocation",
+      width: 75,
+    },
+    {
+      title: "Status",
+      key: "Status",
+    },
+    {
+      title: "",
+      key: "",
+      render: (t, record) => {
+        return (
+          <button onClick={() => handleShowItem(record, "w")}>Detail</button>
+        );
+      },
+      width: 60,
+      isNotTitle: true,
+    },
+  ];
+
+  // apply filter
+  const sortedList = _.orderBy(data, [sort?.sortBy], [sort?.dir])?.filter(
+    (a) => {
+      return _.every(
+        _.keys(filters)?.map((filterBy) => {
+          const filterValue = filters[filterBy];
+          if (!filterValue) {
+            return true;
+          }
+          return a[filterBy]
+            ?.toLowerCase()
+            ?.includes(filterValue?.toLowerCase());
+        }),
+      );
+    },
+  );
+
   return (
-    <tr>
-      <td>{Item}</td>
-      <td>{Size}</td>
-      <td>{Quantity}</td>
-      <td>{SubQty}</td>
-      <td>{System}</td>
-      <td>{Description}</td>
-      <td>
-        <Editable.EF_Checkbox_Yesno
-          {...{
-            id: "HighRisk",
-            value: HighRisk,
-            onChange: (v) => handleChange(v, "HighRisk"),
-            disabled: !isEditable
-          }}
-        />
-      </td>
-      <td>
-        <Editable.EF_Checkbox_Yesno
-          {...{
-            id: "Custom",
-            value: Custom,
-            onChange: (v) => handleChange(v, "Custom"),
-            disabled: !isEditable
-          }}
-        />
-      </td>
-      <td>
-        <Editable.EF_Checkbox_Yesno
-          {...{
-            id: "BTO",
-            value: BTO,
-            onChange: (v) => handleChange(v, "BTO"),
-            disabled: !isEditable
-          }}
-        />
-      </td>
-      <td>{Notes}</td>
-      <td>{RackLocation}</td>
-      <td>{Status}</td>
-      <td>
-        <button onClick={() => onShowEdit(data, kind)}>Detail</button>
-      </td>
-    </tr>
+    !_.isEmpty(data) && (
+      <DisplayBlock id="WIN.windowItems">
+        <div className={styles.togglePadding}>
+          <div className={styles.itemSubTitle}>
+            <label>Windows</label>
+          </div>
+          <TableSortable
+            {...{
+              data: sortedList,
+              columns: columnsWindow,
+              sort,
+              setSort,
+              filters,
+              setFilters,
+              keyField: "Id",
+              className: "text-left",
+            }}
+          />
+        </div>
+      </DisplayBlock>
+    )
   );
 };
 
-const TableRowDoor = ({ data, kind, onShowEdit, onSave, isEditable }) => {
+const TableDoor = ({ handleShowItem }) => {
   const {
-    Item,
-    Size,
-    Quantity,
-    SubQty,
-    System,
-    Description,
-    HighRisk,
-    Custom,
-    BTO,
-    Notes,
-    Status,
-    RackLocation,
-    Id,
-  } = data;
-  const handleChange = async (v, id) => {
-    onSave(
-      Id,
-      {
-        [id]: v,
+    doorItems,
+    onUpdateDoorItem,
+    isEditable,
+  } = useContext(LocalDataContext);
+
+  const data = doorItems
+
+  const [filters, setFilters] = useState({});
+  const [sort, setSort] = useState({});
+  const columns = [
+    {
+      title: "Item",
+      key: "Item",
+      width: 60,
+    },
+    {
+      title: "Size",
+      key: "Size",
+      width: 160,
+    },
+    {
+      title: "Qty",
+      key: "Quantity",
+      width: 60,
+    },
+    {
+      title: "SubQty",
+      key: "SubQty",
+      width: 70,
+    },
+    {
+      title: "System",
+      key: "System",
+      width: 70,
+    },
+    {
+      title: "Description",
+      key: "Description",
+    },
+
+    {
+      title: "BTO",
+      key: "BTO",
+      width: 50,
+      render: (t, record) => {
+        return (
+          <Editable.EF_Checkbox_Yesno
+            {...{
+              id: "di_BTO",
+              value: record.BTO,
+              onChange: (v) => onUpdateDoorItem(record?.Id, { BTO: v }, "d"),
+              disabled: !isEditable,
+            }}
+          />
+        );
       },
-      kind,
-    );
-  };
+    },
+    {
+      title: "Notes",
+      key: "Notes",
+    },
+    {
+      title: "Location",
+      key: "RackLocation",
+      width: 75,
+    },
+    {
+      title: "Status",
+      key: "Status",
+    },
+    {
+      title: "",
+      key: "",
+      render: (t, record) => {
+        return (
+          <button onClick={() => handleShowItem(record, "d")}>Detail</button>
+        );
+      },
+      width: 60,
+      isNotTitle: true,
+    },
+  ];
+
+  // apply filter
+  const sortedList = _.orderBy(data, [sort?.sortBy], [sort?.dir])?.filter(
+    (a) => {
+      return _.every(
+        _.keys(filters)?.map((filterBy) => {
+          const filterValue = filters[filterBy];
+          if (!filterValue) {
+            return true;
+          }
+          return a[filterBy]
+            ?.toLowerCase()
+            ?.includes(filterValue?.toLowerCase());
+        }),
+      );
+    },
+  );
+
   return (
-    <tr>
-      <td>{Item}</td>
-      <td>{Size}</td>
-      <td>{Quantity}</td>
-      <td>{SubQty}</td>
-      <td>{System}</td>
-      <td>{Description}</td>
-      <td>
-        <Editable.EF_Checkbox_Yesno
-          {...{
-            id: "BTO",
-            value: BTO,
-            onChange: (v) => handleChange(v, "BTO"),
-            disabled: !isEditable
-          }}
-        />
-      </td>
-      <td>{Notes}</td>
-      <td>{RackLocation}</td>
-      <td>{Status}</td>
-      <td>
-        <button onClick={() => onShowEdit(data, kind)}>Detail</button>
-      </td>
-    </tr>
+    !_.isEmpty(data) && (
+      <DisplayBlock id="DOOR.doorItems">
+        <div className={styles.togglePadding}>
+          <div className={styles.itemSubTitle}>
+            <label>Doors</label>
+          </div>
+          <TableSortable
+            {...{
+              data: sortedList,
+              columns,
+              sort,
+              setSort,
+              filters,
+              setFilters,
+              keyField: "Id",
+              className: "text-left",
+            }}
+          />
+        </div>
+      </DisplayBlock>
+    )
   );
 };
-
-
 
 export default Com;

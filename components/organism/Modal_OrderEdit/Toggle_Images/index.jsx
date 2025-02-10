@@ -10,7 +10,7 @@ import styles from "../styles.module.scss";
 import utils from "lib/utils";
 
 import { LocalDataContext } from "../LocalDataProvider";
-import { ToggleBlock, DisplayBlock } from "../Com";
+import { ToggleBlock, NoData } from "../Com";
 
 const Com = ({ className, title, id, ...props }) => {
   const {
@@ -58,14 +58,11 @@ const Com = ({ className, title, id, ...props }) => {
 
   return (
     <ToggleBlock title={jsxTitle} id={id}>
-      <div className="p-2">
-        <div className="justify-content-between align-items-center mb-2 flex">
-          {isEditable && (
+      <div className={styles.togglePadding}>
+        {isEditable && (
+          <div className="justify-content-between align-items-center mb-2 flex border-b border-gray-200 pb-2">
             <div>
-              <label
-                htmlFor="image-upload"
-                className="btn btn-outline-secondary btn-xs"
-              >
+              <label htmlFor="image-upload" className="btn btn-success btn-sm">
                 Upload Images
               </label>
 
@@ -77,68 +74,62 @@ const Com = ({ className, title, id, ...props }) => {
                 onChange={handleImageChange}
               />
             </div>
-          )}
-        </div>
-        <table className="table-xs table-bordered table-hover mb-0 table border text-sm">
-          <tbody>
-            {existingImages?.map((a) => {
-              const {
-                submittedBy,
-                fileName,
-                fileType,
-                fileRawData,
-                notes,
-                id,
-              } = a;
-              const size = utils.formatNumber(
-                utils.calculateFileSize(fileRawData) / 1024 || 0,
-              );
+          </div>
+        )}
+        {!_.isEmpty(existingImages) ? (
+          <table className="table-xs table-bordered table-hover mb-0 table border text-xs">
+            <tbody>
+              {existingImages?.map((a) => {
+                const {
+                  submittedBy,
+                  fileName,
+                  fileType,
+                  fileRawData,
+                  notes,
+                  id,
+                } = a;
+                const size = utils.formatNumber(
+                  utils.calculateFileSize(fileRawData) / 1024 || 0,
+                );
 
-              return (
-                <tr key={`${title}_${id}`}>
-                  <td className="text-center" style={{ width: 120 }}>
-                    {/* <span
-                      className="text-blue-500 hover:text-blue-400"
-                      style={{ cursor: "pointer" }}
-                      onClick={() =>
-                        utils.downloadFile(fileRawData, fileName, fileType)
-                      }
-                    >
-                      {fileName}
-                    </span> */}
-
-                    <ImagePreview
-                      base64Data={fileRawData}
-                      mimeType={fileType}
-                    />
-                  </td>
-                  <td className="text-right" style={{ width: 120 }}>
-                    {size} KB
-                  </td>
-                  <td className="text-left">
-                    <b>[{submittedBy}]:</b>
-                    <br /> {notes || "--"}
-                  </td>
-                  <td style={{ width: 60 }}>
-                    <button
-                      className="btn btn-xs btn-danger"
-                      disabled={!isEditable}
-                      onClick={() => onDeleteImage(a)}
-                    >
-                      delete
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                return (
+                  <tr key={`${title}_${id}`}>
+                    <td className="text-center" style={{ width: 120 }}>
+                      <ImagePreview
+                        base64Data={fileRawData}
+                        mimeType={fileType}
+                      />
+                    </td>
+                    <td className="text-right" style={{ width: 200 }}>
+                      {size} KB
+                    </td>
+                    <td className="text-left">
+                      <b>[{submittedBy}]:</b>
+                      <br /> {notes || "--"}
+                    </td>
+                    <td style={{ width: 60 }}>
+                      <button
+                        className="btn btn-xs btn-danger"
+                        disabled={!isEditable}
+                        onClick={() => onDeleteImage(a)}
+                      >
+                        delete
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        ) : (
+          <NoData />
+        )}
       </div>
 
-      <Modal show={newImages} size="md" onHide={() => setNewImages(null)}>
+      <Modal show={newImages} size="lg" onHide={() => setNewImages(null)}>
         <div>
           <div>
-            <table className="table-sm table-bordered table-hover table border text-sm">
+            <table className="table-sm table-bordered table-hover table border text-xs">
               <thead>
                 <tr>
                   <th>Image</th>
@@ -154,7 +145,7 @@ const Com = ({ className, title, id, ...props }) => {
                     <tr key={`${name}_${i}`}>
                       <td>{name}</td>
                       <td className="text-right">
-                        {utils.formatNumber(size)} KB
+                        {utils.formatNumber(size / 1024)} KB
                       </td>
                       <td>
                         <input

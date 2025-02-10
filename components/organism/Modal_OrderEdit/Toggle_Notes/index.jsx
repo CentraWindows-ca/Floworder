@@ -8,22 +8,26 @@ import LoadingBlock from "components/atom/LoadingBlock";
 import styles from "./styles.module.scss";
 
 import { LocalDataContext } from "../LocalDataProvider";
-import { ToggleFull, ToggleBlock, DisplayBlock, displayFilter } from "../Com";
+import {
+  ToggleFull,
+  ToggleBlock,
+  NoData,
+  DisplayBlock,
+  displayFilter,
+} from "../Com";
 
 const Com = ({ className, ...props }) => {
   const { data, kind, uiOrderType, onChange, isEditable, onHide } =
     useContext(LocalDataContext);
 
   const displayNotes = [
-    { title: "Shipping", id: "m_ShippingNotes" },
+    { title: "Shipping Notes", id: "m_ShippingNotes" },
+    { title: "Project Manager Notes", id: "m_ProjectManagementNotes" },
+    { title: "Returned Job", id: "m_ReturnTripNotes" },
     { title: "Window Office Notes", id: "w_OfficeNotes" },
-    { title: "Door Office Notes", id: "d_OfficeNotes" },
     { title: "Window Plant Notes", id: "w_PlantNotes" },
-    { title: "Door Plant Notes", id: "d_PlantNotes" },
-    { title: "Project Notes", id: "m_ProjectManagementNotes" },
+    { title: "Door Office Notes", id: "d_OfficeNotes" },
     { title: "Door Shop", id: "d_DoorShopNotes" },
-    { title: "Window Returned Job", id: "w_ReturnTripNotes" },
-    { title: "Door Returned Job", id: "d_ReturnTripNotes" },
   ];
 
   let collapsedList = displayNotes.filter((a) => {
@@ -33,24 +37,31 @@ const Com = ({ className, ...props }) => {
   collapsedList = displayFilter(collapsedList, { kind, uiOrderType });
 
   const jsxClose = (
-    <div className={cn("flex-column flex gap-2 text-left", styles.collapsedContainer)}>
-      {collapsedList?.length > 0
-        ? collapsedList?.map((a) => {
-            const { id, title } = a;
-            return (
-              <DisplayBlock id={id} key={id}>
-                <div className="flex gap-2">
-                  <b>[{title}]</b>:{" "}
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: data?.[id],
-                    }}
-                  />
-                </div>
-              </DisplayBlock>
-            );
-          })
-        : <div className="text-blueGray-400 text-center">-- No Note Created --</div>}
+    <div
+      className={cn(
+        "flex-column flex gap-2 text-left",
+        styles.collapsedContainer,
+      )}
+    >
+      {collapsedList?.length > 0 ? (
+        collapsedList?.map((a) => {
+          const { id, title } = a;
+          return (
+            <DisplayBlock id={id} key={id}>
+              <div className="flex gap-2">
+                <b>[{title}]</b>:{" "}
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: data?.[id],
+                  }}
+                />
+              </div>
+            </DisplayBlock>
+          );
+        })
+      ) : (
+        <NoData title="No Note Created" />
+      )}
     </div>
   );
 
@@ -78,7 +89,7 @@ const Com = ({ className, ...props }) => {
                   "justify-content-between align-items-center flex",
                 )}
               >
-                <label>Shipping</label>
+                <label>Shipping Notes</label>
                 {/* <button disabled={!isEditable} className="btn btn-primary btn-xs">
                 Save
               </button> */}
@@ -93,84 +104,6 @@ const Com = ({ className, ...props }) => {
             </div>
           </DisplayBlock>
           {/* notes */}
-          <DisplayBlock id="w_OfficeNotes">
-            <div>
-              <div
-                className={cn(
-                  styles.notesHeader,
-                  "justify-content-between align-items-center flex",
-                )}
-              >
-                <label>Window Office Notes</label>
-              </div>
-              <Editable.EF_Text
-                k="w_OfficeNotes"
-                value={data?.w_OfficeNotes}
-                onChange={(v) => onChange(v, "w_OfficeNotes")}
-                disabled={!isEditable}
-                rows={2}
-              />
-            </div>
-          </DisplayBlock>
-          <DisplayBlock id="d_OfficeNotes">
-            <div>
-              <div
-                className={cn(
-                  styles.notesHeader,
-                  "justify-content-between align-items-center flex",
-                )}
-              >
-                <label>Door Office Notes</label>
-              </div>
-              <Editable.EF_Text
-                k="d_OfficeNotes"
-                value={data?.d_OfficeNotes}
-                onChange={(v) => onChange(v, "d_OfficeNotes")}
-                disabled={!isEditable}
-                rows={2}
-              />
-            </div>
-          </DisplayBlock>
-          {/* notes */}
-          <DisplayBlock id="w_PlantNotes">
-            <div>
-              <div
-                className={cn(
-                  styles.notesHeader,
-                  "justify-content-between align-items-center flex",
-                )}
-              >
-                <label>Window Plant Notes</label>
-              </div>
-              <Editable.EF_Text
-                k="w_PlantNotes"
-                value={data?.w_PlantNotes}
-                onChange={(v) => onChange(v, "w_PlantNotes")}
-                disabled={!isEditable}
-                rows={2}
-              />
-            </div>
-          </DisplayBlock>
-          <DisplayBlock id="d_PlantNotes">
-            <div>
-              <div
-                className={cn(
-                  styles.notesHeader,
-                  "justify-content-between align-items-center flex",
-                )}
-              >
-                <label>Door Plant Notes</label>{" "}
-              </div>
-              <Editable.EF_Text
-                k="d_PlantNotes"
-                value={data?.d_PlantNotes}
-                onChange={(v) => onChange(v, "d_PlantNotes")}
-                disabled={!isEditable}
-                rows={2}
-              />
-            </div>
-          </DisplayBlock>
-          {/* notes */}
           <DisplayBlock id="m_ProjectManagementNotes">
             <div>
               <div
@@ -179,7 +112,7 @@ const Com = ({ className, ...props }) => {
                   "justify-content-between align-items-center flex",
                 )}
               >
-                <label>Project Notes</label>
+                <label>Project Manager Notes</label>
               </div>
               <Editable.EF_Text
                 k="m_ProjectManagementNotes"
@@ -190,28 +123,7 @@ const Com = ({ className, ...props }) => {
               />
             </div>
           </DisplayBlock>
-          {/* notes */}
-          <DisplayBlock id="d_DoorShopNotes">
-            <div>
-              <div
-                className={cn(
-                  styles.notesHeader,
-                  "justify-content-between align-items-center flex",
-                )}
-              >
-                <label>Door Shop</label>
-              </div>
-              <Editable.EF_Text
-                k="d_DoorShopNotes"
-                value={data?.d_DoorShopNotes}
-                onChange={(v) => onChange(v, "d_DoorShopNotes")}
-                disabled={!isEditable}
-                rows={2}
-              />
-            </div>
-          </DisplayBlock>
-          {/* notes */}
-          <DisplayBlock id="w_ReturnTripNotes">
+          <DisplayBlock id="m_ReturnTripNotes">
             <div>
               <div
                 className={cn(
@@ -239,6 +151,87 @@ const Com = ({ className, ...props }) => {
               />
             </div>
           </DisplayBlock>
+
+          {/* notes */}
+          <DisplayBlock id="w_OfficeNotes">
+            <div>
+              <div
+                className={cn(
+                  styles.notesHeader,
+                  "justify-content-between align-items-center flex",
+                )}
+              >
+                <label>Window Office Notes</label>
+              </div>
+              <Editable.EF_Text
+                k="w_OfficeNotes"
+                value={data?.w_OfficeNotes}
+                onChange={(v) => onChange(v, "w_OfficeNotes")}
+                disabled={!isEditable}
+                rows={2}
+              />
+            </div>
+          </DisplayBlock>
+          {/* notes */}
+          <DisplayBlock id="w_PlantNotes">
+            <div>
+              <div
+                className={cn(
+                  styles.notesHeader,
+                  "justify-content-between align-items-center flex",
+                )}
+              >
+                <label>Window Plant Notes</label>
+              </div>
+              <Editable.EF_Text
+                k="w_PlantNotes"
+                value={data?.w_PlantNotes}
+                onChange={(v) => onChange(v, "w_PlantNotes")}
+                disabled={!isEditable}
+                rows={2}
+              />
+            </div>
+          </DisplayBlock>
+          <DisplayBlock id="d_OfficeNotes">
+            <div>
+              <div
+                className={cn(
+                  styles.notesHeader,
+                  "justify-content-between align-items-center flex",
+                )}
+              >
+                <label>Door Office Notes</label>
+              </div>
+              <Editable.EF_Text
+                k="d_OfficeNotes"
+                value={data?.d_OfficeNotes}
+                onChange={(v) => onChange(v, "d_OfficeNotes")}
+                disabled={!isEditable}
+                rows={2}
+              />
+            </div>
+          </DisplayBlock>
+          {/* notes */}
+          <DisplayBlock id="d_DoorShopNotes">
+            <div>
+              <div
+                className={cn(
+                  styles.notesHeader,
+                  "justify-content-between align-items-center flex",
+                )}
+              >
+                <label>Door Shop</label>
+              </div>
+              <Editable.EF_Text
+                k="d_DoorShopNotes"
+                value={data?.d_DoorShopNotes}
+                onChange={(v) => onChange(v, "d_DoorShopNotes")}
+                disabled={!isEditable}
+                rows={2}
+              />
+            </div>
+          </DisplayBlock>
+          {/* notes */}
         </div>
       </ToggleFull>
     </>

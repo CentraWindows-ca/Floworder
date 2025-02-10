@@ -293,7 +293,8 @@ const Com = (props) => {
       size="lg"
       onHide={onHide}
       fullscreen={false}
-      title={`Item: ${item?.Item}`}
+      title={`Item: ${item?.Item}`}      
+      layer={1}
     >
       <div className={cn(styles.columnItemInputsContainer)}>
         {fields?.map((a) => {
