@@ -1,3 +1,8 @@
+$primary: #005db9; // Change this to your desired primary color
+$primary-hover: #0273e2;
+// Import Bootstrap’s SCSS
+@import "bootstrap/scss/bootstrap";
+
 .noteTooltip > .tooltip-inner {
    max-width: 20vw;
     text-align: left !important;

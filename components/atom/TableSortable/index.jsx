@@ -157,7 +157,7 @@ export const TableHeader = ({ columns, applyFilter = true, sort, setSort, filter
         {columns?.map((a) => {
           const { key, initKey, isNotTitle, filterPlaceHolder = "--" } = a;
           return (
-            <th key={`filter_${a.key}`}>
+            <td key={`filter_${a.key}`}>
               <div style={{ padding: 2 }}>
                 {!isNotTitle ? (
                   <Editable.EF_InputDebounce
@@ -171,7 +171,7 @@ export const TableHeader = ({ columns, applyFilter = true, sort, setSort, filter
                   <br />
                 )}
               </div>
-            </th>
+            </td>
           );
         })}
       </tr>

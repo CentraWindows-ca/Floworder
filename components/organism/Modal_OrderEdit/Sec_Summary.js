@@ -245,20 +245,20 @@ const Com = ({ className, ...props }) => {
                   <div className={styles.summaryLaborSubtitle}>{title}</div>
                   <div className={styles.summaryLaborNumbers}>
                     <div
-                      className="justify-content-between align-items-center flex gap-2"
+                      className="text-sm justify-content-between align-items-center flex gap-2"
                       style={{ borderBottom: "1px solid #F0F0F0" }}
                       title={`Quantity: ${utils.formatNumber(data[qty])}`}
                     >
                       <i className="fas fa-box"></i>
-                      <span className="text-sm">{utils.formatNumber(data[qty])}</span>
+                      <span>{utils.formatNumber(data[qty])}</span>
                       
                     </div>
                     <div
-                      className="justify-content-between align-items-center flex gap-2"
+                      className="text-sm justify-content-between align-items-center flex gap-2"
                       title={`Labor hours: ${utils.formatNumber(data[lbr])}`}
                     >
                       <i className="far fa-clock"></i>
-                      <span className="text-sm">{utils.formatNumber(data[lbr])}</span> 
+                      <span>{utils.formatNumber(data[lbr])}</span> 
                     </div>
                   </div>
                 </div>

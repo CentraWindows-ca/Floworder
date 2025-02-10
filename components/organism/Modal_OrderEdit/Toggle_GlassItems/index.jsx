@@ -118,7 +118,7 @@ const Com = ({ className, ...props }) => {
           <div className={styles.itemSubTitle}>
             <label>Windows</label>
           </div>
-          <table className="table-xs table-bordered table-hover mb-0 table border text-xs">
+          <table className="table-xs table-bordered table-hover mb-0 table border text-xs" style={{borderTop: 'none'}}>
             {/* <thead className="bg-gray-100"><tr>
                 <td>Received / Expected</td>
                 <td>Rack ID</td>

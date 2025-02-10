@@ -201,10 +201,6 @@ const Com = (props) => {
         </div>
         <div className="flex-column flex" style={{ marginTop: "5px" }}>
           <Toggle_Notes />
-          {/* <div className={cn(styles.mainItem)}>
-            <div className={cn(styles.sectionTitle)}>Notes</div>
-            <Toggle_Notes />
-          </div> */}
         </div>
         <div
           className="justify-content-center flex bg-slate-100 p-2"

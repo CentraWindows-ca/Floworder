@@ -13,12 +13,14 @@ import dynamic from "next/dynamic";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "react-datepicker/dist/react-datepicker.css";
 // import "styles/tailwind.css";
-import "bootstrap/dist/css/bootstrap.min.css";
+import "styles/custom_bootstrap_styles.scss";
+// import "bootstrap/dist/css/bootstrap.min.css";
+
 import "react-bootstrap-typeahead/css/Typeahead.css";
 
 import "react-tooltip/dist/react-tooltip.css";
 import "styles/custom_react-tooltip.css";
-import "styles/custom_bootstrap_styles.css";
+
 import "styles/index.css";
 
 const AuthNav = dynamic(() => import("@centrawindows-ca/authnav"), {

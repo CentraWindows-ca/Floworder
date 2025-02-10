@@ -49,7 +49,7 @@ const Com = (props) => {
       </span>
       {tabs?.map((a) => {
         const { title, eventKey } = a;
-        const isActive = eventKey === facility;
+        const isActive = eventKey === (facility || "");
         return (
           <button
             key={eventKey}
