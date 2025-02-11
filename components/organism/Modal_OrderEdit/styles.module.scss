@@ -73,6 +73,7 @@
     background-color: $color_white;
     display: flex;
     flex-direction: column;
+
     .togglePadding {
         padding: 10px;
     }
@@ -102,9 +103,11 @@
         font-weight: bold;
     }
 }
+
 .itemSubTitle {
     text-align: left;
     padding: 10px 0px;
+
     label {
         color: $color_centraBlue;
         font-weight: bold;
@@ -199,7 +202,7 @@
     display: flex;
     align-items: center;
     gap: 5px;
-    color: $color_gray_dark;
+    color: $color_gray;
 
     span {
         cursor: pointer;
@@ -224,7 +227,27 @@
     // min-height: 100px;
 }
 
-.modalBody {}
+.modalBody {
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+
+    .modalToolBar {
+        padding: 5px 15px;
+        // height: 50px;
+        // position: sticky;
+        // top: 0px;
+        // background-color: $color_white;
+        // z-index: 1;
+        background-color: $color_background_tableHeader;
+        border-bottom: 1px solid $color_gray;
+    }
+
+    .modalContentContainer {
+        padding: 0px 10px;
+        margin: 10px 0px;
+    }
+}
 
 .collapseContainer {}
 

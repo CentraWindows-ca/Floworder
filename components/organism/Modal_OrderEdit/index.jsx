@@ -116,10 +116,14 @@ const Com = (props) => {
       fullscreen={true}
       bodyClassName={styles.modalBody}
     >
-      <div className="">
-        <div className="justify-content-between align-items-center mb-2 flex">
-          <div>
-            {/* <div className="input-group input-group-sm">
+      <div
+        className={cn(
+          "justify-content-between align-items-center mb-2 flex",
+          styles.modalToolBar,
+        )}
+      >
+        <div>
+          {/* <div className="input-group input-group-sm">
               <button
                 className={cn(
                   "btn",
@@ -139,26 +143,27 @@ const Com = (props) => {
                 Show Less
               </button>
             </div> */}
-          </div>
-          <div className={cn(styles.anchors)}>
-            <span onClick={() => onAnchor("images", true)}>
-              Images ({existingImages?.length || 0})
-            </span>{" "}
-            |
-            <span onClick={() => onAnchor("files", true)}>
-              Attachment Files ({existingAttachments?.length || 0})
-            </span>{" "}
-            |
-            <span onClick={() => onAnchor("productionItems", true)}>
-              Items ({windowItems?.length || 0 + (doorItems?.length || 0)})
-            </span>{" "}
-            |
-            <span onClick={() => onAnchor("glassItems", true)}>
-              Glass ({glassTotal?.qty || 0}/{glassTotal?.glassQty || 0})
-            </span>{" "}
-            |<span onClick={() => onAnchor("notes", true)}>Notes</span>
-          </div>
         </div>
+        <div className={cn(styles.anchors, "text-sm")}>
+          <span onClick={() => onAnchor("images", true)}>
+            Images ({existingImages?.length || 0})
+          </span>{" "}
+          |
+          <span onClick={() => onAnchor("files", true)}>
+            Attachment Files ({existingAttachments?.length || 0})
+          </span>{" "}
+          |
+          <span onClick={() => onAnchor("productionItems", true)}>
+            Items ({windowItems?.length || 0 + (doorItems?.length || 0)})
+          </span>{" "}
+          |
+          <span onClick={() => onAnchor("glassItems", true)}>
+            Glass ({glassTotal?.qty || 0}/{glassTotal?.glassQty || 0})
+          </span>{" "}
+          |<span onClick={() => onAnchor("notes", true)}>Notes</span>
+        </div>
+      </div>
+      <div className={cn(styles.modalContentContainer)}>
         <div className={cn(styles.gridsOfMainInfo)}>
           <div className={cn(styles.mainItem, styles["grid-1"])}>
             <div className={cn(styles.sectionTitle)}>Order Information</div>
