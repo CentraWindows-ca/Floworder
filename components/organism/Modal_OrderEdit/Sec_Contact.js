@@ -31,9 +31,9 @@ const Com = ({ className, ...props }) => {
           <span className="font-bold">{data?.m_SiteContact || "--"}</span>
         </div>
         |
-        <a href={`tel:${data?.m_SitecontactPhoneNumber}`}>
+        <a href={`tel:${data?.m_SiteContactPhoneNumber}`}>
           <i className="fa-solid fa-phone me-1"></i>
-          {data?.m_SitecontactPhoneNumber || "--"}
+          {data?.m_SiteContactPhoneNumber || "--"}
         </a>
         |
         <a href={`mailto: ${data?.m_SiteContactEmail}`}>
@@ -48,7 +48,7 @@ const Com = ({ className, ...props }) => {
               onClick={() =>
                 setInitValues({
                   siteContact: data?.m_SiteContact,
-                  sitecontactPhoneNumber: data?.m_SitecontactPhoneNumber,
+                  sitecontactPhoneNumber: data?.m_SiteContactPhoneNumber,
                   siteContactEmail: data?.m_SiteContactEmail,
                 })
               }
@@ -72,7 +72,7 @@ const ModalEdit = ({ initValues, onHide }) => {
 
   const handleApply = () => {
     onChange(values?.siteContact, "m_SiteContact");
-    onChange(values?.sitecontactPhoneNumber, "m_SitecontactPhoneNumber");
+    onChange(values?.sitecontactPhoneNumber, "m_SiteContactPhoneNumber");
     onChange(values?.siteContactEmail, "m_SiteContactEmail");
 
     setValues(null);
@@ -114,7 +114,7 @@ const ModalEdit = ({ initValues, onHide }) => {
         <label>Phone</label>
         <div className="flex-grow-1">
           <Editable.EF_Input
-            k="m_SitecontactPhoneNumber"
+            k="m_SiteContactPhoneNumber"
             value={values?.sitecontactPhoneNumber}
             onChange={(v) => handleChange(v, "sitecontactPhoneNumber")}
           />

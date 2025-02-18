@@ -12,44 +12,48 @@ import { Button } from "antd";
 
 import cn from "classnames";
 import _ from "lodash";
-import { GeneralContext } from "lib/provider/GeneralProvider";
 import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
 import OrdersApi from "lib/api/OrdersApi";
 import Dropdown_Custom from "components/atom/Dropdown_Custom";
+import PermissionBlock from "components/atom/PermissionBlock";
 
-import LoadingBlock from "components/atom/LoadingBlock";
-import LabelDisplay from "components/atom/LabelDisplay";
-
-import { ORDER_STATUS } from "lib/constants";
+import constants, {
+  ORDER_STATUS,
+  WORKORDER_WORKFLOW,
+  WORKORDER_MAPPING,
+} from "lib/constants";
 
 // hooks
 import useLoadingBar from "lib/hooks/useLoadingBar";
 
 // styles
 import styles from "./styles.module.scss";
-import utils from "lib/utils";
+import {getOrderKind} from "lib/utils";
+
+
+const getStatusName = (statusCode) => ORDER_STATUS.find(
+  (a) => a.key?.trim() === statusCode?.trim(),
+)?.systemName;
+
 
 const WorkOrderActions = ({ data, onEdit, onView, onUpdate, kind }) => {
-  const { m_WorkOrderNo, m_Status } = data;
+  const { m_WorkOrderNo, m_Status, w_Status, d_Status } = data;
 
   // statusIndex
-  let statusIndex = ORDER_STATUS.findIndex((a) => a.key === m_Status);
+  let allowedStatusWindow = [];
+  let allowedStatusDoor = [];
 
-  if (statusIndex === -1) statusIndex = 0
+  if (kind === 'm' || getOrderKind(data) === 'w') {
+    allowedStatusWindow = WORKORDER_WORKFLOW[getStatusName(w_Status)] || [];
+  }
 
-  const nextStatus = ORDER_STATUS[statusIndex + 1]?.key || "";
-  const previousStatus = ORDER_STATUS[statusIndex - 1]?.key || "";
+  if (kind === 'm' || getOrderKind(data) === 'd') {
+    allowedStatusDoor = WORKORDER_WORKFLOW[getStatusName(d_Status)] || [];
+  }
 
-  const handleProgress = useLoadingBar(async () => {
+  const handleMoveTo = useLoadingBar(async (key, _kind) => {
     await Wrapper_OrdersApi.updateWorkOrder(data, {
-      [`${kind}_Status`]: nextStatus,
-    });
-    onUpdate();
-  });
-
-  const handleBack = useLoadingBar(async () => {
-    await Wrapper_OrdersApi.updateWorkOrder(data, {
-      [`${kind}_Status`]: previousStatus,
+      [`${_kind}_Status`]: key,
     });
     onUpdate();
   });
@@ -65,45 +69,90 @@ const WorkOrderActions = ({ data, onEdit, onView, onUpdate, kind }) => {
 
   const actions = (
     <div className={cn(styles.workorderActionsContainer)}>
-      <Button type="text" icon={<EyeOutlined />} onClick={onView}>
-        View Order
-      </Button>
-      <Button type="text" icon={<EditOutlined />} onClick={onEdit}>
-        Edit Order
-      </Button>
-      {nextStatus && (
+      <PermissionBlock featureCode={constants.FEATURE_CODES["nav.prod.woView"]}>
+        <Button type="text" icon={<EyeOutlined />} onClick={onView}>
+          View Order
+        </Button>
+      </PermissionBlock>
+      <PermissionBlock featureCode={constants.FEATURE_CODES["nav.prod.woEdit"]}>
+        <Button type="text" icon={<EditOutlined />} onClick={onEdit}>
+          Edit Order
+        </Button>
+      </PermissionBlock>
+      <PermissionBlock
+        featureCode={constants.FEATURE_CODES["nav.prod.statusSwitchGeneral"]}
+      >
+        {allowedStatusWindow?.map((stepName) => {
+          const { label, color, key } = WORKORDER_MAPPING[stepName];
+          return (
+            <Button
+              type="text"
+              icon={<ArrowRightOutlined />}
+              onClick={() => handleMoveTo(key, 'w')}
+              key={key}
+            >
+              Move Windows To:{" "}
+              <span
+                style={{
+                  width: 10,
+                  height: 10,
+                  backgroundColor: color,
+                  border: "1px solid #A0A0A0",
+                }}
+              />
+              <b>{label}</b>
+            </Button>
+          );
+        })}
+
+        {allowedStatusDoor?.map((stepName) => {
+          const { label, color, key } = WORKORDER_MAPPING[stepName];
+          return (
+            <Button
+              type="text"
+              icon={<ArrowRightOutlined />}
+              onClick={() => handleMoveTo(key, 'd')}
+              key={key}
+            >
+              Move Doors To:{" "}
+              <span
+                style={{
+                  width: 10,
+                  height: 10,
+                  backgroundColor: color,
+                  border: "1px solid #A0A0A0",
+                }}
+              />
+              <b>{label}</b>
+            </Button>
+          );
+        })}
+      </PermissionBlock>
+      <PermissionBlock
+        featureCode={constants.FEATURE_CODES["nav.prod.woDelete"]}
+      >
         <Button
           type="text"
-          icon={<ArrowRightOutlined />}
-          onClick={handleProgress}
+          icon={<DeleteOutlined />}
+          onClick={handleDelete}
+          // disabled={true}
+          title="not implemented"
         >
-          Progress to: <b>{nextStatus}</b>
+          Delete Order
         </Button>
-      )}
-
-      {previousStatus && (
-        <Button type="text" icon={<ArrowLeftOutlined />} onClick={handleBack}>
-          Back to: <b>{previousStatus}</b>
+      </PermissionBlock>
+      <PermissionBlock
+        featureCode={constants.FEATURE_CODES["nav.prod.woViewHistory"]}
+      >
+        <Button
+          type="text"
+          icon={<HistoryOutlined />}
+          disabled={true}
+          title="not implemented"
+        >
+          View Order History
         </Button>
-      )}
-
-      <Button
-        type="text"
-        icon={<DeleteOutlined />}
-        onClick={handleDelete}
-        // disabled={true}
-        title="not implemented"
-      >
-        Delete Order
-      </Button>
-      <Button
-        type="text"
-        icon={<HistoryOutlined />}
-        disabled={true}
-        title="not implemented"
-      >
-        View Order History
-      </Button>
+      </PermissionBlock>
     </div>
   );
 
@@ -111,7 +160,7 @@ const WorkOrderActions = ({ data, onEdit, onView, onUpdate, kind }) => {
     <Dropdown_Custom
       renderTrigger={(onClick) => {
         return (
-          <span style={{ cursor: "pointer", }} onClick={onClick}>
+          <span style={{ cursor: "pointer" }} onClick={onClick}>
             {m_WorkOrderNo}
           </span>
         );

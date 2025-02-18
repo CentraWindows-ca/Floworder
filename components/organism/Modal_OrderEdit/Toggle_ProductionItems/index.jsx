@@ -6,11 +6,15 @@ import Editable from "components/molecule/Editable";
 import LoadingBlock from "components/atom/LoadingBlock";
 import TableSortable from "components/atom/TableSortable";
 // styles
-import styles from "../styles.module.scss";
+import stylesRoot from "../styles.module.scss";
 
 import { LocalDataContext } from "../LocalDataProvider";
 import { ToggleBlock, DisplayBlock } from "../Com";
 import Modal_ItemEdit from "./Modal_ItemEdit";
+// styles
+import stylesCurrent from "./styles.module.scss";
+
+const styles = { ...stylesRoot, ...stylesCurrent };
 
 const Com = ({ className, title, id, ...props }) => {
   const {
@@ -95,7 +99,6 @@ const Com = ({ className, title, id, ...props }) => {
             handleShowItem,
           }}
         />
-        
       </ToggleBlock>
       <Modal_ItemEdit
         onSave={handleSaveItem}
@@ -109,17 +112,41 @@ const Com = ({ className, title, id, ...props }) => {
 
 const TableWindow = ({ handleShowItem }) => {
   const {
-    windowItems,
-    doorItems,
-    onUpdateDoorItem,
-    onUpdateWindowItem,
+    windowItems: data,
+    onBatchUpdateItems,
     isEditable,
   } = useContext(LocalDataContext);
 
-  const data = windowItems
+  const [updatingValues, setUpdatingValues] = useState({});
+  const handleUpdate = (id, v, k, initV) => {
+    setUpdatingValues((prev) => {
+      const _v = JSON.parse(JSON.stringify(prev));
+
+      if (v !== initV) {
+        _.set(_v, [id, k], v);
+      } else {
+        _.unset(_v, [id, k]);
+        if (_.isEmpty(_v[id])) {
+          _.unset(_v[id]);
+        }
+      }
+
+      return _v;
+    });
+  };
+
+  const handleSave = () => {
+    // treat updating items
+    const updates = _.keys(updatingValues)?.map(k => ({
+      keyValue: k,
+      fields: updatingValues[k]
+    }))
+    onBatchUpdateItems(updates, 'w')
+  };
 
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState({});
+
   const columnsWindow = [
     {
       title: "Item",
@@ -155,13 +182,19 @@ const TableWindow = ({ handleShowItem }) => {
       key: "HighRisk",
       width: 80,
       render: (t, record) => {
+        const updatingKey = "HighRisk";
+        const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
+
         return (
           <Editable.EF_Checkbox_Yesno
             {...{
-              id: "wi_HighRisk",
-              value: record.HighRisk,
+              id: `wi_${updatingKey}`,
+              value:
+                overrideValue !== undefined
+                  ? overrideValue
+                  : record[updatingKey],
               onChange: (v) =>
-                onUpdateWindowItem(record?.Id, { HighRisk: v }, "w"),
+                handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
               disabled: !isEditable,
             }}
           />
@@ -173,13 +206,19 @@ const TableWindow = ({ handleShowItem }) => {
       key: "Custom",
       width: 70,
       render: (t, record) => {
+        const updatingKey = "Custom";
+        const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
+
         return (
           <Editable.EF_Checkbox_Yesno
             {...{
-              id: "wi_Custom",
-              value: record.Custom,
+              id: `wi_${updatingKey}`,
+              value:
+                overrideValue !== undefined
+                  ? overrideValue
+                  : record[updatingKey],
               onChange: (v) =>
-                onUpdateWindowItem(record?.Id, { Custom: v }, "w"),
+                handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
               disabled: !isEditable,
             }}
           />
@@ -191,12 +230,19 @@ const TableWindow = ({ handleShowItem }) => {
       key: "BTO",
       width: 50,
       render: (t, record) => {
+        const updatingKey = "BTO";
+        const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
+
         return (
           <Editable.EF_Checkbox_Yesno
             {...{
-              id: "wi_BTO",
-              value: record.BTO,
-              onChange: (v) => onUpdateWindowItem(record?.Id, { BTO: v }, "w"),
+              id: `wi_${updatingKey}`,
+              value:
+                overrideValue !== undefined
+                  ? overrideValue
+                  : record[updatingKey],
+              onChange: (v) =>
+                handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
               disabled: !isEditable,
             }}
           />
@@ -251,8 +297,24 @@ const TableWindow = ({ handleShowItem }) => {
     !_.isEmpty(data) && (
       <DisplayBlock id="WIN.windowItems">
         <div className={styles.togglePadding}>
-          <div className={styles.itemSubTitle}>
+          <div className={cn(styles.itemSubTitle, styles.subTitle)}>
             <label>Windows</label>
+            <div>
+              <button
+                className="btn btn-primary btn-xs me-2"
+                disabled={_.isEmpty(updatingValues)}
+                onClick={handleSave}
+              >
+                Save
+              </button>
+              <button
+                className="btn btn-secondary btn-xs"
+                disabled={_.isEmpty(updatingValues)}
+                onClick={() => setUpdatingValues({})}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
           <TableSortable
             {...{
@@ -264,6 +326,7 @@ const TableWindow = ({ handleShowItem }) => {
               setFilters,
               keyField: "Id",
               className: "text-left",
+              headerClassName: cn(styles.thead),
             }}
           />
         </div>
@@ -274,13 +337,36 @@ const TableWindow = ({ handleShowItem }) => {
 
 const TableDoor = ({ handleShowItem }) => {
   const {
-    doorItems,
-    onUpdateDoorItem,
+    doorItems: data,
+    onBatchUpdateItems,
     isEditable,
   } = useContext(LocalDataContext);
 
-  const data = doorItems
+  const [updatingValues, setUpdatingValues] = useState({});
+  const handleUpdate = (id, v, k, initV) => {
+    setUpdatingValues((prev) => {
+      const _v = JSON.parse(JSON.stringify(prev));
+      if (v !== initV) {
+        _.set(_v, [id, k], v);
+      } else {
+        _.unset(_v, [id, k]);
+        if (_.isEmpty(_v[id])) {
+          _.unset(_v, [id]);
+        }
+      }
 
+      return _v;
+    });
+  };
+  const handleSave = () => {
+    // treat updating items
+    const updates = _.keys(updatingValues)?.map(k => ({
+      keyValue: k,
+      fields: updatingValues[k]
+    }))
+    onBatchUpdateItems(updates, 'd')
+  };
+  
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState({});
   const columns = [
@@ -319,12 +405,19 @@ const TableDoor = ({ handleShowItem }) => {
       key: "BTO",
       width: 50,
       render: (t, record) => {
+        const updatingKey = "BTO";
+        const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
+
         return (
           <Editable.EF_Checkbox_Yesno
             {...{
-              id: "di_BTO",
-              value: record.BTO,
-              onChange: (v) => onUpdateDoorItem(record?.Id, { BTO: v }, "d"),
+              id: `di_${updatingKey}`,
+              value:
+                overrideValue !== undefined
+                  ? overrideValue
+                  : record[updatingKey],
+              onChange: (v) =>
+                handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
               disabled: !isEditable,
             }}
           />
@@ -378,8 +471,24 @@ const TableDoor = ({ handleShowItem }) => {
     !_.isEmpty(data) && (
       <DisplayBlock id="DOOR.doorItems">
         <div className={styles.togglePadding}>
-          <div className={styles.itemSubTitle}>
+          <div className={cn(styles.itemSubTitle, styles.subTitle)}>
             <label>Doors</label>
+            <div>
+              <button
+                className="btn btn-primary btn-xs me-2"
+                disabled={_.isEmpty(updatingValues)}
+                onClick={handleSave}
+              >
+                Save
+              </button>
+              <button
+                className="btn btn-secondary btn-xs"
+                disabled={_.isEmpty(updatingValues)}
+                onClick={() => setUpdatingValues({})}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
           <TableSortable
             {...{
@@ -391,6 +500,7 @@ const TableDoor = ({ handleShowItem }) => {
               setFilters,
               keyField: "Id",
               className: "text-left",
+              headerClassName: cn(styles.thead),
             }}
           />
         </div>

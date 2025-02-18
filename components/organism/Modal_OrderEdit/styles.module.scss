@@ -5,14 +5,10 @@
     height: 100%;
 }
 
-.statesContainerEditable {
-    cursor: pointer;
-
-    &:hover {
-        opacity: .8;
-    }
+.statesDropdownContainer {
+    min-width: 300px;
+    padding: 20px;
 }
-
 .statesContainer {
     border-radius: 4px;
     padding: 4px 10px;
@@ -20,8 +16,18 @@
     align-items: center;
     justify-content: space-between;
     gap: 5px;
-    height: 28px;
+    min-height: 28px;
 }
+
+.statesContainerEditable {
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.8;
+        background-color: $color_active;
+    }
+}
+
 
 .gridsOfMainInfo {
     display: grid;
@@ -330,3 +336,4 @@
         }
     }
 }
+

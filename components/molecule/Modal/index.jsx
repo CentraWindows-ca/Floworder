@@ -14,6 +14,7 @@ export default style(
       size = "lg",
       title,
       subtitle,
+      titleClassName,
       closeButton = true,
       children,
       hasModalBody = true,
@@ -52,7 +53,7 @@ export default style(
             {...rest}
           >
             <Modal.Header closeButton={closeButton}>
-              <Modal.Title> {title} </Modal.Title> {subtitle}
+              <Modal.Title className={titleClassName}> {title} </Modal.Title> {subtitle}
             </Modal.Header>
             {hasModalBody ? (
               <Modal.Body className={bodyClassName}>{children}</Modal.Body>

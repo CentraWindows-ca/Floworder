@@ -58,8 +58,11 @@ const Item = ({ onClick, item, isActive }) => {
       className={cn(styles.item, isActive && styles.active)}
       onClick={onClick}
     >
-      <label className="align-items-center flex gap-1 text-sm">{label}</label>
-      <div> {icon}</div>
+      <div className="flex align-items-center gap-2">
+        <div style={{ border:'1px solid #A0A0A0', height: 15, width: 15, backgroundColor: color }} />
+        <label className="align-items-center flex gap-1 text-sm">{label}</label>
+      </div>
+      <div className="text-blueGray-300">{icon}</div>
     </div>
   );
 };

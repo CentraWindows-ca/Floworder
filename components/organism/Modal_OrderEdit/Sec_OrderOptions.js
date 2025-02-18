@@ -116,6 +116,21 @@ const DOOR_FIELDS = [
     icon: () => <WaterTestingIcon />,
     id: "d_WaterTestingRequired",
   },
+  {
+    label: "Door Mini Blind",
+    icon: () => <MiniBlindIcon />,
+    id: "d_MiniblindIcon",
+  },
+  {
+    label: "Door Engineered Order Icon",
+    icon: () => <EngineeredIcon />,
+    id: "d_EngineeredIcon",
+  },
+  {
+    label: "Door Shapes Requires",
+    icon: () => <ShapesIcon />,
+    id: "d_ShapesRequires",
+  },
 ];
 
 const Com = ({ className, ...props }) => {

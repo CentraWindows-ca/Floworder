@@ -22,7 +22,7 @@ const LIST = [
   {
     Component: Editable.EF_Input,
     title: "Site Contact Number",
-    id: "m_SitecontactPhoneNumber",
+    id: "m_SiteContactPhoneNumber",
   },
   {
     Component: Editable.EF_Input,

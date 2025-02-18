@@ -1,0 +1,15 @@
+@use "styles/theme" as *;
+
+.thead {
+    top: 40px;
+}
+
+.subTitle {
+    background-color: $color_white;
+    top: 0px;
+    position: sticky;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

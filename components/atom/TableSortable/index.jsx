@@ -23,6 +23,7 @@ const Com = (props) => {
     setSort,
     keyField = "m_MasterId",
     className,
+    headerClassName
   } = props;
 
   return (
@@ -41,7 +42,8 @@ const Com = (props) => {
               setSort,
               filters,
               setFilters,
-              applyFilter
+              applyFilter,
+              className: headerClassName
             }}
           />
           <tbody>
@@ -63,8 +65,8 @@ const Com = (props) => {
                       );
                     }
                     return (
-                      <td className={className} key={key} {...cell}>
-                        <div>
+                      <td className={cn(className)} key={key} {...cell}>
+                        <div className={cn(styles.tableTdWrapper)}>
                           <LabelDisplay>{a[key]}</LabelDisplay>
                         </div>
                       </td>
@@ -80,7 +82,7 @@ const Com = (props) => {
   );
 };
 
-export const TableHeader = ({ columns, applyFilter = true, sort, setSort, filters, setFilters }) => {
+export const TableHeader = ({ columns, applyFilter = true, sort, setSort, filters, setFilters, className }) => {
   const handleSortChange = (k) => {
     const newSortObj = null;
     // only 1 sorting field currently
@@ -125,7 +127,7 @@ export const TableHeader = ({ columns, applyFilter = true, sort, setSort, filter
   };
 
   return (
-    <thead className={styles.thead}>
+    <thead className={cn(styles.thead, className)}>
       <tr>
         {columns?.map((a) => {
           const { title, key, width, initKey, isNotTitle } = a;
@@ -179,4 +181,4 @@ export const TableHeader = ({ columns, applyFilter = true, sort, setSort, filter
   );
 };
 
-export default Com;
+export default React.memo(Com);

@@ -190,7 +190,8 @@ const Com = ({ className, ...props }) => {
             {data["m_NumberOfWindows"] ? (
               <tr>
                 <th>Windows</th>
-                <td>${utils.formatCurrency2Decimal(data["w_TotalPrice"])}</td>
+                {/* <td>${utils.formatCurrency2Decimal(data["w_TotalPrice"])}</td> */}
+                <td>--</td>
                 <td>{utils.formatNumber(data["m_NumberOfWindows"])}</td>
                 <td>{utils.formatNumber(data["w_TotalGlassQty"])}</td>
                 <td>{utils.formatNumber(data["w_TotalBoxQty"])}</td>
@@ -212,7 +213,8 @@ const Com = ({ className, ...props }) => {
             {data["m_NumberOfDoors"] ? (
               <tr>
                 <th>Doors</th>
-                <td>${utils.formatCurrency2Decimal(data["d_TotalPrice"])}</td>
+                {/* <td>${utils.formatCurrency2Decimal(data["d_TotalPrice"])}</td> */}
+                <td>--</td>
                 <td>{utils.formatNumber(data["m_NumberOfDoors"])}</td>
                 <td>{utils.formatNumber(data["d_TotalGlassQty"])}</td>
                 <td>{utils.formatNumber(data["d_TotalBoxQty"])}</td>
@@ -249,7 +251,8 @@ const Com = ({ className, ...props }) => {
                       style={{ borderBottom: "1px solid #F0F0F0" }}
                       title={`Quantity: ${utils.formatNumber(data[qty])}`}
                     >
-                      <i className="fas fa-box"></i>
+                      <div className="text-gray-400"><i className="fas fa-box me-1"></i><span className="text-xs">Qty</span></div>
+     
                       <span>{utils.formatNumber(data[qty])}</span>
                       
                     </div>
@@ -257,7 +260,8 @@ const Com = ({ className, ...props }) => {
                       className="text-sm justify-content-between align-items-center flex gap-2"
                       title={`Labor hours: ${utils.formatNumber(data[lbr])}`}
                     >
-                      <i className="far fa-clock"></i>
+                      <div className="text-gray-400"><i className="far fa-clock me-1"></i><span className="text-xs">Min</span></div>
+                      
                       <span>{utils.formatNumber(data[lbr])}</span> 
                     </div>
                   </div>
