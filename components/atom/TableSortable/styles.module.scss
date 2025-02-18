@@ -22,12 +22,14 @@
 
     th,
     td {
-        background-color: $color_background_tableHeader;
+        
         padding: 0px;
 
         &>div {
             // border-right: 1px solid $color_border_table;
+            background-color: $color_background_tableHeader;
             border-bottom: 1px solid $color_border_table;
+            left: -2px !important;
         }
 
         z-index: 2;
@@ -78,10 +80,11 @@
     td:first-child {
         position: sticky;
         left: 0;
-        background-color: white; // Prevents content from being overlapped  
-
         &>div {
+            position: relative;
+            left: -1px;
             border-right: 3px double $color_gray;
+            
         }
     }
 
@@ -93,6 +96,7 @@
             width: 100%;
             height: 100%;
             top: 0;
+            background-color: white; // Prevents content from being overlapped  
         }
     }
 
@@ -103,6 +107,7 @@
 
     tbody td {
         border-bottom: 1px solid $color_border_table;
+        border-left: 1px solid $color_border_table;
     }
 
     .tableTdWrapper {}
