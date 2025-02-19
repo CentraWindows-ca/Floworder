@@ -60,7 +60,7 @@ const Com = ({ className, ...props }) => {
           );
         })
       ) : (
-        <NoData title="No Note Created" />
+        <NoData title="Create Notes" className='hover:text-blue-600' />
       )}
     </div>
   );
