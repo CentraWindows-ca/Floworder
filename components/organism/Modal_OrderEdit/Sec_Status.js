@@ -141,7 +141,7 @@ const StatusUpdate = ({ statusLabel, currentKind }) => {
 const PopoverEdit = ({ onChange, uIstatusObj, statusLabel }) => {
   const allowedStatusNames = WORKORDER_WORKFLOW[uIstatusObj?.systemName];
   const allowedStatus =
-    allowedStatusNames?.map((n) => WORKORDER_MAPPING[n]) || ORDER_STATUS;
+    allowedStatusNames?.map((n) => WORKORDER_MAPPING[n]) || ORDER_STATUS.filter(a => a.key);
 
   return (
     <div
