@@ -29,7 +29,7 @@ const Com = (props) => {
 
   // ====== search
   const [filters, setFilters] = useState({});
-  const [applyFilter, setApplyFilter] = useState(true)
+  const [applyFilter, setApplyFilter] = useState(true);
   const { status, q, p = 0, facility, tab = "m", sort } = router?.query || {};
 
   const defaultTab = "m";
@@ -49,8 +49,8 @@ const Com = (props) => {
   ];
 
   const filtersObj = {};
-  const sortObj = {}
-  let sortArr = []
+  const sortObj = {};
+  let sortArr = [];
 
   if (q) {
     filtersObj["m_WorkOrderNo"] = {
@@ -74,15 +74,15 @@ const Com = (props) => {
   }
 
   if (sort) {
-    sort?.split(',')?.map((sortKey) => {
-      const [field, dir] = sortKey?.split(":")
-      sortObj[field] = dir
-    })
+    sort?.split(",")?.map((sortKey) => {
+      const [field, dir] = sortKey?.split(":");
+      sortObj[field] = dir;
+    });
 
-    sortArr = _.keys(sortObj)?.map(k => ({
+    sortArr = _.keys(sortObj)?.map((k) => ({
       field: k,
-      isDescending: sortObj[k]?.toLocaleLowerCase() === 'desc'
-    }))
+      isDescending: sortObj[k]?.toLocaleLowerCase() === "desc",
+    }));
   }
 
   const conditions = [
@@ -107,7 +107,7 @@ const Com = (props) => {
     filterGroup: conditions?.length
       ? {
           logicOp: "AND",
-          conditions: conditions?.filter(a => a.value),
+          conditions: conditions?.filter((a) => a.value),
         }
       : undefined,
     orderByItems: sortArr,
@@ -127,17 +127,10 @@ const Com = (props) => {
       <div className="justify-content-between flex w-full gap-3">
         <div></div>
         <div className={cn(styles.manufacturingFacilityContainer)}>
+          <RedoOutlined onClick={handleRefreshWorkOrderList} />
           <Tabs_ManufacturingFacility />
         </div>
-        <div>
-          <button
-            className="btn btn-primary btn-sm flex gap-1 align-items-center"
-            onClick={handleRefreshWorkOrderList}
-          >
-            <RedoOutlined />
-            Refresh
-          </button>
-        </div>
+        <div></div>
       </div>
     );
   };
@@ -161,10 +154,11 @@ const Com = (props) => {
                 {...{
                   filters,
                   setFilters,
-                  applyFilter, setApplyFilter,
+                  applyFilter,
+                  setApplyFilter,
                   data,
                   mutate,
-                  sortObj
+                  sortObj,
                 }}
               />
             </div>

@@ -29,6 +29,7 @@ export default function Admin({ children, permissions, rawAuth }) {
             Segmented: {
               itemSelectedBg: constants.COLORS.centraBlue,
               itemSelectedColor: constants.COLORS.centraWhite,
+              trackBg: '#FFFFFF'
             },
           },
         }}

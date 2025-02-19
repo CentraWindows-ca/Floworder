@@ -28,13 +28,10 @@ import useLoadingBar from "lib/hooks/useLoadingBar";
 
 // styles
 import styles from "./styles.module.scss";
-import {getOrderKind} from "lib/utils";
+import { getOrderKind } from "lib/utils";
 
-
-const getStatusName = (statusCode) => ORDER_STATUS.find(
-  (a) => a.key?.trim() === statusCode?.trim(),
-)?.systemName;
-
+const getStatusName = (statusCode) =>
+  ORDER_STATUS.find((a) => a.key?.trim() === statusCode?.trim())?.systemName;
 
 const WorkOrderActions = ({ data, onEdit, onView, onUpdate, kind }) => {
   const { m_WorkOrderNo, m_Status, w_Status, d_Status } = data;
@@ -43,11 +40,11 @@ const WorkOrderActions = ({ data, onEdit, onView, onUpdate, kind }) => {
   let allowedStatusWindow = [];
   let allowedStatusDoor = [];
 
-  if (kind === 'm' || getOrderKind(data) === 'w') {
+  if (kind === "m" || getOrderKind(data) === "w") {
     allowedStatusWindow = WORKORDER_WORKFLOW[getStatusName(w_Status)] || [];
   }
 
-  if (kind === 'm' || getOrderKind(data) === 'd') {
+  if (kind === "m" || getOrderKind(data) === "d") {
     allowedStatusDoor = WORKORDER_WORKFLOW[getStatusName(d_Status)] || [];
   }
 
@@ -69,18 +66,19 @@ const WorkOrderActions = ({ data, onEdit, onView, onUpdate, kind }) => {
 
   const actions = (
     <div className={cn(styles.workorderActionsContainer)}>
-      <PermissionBlock featureCode={constants.FEATURE_CODES["nav.prod.woView"]}>
-        <Button type="text" icon={<EyeOutlined />} onClick={onView}>
-          View Order
-        </Button>
-      </PermissionBlock>
-      <PermissionBlock featureCode={constants.FEATURE_CODES["nav.prod.woEdit"]}>
+      <Button type="text" icon={<EyeOutlined />} onClick={onView}>
+        View Order
+      </Button>
+      <PermissionBlock
+        featureCode={constants.FEATURE_CODES["om.prod.wo"]}
+        op="canEdit"
+      >
         <Button type="text" icon={<EditOutlined />} onClick={onEdit}>
           Edit Order
         </Button>
       </PermissionBlock>
       <PermissionBlock
-        featureCode={constants.FEATURE_CODES["nav.prod.statusSwitchGeneral"]}
+        featureCode={constants.FEATURE_CODES["om.prod.statusSwitchGeneral"]}
       >
         {allowedStatusWindow?.map((stepName) => {
           const { label, color, key } = WORKORDER_MAPPING[stepName];
@@ -88,7 +86,7 @@ const WorkOrderActions = ({ data, onEdit, onView, onUpdate, kind }) => {
             <Button
               type="text"
               icon={<ArrowRightOutlined />}
-              onClick={() => handleMoveTo(key, 'w')}
+              onClick={() => handleMoveTo(key, "w")}
               key={key}
             >
               Move Windows To:{" "}
@@ -111,7 +109,7 @@ const WorkOrderActions = ({ data, onEdit, onView, onUpdate, kind }) => {
             <Button
               type="text"
               icon={<ArrowRightOutlined />}
-              onClick={() => handleMoveTo(key, 'd')}
+              onClick={() => handleMoveTo(key, "d")}
               key={key}
             >
               Move Doors To:{" "}
@@ -129,7 +127,8 @@ const WorkOrderActions = ({ data, onEdit, onView, onUpdate, kind }) => {
         })}
       </PermissionBlock>
       <PermissionBlock
-        featureCode={constants.FEATURE_CODES["nav.prod.woDelete"]}
+        featureCode={constants.FEATURE_CODES["om.prod.wo"]}
+        op="canDelete"
       >
         <Button
           type="text"
@@ -142,7 +141,7 @@ const WorkOrderActions = ({ data, onEdit, onView, onUpdate, kind }) => {
         </Button>
       </PermissionBlock>
       <PermissionBlock
-        featureCode={constants.FEATURE_CODES["nav.prod.woViewHistory"]}
+        featureCode={constants.FEATURE_CODES["om.prod.woViewHistory"]}
       >
         <Button
           type="text"

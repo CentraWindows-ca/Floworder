@@ -54,8 +54,8 @@ export default ({
     <div className={cn("w-full", styles.root)} {...rest}>
       <div
         className={cn(
-          "flex-column flex-grow-1 flex overflow-y-auto px-2 pt-2",
-          styles.tab,
+          "flex-column flex-grow-1 flex",
+          styles.tabContainer,
         )}
       >
         <div className={cn(styles.tabs, "justify-content-between flex")}>

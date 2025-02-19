@@ -287,15 +287,15 @@ const Com = (props) => {
         w_GlassOrderedDate,
       } = merged;
 
-      merged.m_Status_display = ORDER_STATUS?.find(
+      merged.m_Status_display = m_Status ? ORDER_STATUS?.find(
         (a) => a.key.toString() === m_Status?.toString(),
-      );
-      merged.w_Status_display = ORDER_STATUS?.find(
+      ): null;
+      merged.w_Status_display = w_Status ? ORDER_STATUS?.find(
         (a) => a.key.toString() === w_Status?.toString(),
-      );
-      merged.d_Status_display = ORDER_STATUS?.find(
+      ): null;
+      merged.d_Status_display = d_Status ? ORDER_STATUS?.find(
         (a) => a.key.toString() === d_Status?.toString(),
-      );
+      ): null;
 
       merged.m_BranchId_display = getValue(m_BranchId, "branches")?.label;
       merged.m_JobType_display = getValue(m_JobType, "jobTypes")?.label;

@@ -159,12 +159,14 @@ const ComAuthNav = ({ onLoaded }) => {
         zIndex: 999,
         onRoute: handleOnRoute,
         onAction: handleAction,
-        appCode: "ORPD",
+        appCode: "OM",
         isExternal: false,
-        // baseURL: "https://vgtest.centra.ca"
+        clientURL: "https://production.centra.ca"
         // isLocalAppOnly: true
         // defaultList: DEFAULT_MENU,
       }}
+
+      activeFeature="om.prod"
     ></AuthNav>
   );
 };

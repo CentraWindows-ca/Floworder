@@ -7,7 +7,11 @@
 	flex-direction: column;
 	overflow: auto;
 }
-
+.manufacturingFacilityContainer {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
 .mainContainer {
 	flex-grow: 1;
 	overflow: auto;

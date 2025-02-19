@@ -93,7 +93,7 @@ const ExportedComponent = ({
   // ------------------------- render -------------------------
   return (
     <div className={cn(styles.root, className)}>
-      <div>
+      <div className={cn(styles.pageInfo)}>
         {fromRow}-{toRow} of {count}{" "}
       </div>
       <nav aria-label="...">

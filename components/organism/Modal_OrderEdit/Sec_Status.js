@@ -115,9 +115,11 @@ const StatusUpdate = ({ statusLabel, currentKind }) => {
               <span>
                 {statusLabel}: {label}
               </span>
-              <div>
-                <i className="fa-solid fa-angle-down" />
-              </div>
+              {isEditable && (
+                <div>
+                  <i className="fa-solid fa-angle-down" />
+                </div>
+              )}
             </div>
           )}
           toggle={toggle}

@@ -148,8 +148,7 @@ export const LocalDataProvider = ({
       } else {
         setKind("m");
       }
-      console.log(mergedData);
-
+      
       await initItems(initWorkOrderNo);
       initAttachmentList(mergedData?.m_MasterId);
       initImageList(mergedData?.m_MasterId);

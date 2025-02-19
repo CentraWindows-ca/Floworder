@@ -73,7 +73,8 @@ const Com = (props) => {
         <div className="align-items-center flex gap-2">
           <Sec_Status />         
           <PermissionBlock
-            featureCode={constants.FEATURE_CODES["nav.prod.woEdit"]}
+            featureCode={constants.FEATURE_CODES["om.prod.wo"]}
+            op="canEdit"
           >
             {!isEditable && (
               <button
