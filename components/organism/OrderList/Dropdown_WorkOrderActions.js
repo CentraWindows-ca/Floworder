@@ -48,9 +48,18 @@ const WorkOrderActions = ({ data, onEdit, onView, onUpdate, kind }) => {
   }
 
   const handleMoveTo = useLoadingBar(async (key, _kind) => {
-    await Wrapper_OrdersApi.updateWorkOrder(data, {
-      [`${_kind}_Status`]: key,
-    });
+    const { m_WorkOrderNo, m_MasterId } = data;
+    const payload = {
+      m_WorkOrderNo,
+      m_MasterId,
+      newStatus: key,
+    };
+    const updatingIdField = `${_kind}_Id`;
+    const updatingStatusField =  `${_kind}_Status`;
+    payload[updatingIdField] = data[updatingIdField];
+    payload[updatingStatusField] = data[updatingStatusField]
+
+    await OrdersApi.updateWorkOrderStatus(payload);
     onUpdate();
   });
 
