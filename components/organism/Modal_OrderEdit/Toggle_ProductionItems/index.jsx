@@ -3,7 +3,6 @@ import cn from "classnames";
 import _ from "lodash";
 
 import Editable from "components/molecule/Editable";
-import LoadingBlock from "components/atom/LoadingBlock";
 import TableSortable from "components/atom/TableSortable";
 // styles
 import stylesRoot from "../styles.module.scss";
@@ -16,7 +15,7 @@ import stylesCurrent from "./styles.module.scss";
 
 const styles = { ...stylesRoot, ...stylesCurrent };
 
-const Com = ({ className, title, id, ...props }) => {
+const Com = ({ title, id }) => {
   const {
     windowItems,
     doorItems,

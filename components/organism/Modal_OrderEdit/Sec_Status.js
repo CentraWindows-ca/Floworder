@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
-import constants, {
+import {
   ORDER_STATUS,
   WORKORDER_WORKFLOW,
   WORKORDER_MAPPING,
@@ -14,7 +14,7 @@ import Editable from "components/molecule/Editable";
 import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
 
-const Com = ({ className, ...props }) => {
+const Com = ({   }) => {
   const {
     initData,
     data,
@@ -175,7 +175,7 @@ const PopoverEdit = ({ onChange, uIstatusObj, statusLabel }) => {
               />
               <b>{label}</b>
             </div>
-            <div className="text-blueGray-300">{icon}</div>
+            <div className="text-slate-300">{icon}</div>
           </div>
         );
       })}

@@ -9,7 +9,7 @@ const Com = ({ orderBy, col, ...props }) => {
 
   let iconClass = "";
   if (sortBy !== col) {
-    iconClass = "fa-solid fa-sort text-blueGray-300";
+    iconClass = "fa-solid fa-sort text-slate-300";
   } else if (dir === "asc") {
     iconClass = "fa-solid fa-sort-up text-blue-600";
   } else {
@@ -28,7 +28,7 @@ const Com = ({ orderBy, col, ...props }) => {
         }}
       >
         <i
-          className={cn("fa-solid fa-sort text-blueGray-200")}
+          className={cn("fa-solid fa-sort text-slate-200")}
           style={{
             fontSize: "10px",
             position: "absolute",

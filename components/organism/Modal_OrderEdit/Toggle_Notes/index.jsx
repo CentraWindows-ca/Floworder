@@ -3,20 +3,19 @@ import cn from "classnames";
 import _ from "lodash";
 
 import Editable from "components/molecule/Editable";
-import LoadingBlock from "components/atom/LoadingBlock";
+
 // styles
 import styles from "./styles.module.scss";
 
 import { LocalDataContext } from "../LocalDataProvider";
 import {
   ToggleFull,
-  ToggleBlock,
   NoData,
   DisplayBlock,
   displayFilter,
 } from "../Com";
 
-const Com = ({ className, ...props }) => {
+const Com = ({  }) => {
   const { data, kind, uiOrderType, onChange, isEditable, onHide } =
     useContext(LocalDataContext);
 
@@ -49,7 +48,7 @@ const Com = ({ className, ...props }) => {
           return (
             <DisplayBlock id={id} key={id}>
               <div className="flex gap-2">
-                <b>[{title}]</b>:{" "}
+                <b>[{title}]:</b>
                 <div
                   dangerouslySetInnerHTML={{
                     __html: data?.[id],
@@ -67,13 +66,6 @@ const Com = ({ className, ...props }) => {
 
   return (
     <>
-      {/* <ToggleFull
-          title={"Notes"}
-          titleClass={styles.title}
-          jsxClose={jsxClose}
-          id={"notes"}
-        >
-         */}
       <ToggleFull
         title={"Notes"}
         titleClass={styles.title}

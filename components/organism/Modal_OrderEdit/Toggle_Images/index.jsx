@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useContext } from "react";
-import cn from "classnames";
+import React, { useContext } from "react";
+
 import _ from "lodash";
 
 import Modal from "components/molecule/Modal";
-import Editable from "components/molecule/Editable";
-import LoadingBlock from "components/atom/LoadingBlock";
+
 // styles
 import styles from "../styles.module.scss";
 import utils from "lib/utils";
@@ -12,7 +11,7 @@ import utils from "lib/utils";
 import { LocalDataContext } from "../LocalDataProvider";
 import { ToggleBlock, NoData } from "../Com";
 
-const Com = ({ className, title, id, ...props }) => {
+const Com = ({ title, id, }) => {
   const {
     newImages,
     setNewImages,
@@ -20,8 +19,6 @@ const Com = ({ className, title, id, ...props }) => {
     onUploadImage,
     onDeleteImage,
     isEditable,
-    onChange,
-    onHide,
   } = useContext(LocalDataContext);
 
   const handleImageChange = (event) => {

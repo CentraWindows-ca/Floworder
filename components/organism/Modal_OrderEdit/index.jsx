@@ -1,5 +1,4 @@
-import React, { useState, useContext } from "react";
-import { useRouter } from "next/router";
+import React, { useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import Modal from "components/molecule/Modal";
@@ -21,41 +20,31 @@ import Toggle_Files from "./Toggle_Files";
 import { DisplayBlock } from "./Com";
 import constants from "lib/constants";
 
-// hooks
-import useLoadingBar from "lib/hooks/useLoadingBar";
-
 // styles
 import styles from "./styles.module.scss";
 
 import { LocalDataContext, LocalDataProvider } from "./LocalDataProvider";
 import LoadingBlock from "components/atom/LoadingBlock";
 
-const Com = (props) => {
+const Com = ({}) => {
   const {
     isLoading,
     initWorkOrder,
     onHide,
     onAnchor,
     onSave,
-    expands,
-    setExpands,
+
     data,
-    onChange,
+
     kind,
-    dictionary,
     isEditable,
     setIsEditable,
     existingAttachments,
     existingImages,
     windowItems,
     doorItems,
-    glassItems,
     glassTotal,
     uIstatusObj,
-    uiShowMore,
-    setUiShowMore,
-    initData,
-    onUpdateTransferredLocation,
   } = useContext(LocalDataContext);
 
   // use swr later
@@ -173,12 +162,6 @@ const Com = (props) => {
                 <Sec_Summary />
               </CollapseContainer>
             </div>
-            {/* <div className={cn(styles.mainItem, styles["mainItem-4"])}>
-            <div className={cn(styles.sectionTitle)}>Lbr.</div>
-            <CollapseContainer id="lbr">
-              <Sec_Lbr />
-            </CollapseContainer>
-          </div> */}
           </div>
           <div className="flex-column flex" style={{ marginTop: "5px" }}>
             <Toggle_Notes />
@@ -213,13 +196,6 @@ const Com = (props) => {
 const CollapseContainer = ({ id, children }) => {
   const { uiShowMore, setUiShowMore } = useContext(LocalDataContext);
 
-  const handleClick = () => {
-    setUiShowMore((prev) => ({
-      ...prev,
-      [id]: prev?.id,
-    }));
-  };
-
   return (
     <>
       <div
@@ -230,9 +206,6 @@ const CollapseContainer = ({ id, children }) => {
       >
         {children}
       </div>
-      {/* <div className={styles.showmore} onClick={handleClick}>
-        Show More
-      </div> */}
     </>
   );
 };

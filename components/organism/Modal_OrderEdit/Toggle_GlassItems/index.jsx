@@ -1,19 +1,17 @@
-import React, { useState, useEffect, useContext } from "react";
-import cn from "classnames";
+import React, { useState, useContext } from "react";
+
 import _ from "lodash";
 
-import Editable from "components/molecule/Editable";
-import LoadingBlock from "components/atom/LoadingBlock";
 import { TableHeader } from "components/atom/TableSortable";
 
 // styles
 import styles from "../styles.module.scss";
 
 import { LocalDataContext } from "../LocalDataProvider";
-import { ToggleBlock, DisplayBlock } from "../Com";
+import { ToggleBlock } from "../Com";
 
-const Com = ({ className, ...props }) => {
-  const { data, glassTotal, glassItems, onChange, onHide } =
+const Com = ({  }) => {
+  const {  glassTotal, glassItems, } =
     useContext(LocalDataContext);
 
   const [sort, setSort] = useState(null);

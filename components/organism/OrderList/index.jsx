@@ -1,22 +1,13 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
-import { Table, Button } from "antd";
-import TableFullHeight from "components/atom/TableFullHeight";
-import Editable from "components/molecule/Editable";
-import { useRouter } from "next/router";
+import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import { GeneralContext } from "lib/provider/GeneralProvider";
+import { Spin } from "antd";
 
-import Dropdown_Custom from "components/atom/Dropdown_Custom";
-import OrderByIcon from "components/atom/OrderByIcon";
 import TableSortable from "components/atom/TableSortable";
 import FiltersManager from "components/atom/TableSortable/FilterManager";
 
-import LoadingBlock from "components/atom/LoadingBlock";
 import LabelDisplay from "components/atom/LabelDisplay";
-
-// hooks
-import useLoadingBar from "lib/hooks/useLoadingBar";
 
 // styles
 import styles from "./styles.module.scss";
@@ -287,15 +278,15 @@ const Com = (props) => {
         w_GlassOrderedDate,
       } = merged;
 
-      merged.m_Status_display = m_Status ? ORDER_STATUS?.find(
-        (a) => a.key.toString() === m_Status?.toString(),
-      ): null;
-      merged.w_Status_display = w_Status ? ORDER_STATUS?.find(
-        (a) => a.key.toString() === w_Status?.toString(),
-      ): null;
-      merged.d_Status_display = d_Status ? ORDER_STATUS?.find(
-        (a) => a.key.toString() === d_Status?.toString(),
-      ): null;
+      merged.m_Status_display = m_Status
+        ? ORDER_STATUS?.find((a) => a.key.toString() === m_Status?.toString())
+        : null;
+      merged.w_Status_display = w_Status
+        ? ORDER_STATUS?.find((a) => a.key.toString() === w_Status?.toString())
+        : null;
+      merged.d_Status_display = d_Status
+        ? ORDER_STATUS?.find((a) => a.key.toString() === d_Status?.toString())
+        : null;
 
       merged.m_BranchId_display = getValue(m_BranchId, "branches")?.label;
       merged.m_JobType_display = getValue(m_JobType, "jobTypes")?.label;
@@ -316,6 +307,13 @@ const Com = (props) => {
 
   return (
     <>
+      {(isLoading) && (
+        <div className={cn(styles.tableLoading)}>
+          <Spin spinning={true} size="large">
+            <div>Content that is loading...</div>
+          </Spin>
+        </div>
+      )}
       <TableSortable
         {...{
           data: treatedData,
@@ -325,7 +323,7 @@ const Com = (props) => {
           columns,
           sort,
           setSort,
-          className: styles.table
+          className: styles.table,
         }}
       />
       <FiltersManager
@@ -334,7 +332,7 @@ const Com = (props) => {
           filters,
           applyFilter,
           onApplyFilter,
-          setFilters
+          setFilters,
         }}
       />
     </>

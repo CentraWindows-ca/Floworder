@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import cn from "classnames";
 import _ from "lodash";
 import { RedoOutlined } from "@ant-design/icons";
-import { Button } from "antd";
 
 import constants from "lib/constants";
 
@@ -18,13 +17,12 @@ import States from "components/organism/States";
 import OrderManagementPanel from "components/organism/OrderManagementPanel";
 
 // hooks
-import useLoadingBar from "lib/hooks/useLoadingBar";
 import useDataInit from "lib/hooks/useDataInit";
 
 // styles
 import styles from "./styles.module.scss";
 
-const Com = (props) => {
+const Com = ({}) => {
   const router = useRouter();
 
   // ====== search

@@ -2,30 +2,21 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import cn from "classnames";
 import _ from "lodash";
-import constants from "lib/constants";
 
-import OrdersApi from "lib/api/OrdersApi";
 
 // components
-import PageContainer from "components/atom/PageContainer";
 import Pagination from "components/atom/Pagination";
 import OrderList from "components/organism/OrderList";
-import Modal from "components/molecule/Modal";
 import Editable from "components/molecule/Editable";
 
 import Modal_OrderEdit from "components/organism/Modal_OrderEdit";
 import Modal_OrderCreate from "components/organism/Modal_OrderCreate";
-
-// hooks
-import useLoadingBar from "lib/hooks/useLoadingBar";
-import useDataInit from "lib/hooks/useDataInit";
 
 // styles
 import styles from "./styles.module.scss";
 
 const Com = ({
   data,
-  error,
   mutate,
   filters,
   setFilters,
@@ -34,9 +25,6 @@ const Com = ({
 }) => {
   const router = useRouter();
   const {
-    status,
-    q,
-    p = 0,
     facility,
     tab = "m",
     order,

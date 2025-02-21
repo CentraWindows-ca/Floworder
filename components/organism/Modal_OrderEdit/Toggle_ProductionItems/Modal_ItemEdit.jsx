@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import cn from "classnames";
 import Modal from "components/molecule/Modal";
 import Editable from "components/molecule/Editable";
-import constants, { ITEM_STATUS, ITEM_LITES, ITEM_DOOR_TYPES } from "lib/constants";
+import { ITEM_STATUS, ITEM_LITES, ITEM_DOOR_TYPES } from "lib/constants";
 import utils from "lib/utils";
 
-import { DisplayBlock, displayFilter } from "../Com";
 // styles
 import styles from "../styles.module.scss";
 const WINDOW_FIELDS = [

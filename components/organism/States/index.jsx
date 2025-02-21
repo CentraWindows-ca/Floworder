@@ -1,11 +1,8 @@
-import React, { useState } from "react";
+import React, {  } from "react";
 import { useRouter } from "next/router";
 import cn from "classnames";
 import _ from "lodash";
 import { ORDER_STATUS } from "lib/constants";
-
-// hooks
-import useLoadingBar from "lib/hooks/useLoadingBar";
 
 // styles
 import styles from "./styles.module.scss";
@@ -62,7 +59,7 @@ const Item = ({ onClick, item, isActive }) => {
         <div style={{ border:'1px solid #A0A0A0', height: 15, width: 15, backgroundColor: color }} />
         <label className="align-items-center flex gap-1 text-sm">{label}</label>
       </div>
-      <div className="text-blueGray-300">{icon}</div>
+      <div className="text-slate-300">{icon}</div>
     </div>
   );
 };

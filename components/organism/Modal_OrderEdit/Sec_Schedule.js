@@ -3,7 +3,6 @@ import cn from "classnames";
 import _ from "lodash";
 
 import Editable from "components/molecule/Editable";
-import LoadingBlock from "components/atom/LoadingBlock";
 
 // styles
 import styles from "./styles.module.scss";
@@ -86,8 +85,8 @@ const DOOR_FIELDS = [
   },
 ];
 
-const Com = ({ className, ...props }) => {
-  const { data, kind, uiOrderType } =
+const Com = ({  }) => {
+  const {  kind, uiOrderType } =
     useContext(LocalDataContext);
 
   const [doorInputs, setDoorInputs] = useState(null);

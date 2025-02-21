@@ -1,28 +1,23 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext } from "react";
 import cn from "classnames";
 import Modal from "components/molecule/Modal";
 import utils from "lib/utils";
 import _ from "lodash";
 
-import Editable from "components/molecule/Editable";
-import LoadingBlock from "components/atom/LoadingBlock";
+
 // styles
 import styles from "./styles.module.scss";
 
 import { LocalDataContext } from "./LocalDataProvider";
-import { DisplayBlock } from "./Com";
 
-const Com = ({ className, ...props }) => {
+const Com = ({ }) => {
   const {
-    data,
-    onChange,
     newImages,
     setNewImages,
     existingImages,
     isEditable,
     onUploadAttachment,
     onDeleteAttachment,
-    onHide,
   } = useContext(LocalDataContext);
 
   const handleFileChange = (event) => {

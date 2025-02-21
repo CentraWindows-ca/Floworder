@@ -3,88 +3,11 @@ import cn from "classnames";
 import utils from "lib/utils";
 import _ from "lodash";
 
-import Editable from "components/molecule/Editable";
-import LoadingBlock from "components/atom/LoadingBlock";
 // styles
 import styles from "./styles.module.scss";
 
 import { LocalDataContext } from "./LocalDataProvider";
-import { DisplayBlock } from "./Com";
 
-const COMMON_FIELDS = [
-  {
-    title: "Others",
-    id: "m_NumberOfOthers",
-  },
-  {
-    title: "Total Sales Amount",
-    id: "m_TotalPrice",
-    render: (v) => `$${utils.formatCurrency2Decimal(v)}`,
-  },
-  {
-    title: "Total LBR Min",
-    id: "m_TotalLBRMin",
-  },
-];
-
-const WINDOW_FIELDS = [
-  {
-    title: "Total Windows",
-    id: "m_NumberOfWindows",
-    displayAs: "w",
-  },
-  {
-    title: "Total Patio Doors",
-    id: "m_NumberOfPatioDoors",
-    displayAs: "w",
-  },
-  {
-    title: "Window Total Box Qty",
-    id: "w_TotalBoxQty",
-    displayAs: "w",
-  },
-  {
-    title: "Window Glass Qty",
-    id: "w_TotalGlassQty",
-    displayAs: "w",
-  },
-  {
-    title: "Window Sales Amount",
-    id: "w_TotalPrice",
-    render: (v) => `$${utils.formatCurrency2Decimal(v)}`,
-  },
-  {
-    title: "Window LBR Min",
-    id: "w_TotalLBRMin",
-  },
-];
-
-const DOOR_FIELDS = [
-  {
-    title: "Total Doors",
-    id: "m_NumberOfDoors",
-    displayAs: "w",
-  },
-  {
-    title: "Door Total Box Qty",
-    id: "d_TotalBoxQty",
-    displayAs: "w",
-  },
-  {
-    title: "Door Glass Qty",
-    id: "d_TotalGlassQty",
-    displayAs: "w",
-  },
-  {
-    title: "Door Sales Amount",
-    id: "d_TotalPrice",
-    render: (v) => `$${utils.formatCurrency2Decimal(v)}`,
-  },
-  {
-    title: "Door LBR Min",
-    id: "d_TotalLBRMin",
-  },
-];
 
 const WINDOW_LBR_FIELDS = [
   {

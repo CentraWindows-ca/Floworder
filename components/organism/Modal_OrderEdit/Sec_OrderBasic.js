@@ -3,8 +3,6 @@ import cn from "classnames";
 import _ from "lodash";
 
 import Editable from "components/molecule/Editable";
-import LoadingBlock from "components/atom/LoadingBlock";
-import constants from "lib/constants";
 
 // styles
 import styles from "./styles.module.scss";
@@ -79,8 +77,8 @@ const LIST = [
   },
 ];
 
-const Com = ({ className, ...props }) => {
-  const { data, onChange, isEditable, onHide, dictionary } =
+const Com = ({  }) => {
+  const { data, onChange, isEditable, } =
     useContext(LocalDataContext);
 
   return (

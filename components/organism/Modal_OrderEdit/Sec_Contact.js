@@ -3,19 +3,13 @@ import cn from "classnames";
 import _ from "lodash";
 
 import Modal from "components/molecule/Modal";
-import OverlayWrapper from "components/atom/OverlayWrapper";
 import Editable from "components/molecule/Editable";
-import LoadingBlock from "components/atom/LoadingBlock";
 
-// styles
-import styles from "./styles.module.scss";
 
 import { LocalDataContext } from "./LocalDataProvider";
 
-import { DisplayBlock } from "./Com";
-
-const Com = ({ className, ...props }) => {
-  const { data, onChange, isEditable, onHide } = useContext(LocalDataContext);
+const Com = ({  }) => {
+  const { data,  isEditable,  } = useContext(LocalDataContext);
 
   const [initValues, setInitValues] = useState(null);
 

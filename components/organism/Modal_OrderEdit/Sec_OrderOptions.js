@@ -3,7 +3,7 @@ import cn from "classnames";
 import _ from "lodash";
 
 import Editable from "components/molecule/Editable";
-import LoadingBlock from "components/atom/LoadingBlock";
+
 import {
   RushIcon,
   PaintIcon,
@@ -133,9 +133,8 @@ const DOOR_FIELDS = [
   },
 ];
 
-const Com = ({ className, ...props }) => {
-  const { uiOrderType, data, onChange, isEditable, kind, onHide } =
-    useContext(LocalDataContext);
+const Com = ({}) => {
+  const { uiOrderType, kind } = useContext(LocalDataContext);
 
   const [doorInputs, setDoorInputs] = useState(null);
   const [windowInputs, setWindowInputs] = useState(null);

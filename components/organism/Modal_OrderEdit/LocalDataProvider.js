@@ -3,7 +3,6 @@ import React, {
   useContext,
   useState,
   useEffect,
-  useCallback,
 } from "react";
 import _ from "lodash";
 import { GeneralContext } from "lib/provider/GeneralProvider";
@@ -148,7 +147,7 @@ export const LocalDataProvider = ({
       } else {
         setKind("m");
       }
-      
+
       await initItems(initWorkOrderNo);
       initAttachmentList(mergedData?.m_MasterId);
       initImageList(mergedData?.m_MasterId);

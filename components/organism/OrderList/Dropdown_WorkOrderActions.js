@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, from "react";
 import {
   EyeOutlined,
   EditOutlined,
   ArrowRightOutlined,
-  ArrowLeftOutlined,
   DeleteOutlined,
   HistoryOutlined,
 } from "@ant-design/icons";
@@ -34,7 +33,7 @@ const getStatusName = (statusCode) =>
   ORDER_STATUS.find((a) => a.key?.trim() === statusCode?.trim())?.systemName;
 
 const WorkOrderActions = ({ data, onEdit, onView, onUpdate, kind }) => {
-  const { m_WorkOrderNo, m_Status, w_Status, d_Status } = data;
+  const { m_WorkOrderNo, w_Status, d_Status } = data;
 
   // statusIndex
   let allowedStatusWindow = [];
