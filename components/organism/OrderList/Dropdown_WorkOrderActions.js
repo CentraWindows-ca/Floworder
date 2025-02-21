@@ -141,7 +141,7 @@ const WorkOrderActions = ({ data, onEdit, onView, onUpdate, kind }) => {
         </Button>
       </PermissionBlock>
       <PermissionBlock
-        featureCode={constants.FEATURE_CODES["om.prod.woViewHistory"]}
+        featureCode={constants.FEATURE_CODES["om.prod.woHistory"]}
       >
         <Button
           type="text"
