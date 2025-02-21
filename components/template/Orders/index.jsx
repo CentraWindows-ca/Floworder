@@ -116,7 +116,7 @@ const Com = ({}) => {
   const { data, error, mutate } = useDataInit(endPoint);
 
   const handleRefreshWorkOrderList = () => {
-    mutate("*");
+    mutate(null);
   };
 
   // ======

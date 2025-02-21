@@ -115,12 +115,12 @@ const Com = ({
 
   const handleCreateDone = async (m_WorkOrderNo) => {
     handleEdit(m_WorkOrderNo, true);
-    mutate("*");
+    mutate(null);
     // endPoint
   };
 
   const handleSaveDone = async () => {
-    mutate("*");
+    mutate(null);
     // endPoint
   };
 
