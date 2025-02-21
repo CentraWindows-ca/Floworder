@@ -113,7 +113,7 @@ const DOOR_FIELDS = [
   {
     Component: Editable.EF_Input,
     title: "Door Batch NO.",
-    id: "d_DoorNo",
+    id: "d_BatchNo",
   },
   {
     Component: Editable.EF_SelectWithLabel,

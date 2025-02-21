@@ -230,10 +230,10 @@ export const EF_InputDebounce = React.memo(
 
     return (
       <DebouncedInput
-        className={cn("", className, (value && !disabled) ? "bg-blue-100": null)}
+        className={cn("", className, value && !disabled ? "bg-blue-100" : null)}
         onChange={handleChange}
         value={value || ""}
-        disabled = {disabled}
+        disabled={disabled}
         {...props}
       />
     );
@@ -255,23 +255,26 @@ export const EF_Text = React.memo(({ onChange, value, ...props }) => {
   );
 }, preventUpdate);
 
-export const EF_Checkbox = React.memo(({ onChange, value, className, ...props }) => {
-  const handleChange = (e) => {
-    onChange(e.target.checked);
-  };
+export const EF_Checkbox = React.memo(
+  ({ onChange, value, className, ...props }) => {
+    const handleChange = (e) => {
+      onChange(e.target.checked);
+    };
 
-  const checked = value === true || value === "true"; // can be true or "true"
+    const checked = value === true || value === "true"; // can be true or "true"
 
-  return (
-    <input
-      className={cn("form-check-input cursor-pointer", className)}
-      type="checkbox"
-      checked={checked}
-      onChange={handleChange}
-      {...props}
-    />
-  );
-}, preventUpdate);
+    return (
+      <input
+        className={cn("form-check-input cursor-pointer", className)}
+        type="checkbox"
+        checked={checked}
+        onChange={handleChange}
+        {...props}
+      />
+    );
+  },
+  preventUpdate,
+);
 
 export const EF_Checkbox_Yesno = React.memo(({ onChange, value, ...props }) => {
   const handleChange = (e) => {
@@ -303,10 +306,10 @@ export const EF_Rack = React.memo(
     placeholder,
     className = "mr-1",
     size = "md",
+    options = [], // prevent override
     ...props
   }) => {
     const { dictionary } = useContext(GeneralContext);
-
     return (
       <Typeahead
         // className={cn("form-select", className)}
@@ -317,29 +320,35 @@ export const EF_Rack = React.memo(
         renderPrefix={(o) => {
           return (
             <div
-              className="inline-block text-white text-xs bg-slate-400 px-2"
-              style={{ minWidth: 100, borderRight: "1px solid", paddingRight: 10, marginRight: 10 }}
+              className="inline-block bg-slate-400 px-2 text-xs text-white"
+              style={{
+                minWidth: 100,
+                borderRight: "1px solid",
+                paddingRight: 10,
+                marginRight: 10,
+              }}
             >
-              {o.SiteCity || '--'}
+              {o.SiteCity || "--"}
             </div>
           );
         }}
         renderSuffix={(o) => {
           return <span>{o.State}</span>;
         }}
-        options={dictionary?.rackList
-          ?.sort((a, b) => (a.RackNumber > b.RackNumber ? 1 : -1))
-          ?.map((o) => ({
-            ...o,
-            label: `${o.RackNumber || '--'}`,
-            value: o.RackNumber,
-          }))}
         onChange={(v, o) => {
           onChange(v, id);
         }}
         value={value}
         placeholder={placeholder}
-        {...props}
+
+        options={dictionary?.rackList
+          ?.sort((a, b) => (a.RackNumber > b.RackNumber ? 1 : -1))
+          ?.map((o) => ({
+            ...o,
+            label: `${o.RackNumber || "--"}`,
+            value: o.RackNumber,
+          }))}
+          {...props}
       />
     );
   },
