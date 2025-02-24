@@ -14,18 +14,42 @@
     }
 }
 
+.previewList {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    .previewItem {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        div {
+            width: 160px;
+        }
+        .notes {
+            margin-top: 5px;
+            padding-top: 5px;
+            border-top: 1px solid $color_border_table;
+            text-align: left;
+        }
+        
+    }
+}
 .previewMask {}
 
 .previewRoot {
+    object-fit: contain;
     :global(.ant-image-preview-mask) {
         /* Your overrides here */
         z-index: $layer_item_image_preview_zoomin;
     }
-
     :global(.ant-image-preview-wrap) {
         /* Your overrides here */
         z-index: $layer_item_image_preview_zoomin;
     }
-
-
+    :global(.ant-image-img) {
+        object-fit: cover;
+        border: 1px solid $color_border_table;
+        border-radius: 4px;
+        background-color: $color_gray;
+    }
 }

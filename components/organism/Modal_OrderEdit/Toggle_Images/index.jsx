@@ -77,8 +77,8 @@ const Com = ({ title, id }) => {
           </div>
         )}
         {!_.isEmpty(existingImages) ? (
-          <table className="table-xs table-bordered table-hover mb-0 table border text-xs">
-            <tbody>
+          <>
+            <div className={cn(styles.previewList)}>
               {existingImages?.map((a) => {
                 const {
                   submittedBy,
@@ -93,39 +93,77 @@ const Com = ({ title, id }) => {
                 );
 
                 return (
-                  <tr key={`${title}_${id}`}>
-                    <td className="text-center" style={{ width: 120 }}>
+                  <div
+                    key={`${title}_${id}`}
+                    className={cn(styles.previewItem, "text-xs")}
+                  >
+                    <div>
                       <ImagePreview
                         base64Data={fileRawData}
                         mimeType={fileType}
                       />
-                    </td>
-                    <td className="text-right" style={{ width: 200 }}>
-                      {size} KB
-                    </td>
-                    <td className="text-left">
-                      {submittedBy ? (
-                        <>
-                          <b>[{submittedBy}]:</b>
-                          <br />
-                        </>
-                      ) : null}
-                      {notes || "--"}
-                    </td>
-                    <td style={{ width: 60 }}>
-                      <button
-                        className="btn btn-xs btn-danger"
-                        disabled={!isEditable}
-                        onClick={() => onDeleteImage(a)}
-                      >
-                        delete
-                      </button>
-                    </td>
-                  </tr>
+                    </div>
+                    <small className="text-xs text-slate-400">{size} KB</small>
+                    <div className="">{fileName}</div>
+                    {notes ? (
+                      <>
+                        <div className={cn(styles.notes)}><b>[notes]</b> {notes}</div>
+                      </>
+                    ) : null}
+                  </div>
                 );
               })}
-            </tbody>
-          </table>
+            </div>
+            {/* <table className="table-xs table-bordered table-hover mb-0 table border text-xs">
+              <tbody>
+                {existingImages?.map((a) => {
+                  const {
+                    submittedBy,
+                    fileName,
+                    fileType,
+                    fileRawData,
+                    notes,
+                    id,
+                  } = a;
+                  const size = utils.formatNumber(
+                    utils.calculateFileSize(fileRawData) / 1024 || 0,
+                  );
+
+                  return (
+                    <tr key={`${title}_${id}`}>
+                      <td className="text-center" style={{ width: 120 }}>
+                        <ImagePreview
+                          base64Data={fileRawData}
+                          mimeType={fileType}
+                        />
+                      </td>
+                      <td className="text-right" style={{ width: 200 }}>
+                        {size} KB
+                      </td>
+                      <td className="text-left">
+                        {submittedBy ? (
+                          <>
+                            <b>[{submittedBy}]:</b>
+                            <br />
+                          </>
+                        ) : null}
+                        {notes || "--"}
+                      </td>
+                      <td style={{ width: 60 }}>
+                        <button
+                          className="btn btn-xs btn-danger"
+                          disabled={!isEditable}
+                          onClick={() => onDeleteImage(a)}
+                        >
+                          delete
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table> */}
+          </>
         ) : (
           <NoData />
         )}
@@ -208,8 +246,8 @@ const ImagePreview = ({ base64Data, mimeType }) => {
       /> */}
       <Image
         src={imageUrl}
-        width={120}
-        maskClassName={cn(styles.previewMask)}
+        width={160}
+        height={160}
         rootClassName={cn(styles.previewRoot)}
       />
 

@@ -86,9 +86,14 @@ button:hover {
   background-color: #005db9 !important;
 }
 .form-check-input {
-  &:hover {
+  border-color: #bbb;
+  &:not(:disabled):hover {
     background-color: #f3f9ff;
     border-color: #005db9;
+  }
+
+  &:disabled {
+    background-color: #e0e0e0;
   }
 }
 .form-check-input:checked {

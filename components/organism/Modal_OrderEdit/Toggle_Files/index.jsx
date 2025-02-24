@@ -92,7 +92,7 @@ const Com = ({ title, id, }) => {
 
                 return (
                   <tr key={`${title}_${id}`}>
-                    <td className="text-center" style={{ width: 120 }}>
+                    <td className="text-center" style={{ width: 300 }}>
                       <span
                         className="text-blue-500 hover:text-blue-400"
                         style={{ cursor: "pointer" }}

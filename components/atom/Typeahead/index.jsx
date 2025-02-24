@@ -38,6 +38,7 @@ export default React.memo(
           size = "md",
           inputProps = {},
           className,
+          disabled,
           ...rest
         },
         ref,
@@ -113,6 +114,7 @@ export default React.memo(
             inputProps={{ ...inputProps, style: input_style }}
             className={cn(className, size)}
             filterBy={filterBy}
+            disabled = {disabled}
             {...rest}
           >
             {({ onClear, selected }) => (
@@ -127,6 +129,7 @@ export default React.memo(
                     className="close btn-close rbt-close"
                     type="button"
                     style={{ marginTop: "0px", ...close_style }}
+                    disabled = {disabled}
                   >
                     <span className="visually-hidden sr-only">Clear</span>
                   </button>

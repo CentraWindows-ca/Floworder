@@ -180,6 +180,7 @@ export const EF_MultiSelect = React.memo(
     placeholder,
     className = "mr-1",
     size = "md",
+    ...props
   }) => {
     return (
       <TypeaheadMultiSelect
@@ -199,6 +200,7 @@ export const EF_MultiSelect = React.memo(
         }}
         value={value}
         placeholder={placeholder}
+        {...props}
       />
     );
   },
@@ -340,7 +342,6 @@ export const EF_Rack = React.memo(
         }}
         value={value}
         placeholder={placeholder}
-
         options={dictionary?.rackList
           ?.sort((a, b) => (a.RackNumber > b.RackNumber ? 1 : -1))
           ?.map((o) => ({
