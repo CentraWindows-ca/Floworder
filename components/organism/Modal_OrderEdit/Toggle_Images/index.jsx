@@ -1,17 +1,20 @@
-import React, { useContext } from "react";
-
+import React, { useContext, useState } from "react";
+import cn from "classnames";
 import _ from "lodash";
-
+import { Image } from "antd";
 import Modal from "components/molecule/Modal";
 
-// styles
-import styles from "../styles.module.scss";
 import utils from "lib/utils";
 
 import { LocalDataContext } from "../LocalDataProvider";
 import { ToggleBlock, NoData } from "../Com";
+// styles
+import stylesRoot from "../styles.module.scss";
+import stylesCurrent from "./styles.module.scss";
 
-const Com = ({ title, id, }) => {
+const styles = { ...stylesRoot, ...stylesCurrent };
+
+const Com = ({ title, id }) => {
   const {
     newImages,
     setNewImages,
@@ -101,8 +104,13 @@ const Com = ({ title, id, }) => {
                       {size} KB
                     </td>
                     <td className="text-left">
-                      <b>[{submittedBy}]:</b>
-                      <br /> {notes || "--"}
+                      {submittedBy ? (
+                        <>
+                          <b>[{submittedBy}]:</b>
+                          <br />
+                        </>
+                      ) : null}
+                      {notes || "--"}
                     </td>
                     <td style={{ width: 60 }}>
                       <button
@@ -122,7 +130,6 @@ const Com = ({ title, id, }) => {
           <NoData />
         )}
       </div>
-
       <Modal show={newImages} size="lg" onHide={() => setNewImages(null)}>
         <div>
           <div>
@@ -171,6 +178,7 @@ const Com = ({ title, id, }) => {
 const ImagePreview = ({ base64Data, mimeType }) => {
   // Construct the data URL
   const imageUrl = `data:${mimeType};base64,${base64Data}`;
+  const [previewImage, setPreviewImage] = useState(false);
 
   // Function to open the image in a new tab
   const handleOpenInNewTab = () => {
@@ -186,14 +194,34 @@ const ImagePreview = ({ base64Data, mimeType }) => {
     }
   };
 
+  const handlePreview = () => {
+    setPreviewImage(true);
+  };
+
   return (
     <div>
-      <img
+      {/* <img
         src={imageUrl}
         alt="Preview"
         style={{ maxWidth: "100px", height: "auto", cursor: "pointer" }}
-        onClick={handleOpenInNewTab}
+        onClick={handlePreview}
+      /> */}
+      <Image
+        src={imageUrl}
+        width={120}
+        maskClassName={cn(styles.previewMask)}
+        rootClassName={cn(styles.previewRoot)}
       />
+
+      {/* <Modal
+        fullscreen={true}
+        show={previewImage}
+        onHide={() => setPreviewImage(false)}
+      >
+        <div className={cn(styles.previewZoomIn)}>
+          <img src={imageUrl} />
+        </div>
+      </Modal> */}
     </div>
   );
 };

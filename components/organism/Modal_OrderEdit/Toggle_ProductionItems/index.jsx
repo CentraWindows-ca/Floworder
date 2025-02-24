@@ -5,12 +5,13 @@ import _ from "lodash";
 import Editable from "components/molecule/Editable";
 import TableSortable from "components/atom/TableSortable";
 // styles
-import stylesRoot from "../styles.module.scss";
+
 
 import { LocalDataContext } from "../LocalDataProvider";
 import { ToggleBlock, DisplayBlock } from "../Com";
 import Modal_ItemEdit from "./Modal_ItemEdit";
 // styles
+import stylesRoot from "../styles.module.scss";
 import stylesCurrent from "./styles.module.scss";
 
 const styles = { ...stylesRoot, ...stylesCurrent };

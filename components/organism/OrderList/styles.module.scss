@@ -59,10 +59,10 @@
 .tableLoading {
     background-color: rgba($color: #FFFFFF, $alpha: 0.5);
     position: absolute;
-    left: 10px;
+    left: 0px;
     right: 18px;
     bottom: 18px;
-    top: 60px;
+    top: 58px;
     z-index: $layer_orderlist_loading;
     display: flex;
     align-items: center;

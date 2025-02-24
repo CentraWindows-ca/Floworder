@@ -1,0 +1,31 @@
+@use "styles/theme" as *;
+
+.previewZoomIn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+
+    img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+}
+
+.previewMask {}
+
+.previewRoot {
+    :global(.ant-image-preview-mask) {
+        /* Your overrides here */
+        z-index: $layer_item_image_preview_zoomin;
+    }
+
+    :global(.ant-image-preview-wrap) {
+        /* Your overrides here */
+        z-index: $layer_item_image_preview_zoomin;
+    }
+
+
+}

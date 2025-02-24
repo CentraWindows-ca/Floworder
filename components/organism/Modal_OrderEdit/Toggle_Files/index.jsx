@@ -107,8 +107,8 @@ const Com = ({ title, id, }) => {
                       {size} KB
                     </td>
                     <td className="text-left">
-                      <b>[{submittedBy}]:</b>
-                      <br /> {notes || "--"}
+                     {submittedBy ? <><b>[{submittedBy}]:</b><br/></> : null}
+                       {notes || "--"}
                     </td>
                     <td style={{ width: 60 }}>
                       <button

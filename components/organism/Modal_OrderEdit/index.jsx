@@ -60,7 +60,7 @@ const Com = ({}) => {
       <div className="align-items-center flex gap-2">
         {KindDisplay[kind]} Work Order # {initWorkOrder}
         <div className="align-items-center flex gap-2">
-          <Sec_Status />         
+          <Sec_Status />
           <PermissionBlock
             featureCode={constants.FEATURE_CODES["om.prod.wo"]}
             op="canEdit"
@@ -95,21 +95,22 @@ const Com = ({}) => {
           )}
         >
           <div className={cn(styles.anchors, "text-sm")}>
+            <span onClick={() => onAnchor("basic", true)}>Basic</span>|
             <span onClick={() => onAnchor("images", true)}>
               Images ({existingImages?.length || 0})
-            </span>{" "}
+            </span>
             |
             <span onClick={() => onAnchor("files", true)}>
               Attachment Files ({existingAttachments?.length || 0})
-            </span>{" "}
+            </span>
             |
             <span onClick={() => onAnchor("productionItems", true)}>
               Items ({(windowItems?.length || 0) + (doorItems?.length || 0)})
-            </span>{" "}
+            </span>
             |
             <span onClick={() => onAnchor("glassItems", true)}>
               Glass ({glassTotal?.qty || 0}/{glassTotal?.glassQty || 0})
-            </span>{" "}
+            </span>
             |<span onClick={() => onAnchor("notes", true)}>Notes</span>
           </div>
         </div>
@@ -127,6 +128,7 @@ const Com = ({}) => {
       bodyClassName={styles.modalBody}
       titleClassName={"flex justify-content-between flex-grow-1"}
     >
+      <span id="basic" />
       <LoadingBlock isLoading={isLoading}>
         <div className={cn(styles.modalContentContainer)}>
           <div className={cn(styles.gridsOfMainInfo)}>
