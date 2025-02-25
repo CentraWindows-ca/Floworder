@@ -107,9 +107,20 @@ const Com = ({ title, id }) => {
                     <div className="">{fileName}</div>
                     {notes ? (
                       <>
-                        <div className={cn(styles.notes)}><b>[notes]</b> {notes}</div>
+                        <div className={cn(styles.notes)}>
+                          <b>[notes]</b> {notes}
+                        </div>
                       </>
                     ) : null}
+                    <div>
+                      <button
+                        className="btn btn-xs btn-danger"
+                        disabled={!isEditable}
+                        onClick={() => onDeleteImage(a)}
+                      >
+                        delete
+                      </button>
+                    </div>
                   </div>
                 );
               })}
