@@ -32,7 +32,7 @@ const Com = (props) => {
         <table
           className={cn(
             styles.orderTable,
-            "table-sm table-hover mb-0 table text-xs",
+            "table-sm table-hover mb-0 table",
           )}
         >
           <TableHeader
@@ -137,13 +137,13 @@ export const TableHeader = ({ columns, applyFilter = true, sort, setSort, filter
               {!isNotTitle ? (
                 <div
                   className={cn(styles.tableTitle, styles.sortableTitle)}
-                  title={`sort this column`}
                 >
                   <span className={cn(styles.sortTitle)}>{title}</span>
                   <OrderByIcon
                     orderBy={sort}
                     col={sortKey}
                     onClick={() => handleSortChange(sortKey)}
+                    title={`sort this column`}
                   />
                 </div>
               ) : (

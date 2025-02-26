@@ -82,9 +82,6 @@ const Com = ({  }) => {
                 )}
               >
                 <label>Shipping Notes</label>
-                {/* <button disabled={!isEditable} className="btn btn-primary btn-xs">
-                Save
-              </button> */}
               </div>
               <Editable.EF_Text
                 k="m_ShippingNotes"

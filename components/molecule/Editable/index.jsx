@@ -62,7 +62,7 @@ export const EF_SelectWithLabel = React.memo(
     return (
       <select
         id={id}
-        className="form-select-sm form-select w-full"
+        className="form-select w-full"
         value={value || ""}
         onChange={(e) => {
           onChange(e.target.value, id);
@@ -127,7 +127,7 @@ export const EF_Select = React.memo(
     return (
       <select
         id={id}
-        className="form-select-sm form-select w-full"
+        className="form-select w-full"
         value={value || ""}
         onChange={(e) => {
           onChange(e.target.value, id);
@@ -214,7 +214,7 @@ export const EF_Input = React.memo(
     };
     return (
       <input
-        className={cn("form-control form-control-sm", className)}
+        className={cn("form-control", className)}
         onChange={handleChange}
         value={value || ""}
         {...props}
@@ -249,7 +249,7 @@ export const EF_Text = React.memo(({ onChange, value, ...props }) => {
   };
   return (
     <textarea
-      className="form-control form-control-sm"
+      className="form-control"
       onChange={handleChange}
       value={value || ""}
       {...props}
@@ -319,21 +319,6 @@ export const EF_Rack = React.memo(
         valueKey="value"
         size={size}
         id={id}
-        renderPrefix={(o) => {
-          return (
-            <div
-              className="inline-block bg-slate-400 px-2 text-xs text-white"
-              style={{
-                minWidth: 100,
-                borderRight: "1px solid",
-                paddingRight: 10,
-                marginRight: 10,
-              }}
-            >
-              {o.SiteCity || "--"}
-            </div>
-          );
-        }}
         renderSuffix={(o) => {
           return <span>{o.State}</span>;
         }}

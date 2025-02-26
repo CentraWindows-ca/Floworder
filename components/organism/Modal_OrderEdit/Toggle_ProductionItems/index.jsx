@@ -180,7 +180,7 @@ const TableWindow = ({ handleShowItem }) => {
     {
       title: "High Risk",
       key: "HighRisk",
-      width: 80,
+      width: 120,
       render: (t, record) => {
         const updatingKey = "HighRisk";
         const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
@@ -268,7 +268,7 @@ const TableWindow = ({ handleShowItem }) => {
       key: "",
       render: (t, record) => {
         return (
-          <button onClick={() => handleShowItem(record, "w")}>Detail</button>
+          <button className="btn btn-sm btn-outline-primary" onClick={() => handleShowItem(record, "w")}>Detail</button>
         );
       },
       width: 60,
@@ -301,14 +301,14 @@ const TableWindow = ({ handleShowItem }) => {
             <label>Windows</label>
             <div>
               <button
-                className="btn btn-primary btn-xs me-2"
+                className="btn btn-primary btn-sm me-2"
                 disabled={_.isEmpty(updatingValues)}
                 onClick={handleSave}
               >
                 Save
               </button>
               <button
-                className="btn btn-secondary btn-xs"
+                className="btn btn-secondary btn-sm"
                 disabled={_.isEmpty(updatingValues)}
                 onClick={() => setUpdatingValues({})}
               >
@@ -442,10 +442,10 @@ const TableDoor = ({ handleShowItem }) => {
       key: "",
       render: (t, record) => {
         return (
-          <button onClick={() => handleShowItem(record, "d")}>Detail</button>
+          <button className="btn btn-sm btn-outline-primary" onClick={() => handleShowItem(record, "d")}>Detail</button>
         );
       },
-      width: 60,
+      width: 70,
       isNotTitle: true,
     },
   ];
@@ -475,14 +475,14 @@ const TableDoor = ({ handleShowItem }) => {
             <label>Doors</label>
             <div>
               <button
-                className="btn btn-primary btn-xs me-2"
+                className="btn btn-primary btn-sm me-2"
                 disabled={_.isEmpty(updatingValues)}
                 onClick={handleSave}
               >
                 Save
               </button>
               <button
-                className="btn btn-secondary btn-xs"
+                className="btn btn-secondary btn-sm"
                 disabled={_.isEmpty(updatingValues)}
                 onClick={() => setUpdatingValues({})}
               >

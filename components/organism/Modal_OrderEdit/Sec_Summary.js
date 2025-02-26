@@ -87,7 +87,7 @@ const Com = ({ className, ...props }) => {
 
   return (
     <>
-      <div className={cn(styles.summaryContainer, "text-xs")}>
+      <div className={cn(styles.summaryContainer)}>
         <table className="table-hover table-bordered mb-0 table border">
           <thead className="bg-gray-100">
             <tr>
@@ -167,25 +167,24 @@ const Com = ({ className, ...props }) => {
               }
               return (
                 <div key={title} className={styles.summaryLabor}>
-                  <div className={styles.summaryLaborSubtitle}>{title}</div>
+                  <div className={cn(styles.summaryLaborSubtitle, 'bg-gray-100')}>{title}</div>
                   <div className={styles.summaryLaborNumbers}>
                     <div
-                      className="text-sm justify-content-between align-items-center flex gap-2"
-                      style={{ borderBottom: "1px solid #F0F0F0" }}
+                      className="justify-content-between align-items-center flex gap-3 pb-1"
+                      style={{ borderBottom: "1px solid #D0D0D0" }}
                       title={`Quantity: ${utils.formatNumber(data[qty])}`}
                     >
-                      <div className="text-gray-400"><i className="fas fa-box me-1"></i><span className="text-xs">Qty</span></div>
-     
-                      <span>{utils.formatNumber(data[qty])}</span>
+                      <div className=""><i className="fas fa-box me-2"></i><span>Qty</span></div>
+                      <span className={cn(styles.summaryLaborNumberSpan)}>{utils.formatNumber(data[qty])}</span>
                       
                     </div>
                     <div
-                      className="text-sm justify-content-between align-items-center flex gap-2"
+                      className="justify-content-between align-items-center flex gap-3"
                       title={`Labor hours: ${utils.formatNumber(data[lbr])}`}
                     >
-                      <div className="text-gray-400"><i className="far fa-clock me-1"></i><span className="text-xs">Min</span></div>
+                      <div className=""><i className="far fa-clock me-2"></i><span>Min</span></div>
                       
-                      <span>{utils.formatNumber(data[lbr])}</span> 
+                      <span className={cn(styles.summaryLaborNumberSpan)}>{utils.formatNumber(data[lbr])}</span> 
                     </div>
                   </div>
                 </div>

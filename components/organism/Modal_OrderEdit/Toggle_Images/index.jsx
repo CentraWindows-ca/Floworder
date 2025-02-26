@@ -62,14 +62,14 @@ const Com = ({ title, id }) => {
         {isEditable && (
           <div className="justify-content-between align-items-center mb-2 flex border-b border-gray-200 pb-2">
             <div>
-              <label htmlFor="image-upload" className="btn btn-success btn-sm">
+              <label htmlFor="image-upload" className="btn btn-success">
                 Upload Images
               </label>
 
               <input
                 id="image-upload"
                 type="file"
-                // multiple
+                multiple
                 className="d-none"
                 onChange={handleImageChange}
               />
@@ -95,7 +95,7 @@ const Com = ({ title, id }) => {
                 return (
                   <div
                     key={`${title}_${id}`}
-                    className={cn(styles.previewItem, "text-xs")}
+                    className={cn(styles.previewItem, "")}
                   >
                     <div>
                       <ImagePreview
@@ -103,7 +103,7 @@ const Com = ({ title, id }) => {
                         mimeType={fileType}
                       />
                     </div>
-                    <small className="text-xs text-slate-400">{size} KB</small>
+                    <small className="text-slate-400">{size} KB</small>
                     <div className="">{fileName}</div>
                     {notes ? (
                       <>
@@ -112,9 +112,9 @@ const Com = ({ title, id }) => {
                         </div>
                       </>
                     ) : null}
-                    <div>
+                    <div className="mt-2">
                       <button
-                        className="btn btn-xs btn-danger"
+                        className="btn btn-sm btn-danger"
                         disabled={!isEditable}
                         onClick={() => onDeleteImage(a)}
                       >
@@ -125,55 +125,7 @@ const Com = ({ title, id }) => {
                 );
               })}
             </div>
-            {/* <table className="table-xs table-bordered table-hover mb-0 table border text-xs">
-              <tbody>
-                {existingImages?.map((a) => {
-                  const {
-                    submittedBy,
-                    fileName,
-                    fileType,
-                    fileRawData,
-                    notes,
-                    id,
-                  } = a;
-                  const size = utils.formatNumber(
-                    utils.calculateFileSize(fileRawData) / 1024 || 0,
-                  );
-
-                  return (
-                    <tr key={`${title}_${id}`}>
-                      <td className="text-center" style={{ width: 120 }}>
-                        <ImagePreview
-                          base64Data={fileRawData}
-                          mimeType={fileType}
-                        />
-                      </td>
-                      <td className="text-right" style={{ width: 200 }}>
-                        {size} KB
-                      </td>
-                      <td className="text-left">
-                        {submittedBy ? (
-                          <>
-                            <b>[{submittedBy}]:</b>
-                            <br />
-                          </>
-                        ) : null}
-                        {notes || "--"}
-                      </td>
-                      <td style={{ width: 60 }}>
-                        <button
-                          className="btn btn-xs btn-danger"
-                          disabled={!isEditable}
-                          onClick={() => onDeleteImage(a)}
-                        >
-                          delete
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table> */}
+         
           </>
         ) : (
           <NoData />
@@ -182,7 +134,7 @@ const Com = ({ title, id }) => {
       <Modal show={newImages} size="lg" onHide={() => setNewImages(null)}>
         <div>
           <div>
-            <table className="table-sm table-bordered table-hover table border text-xs">
+            <table className="table-sm table-bordered table-hover table border">
               <thead>
                 <tr>
                   <th>Image</th>
@@ -202,7 +154,7 @@ const Com = ({ title, id }) => {
                       </td>
                       <td>
                         <input
-                          className="form-control form-control-sm"
+                          className="form-control"
                           value={notes || ""}
                           onChange={(e) => handleChangeNote(i, e)}
                         />

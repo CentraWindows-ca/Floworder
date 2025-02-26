@@ -15,7 +15,7 @@ import styles from "./styles.module.scss";
 // to tell pagination which param is the p, need to set basepath = basepath + /:p
 const ExportedComponent = ({
   basepath,
-  size = "sm",
+  size = "md",
   className,
   count = 0,
   perPage = constants.PAGINATION.perPage,

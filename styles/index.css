@@ -7,6 +7,7 @@
   --centraBlue: #005db9;
   --centraDark: #3b444b;
   --bs-primary-rgb: 0, 93, 185;
+  --bs-border-color: #BBB;
 }
 
 @tailwind utilities;
@@ -66,7 +67,7 @@ button {
   border-radius: 2px;
   border: 1px solid #DDD;
   padding: 0px 5px;
-  font-size: 90%;
+  font-size: 100%;
 }
 button:hover {
   background-color: aliceblue;
@@ -88,7 +89,7 @@ button:hover {
 .form-check-input {
   border-color: #bbb;
   &:not(:disabled):hover {
-    background-color: #f3f9ff;
+    background-color: #41a0ff;
     border-color: #005db9;
   }
 

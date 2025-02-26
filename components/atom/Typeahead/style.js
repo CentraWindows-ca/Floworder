@@ -5,7 +5,7 @@ const scom = (com) => styled(com)`
   &.sm .dropdown-menu {
     min-width: 180px;
     .dropdown-item {
-      font-size: 0.8rem;
+      font-size: 0.85rem;
     }
   }
 `;

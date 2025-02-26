@@ -39,7 +39,7 @@ const Com = ({   }) => {
     <>
       {kind === "m" && (
         <div
-          className={cn(styles.statesContainer, "text-sm font-normal")}
+          className={cn(styles.statesContainer, "font-normal")}
           style={{ color: textColor, backgroundColor: color }}
         >
           <span>{label}</span>
@@ -57,7 +57,7 @@ const Com = ({   }) => {
       */}
       {(isTransferred_w || isTransferred_d) && (
         <div>
-          <div className="input-group input-group-sm">
+          <div className="input-group">
             <Editable.EF_Input
               k="m_TransferredLocation"
               value={data?.m_TransferredLocation || ""}
@@ -99,7 +99,7 @@ const StatusUpdate = ({ statusLabel, currentKind }) => {
     <>
       <div
         className={cn(
-          "align-items-center flex flex-row gap-2 text-sm font-normal",
+          "align-items-center flex flex-row gap-2 font-normal",
         )}
       >
         <OverlayWrapper

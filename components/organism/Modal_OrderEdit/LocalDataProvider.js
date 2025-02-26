@@ -251,18 +251,22 @@ export const LocalDataProvider = ({
   });
 
   const doUploadAttachment = useLoadingBar(async (_files) => {
-    const { file, notes } = _files[0];
-    await OrdersApi.uploadFileAsync({
-      masterId: data?.m_MasterId,
-      prodTypeId: constants.PROD_TYPES.m,
-      uploadingFile: file,
-      notes,
-    });
+    const awaitList = _files?.map((_f) => {
+      const { file, notes } = _f;
+      return OrdersApi.uploadFileAsync({
+        masterId: data?.m_MasterId,
+        prodTypeId: constants.PROD_TYPES.m,
+        uploadingFile: file,
+        notes,
+      });
+    })
 
+    await Promise.all(awaitList)
     await initAttachmentList(data?.m_MasterId);
   });
 
   const doDeleteAttachment = useLoadingBar(async (_file) => {
+    if (!confirm(`Delete ${_file.fileName}?`)) return null
     await OrdersApi.deleteUploadFileByIdAsync({
       id: _file.id,
     });
@@ -271,18 +275,22 @@ export const LocalDataProvider = ({
   });
 
   const doUploadImage = useLoadingBar(async (_files) => {
-    const { file, notes } = _files[0];
-    await OrdersApi.uploadImageAsync({
-      masterId: data?.m_MasterId,
-      prodTypeId: constants.PROD_TYPES.m,
-      uploadingFile: file,
-      notes,
-    });
+    const awaitList = _files?.map((_f) => {
+      const { file, notes } = _f;
+      return OrdersApi.uploadImageAsync({
+        masterId: data?.m_MasterId,
+        prodTypeId: constants.PROD_TYPES.m,
+        uploadingFile: file,
+        notes,
+      });
+    })
 
+    await Promise.all(awaitList)
     await initImageList(data?.m_MasterId);
   });
 
   const doDeleteImage = useLoadingBar(async (_file) => {
+    if (!confirm(`Delete ${_file.fileName}?`)) return null
     await OrdersApi.deleteUploadImageByIdAsync({
       id: _file.id,
     });

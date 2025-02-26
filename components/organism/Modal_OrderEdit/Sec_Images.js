@@ -52,7 +52,7 @@ const Com = ({ }) => {
           <div>
             <label
               htmlFor="file-upload"
-              className="btn btn-outline-secondary btn-xs"
+              className="btn btn-outline-secondary btn-sm"
             >
               Upload
             </label>
@@ -69,7 +69,7 @@ const Com = ({ }) => {
       </div>
       <div className={cn(styles.columnImagesContainer)}>
         <div className="p-2">
-          <table className="table-xs table-bordered table-hover mb-0 table border text-sm">
+          <table className="table-xs table-bordered table-hover mb-0 table border">
             <tbody>
               {existingImages?.map((a, i) => {
                 const {
@@ -93,7 +93,7 @@ const Com = ({ }) => {
                     </td>
                     <td style={{ width: 60 }}>
                       <button
-                        className="btn btn-xs btn-danger"
+                        className="btn btn-sm btn-danger"
                         disabled={!isEditable}
                         onClick={() => onDeleteAttachment(a)}
                       >
@@ -115,7 +115,7 @@ const Com = ({ }) => {
       >
         <div>
           <div>
-            <table className="table-sm table-bordered table-hover table border text-sm">
+            <table className="table-sm table-bordered table-hover table border">
               <thead>
                 <tr>
                   <th>File</th>
@@ -135,7 +135,7 @@ const Com = ({ }) => {
                       </td>
                       <td>
                         <input
-                          className="form-control form-control-sm"
+                          className="form-control"
                           value={notes || ""}
                           onChange={(e) => handleChangeNote(i, e)}
                         />

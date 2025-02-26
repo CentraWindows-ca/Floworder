@@ -16,7 +16,8 @@
     align-items: center;
     justify-content: space-between;
     gap: 5px;
-    min-height: 28px;
+    min-height: 34px;
+    font-size: 1rem;
 }
 
 .statesContainerEditable {
@@ -156,7 +157,7 @@
     align-items: center;
     justify-content: flex-start;
     text-align: left;
-    gap: 5px;
+    gap: 10px;
 
     label {
         text-align: left;
@@ -214,12 +215,15 @@
         cursor: pointer;
         padding: 5px;
         color: $color_centraBlue;
+        font-weight: normal;
+        font-size: $font_main;
 
         &:hover {
             color: $color_centraBlue_hover;
             text-decoration: underline;
         }
     }
+    font-size: 10px;
 }
 
 .subTitle {
@@ -285,7 +289,7 @@
     display: grid;
     gap: 20px;
     grid-template-columns: repeat(2, 1fr);
-    padding: 10px;
+    padding: 8px;
 
     table {
         td {
@@ -294,8 +298,8 @@
     }
 
     .summaryLaborsTitle {
-        height: 34px;
-        line-height: 34px;
+        height: 38px;
+        line-height: 38px;
         font-weight: bold;
         border-bottom: 1px solid $color_border_table;
         text-align: center;
@@ -305,33 +309,42 @@
     .summaryLaborsContainer {
         display: flex;
         justify-content: center;
-        gap: 5px;
+        gap: 8px;
         flex-wrap: wrap;
-        font-size: .8em;
+        // font-size: .8em;
 
-        padding: 10px 0px;
+        padding: 12px 0px;
 
         .summaryLabor {
             color: $color_dark;
             border-radius: 4px;
-            border: 1px solid $color_gray;
+            border: 1px solid $color_border_table;
             overflow: hidden;
-            min-width: 80px;
+            min-width: 100px;
 
             .summaryLaborSubtitle {
-                background-color: $color_border_table;
+                // background-color: $color_gray;
+                line-height: 30px;
+                border-bottom: 1px solid $color_border_table;
+                color: black;
+                font-weight: bold;
                 // padding: 5px;
             }
 
             .summaryLaborNumbers {
-                padding: 5px;
+                padding: 10px;
                 // font-weight: bold;
-                color: $color_orange;
+                
+                .summaryLaborNumberSpan {
+                    // color: $color_red;
+                    color:black;
+                    font-weight: bold;
+                }
             }
 
             i {
                 color: $color_gray_dark;
-                font-size: .8em;
+                font-size: .8.5em;
             }
         }
     }

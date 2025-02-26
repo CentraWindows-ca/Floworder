@@ -57,7 +57,7 @@ const Item = ({ onClick, item, isActive }) => {
     >
       <div className="flex align-items-center gap-2">
         <div style={{ border:'1px solid #A0A0A0', height: 15, width: 15, backgroundColor: color }} />
-        <label className="align-items-center flex gap-1 text-sm">{label}</label>
+        <label className="align-items-center flex gap-1">{label}</label>
       </div>
       <div className="text-slate-300">{icon}</div>
     </div>

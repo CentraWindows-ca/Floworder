@@ -132,7 +132,7 @@ const Com = ({
       <div className={cn(styles.topBar)}>
         <div className="align-items-center flex gap-2">
           <button
-            className="btn btn-sm btn-success me-2 px-2"
+            className="btn btn-success me-2 px-2"
             onClick={handleCreate}
           >
             <i className="fa-solid fa-circle-plus me-2"></i>

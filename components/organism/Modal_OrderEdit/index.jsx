@@ -58,23 +58,23 @@ const Com = ({}) => {
   const jsxTitle = (
     <div className="justify-content-between align-items-center flex-grow-1 flex">
       <div className="align-items-center flex gap-2">
+        <PermissionBlock
+          featureCode={constants.FEATURE_CODES["om.prod.wo"]}
+          op="canEdit"
+        >
+          {!isEditable && (
+            <button
+              className="btn btn-outline-success me-2"
+              onClick={() => setIsEditable(true)}
+            >
+              <i className="fa-solid fa-pen-to-square me-2" />
+              Edit Work Order
+            </button>
+          )}
+        </PermissionBlock>
         {KindDisplay[kind]} Work Order # {initWorkOrder}
         <div className="align-items-center flex gap-2">
           <Sec_Status />
-          <PermissionBlock
-            featureCode={constants.FEATURE_CODES["om.prod.wo"]}
-            op="canEdit"
-          >
-            {!isEditable && (
-              <button
-                className="btn btn-sm btn-outline-warning"
-                onClick={() => setIsEditable(true)}
-              >
-                <i className="fa-solid fa-pen-to-square me-2" />
-                Edit Work Order
-              </button>
-            )}
-          </PermissionBlock>
 
           {["Shipped"].includes(uIstatusObj?.key) &&
             data?.m_TransferredLocation && (
@@ -94,7 +94,7 @@ const Com = ({}) => {
             styles.modalToolBar,
           )}
         >
-          <div className={cn(styles.anchors, "text-sm")}>
+          <div className={cn(styles.anchors)}>
             <span onClick={() => onAnchor("basic", true)}>Basic</span>|
             <span onClick={() => onAnchor("images", true)}>
               Images ({existingImages?.length || 0})
@@ -168,18 +168,21 @@ const Com = ({}) => {
           <div className="flex-column flex" style={{ marginTop: "5px" }}>
             <Toggle_Notes />
           </div>
-          <div
-            className="justify-content-center flex bg-slate-100 p-2"
-            style={{ margin: "5px 0px" }}
-          >
-            <button
-              className="btn btn-primary px-4"
-              disabled={!data?.m_WorkOrderNo || !isEditable}
-              onClick={onSave}
+          {isEditable && (
+            <div
+              className="justify-content-center flex bg-slate-100 p-2"
+              style={{ margin: "5px 0px" }}
             >
-              Save
-            </button>
-          </div>
+              <button
+                className="btn btn-primary px-4"
+                disabled={!data?.m_WorkOrderNo}
+                onClick={onSave}
+              >
+                Save
+              </button>
+            </div>
+          )}
+
           <div className="flex-column flex" style={{ gap: "5px" }}>
             <Toggle_Images title={"Images"} id={"images"} />
             <Toggle_Files title={"Attachment Files"} id={"files"} />

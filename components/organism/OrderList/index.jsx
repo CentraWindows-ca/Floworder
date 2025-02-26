@@ -170,51 +170,51 @@ const Com = (props) => {
     {
       title: "Branch",
       key: "m_Branch",
-      width: 70,
+      width: 80,
     },
     {
       title: "Job Type",
       key: "m_JobType",
-      width: 80,
+      width: 100,
     },
 
     {
       title: "Window Batch#",
       key: "w_BatchNo",
       display: isWindow,
-      width: 110,
+      width: 140,
     },
     {
       title: "Window Block#",
       key: "w_BlockNo",
       display: isWindow,
-      width: 110,
+      width: 140,
     },
     {
       title: "Door Batch#",
       key: "d_BatchNo",
       display: isDoor,
-      width: 100,
+      width: 125,
     },
     {
       title: "Door Block#",
       key: "d_BlockNo",
       display: isDoor,
-      width: 100,
+      width: 125,
     },
     {
       title: "Windows",
       key: "m_NumberOfWindows",
       display: isWindow,
       className: "text-right",
-      width: 80,
+      width: 90,
     },
     {
       title: "Patio Doors",
       key: "m_NumberOfPatioDoors",
       display: isWindow,
       className: "text-right",
-      width: 90,
+      width: 120,
     },
     {
       title: "Doors",
@@ -232,13 +232,13 @@ const Com = (props) => {
     {
       title: "INV Status",
       key: "m_InvStatus",
-      width: 90,
+      width: 105,
     },
     {
       title: "Created On",
       key: "m_CreatedAt_display",
       initKey: "m_CreatedAt",
-      width: 105,
+      width: 125,
     },
     {
       title: "Created By",
@@ -248,7 +248,7 @@ const Com = (props) => {
       title: "Customer Date",
       key: "m_CustomerDate_display",
       initKey: "m_CustomerDate",
-      width: 105,
+      width: 135,
     },
     {
       title: "Glass Ordered Date",

@@ -28,7 +28,7 @@ const Com = ({  }) => {
 
   const columns = [
     {
-      title: "Received / Expected",
+      title: "Rcev. / Expt.",
       key: "receivedExpected",
       width: 135,
     },
@@ -116,21 +116,7 @@ const Com = ({  }) => {
           <div className={styles.itemSubTitle}>
             <label>Windows</label>
           </div>
-          <table className="table-xs table-bordered table-hover mb-0 table border text-xs" style={{borderTop: 'none'}}>
-            {/* <thead className="bg-gray-100"><tr>
-                <td>Received / Expected</td>
-                <td>Rack ID</td>
-                <td>Rack Type</td>
-                <td>Qty On Rack</td>
-                <td>Item</td>
-                <td>Description</td>
-                <td>Order Date</td>
-                <td>Shipping Date</td>
-                <td>Size</td>
-                <td>Position</td>
-                <td>Status</td>
-              </tr> </thead>*/}
-
+          <table className="table-xs table-bordered table-hover mb-0 table border" style={{borderTop: 'none'}}>
             <TableHeader
               {...{
                 columns,

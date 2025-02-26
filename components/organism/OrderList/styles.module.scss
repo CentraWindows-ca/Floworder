@@ -6,6 +6,7 @@
     flex-direction: column;
     text-align: left;
     gap: 5px;
+    font-size: 1rem;
     // align-items: flex-start;
 }
 
@@ -14,6 +15,7 @@
     justify-content: flex-start;
     width: 100%;
     text-align: left;
+    font-size: 1rem;
 }
 
 .table {
@@ -23,7 +25,8 @@
     .orderNumber {
         span {
             cursor: pointer;
-            color: $color_centraBlue;
+            color: $color_centraBlack;
+            font-weight: 600;
             text-decoration: underline;
 
             &:hover {
@@ -61,8 +64,8 @@
     position: absolute;
     left: 0px;
     right: 18px;
-    bottom: 18px;
-    top: 58px;
+    bottom: 0px;
+    top: 68px;
     z-index: $layer_orderlist_loading;
     display: flex;
     align-items: center;

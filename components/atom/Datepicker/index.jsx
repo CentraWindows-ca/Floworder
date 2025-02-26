@@ -53,13 +53,11 @@ const DFDatePicker = ({
     onChange(v, formattedDate);
   };
 
-  console.log(value)
-
   // 01/15/2025 14:27:05
   return (
     <div
       className={cn(
-        "form-control form-control-sm",
+        "form-control",
         size === "sm" ? styles.containersm : styles.container,
         className,
       )}

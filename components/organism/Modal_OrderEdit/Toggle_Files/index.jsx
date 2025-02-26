@@ -59,7 +59,7 @@ const Com = ({ title, id, }) => {
             <div>
               <label
                 htmlFor="file-upload"
-                className="btn btn-success btn-sm"
+                className="btn btn-success"
               >
                 Upload Files
               </label>
@@ -67,7 +67,7 @@ const Com = ({ title, id, }) => {
               <input
                 id="file-upload"
                 type="file"
-                // multiple
+                multiple
                 className="d-none"
                 onChange={handleImageChange}
               />
@@ -75,7 +75,7 @@ const Com = ({ title, id, }) => {
           </div>
         )}
         {!_.isEmpty(existingAttachments) ? (
-          <table className="table-xs table-bordered table-hover mb-0 table border text-xs">
+          <table className="table-xs table-bordered table-hover mb-0 table border">
             <tbody>
               {existingAttachments?.map((a) => {
                 const {
@@ -112,7 +112,7 @@ const Com = ({ title, id, }) => {
                     </td>
                     <td style={{ width: 60 }}>
                       <button
-                        className="btn btn-xs btn-danger"
+                        className="btn btn-sm btn-danger"
                         disabled={!isEditable}
                         onClick={() => onDeleteAttachment(a)}
                       >
@@ -136,7 +136,7 @@ const Com = ({ title, id, }) => {
       >
         <div>
           <div>
-            <table className="table-xs table-bordered table-hover table border text-xs">
+            <table className="table-xs table-bordered table-hover table border">
               <thead>
                 <tr>
                   <th>File Name</th>
@@ -152,11 +152,11 @@ const Com = ({ title, id, }) => {
                     <tr key={`${name}_${i}`}>
                       <td>{name}</td>
                       <td className="text-right">
-                        {utils.formatNumber(size)} KB
+                        {utils.formatNumber(size / 1024)} KB
                       </td>
                       <td>
                         <input
-                          className="form-control form-control-sm"
+                          className="form-control"
                           value={notes || ""}
                           onChange={(e) => handleChangeNote(i, e)}
                         />
