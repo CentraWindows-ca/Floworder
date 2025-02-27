@@ -30,7 +30,7 @@ const Com = ({  }) => {
     {
       title: "Rcev. / Expt.",
       key: "receivedExpected",
-      width: 135,
+      width: 125,
     },
     {
       title: "Rack ID",
@@ -176,7 +176,7 @@ const SingleRow = ({ data }) => {
 
   return (
     <tr>
-      <td>{receivedExpected}</td>
+      <td><div>{receivedExpected}</div></td>
       <td>--</td>
       <td>--</td>
       <td className="text-right">0</td>

@@ -259,9 +259,6 @@ const DOOR_FIELDS = [
     title: "DoubleDoorCount",
     id: "DoubleDoorCount",
   },
-
-  
-
 ];
 
 

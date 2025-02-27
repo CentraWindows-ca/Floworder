@@ -129,7 +129,7 @@ const Com = ({ }) => {
                   const { name, size } = file;
                   return (
                     <tr key={`${name}_${i}`}>
-                      <td>{name}</td>
+                      <td style={{wordBreak: 'break-word'}}>{name}</td>
                       <td className="text-right">
                         {utils.formatNumber(size)} KB
                       </td>

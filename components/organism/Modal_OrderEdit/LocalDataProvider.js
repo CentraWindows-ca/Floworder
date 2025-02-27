@@ -331,6 +331,7 @@ export const LocalDataProvider = ({
     if (_.isEmpty(updateList)) return null;
     await Wrapper_OrdersApi.updateItemList(updateList, kind);
     await initItems(initWorkOrder);
+    return
   });
 
   // calculations

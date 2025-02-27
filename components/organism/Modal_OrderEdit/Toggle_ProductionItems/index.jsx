@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
-
+import { ITEM_STATUS, ITEM_LITES, ITEM_DOOR_TYPES } from "lib/constants";
 import Editable from "components/molecule/Editable";
 import TableSortable from "components/atom/TableSortable";
 // styles
-
 
 import { LocalDataContext } from "../LocalDataProvider";
 import { ToggleBlock, DisplayBlock } from "../Com";
@@ -121,7 +120,6 @@ const TableWindow = ({ handleShowItem }) => {
   const handleUpdate = (id, v, k, initV) => {
     setUpdatingValues((prev) => {
       const _v = JSON.parse(JSON.stringify(prev));
-
       if (v !== initV) {
         _.set(_v, [id, k], v);
       } else {
@@ -135,13 +133,14 @@ const TableWindow = ({ handleShowItem }) => {
     });
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     // treat updating items
-    const updates = _.keys(updatingValues)?.map(k => ({
+    const updates = _.keys(updatingValues)?.map((k) => ({
       keyValue: k,
-      fields: updatingValues[k]
-    }))
-    onBatchUpdateItems(updates, 'w')
+      fields: updatingValues[k],
+    }));
+    await onBatchUpdateItems(updates, "w");
+    setUpdatingValues({})
   };
 
   const [filters, setFilters] = useState({});
@@ -151,7 +150,7 @@ const TableWindow = ({ handleShowItem }) => {
     {
       title: "Item",
       key: "Item",
-      width: 60,
+      width: 80,
     },
     {
       title: "Size",
@@ -204,7 +203,7 @@ const TableWindow = ({ handleShowItem }) => {
     {
       title: "Custom",
       key: "Custom",
-      width: 70,
+      width: 90,
       render: (t, record) => {
         const updatingKey = "Custom";
         const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
@@ -228,7 +227,7 @@ const TableWindow = ({ handleShowItem }) => {
     {
       title: "BTO",
       key: "BTO",
-      width: 50,
+      width: 70,
       render: (t, record) => {
         const updatingKey = "BTO";
         const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
@@ -249,7 +248,6 @@ const TableWindow = ({ handleShowItem }) => {
         );
       },
     },
-
     {
       title: "Notes",
       key: "Notes",
@@ -257,18 +255,67 @@ const TableWindow = ({ handleShowItem }) => {
     {
       title: "Location",
       key: "RackLocation",
-      width: 75,
+      width: 120,
+      render: (t, record) => {
+        const updatingKey = "RackLocation";
+        const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
+        return (
+          <Editable.EF_Rack
+            {...{
+              value:
+                overrideValue !== undefined
+                  ? overrideValue
+                  : record[updatingKey],
+              onChange: (v) =>
+                handleUpdate(
+                  record?.Id,
+                  v || null,
+                  "RackLocation",
+                  record["RackLocation"],
+                ),
+              id: `RackLocation`,
+              isDisplayAvilible: false,
+              size: 'sm'
+            }}
+          />
+        );
+      },
     },
     {
       title: "Status",
       key: "Status",
+      width: 150,
+      render: (t, record) => {
+        const updatingKey = "Status";
+        const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
+        return (
+          <Editable.EF_SelectWithLabel
+            {...{
+              value:
+                overrideValue !== undefined
+                  ? overrideValue
+                  : record[updatingKey],
+              onChange: (v) =>
+                handleUpdate(record?.Id, v || null, "Status", record["Status"]),
+              id: `Status`,
+              options: ITEM_STATUS,
+              className: 'form-select form-select-sm'
+            }}
+          />
+        );
+      },
     },
     {
       title: "",
       key: "",
       render: (t, record) => {
         return (
-          <button className="btn btn-sm btn-outline-primary" onClick={() => handleShowItem(record, "w")}>Detail</button>
+          <button
+            className="btn btn-sm btn-outline-primary"
+            onClick={() => handleShowItem(record, "w")}
+          >
+            Detail
+          </button>
         );
       },
       width: 60,
@@ -358,22 +405,23 @@ const TableDoor = ({ handleShowItem }) => {
       return _v;
     });
   };
-  const handleSave = () => {
+  const handleSave = async () => {
     // treat updating items
-    const updates = _.keys(updatingValues)?.map(k => ({
+    const updates = _.keys(updatingValues)?.map((k) => ({
       keyValue: k,
-      fields: updatingValues[k]
-    }))
-    onBatchUpdateItems(updates, 'd')
+      fields: updatingValues[k],
+    }));
+    await onBatchUpdateItems(updates, "d");
+    setUpdatingValues({})
   };
-  
+
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState({});
   const columns = [
     {
       title: "Item",
       key: "Item",
-      width: 60,
+      width: 80,
     },
     {
       title: "Size",
@@ -403,7 +451,7 @@ const TableDoor = ({ handleShowItem }) => {
     {
       title: "BTO",
       key: "BTO",
-      width: 50,
+      width: 70,
       render: (t, record) => {
         const updatingKey = "BTO";
         const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
@@ -417,7 +465,12 @@ const TableDoor = ({ handleShowItem }) => {
                   ? overrideValue
                   : record[updatingKey],
               onChange: (v) =>
-                handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
+                handleUpdate(
+                  record?.Id,
+                  v || null,
+                  updatingKey,
+                  record[updatingKey],
+                ),
               disabled: !isEditable,
             }}
           />
@@ -431,18 +484,67 @@ const TableDoor = ({ handleShowItem }) => {
     {
       title: "Location",
       key: "RackLocation",
-      width: 75,
+      width: 120,
+      render: (t, record) => {
+        const updatingKey = "RackLocation";
+        const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
+        return (
+          <Editable.EF_Rack
+            {...{
+              value:
+                overrideValue !== undefined
+                  ? overrideValue
+                  : record[updatingKey],
+              onChange: (v) =>
+                handleUpdate(
+                  record?.Id,
+                  v,
+                  "RackLocation",
+                  record["RackLocation"],
+                ),
+              id: `RackLocation`,
+              isDisplayAvilible: false,
+              size: 'sm'
+            }}
+          />
+        );
+      },
     },
     {
       title: "Status",
       key: "Status",
+      width: 150,
+      render: (t, record) => {
+        const updatingKey = "Status";
+        const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
+        return (
+          <Editable.EF_SelectWithLabel
+            {...{
+              value:
+                overrideValue !== undefined
+                  ? overrideValue
+                  : record[updatingKey],
+              onChange: (v) =>
+                handleUpdate(record?.Id, v || null, "Status", record["Status"]),
+              id: `Status`,
+              options: ITEM_STATUS,
+              className: 'form-select form-select-sm'
+            }}
+          />
+        );
+      },
     },
     {
       title: "",
       key: "",
       render: (t, record) => {
         return (
-          <button className="btn btn-sm btn-outline-primary" onClick={() => handleShowItem(record, "d")}>Detail</button>
+          <button
+            className="btn btn-sm btn-outline-primary"
+            onClick={() => handleShowItem(record, "d")}
+          >
+            Detail
+          </button>
         );
       },
       width: 70,

@@ -289,7 +289,7 @@
     display: grid;
     gap: 20px;
     grid-template-columns: repeat(2, 1fr);
-    padding: 8px;
+    padding: 5px;
 
     table {
         td {
@@ -309,7 +309,7 @@
     .summaryLaborsContainer {
         display: flex;
         justify-content: center;
-        gap: 8px;
+        gap: 5px;
         flex-wrap: wrap;
         // font-size: .8em;
 

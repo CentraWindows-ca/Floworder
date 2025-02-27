@@ -306,20 +306,22 @@ export const EF_Rack = React.memo(
     value = null,
     onChange,
     placeholder,
-    className = "mr-1",
+    className,
     size = "md",
     options = [], // prevent override
+    isDisplayAvilible= true,
     ...props
   }) => {
     const { dictionary } = useContext(GeneralContext);
     return (
       <Typeahead
-        // className={cn("form-select", className)}
+        className={cn(className)}
         labelKey="label"
         valueKey="value"
         size={size}
         id={id}
         renderSuffix={(o) => {
+          if (!isDisplayAvilible) return null
           return <span>{o.State}</span>;
         }}
         onChange={(v, o) => {

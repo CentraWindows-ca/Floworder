@@ -5,17 +5,37 @@ import { Typeahead, Highlighter } from "react-bootstrap-typeahead";
 // styles
 import style from "./style";
 
-const sm_inputStyle = {
-  paddingRight: "30px",
-  fontSize: ".7rem",
-  lineHeight: "unset",
-  padding: "0.1rem 0.5rem",
-  borderRadius: 0,
-};
-
-const sm_closeStyle = {
-  height: "5px",
-  width: "5px",
+const SIZES = {
+  md: {
+    width: "2rem",
+  },
+  sm: {
+    width: "2rem",
+    closeStyle: {
+      height: "5px",
+      width: "5px",
+    },
+    inputStyle: {
+      padding: "0.25rem 0.5rem 0.25rem 0.875rem",
+      paddingRight: "30px",
+      fontSize: ".875rem",
+      lineHeight: "unset",
+    },
+  },
+  xs: {
+    inputStyle: {
+      paddingRight: "30px",
+      fontSize: ".7rem",
+      lineHeight: "unset",
+      padding: "0.1rem 0.5rem",
+      borderRadius: `var(--bs-border-radius-sm)`,
+    },
+    closeStyle: {
+      height: "5px",
+      width: "5px",
+    },
+    width: "1.5rem",
+  },
 };
 
 /**
@@ -90,12 +110,12 @@ export default React.memo(
         };
 
         const input_style = {
-          ...(size === "sm" ? sm_inputStyle : {}),
+          ...(SIZES[size]?.inputStyle || {}),
           ...(inputProps?.style || {}),
         };
 
         const close_style = {
-          ...(size === "sm" ? sm_closeStyle : {}),
+          ...(SIZES[size]?.closeStyle || {}),
         };
 
         return (
@@ -114,13 +134,13 @@ export default React.memo(
             inputProps={{ ...inputProps, style: input_style }}
             className={cn(className, size)}
             filterBy={filterBy}
-            disabled = {disabled}
+            disabled={disabled}
             {...rest}
           >
             {({ onClear, selected }) => (
               <div
                 className="rbt-aux"
-                style={{ width: size === "sm" ? "1.5rem" : "2rem" }}
+                style={{ width: SIZES[size]?.width || 'auto' }}
               >
                 {!!selected.length && (
                   <button
@@ -129,7 +149,7 @@ export default React.memo(
                     className="close btn-close rbt-close"
                     type="button"
                     style={{ marginTop: "0px", ...close_style }}
-                    disabled = {disabled}
+                    disabled={disabled}
                   >
                     <span className="visually-hidden sr-only">Clear</span>
                   </button>
