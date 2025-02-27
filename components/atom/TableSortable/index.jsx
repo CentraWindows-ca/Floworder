@@ -23,17 +23,14 @@ const Com = (props) => {
     setSort,
     keyField = "m_MasterId",
     className,
-    headerClassName
+    headerClassName,
   } = props;
 
   return (
     <>
       <div className={cn("w-full", styles.root, className)}>
         <table
-          className={cn(
-            styles.orderTable,
-            "table-sm table-hover mb-0 table",
-          )}
+          className={cn(styles.orderTable, "table-sm table-hover mb-0 table")}
         >
           <TableHeader
             {...{
@@ -43,7 +40,7 @@ const Com = (props) => {
               filters,
               setFilters,
               applyFilter,
-              className: headerClassName
+              className: headerClassName,
             }}
           />
           <tbody>
@@ -82,7 +79,15 @@ const Com = (props) => {
   );
 };
 
-export const TableHeader = ({ columns, applyFilter = true, sort, setSort, filters, setFilters, className }) => {
+export const TableHeader = ({
+  columns,
+  applyFilter = true,
+  sort,
+  setSort,
+  filters,
+  setFilters,
+  className,
+}) => {
   const handleSortChange = (k) => {
     const newSortObj = null;
     // only 1 sorting field currently
@@ -135,9 +140,7 @@ export const TableHeader = ({ columns, applyFilter = true, sort, setSort, filter
           return (
             <th key={key} style={{ width: width || "auto" }}>
               {!isNotTitle ? (
-                <div
-                  className={cn(styles.tableTitle, styles.sortableTitle)}
-                >
+                <div className={cn(styles.tableTitle, styles.sortableTitle)}>
                   <span className={cn(styles.sortTitle)}>{title}</span>
                   <OrderByIcon
                     orderBy={sort}

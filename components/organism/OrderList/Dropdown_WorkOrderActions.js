@@ -5,6 +5,7 @@ import {
   ArrowRightOutlined,
   DeleteOutlined,
   HistoryOutlined,
+  SyncOutlined 
 } from "@ant-design/icons";
 
 import { Button } from "antd";
@@ -15,6 +16,7 @@ import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
 import OrdersApi from "lib/api/OrdersApi";
 import Dropdown_Custom from "components/atom/Dropdown_Custom";
 import PermissionBlock from "components/atom/PermissionBlock";
+import External_FromApi from "lib/api/External_FromApi";
 
 import constants, {
   ORDER_STATUS,
@@ -71,6 +73,22 @@ const WorkOrderActions = ({ data, onEdit, onView, onUpdate, kind }) => {
     await OrdersApi.softDeleteProductionsWorkOrder(data);
     onUpdate();
   });
+
+  const handleSyncWindowMaker = useLoadingBar(async () => {
+    if (!window.confirm(`Are you sure to snyc Window Maker data for [${data?.m_WorkOrderNo}]?`)) {
+      return null;
+    }
+
+    // check which facility is it
+    const FACILITY = {
+      "Calgary": "WM_AB",
+      "Langley": "WM_BC",
+    };
+
+    const WM = FACILITY[data.m_Facility] || 'WM_BC'
+    await External_FromApi.getWindowMakerWorkerOrder(data.m_WorkOrderNo, WM)
+    onUpdate();
+  }  )
 
   const actions = (
     <div className={cn(styles.workorderActionsContainer)}>
@@ -143,11 +161,19 @@ const WorkOrderActions = ({ data, onEdit, onView, onUpdate, kind }) => {
           icon={<DeleteOutlined />}
           onClick={handleDelete}
           // disabled={true}
-          title="not implemented"
         >
           Delete Order
         </Button>
       </PermissionBlock>
+
+      <Button
+          type="text"
+          icon={<SyncOutlined  />}
+          onClick={handleSyncWindowMaker}
+        >
+          Sync From Window Maker
+      </Button>
+
       <PermissionBlock
         featureCode={constants.FEATURE_CODES["om.prod.woHistory"]}
       >

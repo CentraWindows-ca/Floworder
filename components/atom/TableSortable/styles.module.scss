@@ -28,7 +28,8 @@
             // border-right: 1px solid $color_border_table;
             background-color: $color_background_tableHeader;
             border-bottom: 1px solid $color_border_table;
-            // left: -2px !important;
+            left: -2px !important;
+            right: 0px;
         }
 
         z-index: 2;
@@ -83,7 +84,7 @@
         &>div {
             position: relative;
             left: -1px;
-            border-right: 3px double $color_border_table;
+            border-right: 1px double $color_border_table;
             
         }
     }
