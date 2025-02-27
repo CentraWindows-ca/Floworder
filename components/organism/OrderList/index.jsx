@@ -25,6 +25,7 @@ const Com = (props) => {
     onEdit,
     onView,
     onUpdate,
+    onHistory,
     data,
     kind,
     uiIsShowWindow,
@@ -80,6 +81,7 @@ const Com = (props) => {
               {...{
                 onEdit: () => onEdit(record?.m_WorkOrderNo),
                 onView: () => onView(record?.m_WorkOrderNo),
+                onHistory: () => onHistory(record?.m_WorkOrderNo),
                 onUpdate,
                 kind,
               }}

@@ -34,7 +34,7 @@ import { getOrderKind } from "lib/utils";
 const getStatusName = (statusCode) =>
   ORDER_STATUS.find((a) => a.key?.trim() === statusCode?.trim())?.systemName;
 
-const WorkOrderActions = ({ data, onEdit, onView, onUpdate, kind }) => {
+const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) => {
   const { m_WorkOrderNo, w_Status, d_Status } = data;
 
   // statusIndex
@@ -180,8 +180,7 @@ const WorkOrderActions = ({ data, onEdit, onView, onUpdate, kind }) => {
         <Button
           type="text"
           icon={<HistoryOutlined />}
-          disabled={true}
-          title="not implemented"
+          onClick={onHistory}
         >
           View Order History
         </Button>
