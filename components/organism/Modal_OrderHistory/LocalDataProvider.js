@@ -1,9 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-} from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import _ from "lodash";
 import { GeneralContext } from "lib/provider/GeneralProvider";
 
@@ -20,11 +15,136 @@ import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
 
 export const LocalDataContext = createContext(null);
 
-const STATUS = {
-  m: "m_Status",
-  w: "w_Status",
-  d: "d_Status",
-};
+const DUMMY = [
+  {
+    Id: 1,
+    MasterId: "e8bde1d9-7741-4b4f-b6b1-33c25a729f9f",
+    WorkOrderNo: "WO-1001",
+    PreData: "Initial Setup",
+    Version: 1,
+    ChangedData: [
+      { Field: "Status", OldValue: "New", NewValue: "In Progress" },
+    ],
+    Operation: "Create",
+    CreatedAt: "2023-10-01T10:15:00Z",
+    ChangedBy: "john.doe",
+  },
+  {
+    Id: 2,
+    MasterId: "5f9d8f8e-2a58-472a-b0d4-682c5c88c7e3",
+    WorkOrderNo: "WO-1002",
+    PreData: "Pre-check completed",
+    Version: 2,
+    ChangedData: [{ Field: "Priority", OldValue: "Low", NewValue: "High" }],
+    Operation: "Update",
+    CreatedAt: "2023-10-02T09:30:00Z",
+    ChangedBy: "jane.smith",
+  },
+  {
+    Id: 3,
+    MasterId: "c6d1e3f9-4d27-4ad5-90b9-4c9b2b3c8c15",
+    WorkOrderNo: "WO-1003",
+    PreData: "Data review",
+    Version: 1,
+    ChangedData: [
+      { Field: "DueDate", OldValue: "2023-10-10", NewValue: "2023-10-15" },
+    ],
+    Operation: "Edit",
+    CreatedAt: "2023-10-03T11:45:00Z",
+    ChangedBy: "mike.jones",
+  },
+  {
+    Id: 4,
+    MasterId: "b8d2a7e0-7d3b-42f2-84e2-5f982a6b6d92",
+    WorkOrderNo: "WO-1004",
+    PreData: "Initial submission",
+    Version: 1,
+    ChangedData: [
+      { Field: "AssignedTo", OldValue: "Team A", NewValue: "Team B" },
+    ],
+    Operation: "Reassign",
+    CreatedAt: "2023-10-04T13:20:00Z",
+    ChangedBy: "linda.white",
+  },
+  {
+    Id: 5,
+    MasterId: "9c3e3b8a-80ab-4c97-aeb7-7287a5b5c2d6",
+    WorkOrderNo: "WO-1005",
+    PreData: "Review pending",
+    Version: 2,
+    ChangedData: [
+      { Field: "Status", OldValue: "Pending", NewValue: "Completed" },
+    ],
+    Operation: "Close",
+    CreatedAt: "2023-10-05T14:05:00Z",
+    ChangedBy: "susan.king",
+  },
+  {
+    Id: 6,
+    MasterId: "3d3b3c7b-5c6b-4f8e-8d72-7a2b9b3d5d8e",
+    WorkOrderNo: "WO-1006",
+    PreData: "New order created",
+    Version: 1,
+    ChangedData: [{ Field: "Amount", OldValue: "100", NewValue: "150" }],
+    Operation: "Update",
+    CreatedAt: "2023-10-06T15:45:00Z",
+    ChangedBy: "emma.green",
+  },
+  {
+    Id: 7,
+    MasterId: "2b3d4e5f-6a7b-4c8d-9e2f-5b1a7c8d9e0f",
+    WorkOrderNo: "WO-1007",
+    PreData: "Work scheduled",
+    Version: 1,
+    ChangedData: [
+      { Field: "StartDate", OldValue: "2023-10-20", NewValue: "2023-10-22" },
+    ],
+    Operation: "Reschedule",
+    CreatedAt: "2023-10-07T16:30:00Z",
+    ChangedBy: "william.brown",
+  },
+  {
+    Id: 8,
+    MasterId: "5a6b7c8d-9e0f-4b1a-8c2d-3e4f5b6c7d8e",
+    WorkOrderNo: "WO-1008",
+    PreData: "Inspection required",
+    Version: 1,
+    ChangedData: [{ Field: "Inspector", OldValue: "John", NewValue: "Sarah" }],
+    Operation: "Reassign",
+    CreatedAt: "2023-10-08T17:10:00Z",
+    ChangedBy: "chris.martin",
+  },
+  {
+    Id: 9,
+    MasterId: "7c8d9e0f-5b1a-4c2d-8e3f-6a7b8c9d0e1f",
+    WorkOrderNo: "WO-1009",
+    PreData: "Waiting for approval",
+    Version: 3,
+    ChangedData: [
+      { Field: "ApprovalStatus", OldValue: "Pending", NewValue: "Approved" },
+    ],
+    Operation: "Approve",
+    CreatedAt: "2023-10-09T18:00:00Z",
+    ChangedBy: "david.clark",
+  },
+  {
+    Id: 10,
+    MasterId: "9e0f1a2b-3c4d-5e6f-7b8c-9d0e1f2a3b4c",
+    WorkOrderNo: "WO-1010",
+    PreData: "Quality check",
+    Version: 2,
+    ChangedData: [
+      {
+        Field: "QualityStatus",
+        OldValue: "Check Required",
+        NewValue: "Checked",
+      },
+    ],
+    Operation: "Complete",
+    CreatedAt: "2023-10-10T19:30:00Z",
+    ChangedBy: "olivia.wilson",
+  },
+];
 
 export const LocalDataProvider = ({
   children,
@@ -40,316 +160,39 @@ export const LocalDataProvider = ({
   const [data, setData] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isEditable, setIsEditable] = useState(false);
 
   // only display. upload/delete will directly call function
-  const [existingAttachments, setExistingAttachments] = useState(null);
-  const [existingImages, setExistingImages] = useState(null);
-
-  const [newAttachments, setNewAttachments] = useState(null);
-  const [newImages, setNewImages] = useState(null);
-
-  const [windowItems, setWindowItems] = useState(null);
-  const [doorItems, setDoorItems] = useState(null);
-  const [glassItems, setGlassItems] = useState(null);
-
-  const [uiOrderType, setUiOrderType] = useState({});
-  const [uiShowMore, setUiShowMore] = useState(true);
-
-  const [initData, setInitData] = useState(null);
-
-  const [kind, setKind] = useState(initKind || "m");
-
-  // UI purpose
-  const [expands, setExpands] = useState({});
-
   useEffect(() => {
     if (initWorkOrder) {
       init(initWorkOrder);
     }
   }, [initWorkOrder]);
 
-  const handleChange = (v, k) => {
-    setData((prev) => {
-      const _newV = JSON.parse(JSON.stringify(prev || {}));
-      _.set(_newV, k, v);
-      return _newV;
-    });
-  };
-
-  const handleAnchor = (id, closeOthers) => {
-    if (closeOthers) {
-      setExpands(() => ({
-        [id]: true,
-      }));
-    } else {
-      setExpands((prev) => ({
-        ...prev,
-        [id]: true,
-      }));
-    }
-
-    setTimeout(() => {
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }, 200);
-  };
-
-  const handleHide = () => {
-    clear();
-    onHide();
-  };
-
   // ====== api calls
   const clear = () => {
     setData(null);
-    setDoorItems(null);
-    setWindowItems(null);
-    setExistingAttachments(null);
-    setNewAttachments(null);
-    setExistingImages(null);
-    setNewImages(null);
-    setGlassItems(null);
-    setInitData(null);
   };
 
   const init = async (initWorkOrderNo) => {
     setIsLoading(true);
     setData(null);
-    setIsEditable(initIsEditable);
 
     // fetch data
-    const [res] = await Wrapper_OrdersApi.getWorkOrder(initWorkOrderNo);
+    const res =  DUMMY //await Wrapper_OrdersApi.getWorkOrder(initWorkOrderNo);
 
-    if (typeof res === "object") {
-      // re-assemble data to easier to edit
-
-      const { value } = res;
-
-      let mergedData = {};
-      mergedData = { ...value?.d, ...value?.m, ...value?.w };
-      setData(mergedData);
-      setInitData(JSON.parse(JSON.stringify(mergedData)));
-
-      // if it has door or window or master info (should always has master. here just for consistency)
-      setUiOrderType({
-        m: !!value?.m,
-        d: !!value?.d,
-        w: !!value?.w,
-      });
-
-      if (initKind === "w" || getOrderKind(mergedData) === "w") {
-        setKind("w");
-      } else if (initKind === "d" || getOrderKind(mergedData) === "d") {
-        setKind("d");
-      } else {
-        setKind("m");
-      }
-
-      await initItems(initWorkOrderNo);
-      initAttachmentList(mergedData?.m_MasterId);
-      initImageList(mergedData?.m_MasterId);
-
-      const resGlassItems = await GlassApi.getGlassItems(
-        initWorkOrderNo,
-        mergedData.m_ManufacturingFacility,
+    if (res) {
+      setData(
+        res.map((a) => {
+          return {
+            ...a,
+            CreatedAt: utils.formatDate(a.CreatedAt),
+          };
+        }),
       );
-
-      if (resGlassItems) {
-        const getStatus = (glassItem) => {
-          let result = "Not Ordered";
-
-          if (glassItem?.qty === glassItem?.glassQty) {
-            result = "Received";
-          } else if (glassItem?.orderDate) {
-            result = "Ordered";
-          }
-
-          return result;
-        };
-
-        setGlassItems((x) => {
-          let _glassItems = [...resGlassItems];
-
-          _glassItems?.forEach((g) => {
-            g.status = getStatus(g);
-            g.receivedExpected = `${g.qty} / ${g.glassQty}`;
-            g.shipDate = g.shipDate;
-            g.orderDate = g.orderDate;
-          });
-
-          return _glassItems;
-        });
-      }
     }
 
     setIsLoading(false);
   };
-
-  const initItems = useLoadingBar(async (initWorkOrderNo) => {
-    const doorItems = await Wrapper_OrdersApi.getDoorItems(initWorkOrderNo);
-    const windowItems = await Wrapper_OrdersApi.getWindowItems(initWorkOrderNo);
-    setDoorItems(_.orderBy(doorItems,['Item']));
-    setWindowItems(_.orderBy(windowItems,['Item']));
-  });
-
-  const initAttachmentList = useLoadingBar(async (masterId) => {
-    // const res = await Wrapper_OrdersApi.getFiles(masterId)
-
-    const res = await OrdersApi.getUploadFileByRecordIdAsync({
-      MasterId: masterId,
-      ProdTypeId: constants.PROD_TYPES.m,
-    });
-
-    setExistingAttachments(res);
-  });
-
-  const initImageList = useLoadingBar(async (masterId) => {
-    // const res = await Wrapper_OrdersApi.getImages(masterId)
-
-    const res = await OrdersApi.getUploadImageByRecordIdAsync({
-      MasterId: masterId,
-      ProdTypeId: constants.PROD_TYPES.m,
-    });
-    setExistingImages(res);
-  });
-
-  //
-  const doUpdateStatus = useLoadingBar(async (v, _kind) => {
-    // await Wrapper_OrdersApi.updateWorkOrder(data, {
-    //   [`${kind}_Status`]: v,
-    // });
-
-    const { m_WorkOrderNo, m_MasterId } = data;
-
-    const payload = {
-      m_WorkOrderNo,
-      m_MasterId,
-      newStatus: v,
-    };
-
-    const updatingIdField = `${_kind}_Id`;
-    const updatingStatusField =  `${_kind}_Status`;
-
-    payload[updatingIdField] = data[updatingIdField];
-    payload[updatingStatusField] = data[updatingStatusField]
-    await OrdersApi.updateWorkOrderStatus(payload);
-    await init(initWorkOrder);
-    onSave();
-  });
-
-  const doUpdateTransferredLocation = useLoadingBar(async () => {
-    const m_TransferredLocation = data?.m_TransferredLocation;
-    await Wrapper_OrdersApi.updateWorkOrder(data, {
-      m_TransferredLocation,
-    });
-
-    await init(initWorkOrder);
-    onSave();
-  });
-
-  const doUploadAttachment = useLoadingBar(async (_files) => {
-    const awaitList = _files?.map((_f) => {
-      const { file, notes } = _f;
-      return OrdersApi.uploadFileAsync({
-        masterId: data?.m_MasterId,
-        prodTypeId: constants.PROD_TYPES.m,
-        uploadingFile: file,
-        notes,
-      });
-    })
-
-    await Promise.all(awaitList)
-    await initAttachmentList(data?.m_MasterId);
-  });
-
-  const doDeleteAttachment = useLoadingBar(async (_file) => {
-    if (!confirm(`Delete ${_file.fileName}?`)) return null
-    await OrdersApi.deleteUploadFileByIdAsync({
-      id: _file.id,
-    });
-
-    await initAttachmentList(data?.m_MasterId);
-  });
-
-  const doUploadImage = useLoadingBar(async (_files) => {
-    const awaitList = _files?.map((_f) => {
-      const { file, notes } = _f;
-      return OrdersApi.uploadImageAsync({
-        masterId: data?.m_MasterId,
-        prodTypeId: constants.PROD_TYPES.m,
-        uploadingFile: file,
-        notes,
-      });
-    })
-
-    await Promise.all(awaitList)
-    await initImageList(data?.m_MasterId);
-  });
-
-  const doDeleteImage = useLoadingBar(async (_file) => {
-    if (!confirm(`Delete ${_file.fileName}?`)) return null
-    await OrdersApi.deleteUploadImageByIdAsync({
-      id: _file.id,
-    });
-
-    await initImageList(data?.m_MasterId);
-  });
-
-  const doSave = useLoadingBar(async () => {
-    // identify changed data:
-    const changedData = utils.findChanges(initData, data);
-
-    // process customized
-    if (changedData.w_ProductionStartDate) {
-      changedData.w_ProductionEndDate = changedData.w_ProductionStartDate;
-    }
-
-    if (changedData.d_ProductionStartDate) {
-      changedData.d_ProductionEndDate = changedData.d_ProductionStartDate;
-    }
-
-    await Wrapper_OrdersApi.updateWorkOrder(data, changedData);
-    onSave();
-  });
-
-  const doUpdateWindowItem = useLoadingBar(async (Id, item) => {
-    if (_.isEmpty(item)) return null;
-    await Wrapper_OrdersApi.updateWindowItem(item?.MasterId, Id, item);
-    await initItems(initWorkOrder);
-  });
-
-  const doUpdateDoorItem = useLoadingBar(async (Id, item) => {
-    if (_.isEmpty(item)) return null;
-    await Wrapper_OrdersApi.updateDoorItem(item?.MasterId, Id, item);
-    await initItems(initWorkOrder);
-  });
-
-  const doBatchUpdateItems = useLoadingBar(async (updateList, kind) => {
-    if (_.isEmpty(updateList)) return null;
-    await Wrapper_OrdersApi.updateItemList(updateList, kind);
-    await initItems(initWorkOrder);
-  });
-
-  // calculations
-  const glassTotal =
-    glassItems?.reduce(
-      (prev, curr) => {
-        return {
-          qty: prev.qty + parseInt(curr.qty) || 0,
-          glassQty: prev.glassQty + parseInt(curr.glassQty) || 0,
-        };
-      },
-      {
-        qty: 0,
-        glassQty: 0,
-      },
-    ) || {};
-
-  const uIstatusObj =
-    ORDER_STATUS?.find((a) => a.key === data?.[STATUS[kind]]) || {};
 
   const context = {
     ...generalContext,
@@ -357,44 +200,8 @@ export const LocalDataProvider = ({
     isLoading,
     initWorkOrder,
     data,
-    kind,
-    facility,
     setData,
-    newAttachments,
-    setNewAttachments,
-    existingAttachments,
-    setExistingAttachments,
-    newImages,
-    setNewImages,
-    existingImages,
-    setExistingImages,
-    onChange: handleChange,
-    onUpdateStatus: doUpdateStatus,
-    onUpdateTransferredLocation: doUpdateTransferredLocation,
-    onAnchor: handleAnchor,
-    onUploadAttachment: doUploadAttachment,
-    onDeleteAttachment: doDeleteAttachment,
-    onUploadImage: doUploadImage,
-    onDeleteImage: doDeleteImage,
-    onUpdateWindowItem: doUpdateWindowItem,
-    onUpdateDoorItem: doUpdateDoorItem,
-    onBatchUpdateItems: doBatchUpdateItems,
-    onHide: handleHide,
-    onSave: doSave,
-
-    windowItems,
-    doorItems,
-    glassItems,
-    expands,
-    setExpands,
-    isEditable,
-    setIsEditable,
-    uiOrderType,
-    uiShowMore,
-    setUiShowMore,
-    glassTotal,
-    uIstatusObj,
-    initData,
+    onHide
   };
   return (
     <LocalDataContext.Provider value={context}>

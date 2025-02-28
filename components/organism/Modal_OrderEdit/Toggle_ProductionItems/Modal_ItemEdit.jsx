@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import constants from "lib/constants";
 import cn from "classnames";
 import Modal from "components/molecule/Modal";
 import Editable from "components/molecule/Editable";
@@ -7,7 +8,7 @@ import utils from "lib/utils";
 
 // styles
 import styles from "../styles.module.scss";
-const WINDOW_FIELDS = [
+const WINDOW_FIELDS = constants.applyField([
   {
     Component: Editable.EF_Label,
     title: "Item",
@@ -106,161 +107,130 @@ const WINDOW_FIELDS = [
     title: "Painted",
     id: "Painted",
   },
-];
+]);
 
-const DOOR_FIELDS = [
+const DOOR_FIELDS = constants.applyField([
   {
     Component: Editable.EF_Label,
-    title: "Item",
     id: "Item",
   },
   {
     Component: Editable.EF_Label,
-    title: "System",
     id: "System",
   },
   {
     Component: Editable.EF_Label,
-    title: "Description",
     id: "Description",
   },
   {
     Component: Editable.EF_SelectWithLabel,
-    title: "Door Type",
     id: "DoorType",
     options: ITEM_DOOR_TYPES
   },
   {
     Component: Editable.EF_Label,
-    title: "Size",
     id: "Size",
   },
   {
     Component: Editable.EF_Label,
-    title: "Quantity",
     id: "Quantity",
   },
   {
     Component: Editable.EF_Label,
-    title: "SubQty",
     id: "SubQty",
   },
   {
     Component: Editable.EF_Text,
-    title: "Notes",
     id: "Notes",
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    title: "Door Cut-out",
     id: "DoorCutout",
   },
   {
     Component: Editable.EF_SelectWithLabel,
     options: ITEM_STATUS,
-    title: "Status",
     id: "Status",
     sortBy: "sort",
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    title: "Stock",
     id: "Stock",
   },
   {
     Component: Editable.EF_SelectWithLabel,
-    title: "Lites",
     id: "Lites",
     options: ITEM_LITES
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    title: "BTO",
     id: "BTO",
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    title: "Slab Prep",
     id: "SlabPrep",
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    title: "Assembly",
     id: "Assembly",
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    title: "Milling Dept",
     id: "MillingDept",
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    title: "Custom Slab Prep",
     id: "CustomSlabPrep",
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    title: "QA",
     id: "QA",
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    title: "Custom Milling",
     id: "CustomMilling",
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    title: "TempSlab",
     id: "TempSlab",
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    title: "Painted",
     id: "Painted",
   },
-
   {
     Component: Editable.EF_Input,
-    title: "BoxQty",
     id: "BoxQty",
   },
   {
     Component: Editable.EF_Input,
-    title: "GlassQty",
     id: "GlassQty",
   },
   {
     Component: Editable.EF_Input,
-    title: "LBRMin",
     id: "LBRMin",
   },
   {
     Component: Editable.EF_Rack,
-    title: "RackLocation",
     id: "RackLocation",
   },
   {
     Component: Editable.EF_Input,
-    title: "TransomCount",
     id: "TransomCount",
   },
   {
     Component: Editable.EF_Input,
-    title: "SideliteCount",
     id: "SideliteCount",
   },
   {
     Component: Editable.EF_Input,
-    title: "SingleDoorCount",
     id: "SingleDoorCount",
   },
   {
     Component: Editable.EF_Input,
-    title: "DoubleDoorCount",
     id: "DoubleDoorCount",
   },
-];
-
+]);
 
 const Com = (props) => {
   const { onHide, initItem, onSave, isEditable } = props;

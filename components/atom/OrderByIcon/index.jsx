@@ -9,11 +9,11 @@ const Com = ({ orderBy, col, ...props }) => {
 
   let iconClass = "";
   if (sortBy !== col) {
-    iconClass = "fa-solid fa-sort text-slate-300";
+    iconClass = cn("fa-solid fa-sort text-slate-300");
   } else if (dir === "asc") {
-    iconClass = "fa-solid fa-sort-up text-blue-600";
+    iconClass = cn("fa-solid fa-sort-up", styles.iconActive);
   } else {
-    iconClass = "fa-solid fa-sort-down text-blue-600";
+    iconClass = cn("fa-solid fa-sort-down", styles.iconActive);
   }
 
   return (
@@ -23,14 +23,14 @@ const Com = ({ orderBy, col, ...props }) => {
         style={{
           position: "relative",
           width: "8px",
-          height: "10px",
+          height: "12px",
           verticalAlign: "middle",
         }}
       >
         <i
           className={cn("fa-solid fa-sort text-slate-200")}
           style={{
-            fontSize: "10px",
+            fontSize: "12px",
             position: "absolute",
 
             right: "0px",
@@ -39,7 +39,7 @@ const Com = ({ orderBy, col, ...props }) => {
         <i
           className={cn(iconClass, styles.iconBehind)}
           style={{
-            fontSize: "10px",
+            fontSize: "12px",
             position: "absolute",
 
             right: "0px",

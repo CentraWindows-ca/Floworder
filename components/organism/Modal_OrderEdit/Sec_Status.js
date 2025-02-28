@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
-import {
+import constants, {
   ORDER_STATUS,
   WORKORDER_WORKFLOW,
   WORKORDER_MAPPING,

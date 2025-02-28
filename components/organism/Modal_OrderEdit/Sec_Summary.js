@@ -2,12 +2,11 @@ import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import utils from "lib/utils";
 import _ from "lodash";
-
+import constants from "lib/constants";
 // styles
 import styles from "./styles.module.scss";
 
 import { LocalDataContext } from "./LocalDataProvider";
-
 
 const WINDOW_LBR_FIELDS = [
   {
@@ -61,6 +60,7 @@ const WINDOW_LBR_FIELDS = [
     lbr: "w__68VSMin",
   },
 ];
+
 const Com = ({ className, ...props }) => {
   const { data, onChange, onHide } = useContext(LocalDataContext);
 

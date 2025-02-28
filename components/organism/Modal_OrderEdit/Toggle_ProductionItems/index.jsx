@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
+import constants from "lib/constants";
 import { ITEM_STATUS, ITEM_LITES, ITEM_DOOR_TYPES } from "lib/constants";
 import Editable from "components/molecule/Editable";
 import TableSortable from "components/atom/TableSortable";
@@ -146,14 +147,12 @@ const TableWindow = ({ handleShowItem }) => {
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState({});
 
-  const columnsWindow = [
+  const columnsWindow = constants.applyField([
     {
-      title: "Item",
       key: "Item",
       width: 80,
     },
     {
-      title: "Size",
       key: "Size",
       width: 160,
     },
@@ -163,21 +162,17 @@ const TableWindow = ({ handleShowItem }) => {
       width: 60,
     },
     {
-      title: "SubQty",
       key: "SubQty",
-      width: 70,
+      width: 85,
     },
     {
-      title: "System",
       key: "System",
-      width: 70,
+      width: 85,
     },
     {
-      title: "Description",
       key: "Description",
     },
     {
-      title: "High Risk",
       key: "HighRisk",
       width: 120,
       render: (t, record) => {
@@ -201,7 +196,6 @@ const TableWindow = ({ handleShowItem }) => {
       },
     },
     {
-      title: "Custom",
       key: "Custom",
       width: 90,
       render: (t, record) => {
@@ -225,7 +219,6 @@ const TableWindow = ({ handleShowItem }) => {
       },
     },
     {
-      title: "BTO",
       key: "BTO",
       width: 70,
       render: (t, record) => {
@@ -249,7 +242,6 @@ const TableWindow = ({ handleShowItem }) => {
       },
     },
     {
-      title: "Notes",
       key: "Notes",
     },
     {
@@ -282,7 +274,6 @@ const TableWindow = ({ handleShowItem }) => {
       },
     },
     {
-      title: "Status",
       key: "Status",
       width: 150,
       render: (t, record) => {
@@ -321,7 +312,7 @@ const TableWindow = ({ handleShowItem }) => {
       width: 60,
       isNotTitle: true,
     },
-  ];
+  ]);
 
   // apply filter
   const sortedList = _.orderBy(data, [sort?.sortBy], [sort?.dir])?.filter(
@@ -417,14 +408,12 @@ const TableDoor = ({ handleShowItem }) => {
 
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState({});
-  const columns = [
+  const columns = constants.applyField([
     {
-      title: "Item",
       key: "Item",
       width: 80,
     },
     {
-      title: "Size",
       key: "Size",
       width: 160,
     },
@@ -434,22 +423,17 @@ const TableDoor = ({ handleShowItem }) => {
       width: 60,
     },
     {
-      title: "SubQty",
       key: "SubQty",
       width: 70,
     },
     {
-      title: "System",
       key: "System",
       width: 70,
     },
     {
-      title: "Description",
       key: "Description",
     },
-
     {
-      title: "BTO",
       key: "BTO",
       width: 70,
       render: (t, record) => {
@@ -478,7 +462,6 @@ const TableDoor = ({ handleShowItem }) => {
       },
     },
     {
-      title: "Notes",
       key: "Notes",
     },
     {
@@ -511,7 +494,6 @@ const TableDoor = ({ handleShowItem }) => {
       },
     },
     {
-      title: "Status",
       key: "Status",
       width: 150,
       render: (t, record) => {
@@ -550,7 +532,7 @@ const TableDoor = ({ handleShowItem }) => {
       width: 70,
       isNotTitle: true,
     },
-  ];
+  ]);
 
   // apply filter
   const sortedList = _.orderBy(data, [sort?.sortBy], [sort?.dir])?.filter(

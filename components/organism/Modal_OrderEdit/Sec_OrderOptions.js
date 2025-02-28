@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
+import constants from "lib/constants";
 
 import Editable from "components/molecule/Editable";
 
@@ -25,113 +26,93 @@ import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
 import { DisplayBlock, displayFilter } from "./Com";
 
-const COMMON_FIELDS = [
+const COMMON_FIELDS = constants.applyField([
   {
-    label: "Customer Pick-up",
     icon: () => <CustomerPickupIcon />,
     id: "m_CustomerPickup",
   },
-];
+]);
 
-const WINDOW_FIELDS = [
+const WINDOW_FIELDS = constants.applyField([
   {
-    label: "Window Rush Order",
     icon: () => <RushIcon />,
     id: "w_RushOrder",
   },
   {
-    label: "Window Paint Icon",
     icon: () => <PaintIcon />,
     id: "w_PaintIcon",
   },
   {
-    label: "Capstock Icon",
     icon: () => <CapStockIcon />,
     id: "w_CapstockIcon",
   },
   {
-    label: "Window Miniblind Icon",
     icon: () => <MiniBlindIcon />,
     id: "w_MiniblindIcon",
   },
   {
-    label: "Window Engineered Order Icon",
     icon: () => <EngineeredIcon />,
     id: "w_EngineeredIcon",
   },
   {
-    label: "Window RBM Icon",
     icon: () => <RbmIcon />,
     id: "w_RBMIcon",
   },
   {
-    label: "Vinyl Wrap Icon",
     icon: () => <VinylWrapIcon />,
     id: "w_VinylWrapIcon",
   },
   {
-    label: "Window Shapes Requires",
     icon: () => <ShapesIcon />,
     id: "w_ShapesRequires",
   },
   {
-    label: "Window Grids Required",
     icon: () => <GridIcon />,
     id: "w_GridIcon",
   },
   {
-    label: "Window Water Testing Required",
     icon: () => <WaterTestingIcon />,
     id: "w_WaterTestingRequired",
   },
   {
-    label: "Water Penetration Resistance",
     icon: () => <WaterResistanceIcon />,
     id: "w_WaterPenetrationResistance",
   },
-];
-const DOOR_FIELDS = [
+]);
+const DOOR_FIELDS = constants.applyField([
   {
-    label: "Door Rush Order",
     icon: () => <RushIcon />,
     id: "d_RushOrder",
   },
   {
-    label: "Door Paint Icon",
     icon: () => <DoorPaintIcon />,
     id: "d_PaintIcon",
   },
   {
-    label: "Door RBM Icon",
     icon: () => <RbmIcon />,
     id: "d_RBMIcon",
   },
   {
-    label: "Door Grids Required",
     icon: () => <GridIcon />,
     id: "d_GridIcon",
   },
   {
-    label: "Door Water Testing Required",
     icon: () => <WaterTestingIcon />,
     id: "d_WaterTestingRequired",
   },
   {
-    label: "Door Mini Blind",
     icon: () => <MiniBlindIcon />,
     id: "d_MiniblindIcon",
   },
   {
-    label: "Door Engineered Order Icon",
     icon: () => <EngineeredIcon />,
     id: "d_EngineeredIcon",
   },
   {
-    label: "Door Shapes Requires",
     icon: () => <ShapesIcon />,
     id: "d_ShapesRequires",
   },
-];
+]);
 
 const Com = ({}) => {
   const { uiOrderType, kind } = useContext(LocalDataContext);
@@ -195,7 +176,7 @@ const Com = ({}) => {
 const Block = ({ inputData }) => {
   const { data, onChange, isEditable, dictionary } =
     useContext(LocalDataContext);
-  let { label, icon, id } = inputData;
+  let { title, icon, id } = inputData;
   return (
     <DisplayBlock id={id} key={id}>
       <div>
@@ -206,9 +187,15 @@ const Block = ({ inputData }) => {
           disabled={!isEditable}
         />
       </div>
-      <label htmlFor={id} className="align-items-center flex gap-1">
+      <label
+        htmlFor={id}
+        className="align-items-center flex gap-1"
+        style={{
+          cursor: isEditable ? "pointer" : "default",
+        }}
+      >
         <div className="w-6">{icon()}</div>
-        {label}
+        {title}
       </label>
     </DisplayBlock>
   );

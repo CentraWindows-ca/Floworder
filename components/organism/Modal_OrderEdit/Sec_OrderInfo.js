@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
+import constants from "lib/constants";
 
 import Editable from "components/molecule/Editable";
 
-import constants from "lib/constants";
 
 // styles
 import styles from "./styles.module.scss";
@@ -13,16 +13,14 @@ import { LocalDataContext } from "./LocalDataProvider";
 
 import { DisplayBlock, displayFilter } from "./Com";
 
-const COMMON_FIELDS = [
+const COMMON_FIELDS = constants.applyField([
   {
     Component: Editable.EF_SelectWithLabel,
-    title: "Branch",
     id: "m_BranchId",
     options: constants.WorkOrderSelectOptions.branches,
   },
   {
     Component: Editable.EF_SelectWithLabel,
-    title: "Manufacturing Facility",
     id: "m_ManufacturingFacility",
     options: _.keys(constants.ManufacturingFacilities)?.map((k) => ({
       label: k,
@@ -32,37 +30,31 @@ const COMMON_FIELDS = [
   },
   {
     Component: Editable.EF_SelectWithLabel,
-    title: "Shipping Type",
     id: "m_ShippingType",
     options: constants.WorkOrderSelectOptions.shippingTypes,
   },
   {
     Component: Editable.EF_SelectWithLabel,
-    title: "Residential Type",
     id: "m_ResidentialType",
     options: constants.WorkOrderSelectOptions.residentialTypes,
   },
   {
     Component: Editable.EF_SelectWithLabel,
-    title: "Job Type",
     id: "m_JobType",
     options: constants.WorkOrderSelectOptions.jobTypes,
   },
   {
     Component: Editable.EF_SelectWithLabel,
-    title: "Customer Type",
     id: "m_CustomerType",
     options: constants.WorkOrderSelectOptions.customerTypes,
   },
   {
     Component: Editable.EF_SelectWithLabel,
-    title: "Project",
     id: "m_Project",
     options: constants.WorkOrderSelectOptions.project,
   },
   {
     Component: Editable.EF_SelectWithLabel,
-    title: "Sales Reps",
     id: "m_SalesRep",
     placeholder: "-",
     options: (dictionary) =>
@@ -77,51 +69,44 @@ const COMMON_FIELDS = [
         };
       }),
   },
-];
+]);
 
-const WINDOW_FIELDS = [
+const WINDOW_FIELDS = constants.applyField([
   {
     Component: Editable.EF_Input,
-    title: "Window Block NO.",
     id: "w_BlockNo",
   },
   {
     Component: Editable.EF_Input,
-    title: "Window Batch NO.",
     id: "w_BatchNo",
   },
   {
     Component: Editable.EF_SelectWithLabel,
-    title: "Window Glass Supplier",
     id: "w_GlassSupplier",
     options: constants.WorkOrderSelectOptions.glassSuppliers,
   },
   {
     Component: Editable.EF_SelectWithLabel,
-    title: "Window Glass Option",
     id: "w_GlassOptions",
     options: constants.WorkOrderSelectOptions.glassOptions,
   },
-];
+]);
 
-const DOOR_FIELDS = [
+const DOOR_FIELDS = constants.applyField([
   {
     Component: Editable.EF_Input,
-    title: "Door Block NO.",
     id: "d_BlockNo",
   },
   {
     Component: Editable.EF_Input,
-    title: "Door Batch NO.",
     id: "d_BatchNo",
   },
   {
     Component: Editable.EF_SelectWithLabel,
-    title: "Door Glass Supplier",
     id: "d_GlassSupplier",
     options: constants.WorkOrderSelectOptions.glassSuppliers,
   },
-];
+]);
 
 const Com = ({  }) => {
   const {  uiOrderType, kind, } =

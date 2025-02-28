@@ -96,6 +96,8 @@ const Com = ({
     // setEditingOrder(order);
     const pathname = router?.asPath?.split("?")?.[0];
 
+    console.log("????")
+
     const query = {
       ...router.query,
       order,
@@ -248,7 +250,6 @@ const Com = ({
       />
       <Modal_OrderHistory
         initWorkOrder={historyOrder}
-        kind={tab}
         onHide={() => handleHistory()}
       />
     </div>

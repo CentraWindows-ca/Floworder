@@ -140,14 +140,16 @@ export const TableHeader = ({
           return (
             <th key={key} style={{ width: width || "auto" }}>
               {!isNotTitle ? (
-                <div className={cn(styles.tableTitle, styles.sortableTitle)}>
+                <div className={cn(styles.tableTitle, !!setSort && styles.sortableTitle)}>
                   <span className={cn(styles.sortTitle)}>{title}</span>
-                  <OrderByIcon
-                    orderBy={sort}
-                    col={sortKey}
-                    onClick={() => handleSortChange(sortKey)}
-                    title={`sort this column`}
-                  />
+                  {setSort ? (
+                    <OrderByIcon
+                      orderBy={sort}
+                      col={sortKey}
+                      onClick={() => handleSortChange(sortKey)}
+                      title={`sort this column`}
+                    />
+                  ) : null}
                 </div>
               ) : (
                 <div className={cn(styles.tableTitle)}>
@@ -158,28 +160,30 @@ export const TableHeader = ({
           );
         })}
       </tr>
-      <tr>
-        {columns?.map((a) => {
-          const { key, initKey, isNotTitle, filterPlaceHolder = "--" } = a;
-          return (
-            <td key={`filter_${a.key}`}>
-              <div style={{ padding: 2 }}>
-                {!isNotTitle ? (
-                  <Editable.EF_InputDebounce
-                    value={filters?.[initKey || key]}
-                    onChange={(v) => handleFilterChange(v, initKey || key)}
-                    style={{ width: "100%" }}
-                    placeholder={filterPlaceHolder}
-                    disabled={!applyFilter}
-                  />
-                ) : (
-                  <br />
-                )}
-              </div>
-            </td>
-          );
-        })}
-      </tr>
+      {setFilters ? (
+        <tr>
+          {columns?.map((a) => {
+            const { key, initKey, isNotTitle, filterPlaceHolder = "--" } = a;
+            return (
+              <td key={`filter_${a.key}`}>
+                <div style={{ padding: 2 }}>
+                  {!isNotTitle ? (
+                    <Editable.EF_InputDebounce
+                      value={filters?.[initKey || key]}
+                      onChange={(v) => handleFilterChange(v, initKey || key)}
+                      style={{ width: "100%" }}
+                      placeholder={filterPlaceHolder}
+                      disabled={!applyFilter}
+                    />
+                  ) : (
+                    <br />
+                  )}
+                </div>
+              </td>
+            );
+          })}
+        </tr>
+      ) : null}
     </thead>
   );
 };

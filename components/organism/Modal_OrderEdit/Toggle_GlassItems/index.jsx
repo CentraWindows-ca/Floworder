@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import constants from "lib/constants";
 
 import _ from "lodash";
 
@@ -10,9 +11,8 @@ import styles from "../styles.module.scss";
 import { LocalDataContext } from "../LocalDataProvider";
 import { ToggleBlock } from "../Com";
 
-const Com = ({  }) => {
-  const {  glassTotal, glassItems, } =
-    useContext(LocalDataContext);
+const Com = ({}) => {
+  const { glassTotal, glassItems } = useContext(LocalDataContext);
 
   const [sort, setSort] = useState(null);
   const [filters, setFilters] = useState(null);
@@ -26,53 +26,44 @@ const Com = ({  }) => {
     </div>
   );
 
-  const columns = [
+  const columns = constants.applyField([
     {
-      title: "Rcev. / Expt.",
       key: "receivedExpected",
       width: 125,
     },
     {
-      title: "Rack ID",
       key: "rackID",
     },
     {
-      title: "Rack Type",
       key: "rackType",
     },
     {
-      title: "Qty On Rack",
       key: "qty",
+      width: 120
     },
     {
-      title: "Item",
+      // title: "Item",
       key: "item",
     },
     {
-      title: "Description",
       key: "description",
     },
     {
-      title: "Order Date",
       key: "orderDate",
     },
     {
-      title: "Shipping Date",
       key: "shipDate",
     },
     {
-      title: "Size",
       key: "size",
     },
     {
-      title: "Position",
       key: "position",
     },
     {
-      title: "Status",
       key: "status",
     },
-  ];
+  ]);
 
   let sortedList = JSON.parse(JSON.stringify(glassItems || []));
 
@@ -96,8 +87,6 @@ const Com = ({  }) => {
               });
               a.rackInfo = filteredRack;
 
-              console.log("rackinfo", filteredRack);
-
               return !_.isEmpty(filteredRack);
             default:
               return a[filterBy]
@@ -116,7 +105,10 @@ const Com = ({  }) => {
           <div className={styles.itemSubTitle}>
             <label>Windows</label>
           </div>
-          <table className="table-xs table-bordered table-hover mb-0 table border" style={{borderTop: 'none'}}>
+          <table
+            className="table-xs table-bordered table-hover mb-0 table border"
+            style={{ borderTop: "none" }}
+          >
             <TableHeader
               {...{
                 columns,
@@ -176,7 +168,9 @@ const SingleRow = ({ data }) => {
 
   return (
     <tr>
-      <td><div>{receivedExpected}</div></td>
+      <td>
+        <div>{receivedExpected}</div>
+      </td>
       <td>--</td>
       <td>--</td>
       <td className="text-right">0</td>
