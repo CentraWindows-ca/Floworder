@@ -11,18 +11,18 @@ import styles from "./styles.module.scss";
 import { LocalDataContext, LocalDataProvider } from "./LocalDataProvider";
 import LoadingBlock from "components/atom/LoadingBlock";
 
-const Com = ({id, onHide}) => {
+const Com = ({data, onHide}) => {
   
   // use swr later
   useEffect(() => {
     
-  }, [id])
+  }, [data])
   
 
   return (
     <>
       <Modal
-        show={id}
+        show={!!data}
         title={''}
         size="lg"
         onHide={onHide}

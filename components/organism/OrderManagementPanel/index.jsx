@@ -24,7 +24,14 @@ const Com = ({
   setApplyFilter,
 }) => {
   const router = useRouter();
-  const { facility, tab = "m", order, modalType, sort } = router?.query || {};
+  const {
+    facility,
+    tab = "m",
+    order,
+    modalType,
+    sort,
+    status,
+  } = router?.query || {};
 
   const [treatedData, setTreatedData] = useState({});
   const [isShowCreate, setIsShowCreate] = useState(false);
@@ -96,8 +103,6 @@ const Com = ({
     // setEditingOrder(order);
     const pathname = router?.asPath?.split("?")?.[0];
 
-    console.log("????")
-
     const query = {
       ...router.query,
       order,
@@ -164,7 +169,8 @@ const Com = ({
   // ====== consts
   return (
     <div className={cn("w-full", styles.root)}>
-      <div className={cn(styles.topBar)}>
+      <div className={cn(styles.topBar)} style={{ paddingLeft: "25px" }}>
+        {/* <div>{status}</div> */}
         <div className="align-items-center flex gap-2">
           <button className="btn btn-success me-2 px-2" onClick={handleCreate}>
             <i className="fa-solid fa-circle-plus me-2"></i>

@@ -19,8 +19,8 @@ const Com = ({}) => {
   const { isLoading, initWorkOrder, onHide, data } =
     useContext(LocalDataContext);
 
-  const [idChanges, setIdChanges] = useState();
-  const [idAll, setIdAll] = useState();
+  const [idChanges, setIdChanges] = useState(null);
+  const [idAll, setIdAll] = useState(null);
 
   const handleShowItemChanges = setIdChanges;
   const handleShowItemAll = setIdAll;
@@ -47,14 +47,7 @@ const Com = ({}) => {
               className="btn btn-sm btn-outline-primary"
               onClick={() => handleShowItemChanges(record)}
             >
-              Changes only
-            </button>
-
-            <button
-              className="btn btn-sm btn-outline-primary"
-              onClick={() => handleShowItemAll(record)}
-            >
-              All operation fields
+              Detail
             </button>
           </div>
         );
@@ -99,8 +92,7 @@ const Com = ({}) => {
           </div>
         </LoadingBlock>
       </Modal>
-      <SubModal_ChangesOnly id={idChanges} onHide={() => setIdChanges(0)} />
-      <SubModal_All id={idAll} onHide={() => setIdAll(0)} />
+      <SubModal_ChangesOnly data={idChanges} onHide={() => setIdChanges(0)} />
     </>
   );
 };

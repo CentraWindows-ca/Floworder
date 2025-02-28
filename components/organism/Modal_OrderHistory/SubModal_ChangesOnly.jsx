@@ -11,48 +11,75 @@ import styles from "./styles.module.scss";
 import { LocalDataContext, LocalDataProvider } from "./LocalDataProvider";
 import LoadingBlock from "components/atom/LoadingBlock";
 
-const Com = ({ id, onHide }) => {
-  const [historyData, setHistoryData] = useState();
+const Com = ({ data, onHide }) => {
+  const [historyData, setHistoryData] = useState(null);
 
   // use swr later
   useEffect(() => {
-    doInit(id);
-  }, [id]);
+    if (data) {
+      doInit(data);
+    } else {
+      setHistoryData(null);
+    }
+  }, [data]);
 
   // ======
 
-  const doInit = (id) => {
-    const _changesData = {
-      ChangedData: [
-        {
-          Field: "m_CustomerName",
-          OldValue: "sdfgggggggg",
-          NewValue: "sdfgggggggg",
-        },
-      ],
+  const doInit = (data) => {
+    let PreData = JSON.parse(data.PreData);
+    PreData = PreData[data.MasterId];
+    PreData = {
+      ...PreData?.d,
+      ...PreData?.m,
+      ...PreData?.w,
     };
 
-    setHistoryData(_changesData);
+    const _data = {
+      ...data,
+      ChangedData: JSON.parse(data.ChangedData),
+      PreData,
+    };
+    console.log(_data);
+    setHistoryData(_data);
   };
+
+  // Plant Production  /  Record history for: VVIS87679  /  Edit Record
+  // Record has been modified by Michelle Fernandez from Actions desktop web access at Feb 28, 2025, 8:03:59 AM.
+  // Record state: 'Draft Work Order'.
 
   return (
     <>
       <Modal
-        show={id}
-        title={""}
+        show={!!data}
+        title={
+          <>
+            Plant Production History / {historyData?.WorkOrderNo} /{" "}
+            {historyData?.Operation}
+          </>
+        }
         size="lg"
         onHide={onHide}
         fullscreen={true}
         titleClassName={"flex justify-content-between flex-grow-1"}
       >
         <LoadingBlock isLoading={false}>
+          <div className="mb-2">
+            Record has been modified by {historyData?.ChangedBy || "--"} at{" "}
+            {historyData?.CreatedAt}
+            <br />
+            Work Order Status: {historyData?.PreData?.m_Status} | Window Status:{" "}
+            {historyData?.PreData?.w_Status} | Door Status:{" "}
+            {historyData?.PreData?.d_Status}
+          </div>
           <div className={cn(styles.changesList)}>
             {historyData?.ChangedData?.map((a) => {
               const { Field, OldValue, NewValue } = a;
 
               return (
-                <div key={`changed_${Field}`}  className={cn(styles.changesRow)}>
-                  <div className={cn(styles.changesField)} title={Field}>{constants.constants_labelMapping[Field]?.title || Field}</div>
+                <div key={`changed_${Field}`} className={cn(styles.changesRow)}>
+                  <div className={cn(styles.changesField)} title={Field}>
+                    {constants.constants_labelMapping[Field]?.title || Field}
+                  </div>
                   <div className={cn(styles.changesOld)}>{OldValue}</div>
                   <div className={cn(styles.changesNew)}>{NewValue}</div>
                 </div>

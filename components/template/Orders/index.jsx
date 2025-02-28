@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import cn from "classnames";
 import _ from "lodash";
 import { RedoOutlined } from "@ant-design/icons";
+import { Button } from "antd";
+import Tooltip from "components/atom/Tooltip";
 
 import constants from "lib/constants";
 
@@ -28,6 +30,8 @@ const Com = ({}) => {
   // ====== search
   const [filters, setFilters] = useState({});
   const [applyFilter, setApplyFilter] = useState(true);
+  const [drawerOpen, handleToggleDrawer] = useState(true);
+
   const { status, q, p = 0, facility, tab = "m", sort } = router?.query || {};
 
   const defaultTab = "m";
@@ -142,9 +146,22 @@ const Com = ({}) => {
             <TabLinksFull {...{ defaultTab, tabs, renderTool }} />
           </div>
           <div className={styles.twoColumns}>
-            <div className={styles.columnOfItems}>
-              <div className={styles.itemsContainer}>
-                <States />
+            <div
+              className={cn(
+                styles.columnOfItems,
+                styles[drawerOpen ? "drawerOpen" : "drawerClose"],
+              )}
+            >
+              <div className={styles.toggleIcon}>
+                <ToggleOfSidemenu {...{ drawerOpen, handleToggleDrawer }} />
+              </div>
+              <div className={styles.itemsDrawerContainer}>
+                <div className={styles.itemsContainer}>
+                  <div className={styles.itemsContainerTitle}>
+                    <i className="fa-solid fa-list-check me-2"></i>Status
+                  </div>
+                  <States />
+                </div>
               </div>
             </div>
             <div className={styles.columnOfDetailPanel}>
@@ -166,4 +183,23 @@ const Com = ({}) => {
     </div>
   );
 };
+
+const ToggleOfSidemenu = ({ drawerOpen, handleToggleDrawer }) => {
+  return (
+    <Tooltip title={`${drawerOpen ? "Minimize" : "Expand"} Orders Menu`}>
+      <Button
+        className="z-10 mr-4 mt-1 w-[12px] rounded-full bg-white text-gray-600 hover:bg-blue-500 hover:text-red-400"
+        onClick={() => handleToggleDrawer((prev) => !prev)}
+      >
+        <i
+          className={cn(
+            "fa-solid",
+            drawerOpen ? "fa-chevron-left" : "fa-chevron-right",
+          )}
+        ></i>
+      </Button>
+    </Tooltip>
+  );
+};
+
 export default Com;

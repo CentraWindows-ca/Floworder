@@ -176,9 +176,8 @@ export const LocalDataProvider = ({
   const init = async (initWorkOrderNo) => {
     setIsLoading(true);
     setData(null);
-
     // fetch data
-    const res =  DUMMY //await Wrapper_OrdersApi.getWorkOrder(initWorkOrderNo);
+    const res =  await Wrapper_OrdersApi.getWorkOrderHistory(initWorkOrderNo);
 
     if (res) {
       setData(

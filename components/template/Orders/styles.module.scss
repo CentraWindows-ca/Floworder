@@ -32,20 +32,52 @@
 		.columnOfItems {
 			display: flex;
 			flex-direction: column;
-			overflow: auto;
-			width: 300px;
+			// overflow: auto;
+			
 			border-right: 1px solid $color_gray;
 			flex-shrink: 0;
 			box-shadow: 5px 0 10px -5px rgba(0, 0, 0, 0.15);
+			position: relative;
+			padding-right: 5px;
+			// border-right: 1px solid $color_border_table;
 
 			.searchContainer {
 				padding: 10px;
 				border-bottom: 1px solid $color_gray;
 			}
 
-			.itemsContainer {
-				// overflow-y: scroll;
+			.toggleIcon {
+				position: absolute;
+				right: -30px;
+				top: 8px;
+				z-index: 1000;
+			}
+
+			.itemsDrawerContainer {
 				flex-grow: 1;
+				.itemsContainer {
+					// overflow-y: scroll;
+					flex-grow: 1;
+					overflow: hidden;
+					width: 270px;
+					position: absolute;
+					right: 15px;
+					.itemsContainerTitle {
+						border-radius: 4px;
+						background-color: $color_background;
+						padding: 15px;
+						margin: 20px 10px 0px 10px;
+					}
+				}
+			}
+
+			&.drawerOpen {
+				width: 285px;
+				transition: width .3s;
+			}
+			&.drawerClose {
+				width: 20px;
+				transition: width .3s;
 			}
 		}
 
