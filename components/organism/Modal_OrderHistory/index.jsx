@@ -84,7 +84,7 @@ const Com = ({}) => {
             <TableSortable
               {...{
                 data: data?.sort((a, b) =>
-                  a.CreatedAt > b.CreatedAt ? 1 : -1,
+                  a.CreatedAt < b.CreatedAt ? 1 : -1,
                 ),
                 columns,
               }}

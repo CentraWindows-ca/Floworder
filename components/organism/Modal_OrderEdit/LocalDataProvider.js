@@ -329,7 +329,7 @@ export const LocalDataProvider = ({
 
   const doBatchUpdateItems = useLoadingBar(async (updateList, kind) => {
     if (_.isEmpty(updateList)) return null;
-    await Wrapper_OrdersApi.updateItemList(updateList, kind);
+    await Wrapper_OrdersApi.updateItemList(data?.m_MasterId, updateList, kind);
     await initItems(initWorkOrder);
     return
   });
