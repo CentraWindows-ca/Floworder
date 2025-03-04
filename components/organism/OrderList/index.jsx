@@ -102,7 +102,7 @@ const Com = (props) => {
           </div>
         );
       },
-      width: 120,
+      width: 115,
     },
     {
       title: "Current status",
@@ -177,7 +177,7 @@ const Com = (props) => {
     {
       title: "Job Type",
       key: "m_JobType",
-      width: 100,
+      width: 95,
     },
 
     {
@@ -196,40 +196,40 @@ const Com = (props) => {
       title: "Door Batch#",
       key: "d_BatchNo",
       display: isDoor,
-      width: 125,
+      width: 120,
     },
     {
       title: "Door Block#",
       key: "d_BlockNo",
       display: isDoor,
-      width: 125,
+      width: 120,
     },
     {
       title: "Windows",
       key: "m_NumberOfWindows",
       display: isWindow,
       className: "text-right",
-      width: 90,
+      width: 95,
     },
     {
       title: "Patio Doors",
       key: "m_NumberOfPatioDoors",
       display: isWindow,
       className: "text-right",
-      width: 120,
+      width: 115,
     },
     {
       title: "Doors",
       key: "m_NumberOfDoors",
       display: isDoor,
       className: "text-right",
-      width: 70,
+      width: 75,
     },
     {
       title: "Others",
       key: "m_NumberOfOthers",
       className: "text-right",
-      width: 70,
+      width: 80,
     },
     {
       title: "INV Status",

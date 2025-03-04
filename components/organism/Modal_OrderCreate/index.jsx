@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useRouter } from "next/router";
-import { List } from "antd";
+import { List, Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 import cn from "classnames";
 import _ from "lodash";
 import Modal from "components/molecule/Modal";
@@ -26,6 +27,7 @@ const Com = (props) => {
   const handleCreate = (...params) => {
     handleClear();
     onCreate(...params);
+    handleHide()
   };
 
   const handleHide = () => {
@@ -102,8 +104,8 @@ const Screen1 = ({
     setResList(_resList);
 
     if (_resList?.length === 1) {
-      setWindowMakerData(_resList[0]);
-      setManufacturingFacility(FACILITY[_resList[0]?.dataSource]);
+      setWindowMakerData(_resList[0]?.data);
+      setManufacturingFacility(FACILITY[_resList[0]?.dbSource]);
     } else if (_resList?.length > 1) {
     } else {
       toast(
@@ -147,7 +149,7 @@ const Screen1 = ({
                 className="cursor-pointer hover:bg-blue-100"
                 onClick={() => handleSelect(item)}
               >
-                <b>[{item.dataSource}]</b> {item.name} | {item.city} 
+                <b>[{item.dataSource}]</b> {item.name} | {item.city}
               </List.Item>
             )}
           />
@@ -179,6 +181,7 @@ const Screen2 = ({
   setIsReservation,
 }) => {
   const [initValues, setInitValues] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const isWindow = !!(
     windowMakerData?.wmWindows || windowMakerData?.wmPatioDoors
@@ -190,6 +193,7 @@ const Screen2 = ({
     (isDoor && !initValues?.DoorStartDate);
 
   const doFetch = async () => {
+    setIsLoading(true);
     const updateValues = {
       ...initValues,
     };
@@ -203,12 +207,12 @@ const Screen2 = ({
     // fetch from WM
     if (manufacturingFacility === "Calgary") {
       await OrdersApi.sync_AB_WindowMakerByWorkOrderAsync({
-        workOrderNo,
+        WorkOrderNo: workOrderNo,
         ...updateValues,
       });
     } else {
       await OrdersApi.sync_BC_WindowMakerByWorkOrderAsync({
-        workOrderNo,
+        WorkOrderNo: workOrderNo,
         ...updateValues,
       });
     }
@@ -216,6 +220,7 @@ const Screen2 = ({
     // update init values
 
     setInitValues({});
+    setIsLoading(false);
     onCreate(workOrderNo);
   };
 
@@ -360,11 +365,19 @@ const Screen2 = ({
       <hr />
       <div className="justify-content-center flex gap-2">
         <button
-          className="btn btn-primary"
+          className="btn btn-primary flex gap-2 align-items-center"
           onClick={doFetch}
           disabled={disabled}
         >
-          Save
+          <Spin
+            size="small"
+            indicator={<LoadingOutlined />}
+            spinning={isLoading}
+            style={{color: 'white'}}
+            
+          />
+          <span>Save</span>
+          
         </button>
       </div>
     </div>

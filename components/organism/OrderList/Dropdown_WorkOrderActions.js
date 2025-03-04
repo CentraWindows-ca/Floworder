@@ -41,11 +41,11 @@ const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) =
   let allowedStatusWindow = [];
   let allowedStatusDoor = [];
 
-  if (kind === "m" || getOrderKind(data) === "w") {
+  if (kind === "m" || getOrderKind(data) === "m" || getOrderKind(data) === "w") {
     allowedStatusWindow = WORKORDER_WORKFLOW[getStatusName(w_Status)] || [];
   }
 
-  if (kind === "m" || getOrderKind(data) === "d") {
+  if (kind === "m" || getOrderKind(data) === "m" || getOrderKind(data) === "d") {
     allowedStatusDoor = WORKORDER_WORKFLOW[getStatusName(d_Status)] || [];
   }
 
@@ -79,14 +79,22 @@ const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) =
       return null;
     }
 
-    // check which facility is it
-    const FACILITY = {
-      "Calgary": "WM_AB",
-      "Langley": "WM_BC",
-    };
+    const manufacturingFacility = data.m_Facility
+    // fetch from WM
+    if (manufacturingFacility === "Calgary") {
+      await OrdersApi.sync_AB_WindowMakerByWorkOrderAsync({
+        WorkOrderNo : data?.m_WorkOrderNo,
+        Status: data?.m_Status
+      });
+    } else {
+      await OrdersApi.sync_BC_WindowMakerByWorkOrderAsync({
+        WorkOrderNo : data?.m_WorkOrderNo,
+        Status: data?.m_Status
+      });
+    }
 
-    const WM = FACILITY[data.m_Facility] || 'WM_BC'
-    await External_FromApi.getWindowMakerWorkerOrder(data.m_WorkOrderNo, WM)
+
+
     onUpdate();
   }  )
 
