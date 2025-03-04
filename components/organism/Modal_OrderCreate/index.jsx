@@ -99,7 +99,7 @@ const Screen1 = ({
     const _resList = [
       await External_FromApi.getWindowMakerWorkerOrder(workOrderNo, "WM_BC"),
       await External_FromApi.getWindowMakerWorkerOrder(workOrderNo, "WM_AB"),
-    ]?.filter((a) => a);
+    ]?.filter((a) => a?.data);
 
     setResList(_resList);
 

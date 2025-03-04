@@ -92,9 +92,6 @@ const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) =
         Status: data?.m_Status
       });
     }
-
-
-
     onUpdate();
   }  )
 

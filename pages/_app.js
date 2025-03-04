@@ -9,7 +9,7 @@ import { createRoot } from "react-dom/client";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 // ------ global nav
-
+import 'antd/dist/reset.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "react-datepicker/dist/react-datepicker.css";
 // import "styles/tailwind.css";
