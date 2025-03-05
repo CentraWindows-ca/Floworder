@@ -76,6 +76,17 @@ const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) =
     onUpdate();
   });
 
+  const handleHardDelete = useLoadingBar(async () => {
+    if (!window.confirm(`Are you sure to permenant delete [${data?.m_WorkOrderNo}]?`)) {
+      return null;
+    }
+
+    await OrdersApi.hardDeleteProductionsWorkOrder(data);
+    onUpdate();
+  });
+
+
+
   const handleSyncWindowMaker = useLoadingBar(async () => {
     if (!window.confirm(`Are you sure to snyc Window Maker data for [${data?.m_WorkOrderNo}]?`)) {
       return null;
@@ -84,14 +95,16 @@ const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) =
     const dbSource = data.m_DbSource
     // fetch from WM
     if (dbSource === "WM_AB") {
-      await OrdersApi.sync_AB_WindowMakerByWorkOrderAsync({
+      await OrdersApi.sync_AB_WindowMakerByWorkOrderAsync(null, {
         WorkOrderNo : data?.m_WorkOrderNo,
-        Status: data?.m_Status
+        Status: data?.m_Status,
+        ManufacuturingFacility: data?.m_ManufacuturingFacility
       });
     } else {
-      await OrdersApi.sync_BC_WindowMakerByWorkOrderAsync({
+      await OrdersApi.sync_BC_WindowMakerByWorkOrderAsync(null, {
         WorkOrderNo : data?.m_WorkOrderNo,
-        Status: data?.m_Status
+        Status: data?.m_Status,
+        ManufacuturingFacility: data?.m_ManufacuturingFacility
       });
     }
     onUpdate();
@@ -207,6 +220,18 @@ const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) =
         Edit Order
       </Button>
     </PermissionBlock>
+    <PermissionBlock
+        featureCode={constants.FEATURE_CODES["om.prod.wo"]}
+        op="canDelete"
+      >
+        <Button
+          type="text"
+          icon={<DeleteOutlined />}
+          onClick={handleHardDelete}
+        >
+          Delete Order
+        </Button>
+      </PermissionBlock>
   </div>
 
   return (

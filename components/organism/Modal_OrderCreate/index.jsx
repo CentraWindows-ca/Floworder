@@ -228,23 +228,22 @@ const Screen2 = ({
 
     // fetch from WM
     if (dbSource === "WM_AB") {
-      await OrdersApi.sync_AB_WindowMakerByWorkOrderAsync({
+      await OrdersApi.sync_AB_WindowMakerByWorkOrderAsync(null, {
         WorkOrderNo: workOrderNo,
-        ResetWorkOrder: selectedOverrideOption === 'ResetWorkOrder' ? 1 : 0,
+        ResetWorkOrder: selectedOverrideOption === 'ResetWorkOrder',
         ManufacuturingFacility: manufacuturingFacility,
         ...updateValues,
       });
     } else {
-      await OrdersApi.sync_BC_WindowMakerByWorkOrderAsync({
+      await OrdersApi.sync_BC_WindowMakerByWorkOrderAsync(null, {
         WorkOrderNo: workOrderNo,
-        ResetWorkOrder: selectedOverrideOption === 'ResetWorkOrder' ? 1 : 0,
+        ResetWorkOrder: selectedOverrideOption === 'ResetWorkOrder',
         ManufacuturingFacility: manufacuturingFacility,
         ...updateValues,
       });
     }
 
     // update init values
-
     setInitValues({});
     setIsLoading(false);
     onCreate(workOrderNo);
@@ -298,6 +297,7 @@ const Screen2 = ({
               value: k,
               key: k,
             }))}
+            style={{width: 100}}
           />
         </div>
       </div>

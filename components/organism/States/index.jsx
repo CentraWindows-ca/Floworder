@@ -72,9 +72,6 @@ const Com = (props) => {
           />
         );
       })}
-
-      
-      TODO: delete status
       <hr />
       <ItemTrash
         item={{
