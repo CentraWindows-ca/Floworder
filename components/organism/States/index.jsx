@@ -73,7 +73,7 @@ const Com = (props) => {
         );
       })}
 
-      {/* 
+      
       TODO: delete status
       <hr />
       <ItemTrash
@@ -86,7 +86,7 @@ const Com = (props) => {
         onClick={() => {
           handleTrash();
         }}
-      /> */}
+      />
     </div>
   );
 };

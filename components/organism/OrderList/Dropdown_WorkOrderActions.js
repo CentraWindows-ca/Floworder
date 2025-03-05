@@ -35,7 +35,9 @@ const getStatusName = (statusCode) =>
   ORDER_STATUS.find((a) => a.key?.trim() === statusCode?.trim())?.systemName;
 
 const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) => {
-  const { m_WorkOrderNo, w_Status, d_Status } = data;
+  const { m_WorkOrderNo, m_IsActive, w_Status, d_Status } = data;
+
+  console.log(data)
 
   // statusIndex
   let allowedStatusWindow = [];
@@ -79,9 +81,9 @@ const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) =
       return null;
     }
 
-    const manufacturingFacility = data.m_Facility
+    const dbSource = data.m_DbSource
     // fetch from WM
-    if (manufacturingFacility === "Calgary") {
+    if (dbSource === "WM_AB") {
       await OrdersApi.sync_AB_WindowMakerByWorkOrderAsync({
         WorkOrderNo : data?.m_WorkOrderNo,
         Status: data?.m_Status
@@ -95,7 +97,7 @@ const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) =
     onUpdate();
   }  )
 
-  const actions = (
+  const actionsActive = (
     <div className={cn(styles.workorderActionsContainer)}>
       <Button type="text" icon={<EyeOutlined />} onClick={onView}>
         View Order
@@ -193,6 +195,20 @@ const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) =
     </div>
   );
 
+  const actionsTrash = <div className={cn(styles.workorderActionsContainer)}>
+    <Button type="text" icon={<EyeOutlined />} onClick={onView}>
+      View Order
+    </Button>
+    <PermissionBlock
+      featureCode={constants.FEATURE_CODES["om.prod.wo"]}
+      op="canEdit"
+    >
+      <Button type="text" icon={<EditOutlined />} onClick={onEdit}>
+        Edit Order
+      </Button>
+    </PermissionBlock>
+  </div>
+
   return (
     <Dropdown_Custom
       renderTrigger={(onClick) => {
@@ -202,7 +218,7 @@ const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) =
           </span>
         );
       }}
-      content={actions}
+      content={ m_IsActive ?actionsActive: actionsTrash}
     />
   );
 };

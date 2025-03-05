@@ -15,13 +15,14 @@ import useLoadingBar from "lib/hooks/useLoadingBar";
 // styles
 import Editable from "components/molecule/Editable";
 import { GeneralContext } from "lib/provider/GeneralProvider";
+import constants, {WORKORDER_MAPPING} from "lib/constants";
 
 const Com = (props) => {
   const { show, onHide, onCreate } = props;
 
   const [workOrderNo, setWorkOrderNo] = useState("");
   const [windowMakerData, setWindowMakerData] = useState(null);
-  const [manufacturingFacility, setManufacturingFacility] = useState("");
+  const [dbSource, setDbSource] = useState("");
   const [isReservation, setIsReservation] = useState(false);
   const [existingStatus, setExistingStatus] = useState(false);
 
@@ -39,7 +40,7 @@ const Com = (props) => {
   const handleClear = () => {
     setWorkOrderNo("");
     setWindowMakerData(null);
-    setManufacturingFacility("");
+    setDbSource("");
     setIsReservation(false);
   };
 
@@ -53,8 +54,8 @@ const Com = (props) => {
       {!windowMakerData ? (
         <Screen1
           {...{
-            manufacturingFacility,
-            setManufacturingFacility,
+            dbSource,
+            setDbSource,
             workOrderNo,
             setWorkOrderNo,
             windowMakerData,
@@ -66,8 +67,8 @@ const Com = (props) => {
       ) : (
         <Screen2
           {...{
-            manufacturingFacility,
-            setManufacturingFacility,
+            dbSource,
+            setDbSource,
             workOrderNo,
             setWorkOrderNo,
             windowMakerData,
@@ -85,12 +86,12 @@ const Com = (props) => {
 };
 
 const FACILITY = {
-  WM_AB: "Calgary",
-  WM_BC: "Langley",
+  WM_AB: "WM_AB",
+  WM_BC: "WM_BC",
 };
 
 const Screen1 = ({
-  setManufacturingFacility,
+  setDbSource,
   workOrderNo,
   setWorkOrderNo,
   windowMakerData,
@@ -111,10 +112,11 @@ const Screen1 = ({
 
     if (_resList?.length === 1) {
       setWindowMakerData(_resList[0]?.data);
-      setManufacturingFacility(FACILITY[_resList[0]?.dbSource]);
+      setDbSource(FACILITY[_resList[0]?.dbSource]);
 
       // check if exists
-      setExistingStatus(true);
+      const isExist = await OrdersApi.getIsExistByWOAsync({ workOrderNo });
+      setExistingStatus(isExist);
     } else if (_resList?.length > 1) {
     } else {
       toast(
@@ -130,7 +132,7 @@ const Screen1 = ({
 
   const handleSelect = (wm_record) => {
     setWindowMakerData(wm_record);
-    setManufacturingFacility(FACILITY[wm_record?.dataSource]);
+    setDbSource(FACILITY[wm_record?.dataSource]);
   };
 
   return (
@@ -180,8 +182,7 @@ const Screen1 = ({
 };
 
 const Screen2 = ({
-  manufacturingFacility,
-  setManufacturingFacility,
+  dbSource,
   workOrderNo,
   windowMakerData,
   setWindowMakerData,
@@ -189,13 +190,16 @@ const Screen2 = ({
   isReservation,
   setIsReservation,
   existingStatus,
-  setExistingStatus,
 }) => {
   const [initValues, setInitValues] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   const [selectedOverrideOption, setSelectedOverrideOption] =
     useState("override");
+
+  const [manufacuturingFacility, setManufacuturingFacility] = useState(
+    constants.ManufacturingFacilities.Langley,
+  );
 
   const isWindow = !!(
     windowMakerData?.wmWindows || windowMakerData?.wmPatioDoors
@@ -213,20 +217,28 @@ const Screen2 = ({
     };
 
     if (isReservation) {
-      updateValues.Status = "Draft Reservation";
+      updateValues.Status = WORKORDER_MAPPING.DraftReservation.key
     } else {
-      updateValues.Status = "Draft";
+      updateValues.Status = WORKORDER_MAPPING.Draft.key
+    }
+
+    if (selectedOverrideOption === 'ResetWorkOrder') {
+      confirm("Are you sure you want to delete current work order and then refetch from Window Maker?")
     }
 
     // fetch from WM
-    if (manufacturingFacility === "Calgary") {
+    if (dbSource === "WM_AB") {
       await OrdersApi.sync_AB_WindowMakerByWorkOrderAsync({
         WorkOrderNo: workOrderNo,
+        ResetWorkOrder: selectedOverrideOption === 'ResetWorkOrder' ? 1 : 0,
+        ManufacuturingFacility: manufacuturingFacility,
         ...updateValues,
       });
     } else {
       await OrdersApi.sync_BC_WindowMakerByWorkOrderAsync({
         WorkOrderNo: workOrderNo,
+        ResetWorkOrder: selectedOverrideOption === 'ResetWorkOrder' ? 1 : 0,
+        ManufacuturingFacility: manufacuturingFacility,
         ...updateValues,
       });
     }
@@ -274,6 +286,21 @@ const Screen2 = ({
           </div>
         </div>
       )}
+      <div className="form-group row">
+        <label className="col-lg-3">Manufacturing Facility</label>
+        <div className="col-lg-3 justify-content-center flex">
+          <Editable.EF_SelectWithLabel
+            id="manufacuturingFacility"
+            value={manufacuturingFacility}
+            onChange={(v) => setManufacuturingFacility((prev) => v)}
+            options={_.keys(constants.ManufacturingFacilities)?.map((k) => ({
+              label: k,
+              value: k,
+              key: k,
+            }))}
+          />
+        </div>
+      </div>
       <div className="form-group row">
         <label className="col-lg-3">Reservation</label>
         <div className="col-lg-3 justify-content-center flex">
@@ -391,7 +418,7 @@ const Screen2 = ({
                 onChange={(v) => setSelectedOverrideOption(v)}
                 options={[
                   { label: "Update it", key: "override" },
-                  { label: "Delete it and create a new one", key: "recreate" },
+                  { label: "Delete it and create a new one", key: "ResetWorkOrder" },
                 ]}
               />
             </div>

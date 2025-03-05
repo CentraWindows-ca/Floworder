@@ -32,7 +32,7 @@ const Com = ({}) => {
   const [applyFilter, setApplyFilter] = useState(true);
   const [drawerOpen, handleToggleDrawer] = useState(true);
 
-  const { status, q, p = 0, facility, tab = "m", sort } = router?.query || {};
+  const { status, q, p = 0, facility, tab = "m", sort, isDeleted } = router?.query || {};
 
   const defaultTab = "m";
   const tabs = [
@@ -114,6 +114,7 @@ const Com = ({}) => {
       : undefined,
     orderByItems: sortArr,
     kind: tab,
+    isActive: isDeleted ? 0 : 1
   });
 
   // use swr
