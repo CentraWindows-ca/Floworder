@@ -2,6 +2,7 @@ import { GeneralProvider } from "lib/provider/GeneralProvider";
 import LoadingBar from "components/atom/LoadingBar";
 import constants from "lib/constants";
 import { ConfigProvider } from "antd";
+import { StyleProvider } from "@ant-design/cssinjs";
 
 export default function Admin({ children, permissions, rawAuth }) {
   return (
@@ -29,12 +30,12 @@ export default function Admin({ children, permissions, rawAuth }) {
             Segmented: {
               itemSelectedBg: constants.COLORS.centraBlue,
               itemSelectedColor: constants.COLORS.centraWhite,
-              trackBg: '#FFFFFF'
+              trackBg: "#FFFFFF",
             },
           },
         }}
       >
-        {children}
+        <StyleProvider>{children}</StyleProvider>
       </ConfigProvider>
     </GeneralProvider>
   );

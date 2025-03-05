@@ -7,7 +7,7 @@
       "args": "start",
       "cwd": "./",
       "env": {
-        "NODE_ENV": "staging",
+        "NODE_ENV": "production",
         "PORT": 1730
       }
     }

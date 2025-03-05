@@ -23,11 +23,12 @@ const Com = (props) => {
   const [windowMakerData, setWindowMakerData] = useState(null);
   const [manufacturingFacility, setManufacturingFacility] = useState("");
   const [isReservation, setIsReservation] = useState(false);
+  const [existingStatus, setExistingStatus] = useState(false);
 
   const handleCreate = (...params) => {
     handleClear();
     onCreate(...params);
-    handleHide()
+    handleHide();
   };
 
   const handleHide = () => {
@@ -58,6 +59,8 @@ const Com = (props) => {
             setWorkOrderNo,
             windowMakerData,
             setWindowMakerData,
+            existingStatus,
+            setExistingStatus,
           }}
         />
       ) : (
@@ -72,6 +75,8 @@ const Com = (props) => {
             onCreate: handleCreate,
             isReservation,
             setIsReservation,
+            existingStatus,
+            setExistingStatus,
           }}
         />
       )}
@@ -90,6 +95,7 @@ const Screen1 = ({
   setWorkOrderNo,
   windowMakerData,
   setWindowMakerData,
+  setExistingStatus,
 }) => {
   const { toast } = useContext(GeneralContext);
 
@@ -106,6 +112,9 @@ const Screen1 = ({
     if (_resList?.length === 1) {
       setWindowMakerData(_resList[0]?.data);
       setManufacturingFacility(FACILITY[_resList[0]?.dbSource]);
+
+      // check if exists
+      setExistingStatus(true);
     } else if (_resList?.length > 1) {
     } else {
       toast(
@@ -179,9 +188,14 @@ const Screen2 = ({
   onCreate,
   isReservation,
   setIsReservation,
+  existingStatus,
+  setExistingStatus,
 }) => {
   const [initValues, setInitValues] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+
+  const [selectedOverrideOption, setSelectedOverrideOption] =
+    useState("override");
 
   const isWindow = !!(
     windowMakerData?.wmWindows || windowMakerData?.wmPatioDoors
@@ -363,9 +377,31 @@ const Screen2 = ({
         </div>
       </div>
       <hr />
+      {existingStatus ? (
+        <div className="p-4">
+          <div
+            className="alert alert-danger align-items-center mb-0 flex"
+            role="alert"
+          >
+            The order you are trying to create already exists. You can:
+            <div className="ms-2" style={{ width: 240 }}>
+              <Editable.EF_SelectWithLabel
+                id={"exists"}
+                value={selectedOverrideOption}
+                onChange={(v) => setSelectedOverrideOption(v)}
+                options={[
+                  { label: "Update it", key: "override" },
+                  { label: "Delete it and create a new one", key: "recreate" },
+                ]}
+              />
+            </div>
+          </div>
+        </div>
+      ) : null}
+
       <div className="justify-content-center flex gap-2">
         <button
-          className="btn btn-primary flex gap-2 align-items-center"
+          className="btn btn-primary align-items-center flex gap-2"
           onClick={doFetch}
           disabled={disabled}
         >
@@ -373,11 +409,9 @@ const Screen2 = ({
             size="small"
             indicator={<LoadingOutlined />}
             spinning={isLoading}
-            style={{color: 'white'}}
-            
+            style={{ color: "white" }}
           />
           <span>Save</span>
-          
         </button>
       </div>
     </div>
