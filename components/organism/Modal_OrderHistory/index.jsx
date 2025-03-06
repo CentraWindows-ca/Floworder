@@ -6,8 +6,7 @@ import PermissionBlock from "components/atom/PermissionBlock";
 import TableSortable from "components/atom/TableSortable";
 import constants from "lib/constants";
 import utils from "lib/utils";
-import SubModal_ChangesOnly from "./SubModal_ChangesOnly";
-import SubModal_All from "./SubModal_All";
+import SubModal_Changes from "./SubModal_Changes";
 
 // styles
 import styles from "./styles.module.scss";
@@ -20,10 +19,8 @@ const Com = ({}) => {
     useContext(LocalDataContext);
 
   const [idChanges, setIdChanges] = useState(null);
-  const [idAll, setIdAll] = useState(null);
 
-  const handleShowItemChanges = setIdChanges;
-  const handleShowItemAll = setIdAll;
+  const handleShowOrderChanges = setIdChanges;
 
   const columns = [
     {
@@ -45,7 +42,7 @@ const Com = ({}) => {
           <div className="flex gap-2">
             <button
               className="btn btn-sm btn-outline-primary"
-              onClick={() => handleShowItemChanges(record)}
+              onClick={() => handleShowOrderChanges(record)}
             >
               Detail
             </button>
@@ -83,16 +80,14 @@ const Com = ({}) => {
           <div className="p-2">
             <TableSortable
               {...{
-                data: data?.sort((a, b) =>
-                  a.CreatedAt < b.CreatedAt ? 1 : -1,
-                ),
+                data: _.orderBy(data, ["CreatedAt", "Id"], ["desc", "desc"]),
                 columns,
               }}
             />
           </div>
         </LoadingBlock>
       </Modal>
-      <SubModal_ChangesOnly data={idChanges} onHide={() => setIdChanges(0)} />
+      <SubModal_Changes data={idChanges} onHide={() => setIdChanges(0)} />
     </>
   );
 };

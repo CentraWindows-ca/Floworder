@@ -1,4 +1,4 @@
-import React, from "react";
+import React, {useContext} from "react";
 import {
   EyeOutlined,
   EditOutlined,
@@ -9,6 +9,7 @@ import {
 } from "@ant-design/icons";
 
 import { Button } from "antd";
+import { GeneralContext } from "lib/provider/GeneralProvider";
 
 import cn from "classnames";
 import _ from "lodash";
@@ -36,6 +37,7 @@ const getStatusName = (statusCode) =>
 
 const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) => {
   const { m_WorkOrderNo, m_IsActive, w_Status, d_Status } = data;
+  const { toast } = useContext(GeneralContext);
 
   // statusIndex
   let allowedStatusWindow = [];
@@ -62,6 +64,8 @@ const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) =
     payload[updatingStatusField] = data[updatingStatusField]
 
     await OrdersApi.updateWorkOrderStatus(payload);
+
+    toast("Status updated", {type: "success"})
     onUpdate();
   });
 
@@ -71,6 +75,7 @@ const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) =
     }
 
     await OrdersApi.softDeleteProductionsWorkOrder(data);
+    toast("Work order moved to trash bin", {type: "success"})
     onUpdate();
   });
 
@@ -80,6 +85,7 @@ const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) =
     }
 
     await OrdersApi.hardDeleteProductionsWorkOrder(data);
+    toast("Work order deleted permenantly", {type: "success"})
     onUpdate();
   });
 
@@ -105,6 +111,8 @@ const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) =
         ManufacuturingFacility: data?.m_ManufacuturingFacility
       });
     }
+
+    toast("Work order updated from Window Maker", {type: "success"})
     onUpdate();
   }  )
 
@@ -211,14 +219,6 @@ const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) =
       View Order
     </Button>
     <PermissionBlock
-      featureCode={constants.FEATURE_CODES["om.prod.wo"]}
-      op="canEdit"
-    >
-      <Button type="text" icon={<EditOutlined />} onClick={onEdit}>
-        Edit Order
-      </Button>
-    </PermissionBlock>
-    <PermissionBlock
         featureCode={constants.FEATURE_CODES["om.prod.wo"]}
         op="canDelete"
       >
@@ -227,7 +227,7 @@ const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) =
           icon={<DeleteOutlined />}
           onClick={handleHardDelete}
         >
-          Delete Order
+          Permenantly Delete Order
         </Button>
       </PermissionBlock>
   </div>

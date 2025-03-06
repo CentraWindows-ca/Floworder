@@ -1,9 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-} from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import _ from "lodash";
 import { GeneralContext } from "lib/provider/GeneralProvider";
 
@@ -34,9 +29,11 @@ export const LocalDataProvider = ({
   onSave,
   onHide,
   initIsEditable,
+  isDeleted,
   ...props
 }) => {
   const generalContext = useContext(GeneralContext);
+  const { toast } = generalContext;
   const [data, setData] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -121,7 +118,7 @@ export const LocalDataProvider = ({
     setIsEditable(initIsEditable);
 
     // fetch data
-    const [res] = await Wrapper_OrdersApi.getWorkOrder(initWorkOrderNo);
+    const [res] = await Wrapper_OrdersApi.getWorkOrder(initWorkOrderNo, isDeleted ? 0 : 1);
 
     if (typeof res === "object") {
       // re-assemble data to easier to edit
@@ -191,8 +188,8 @@ export const LocalDataProvider = ({
   const initItems = useLoadingBar(async (initWorkOrderNo) => {
     const doorItems = await Wrapper_OrdersApi.getDoorItems(initWorkOrderNo);
     const windowItems = await Wrapper_OrdersApi.getWindowItems(initWorkOrderNo);
-    setDoorItems(_.orderBy(doorItems,['Item']));
-    setWindowItems(_.orderBy(windowItems,['Item']));
+    setDoorItems(_.orderBy(doorItems, ["Item"]));
+    setWindowItems(_.orderBy(windowItems, ["Item"]));
   });
 
   const initAttachmentList = useLoadingBar(async (masterId) => {
@@ -231,11 +228,13 @@ export const LocalDataProvider = ({
     };
 
     const updatingIdField = `${_kind}_Id`;
-    const updatingStatusField =  `${_kind}_Status`;
+    const updatingStatusField = `${_kind}_Status`;
 
     payload[updatingIdField] = data[updatingIdField];
-    payload[updatingStatusField] = data[updatingStatusField]
+    payload[updatingStatusField] = data[updatingStatusField];
     await OrdersApi.updateWorkOrderStatus(payload);
+
+    toast("Status updated", {type: "success"})
     await init(initWorkOrder);
     onSave();
   });
@@ -247,6 +246,7 @@ export const LocalDataProvider = ({
     });
 
     await init(initWorkOrder);
+    toast("Transfer location saved", {type: "success"})
     onSave();
   });
 
@@ -259,18 +259,20 @@ export const LocalDataProvider = ({
         uploadingFile: file,
         notes,
       });
-    })
+    });
 
-    await Promise.all(awaitList)
+    await Promise.all(awaitList);
+    toast("Attachment updated", {type: "success"})
     await initAttachmentList(data?.m_MasterId);
   });
 
   const doDeleteAttachment = useLoadingBar(async (_file) => {
-    if (!confirm(`Delete ${_file.fileName}?`)) return null
+    if (!confirm(`Delete ${_file.fileName}?`)) return null;
     await OrdersApi.deleteUploadFileByIdAsync({
       id: _file.id,
     });
 
+    toast("File deleted", {type: "success"})
     await initAttachmentList(data?.m_MasterId);
   });
 
@@ -283,18 +285,21 @@ export const LocalDataProvider = ({
         uploadingFile: file,
         notes,
       });
-    })
+    });
 
-    await Promise.all(awaitList)
+    await Promise.all(awaitList);
+
+    toast("Image updated", {type: "success"})
     await initImageList(data?.m_MasterId);
   });
 
   const doDeleteImage = useLoadingBar(async (_file) => {
-    if (!confirm(`Delete ${_file.fileName}?`)) return null
+    if (!confirm(`Delete ${_file.fileName}?`)) return null;
     await OrdersApi.deleteUploadImageByIdAsync({
       id: _file.id,
     });
 
+    toast("Image deleted", {type: "success"})
     await initImageList(data?.m_MasterId);
   });
 
@@ -312,26 +317,31 @@ export const LocalDataProvider = ({
     }
 
     await Wrapper_OrdersApi.updateWorkOrder(data, changedData);
+    toast("Work order saved", {type: "success"})
     onSave();
   });
 
   const doUpdateWindowItem = useLoadingBar(async (Id, item) => {
     if (_.isEmpty(item)) return null;
     await Wrapper_OrdersApi.updateWindowItem(item?.MasterId, Id, item);
+
+    toast("Item saved", {type: "success"})
     await initItems(initWorkOrder);
   });
 
   const doUpdateDoorItem = useLoadingBar(async (Id, item) => {
     if (_.isEmpty(item)) return null;
     await Wrapper_OrdersApi.updateDoorItem(item?.MasterId, Id, item);
+    toast("Item saved", {type: "success"})
     await initItems(initWorkOrder);
   });
 
   const doBatchUpdateItems = useLoadingBar(async (updateList, kind) => {
     if (_.isEmpty(updateList)) return null;
     await Wrapper_OrdersApi.updateItemList(data?.m_MasterId, updateList, kind);
+    toast("Items saved", {type: "success"})
     await initItems(initWorkOrder);
-    return
+    return;
   });
 
   // calculations

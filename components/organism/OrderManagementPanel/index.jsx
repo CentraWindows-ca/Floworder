@@ -31,6 +31,7 @@ const Com = ({
     modalType,
     sort,
     status,
+    isDeleted = "0",
   } = router?.query || {};
 
   const [treatedData, setTreatedData] = useState({});
@@ -84,6 +85,7 @@ const Com = ({
       order,
       modalType: isEdit ? "edit" : "view",
     };
+    
     if (!order) {
       delete query.order;
       delete query.modalType;
@@ -219,7 +221,7 @@ const Com = ({
         <OrderList
           kind={tab}
           onEdit={(wo) => handleEdit(wo, true)}
-          onView={(wo) => handleEdit(wo)}
+          onView={(wo) => handleEdit(wo, false)}
           onHistory={(wo) => handleHistory(wo)}
           onUpdate={handleSaveDone}
           isLoading={!data}
@@ -245,6 +247,7 @@ const Com = ({
         onHide={() => handleEdit()}
         onSave={handleSaveDone}
         initWorkOrder={editingOrder}
+        isDeleted = {isDeleted == 1}
         kind={tab}
         facility={facility}
         initIsEditable={isEditable}

@@ -29,6 +29,7 @@ const Com = ({ data, onHide }) => {
   // ======
 
   const doInit = (data) => {
+    console.log(data);
     let PreData = JSON.parse(data.PreData);
 
     PreData = {
@@ -36,15 +37,29 @@ const Com = ({ data, onHide }) => {
       ...PreData?.m,
       ...PreData?.w,
     };
-  
+
     let ChangedData = JSON.parse(data.ChangedData);
-    ChangedData = ChangedData.reduce((prev, curr) => {
-      return { ...prev, [curr.Field]: curr };
-    }, {});
+    const ChangedData_Order = ChangedData?.OrderLevelChanges?.reduce(
+      (prev, curr) => {
+        return { ...prev, [curr.Field]: curr };
+      },
+      {},
+    );
+
+    const ChangedData_ItemList = ChangedData?.ItemChanges?.map((a) => {
+      const ChangedData_Item = a.Changes?.reduce((prev, curr) => {
+        return { ...prev, [curr.Field]: curr };
+      }, {});
+      return {
+        ...a,
+        ChangedData_Item,
+      };
+    });
 
     const _data = {
       ...data,
-      ChangedData,
+      ChangedData_Order,
+      ChangedData_ItemList,
       PreData,
     };
 
@@ -103,7 +118,8 @@ const prefixOrder = { m: 0, w: 1, d: 2, wi: 3, di: 4 };
 const ChangesOnly = ({ historyData }) => {
   return (
     <div className={cn(styles.changesList)}>
-      {_.values(historyData?.ChangedData)
+      {/* order fields */}
+      {_.values(historyData?.ChangedData_Order)
         ?.sort((a, b) => sortByPrefix(a.Field, b.Field))
         ?.map((a) => {
           const { Field, OldValue, NewValue } = a;
@@ -118,6 +134,61 @@ const ChangesOnly = ({ historyData }) => {
             </div>
           );
         })}
+      {/* items */}
+      <Items
+        {...{
+          list: historyData?.ChangedData_ItemList,
+          type: "wi",
+          label: "Window Items",
+        }}
+      />
+      <Items
+        {...{
+          list: historyData?.ChangedData_ItemList,
+          type: "di",
+          label: "Door Items",
+        }}
+      />
+    </div>
+  );
+};
+
+const Items = ({ list, type, label }) => {
+  const displayList = list?.filter((a) => a.ItemType === type);
+  if (_.isEmpty(displayList)) return null;
+
+  return (
+    <div className={cn(styles.changesRow)}>
+      <div className={cn(styles.changesField)}>{label}</div>
+      <div className={cn(styles.changesCurrent)}>
+        <div className={cn(styles.changedItemList)}>
+          {displayList?.map((a) => {
+            const { ItemId } = a;
+            return (
+              <div key={ItemId}>
+                <div className={cn(styles.changedItemRow)}>Item: {ItemId} </div>
+                {a?.Changes?.map((b) => {
+                  const { Field, OldValue, NewValue } = b;
+                  const displayField = Field?.slice(3);
+                  return (
+                    <div
+                      key={`item_changed_${Field}`}
+                      className={cn(styles.changesRow)}
+                    >
+                      <div className={cn(styles.changesField)} title={Field}>
+                        {constants.constants_labelMapping[displayField]
+                          ?.title || displayField}
+                      </div>
+                      <div className={cn(styles.changesOld)}>{OldValue}</div>
+                      <div className={cn(styles.changesNew)}>{NewValue}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 };
@@ -131,8 +202,8 @@ const AllFields = ({ historyData }) => {
           if (constants.constants_labelMapping[k] === false) return null;
           const value = historyData?.PreData[k];
           let jsxValue = <></>;
-          if (historyData?.ChangedData[k]) {
-            const { OldValue, NewValue } = historyData?.ChangedData[k];
+          if (historyData?.ChangedData_Order[k]) {
+            const { OldValue, NewValue } = historyData?.ChangedData_Order[k];
             jsxValue = (
               <>
                 <div className={cn(styles.changesOld)}>{OldValue}</div>
@@ -157,13 +228,13 @@ const AllFields = ({ historyData }) => {
 };
 
 const sortByPrefix = (a, b) => {
-  const prefixA = a?.split("_")?.[0]
-  const prefixB = b?.split("_")?.[0]
+  const prefixA = a?.split("_")?.[0];
+  const prefixB = b?.split("_")?.[0];
 
   if (prefixOrder[prefixA] !== prefixOrder[prefixB]) {
     return prefixOrder[prefixA] - prefixOrder[prefixB];
   }
-  return a.localeCompare(b);
+  return a?.localeCompare(b);
 };
 
 export default Com;
