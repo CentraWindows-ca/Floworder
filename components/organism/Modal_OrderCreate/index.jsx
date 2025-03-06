@@ -207,8 +207,8 @@ const Screen2 = ({
   const isDoor = !!windowMakerData?.wmDoors;
 
   const disabled =
-    (isWindow && !initValues?.WinStartDate) ||
-    (isDoor && !initValues?.DoorStartDate);
+    (isWindow && !initValues?.winStartDate) ||
+    (isDoor && !initValues?.doorStartDate);
 
   const doFetch = async () => {
     setIsLoading(true);
@@ -256,12 +256,12 @@ const Screen2 = ({
           <label className="col-lg-3">Window Production Date</label>
           <div className="col-lg-3 justify-content-center flex">
             <Editable.EF_Date
-              id="WinStartDate"
-              value={initValues?.WinStartDate}
+              id="winStartDate"
+              value={initValues?.winStartDate}
               onChange={(v) =>
                 setInitValues((prev) => ({
                   ...prev,
-                  WinStartDate: v,
+                  winStartDate: v,
                 }))
               }
             />
@@ -273,12 +273,12 @@ const Screen2 = ({
           <label className="col-lg-3">Door Production Date</label>
           <div className="col-lg-3 justify-content-center flex">
             <Editable.EF_Date
-              id="DoorStartDate "
-              value={initValues?.DoorStartDate}
+              id="doorStartDate "
+              value={initValues?.doorStartDate}
               onChange={(v) =>
                 setInitValues((prev) => ({
                   ...prev,
-                  DoorStartDate: v,
+                  doorStartDate: v,
                 }))
               }
             />
