@@ -248,7 +248,8 @@ const Screen2 = ({
       ...initValues,
     };
 
-    if (isReservation) {
+    // if existing. dont touch status
+    if (!existingWorkOrder && isReservation) {
       updateValues.status = WORKORDER_MAPPING.DraftReservation.key;
     } else {
       updateValues.status = WORKORDER_MAPPING.Draft.key;
@@ -335,16 +336,19 @@ const Screen2 = ({
           />
         </div>
       </div>
-      <div className="form-group row">
-        <label className="col-lg-3">Reservation</label>
-        <div className="col-lg-3 justify-content-center flex">
-          <Editable.EF_Checkbox
-            id="reservation"
-            value={isReservation}
-            onChange={(v) => setIsReservation((prev) => v)}
-          />
+      {/* new order needs it */}
+      {!existingWorkOrder && (
+        <div className="form-group row">
+          <label className="col-lg-3">Reservation</label>
+          <div className="col-lg-3 justify-content-center flex">
+            <Editable.EF_Checkbox
+              id="reservation"
+              value={isReservation}
+              onChange={(v) => setIsReservation((prev) => v)}
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       <hr />
       <div className="form-group row">
@@ -353,12 +357,23 @@ const Screen2 = ({
           {windowMakerData?.workOrderNumber}
         </div>
       </div>
-      <div className="form-group row">
-        <label className="col-lg-4 font-bold">Status</label>
-        <div className="col-lg-8 border-b border-gray-200 font-bold">
-          {isReservation ? "Draft Reservation" : "Draft"}
+      
+      {existingWorkOrder ? (
+        <div className="form-group row">
+          <label className="col-lg-4 font-bold">Status</label>
+          <div className="col-lg-8 border-b border-gray-200 font-bold">
+            {existingWorkOrder?.m_Status}
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="form-group row">
+          <label className="col-lg-4 font-bold">Status</label>
+          <div className="col-lg-8 border-b border-gray-200 font-bold">
+            {isReservation ? "Draft Reservation" : "Draft"}
+          </div>
+        </div>
+      )}
+
       <div className="form-group row">
         <label className="col-lg-4 font-bold">Customer Number</label>
         <div className="col-lg-8 border-b border-gray-200">
