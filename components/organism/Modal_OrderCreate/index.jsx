@@ -217,9 +217,9 @@ const Screen2 = ({
     };
 
     if (isReservation) {
-      updateValues.Status = WORKORDER_MAPPING.DraftReservation.key
+      updateValues.status = WORKORDER_MAPPING.DraftReservation.key
     } else {
-      updateValues.Status = WORKORDER_MAPPING.Draft.key
+      updateValues.status = WORKORDER_MAPPING.Draft.key
     }
 
     if (selectedOverrideOption === 'ResetWorkOrder') {
@@ -229,16 +229,16 @@ const Screen2 = ({
     // fetch from WM
     if (dbSource === "WM_AB") {
       await OrdersApi.sync_AB_WindowMakerByWorkOrderAsync(null, {
-        WorkOrderNo: workOrderNo,
-        ResetWorkOrder: selectedOverrideOption === 'ResetWorkOrder',
-        ManufacuturingFacility: manufacuturingFacility,
+        workOrderNo,
+        resetWorkOrder: selectedOverrideOption === 'ResetWorkOrder',
+        manufacuturingFacility,
         ...updateValues,
       });
     } else {
       await OrdersApi.sync_BC_WindowMakerByWorkOrderAsync(null, {
-        WorkOrderNo: workOrderNo,
-        ResetWorkOrder: selectedOverrideOption === 'ResetWorkOrder',
-        ManufacuturingFacility: manufacuturingFacility,
+        workOrderNo,
+        resetWorkOrder: selectedOverrideOption === 'ResetWorkOrder',
+        manufacuturingFacility,
         ...updateValues,
       });
     }
