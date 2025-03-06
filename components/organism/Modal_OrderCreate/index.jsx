@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import { List, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -7,6 +7,7 @@ import _ from "lodash";
 import Modal from "components/molecule/Modal";
 import LoadingBlock from "components/atom/LoadingBlock";
 import OrdersApi from "lib/api/OrdersApi";
+import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
 import External_FromApi from "lib/api/External_FromApi";
 
 // hooks
@@ -15,7 +16,7 @@ import useLoadingBar from "lib/hooks/useLoadingBar";
 // styles
 import Editable from "components/molecule/Editable";
 import { GeneralContext } from "lib/provider/GeneralProvider";
-import constants, {WORKORDER_MAPPING} from "lib/constants";
+import constants, { WORKORDER_MAPPING } from "lib/constants";
 
 const Com = (props) => {
   const { show, onHide, onCreate } = props;
@@ -24,7 +25,7 @@ const Com = (props) => {
   const [windowMakerData, setWindowMakerData] = useState(null);
   const [dbSource, setDbSource] = useState("");
   const [isReservation, setIsReservation] = useState(false);
-  const [existingStatus, setExistingStatus] = useState(false);
+  const [existingWorkOrder, setExistingWorkOrder] = useState(false);
 
   const handleCreate = (...params) => {
     handleClear();
@@ -60,8 +61,8 @@ const Com = (props) => {
             setWorkOrderNo,
             windowMakerData,
             setWindowMakerData,
-            existingStatus,
-            setExistingStatus,
+            existingWorkOrder,
+            setExistingWorkOrder,
           }}
         />
       ) : (
@@ -76,8 +77,8 @@ const Com = (props) => {
             onCreate: handleCreate,
             isReservation,
             setIsReservation,
-            existingStatus,
-            setExistingStatus,
+            existingWorkOrder,
+            setExistingWorkOrder,
           }}
         />
       )}
@@ -96,38 +97,57 @@ const Screen1 = ({
   setWorkOrderNo,
   windowMakerData,
   setWindowMakerData,
-  setExistingStatus,
+  setExistingWorkOrder,
 }) => {
   const { toast } = useContext(GeneralContext);
-
   const [resList, setResList] = useState();
 
   const doRead = useLoadingBar(async () => {
-    const _resList = [
-      await External_FromApi.getWindowMakerWorkerOrder(workOrderNo, "WM_BC"),
-      await External_FromApi.getWindowMakerWorkerOrder(workOrderNo, "WM_AB"),
-    ]?.filter((a) => a?.data);
+    // check if exists
+    const existingRecord = await OrdersApi.getIsExistByWOAsync({ workOrderNo });
+    let _resList;
+    if (existingRecord) {
+      //
+      // get exist work order
+      let _wo = await Wrapper_OrdersApi.getWorkOrder(
+        workOrderNo,
+        existingRecord.isActive,
+      );
+      _wo = _wo?.[0];
+      _wo = { ..._wo?.value?.d, ..._wo?.value?.m, ..._wo?.value?.w };
+
+      setExistingWorkOrder(_wo);
+
+      setDbSource(existingRecord.dbSource);
+      const res = await External_FromApi.getWindowMakerWorkerOrder(
+        workOrderNo,
+        existingRecord.dbSource,
+      );
+
+      setWindowMakerData(res?.data);
+    } else {
+      _resList = [
+        await External_FromApi.getWindowMakerWorkerOrder(workOrderNo, "WM_BC"),
+        await External_FromApi.getWindowMakerWorkerOrder(workOrderNo, "WM_AB"),
+      ]?.filter((a) => a?.data);
+
+      if (_resList?.length === 1) {
+        setWindowMakerData(_resList[0]?.data);
+        setDbSource(FACILITY[_resList[0]?.dbSource]);
+      } else if (_resList?.length > 1) {
+      } else {
+        toast(
+          <>
+            Could not find order <b className="px-2">{workOrderNo}</b>
+          </>,
+          {
+            type: "error",
+          },
+        );
+      }
+    }
 
     setResList(_resList);
-
-    if (_resList?.length === 1) {
-      setWindowMakerData(_resList[0]?.data);
-      setDbSource(FACILITY[_resList[0]?.dbSource]);
-
-      // check if exists
-      const isExist = await OrdersApi.getIsExistByWOAsync({ workOrderNo });
-      setExistingStatus(isExist);
-    } else if (_resList?.length > 1) {
-    } else {
-      toast(
-        <>
-          Could not find order <b className="px-2">{workOrderNo}</b>
-        </>,
-        {
-          type: "error",
-        },
-      );
-    }
   });
 
   const handleSelect = (wm_record) => {
@@ -189,7 +209,7 @@ const Screen2 = ({
   onCreate,
   isReservation,
   setIsReservation,
-  existingStatus,
+  existingWorkOrder,
 }) => {
   const [initValues, setInitValues] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -197,7 +217,7 @@ const Screen2 = ({
   const [selectedOverrideOption, setSelectedOverrideOption] =
     useState("override");
 
-  const [manufacuturingFacility, setManufacuturingFacility] = useState(
+  const [manufacturingFacility, setManufacturingFacility] = useState(
     constants.ManufacturingFacilities.Langley,
   );
 
@@ -205,6 +225,18 @@ const Screen2 = ({
     windowMakerData?.wmWindows || windowMakerData?.wmPatioDoors
   );
   const isDoor = !!windowMakerData?.wmDoors;
+
+  useEffect(() => {
+    if (existingWorkOrder) {
+      setInitValues({
+        winStartDate: existingWorkOrder.d_ProductionStartDate,
+        doorStartDate: existingWorkOrder.w_ProductionStartDate,
+      });
+      setManufacturingFacility(existingWorkOrder.m_ManufacturingFacility);
+    } else {
+      setInitValues({});
+    }
+  }, [existingWorkOrder]);
 
   const disabled =
     (isWindow && !initValues?.winStartDate) ||
@@ -217,28 +249,30 @@ const Screen2 = ({
     };
 
     if (isReservation) {
-      updateValues.status = WORKORDER_MAPPING.DraftReservation.key
+      updateValues.status = WORKORDER_MAPPING.DraftReservation.key;
     } else {
-      updateValues.status = WORKORDER_MAPPING.Draft.key
+      updateValues.status = WORKORDER_MAPPING.Draft.key;
     }
 
-    if (selectedOverrideOption === 'ResetWorkOrder') {
-      confirm("Are you sure you want to delete current work order and then refetch from Window Maker?")
+    if (selectedOverrideOption === "ResetWorkOrder") {
+      confirm(
+        "Are you sure you want to delete current work order and then refetch from Window Maker?",
+      );
     }
 
     // fetch from WM
     if (dbSource === "WM_AB") {
       await OrdersApi.sync_AB_WindowMakerByWorkOrderAsync(null, {
         workOrderNo,
-        resetWorkOrder: selectedOverrideOption === 'ResetWorkOrder',
-        manufacuturingFacility,
+        resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
+        manufacturingFacility,
         ...updateValues,
       });
     } else {
       await OrdersApi.sync_BC_WindowMakerByWorkOrderAsync(null, {
         workOrderNo,
-        resetWorkOrder: selectedOverrideOption === 'ResetWorkOrder',
-        manufacuturingFacility,
+        resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
+        manufacturingFacility,
         ...updateValues,
       });
     }
@@ -289,15 +323,15 @@ const Screen2 = ({
         <label className="col-lg-3">Manufacturing Facility</label>
         <div className="col-lg-3 justify-content-center flex">
           <Editable.EF_SelectWithLabel
-            id="manufacuturingFacility"
-            value={manufacuturingFacility}
-            onChange={(v) => setManufacuturingFacility((prev) => v)}
+            id="manufacturingFacility"
+            value={manufacturingFacility}
+            onChange={(v) => setManufacturingFacility((prev) => v)}
             options={_.keys(constants.ManufacturingFacilities)?.map((k) => ({
               label: k,
               value: k,
               key: k,
             }))}
-            style={{width: 100}}
+            style={{ width: 100 }}
           />
         </div>
       </div>
@@ -404,7 +438,7 @@ const Screen2 = ({
         </div>
       </div>
       <hr />
-      {existingStatus ? (
+      {existingWorkOrder ? (
         <div className="p-4">
           <div
             className="alert alert-danger align-items-center mb-0 flex"
@@ -418,7 +452,10 @@ const Screen2 = ({
                 onChange={(v) => setSelectedOverrideOption(v)}
                 options={[
                   { label: "Update it", key: "override" },
-                  { label: "Delete it and create a new one", key: "ResetWorkOrder" },
+                  {
+                    label: "Delete it and create a new one",
+                    key: "ResetWorkOrder",
+                  },
                 ]}
               />
             </div>

@@ -37,8 +37,6 @@ const getStatusName = (statusCode) =>
 const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) => {
   const { m_WorkOrderNo, m_IsActive, w_Status, d_Status } = data;
 
-  console.log(data)
-
   // statusIndex
   let allowedStatusWindow = [];
   let allowedStatusDoor = [];
@@ -92,7 +90,7 @@ const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) =
       return null;
     }
 
-    const dbSource = data.m_DbSource
+    const dbSource = data.m_DBSource
     // fetch from WM
     if (dbSource === "WM_AB") {
       await OrdersApi.sync_AB_WindowMakerByWorkOrderAsync(null, {
