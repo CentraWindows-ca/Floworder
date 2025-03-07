@@ -134,7 +134,7 @@ const ItemTrash = ({ onClick, item, isActive }) => {
         </div>
         <div
           className="align-items-center flex gap-1"
-          style={{ color: "#999" }}
+          // style={{ color: "#999" }}
         >
           {label}
         </div>

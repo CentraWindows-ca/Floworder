@@ -89,8 +89,7 @@ const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) =
     onUpdate();
   });
 
-
-
+  // update Items from window maker
   const handleSyncWindowMaker = useLoadingBar(async () => {
     if (!window.confirm(`Are you sure to snyc Window Maker data for [${data?.m_WorkOrderNo}]?`)) {
       return null;
@@ -99,16 +98,12 @@ const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate, kind }) =
     const dbSource = data.m_DBSource
     // fetch from WM
     if (dbSource === "WM_AB") {
-      await OrdersApi.sync_AB_WindowMakerByWorkOrderAsync(null, {
-        WorkOrderNo : data?.m_WorkOrderNo,
-        Status: data?.m_Status,
-        ManufacuturingFacility: data?.m_ManufacuturingFacility
+      await OrdersApi.updateOnly_AB_WMByWorkOrderAsync(null, {
+        workOrderNo : data?.m_WorkOrderNo,
       });
     } else {
-      await OrdersApi.sync_BC_WindowMakerByWorkOrderAsync(null, {
-        WorkOrderNo : data?.m_WorkOrderNo,
-        Status: data?.m_Status,
-        ManufacuturingFacility: data?.m_ManufacuturingFacility
+      await OrdersApi.updateOnly_BC_WMByWorkOrderAsync(null, {
+        workOrderNo : data?.m_WorkOrderNo,
       });
     }
 
