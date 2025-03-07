@@ -117,26 +117,8 @@ export const LocalDataProvider = ({
     setData(null);
     setIsEditable(initIsEditable);
 
-    // fetch data
-    const [res] = await Wrapper_OrdersApi.getWorkOrder(initWorkOrderNo, isDeleted ? 0 : 1);
-
-    if (typeof res === "object") {
-      // re-assemble data to easier to edit
-
-      const { value } = res;
-
-      let mergedData = {};
-      mergedData = { ...value?.d, ...value?.m, ...value?.w };
-      setData(mergedData);
-      setInitData(JSON.parse(JSON.stringify(mergedData)));
-
-      // if it has door or window or master info (should always has master. here just for consistency)
-      setUiOrderType({
-        m: !!value?.m,
-        d: !!value?.d,
-        w: !!value?.w,
-      });
-
+    const mergedData = await initWo(initWorkOrderNo)
+    if (mergedData) {
       if (initKind === "w" || getOrderKind(mergedData) === "w") {
         setKind("w");
       } else if (initKind === "d" || getOrderKind(mergedData) === "d") {
@@ -184,6 +166,28 @@ export const LocalDataProvider = ({
 
     setIsLoading(false);
   };
+
+  const initWo = useLoadingBar(async (initWorkOrderNo) => {
+    const [res] = await Wrapper_OrdersApi.getWorkOrder(initWorkOrderNo, isDeleted ? 0 : 1);
+    if (typeof res === "object") {
+      // re-assemble data to easier to edit
+
+      const { value } = res;
+
+      let mergedData = {};
+      mergedData = { ...value?.d, ...value?.m, ...value?.w };
+      setData(mergedData);
+      setInitData(JSON.parse(JSON.stringify(mergedData)));
+
+      setUiOrderType({
+        m: !!value?.m,
+        d: !!value?.d,
+        w: !!value?.w,
+      });
+    }
+
+    return res
+  })
 
   const initItems = useLoadingBar(async (initWorkOrderNo) => {
     const doorItems = await Wrapper_OrdersApi.getDoorItems(initWorkOrderNo);
@@ -318,6 +322,7 @@ export const LocalDataProvider = ({
 
     await Wrapper_OrdersApi.updateWorkOrder(data, changedData);
     toast("Work order saved", {type: "success"})
+    await initWo(initWorkOrder);
     onSave();
   });
 
