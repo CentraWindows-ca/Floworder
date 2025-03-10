@@ -105,7 +105,7 @@ const Com = (props) => {
       width: 115,
     },
     {
-      title: "Current status",
+      title: "Master status",
       key: "m_Status_display",
       initKey: "m_Status",
       onCell: (record) => ({

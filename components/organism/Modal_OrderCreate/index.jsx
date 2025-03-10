@@ -252,7 +252,7 @@ const Screen2 = ({
     if (!existingWorkOrder && isReservation) {
       updateValues.status = WORKORDER_MAPPING.DraftReservation.key;
     } else {
-      updateValues.status = WORKORDER_MAPPING.Draft.key;
+      updateValues.status = WORKORDER_MAPPING.Scheduled.key;
     }
 
     if (selectedOverrideOption === "ResetWorkOrder") {
@@ -369,7 +369,7 @@ const Screen2 = ({
         <div className="form-group row">
           <label className="col-lg-4 font-bold">Status</label>
           <div className="col-lg-8 border-b border-gray-200 font-bold">
-            {isReservation ? "Draft Reservation" : "Draft"}
+            {isReservation ? WORKORDER_MAPPING.DraftReservation.label : WORKORDER_MAPPING.Scheduled.label}
           </div>
         </div>
       )}

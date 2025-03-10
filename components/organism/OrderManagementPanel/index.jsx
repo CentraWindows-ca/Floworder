@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import cn from "classnames";
 import _ from "lodash";
+import constants from "lib/constants";
 
 // components
 import Pagination from "components/atom/Pagination";
 import OrderList from "components/organism/OrderList";
 import Editable from "components/molecule/Editable";
+import PermissionBlock from "components/atom/PermissionBlock";
 
 import Modal_OrderEdit from "components/organism/Modal_OrderEdit";
 import Modal_OrderCreate from "components/organism/Modal_OrderCreate";
@@ -85,7 +87,7 @@ const Com = ({
       order,
       modalType: isEdit ? "edit" : "view",
     };
-    
+
     if (!order) {
       delete query.order;
       delete query.modalType;
@@ -174,10 +176,19 @@ const Com = ({
       <div className={cn(styles.topBar)} style={{ paddingLeft: "25px" }}>
         {/* <div>{status}</div> */}
         <div className="align-items-center flex gap-2">
-          <button className="btn btn-success me-2 px-2" onClick={handleCreate}>
-            <i className="fa-solid fa-circle-plus me-2"></i>
-            Create
-          </button>
+          <PermissionBlock
+            featureCode={constants.FEATURE_CODES["om.prod.wo"]}
+            op="canAdd"
+          >
+            <button
+              className="btn btn-success me-2 px-2"
+              onClick={handleCreate}
+            >
+              <i className="fa-solid fa-circle-plus me-2"></i>
+              Create
+            </button>
+          </PermissionBlock>
+
           {tab === "m" && (
             <>
               <div className="align-items-center flex gap-2">
@@ -247,7 +258,7 @@ const Com = ({
         onHide={() => handleEdit()}
         onSave={handleSaveDone}
         initWorkOrder={editingOrder}
-        isDeleted = {isDeleted == 1}
+        isDeleted={isDeleted == 1}
         kind={tab}
         facility={facility}
         initIsEditable={isEditable}

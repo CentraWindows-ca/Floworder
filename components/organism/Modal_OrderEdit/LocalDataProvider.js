@@ -192,6 +192,9 @@ export const LocalDataProvider = ({
   const initItems = useLoadingBar(async (initWorkOrderNo) => {
     const doorItems = await Wrapper_OrdersApi.getDoorItems(initWorkOrderNo);
     const windowItems = await Wrapper_OrdersApi.getWindowItems(initWorkOrderNo);
+
+    console.log("inititems", windowItems)
+
     setDoorItems(_.orderBy(doorItems, ["Item"]));
     setWindowItems(_.orderBy(windowItems, ["Item"]));
   });
