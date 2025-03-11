@@ -236,6 +236,7 @@ const Com = ({
           onHistory={(wo) => handleHistory(wo)}
           onUpdate={handleSaveDone}
           isLoading={!data}
+          status = {status}
           count={treatedData?.total}
           {...{
             uiIsShowWindow,

@@ -12,7 +12,7 @@ import LabelDisplay from "components/atom/LabelDisplay";
 // styles
 import styles from "./styles.module.scss";
 import Dropdown_WorkOrderActions from "./Dropdown_WorkOrderActions";
-import { WorkOrderSelectOptions, ORDER_STATUS } from "lib/constants";
+import { WorkOrderSelectOptions, ORDER_STATUS, WORKORDER_MAPPING } from "lib/constants";
 import utils from "lib/utils";
 
 const getValue = (k, arrName) => {
@@ -37,6 +37,7 @@ const Com = (props) => {
     sort,
     setSort,
     isLoading,
+    status
   } = props;
 
   const { toast } = useContext(GeneralContext);
@@ -67,6 +68,8 @@ const Com = (props) => {
       );
     } catch (err) {}
   };
+
+  const isPending = status === WORKORDER_MAPPING.Pending.key
 
   const columns = [
     {
@@ -129,7 +132,7 @@ const Com = (props) => {
       title: "Windows status",
       key: "w_Status_display",
       initKey: "w_Status",
-      display: isWindow,
+      display: isWindow && !isPending,
       onCell: (record) => ({
         style: {
           backgroundColor: record?.w_Status_display?.color,
@@ -151,7 +154,7 @@ const Com = (props) => {
       title: "Doors status",
       key: "d_Status_display",
       initKey: "d_Status",
-      display: isDoor,
+      display: isDoor && !isPending,
       onCell: (record) => ({
         style: {
           backgroundColor: record?.d_Status_display?.color,
@@ -169,6 +172,11 @@ const Com = (props) => {
         );
       },
     },
+    {
+      title: "Form status",
+      key: "m_FormStatus",
+      display: isPending,
+    },  
     {
       title: "Branch",
       key: "m_Branch",
