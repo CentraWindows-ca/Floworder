@@ -2,7 +2,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import cn from "classnames";
 import _ from "lodash";
-import { ORDER_STATUS } from "lib/constants";
+import { ORDER_STATUS, ORDER_STATUS_AS_GROUP } from "lib/constants";
 
 // styles
 import styles from "./styles.module.scss";
@@ -55,24 +55,29 @@ const Com = (props) => {
 
   return (
     <div className={cn("w-full", styles.root)}>
-      {list?.map((a) => {
-        const { key, label } = a;
-        let isActive = false;
-        if (typeof status !== "undefined") {
-          isActive = key?.toString() === status?.toString();
-        }
+      {ORDER_STATUS_AS_GROUP?.map((group) => {
         return (
-          <Item
-            item={a}
-            key={key}
-            isActive={isActive}
-            onClick={() => {
-              handleClick(key);
-            }}
-          />
+          <div className={cn(styles.statusGroups)}>
+            {group?.map((a) => {
+              const { key, label } = a;
+              let isActive = false;
+              if (typeof status !== "undefined") {
+                isActive = key?.toString() === status?.toString();
+              }
+              return (
+                <Item
+                  item={a}
+                  key={key}
+                  isActive={isActive}
+                  onClick={() => {
+                    handleClick(key);
+                  }}
+                />
+              );
+            })}
+          </div>
         );
       })}
-      <hr />
       <ItemTrash
         item={{
           label: "Trash Bin",

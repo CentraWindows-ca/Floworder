@@ -159,7 +159,7 @@ const Com = ({}) => {
               <div className={styles.itemsDrawerContainer}>
                 <div className={styles.itemsContainer}>
                   <div className={styles.itemsContainerTitle}>
-                    <i className="fa-solid fa-list-check me-2"></i>Status
+                    <i className="fa-solid fa-list-check me-2"></i>Production Status
                   </div>
                   <States />
                 </div>

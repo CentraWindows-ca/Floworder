@@ -4,7 +4,25 @@
     padding: 10px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 15px;
+}
+
+.statusGroups {
+
+    .item {
+        border-top: none;
+        border-bottom: 1px solid $color_gray;
+        border-radius: 0px;
+        &:first-child {
+            border-top: 1px solid $color_gray;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        &:last-child {
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+    }
 }
 
 .item {

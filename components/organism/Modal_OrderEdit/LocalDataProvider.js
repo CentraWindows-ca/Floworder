@@ -118,6 +118,7 @@ export const LocalDataProvider = ({
     setIsEditable(initIsEditable);
 
     const mergedData = await initWo(initWorkOrderNo)
+
     if (mergedData) {
       if (initKind === "w" || getOrderKind(mergedData) === "w") {
         setKind("w");
@@ -169,12 +170,13 @@ export const LocalDataProvider = ({
 
   const initWo = useLoadingBar(async (initWorkOrderNo) => {
     const [res] = await Wrapper_OrdersApi.getWorkOrder(initWorkOrderNo, isDeleted ? 0 : 1);
+    let mergedData = {};
     if (typeof res === "object") {
       // re-assemble data to easier to edit
 
       const { value } = res;
 
-      let mergedData = {};
+
       mergedData = { ...value?.d, ...value?.m, ...value?.w };
       setData(mergedData);
       setInitData(JSON.parse(JSON.stringify(mergedData)));
@@ -186,7 +188,7 @@ export const LocalDataProvider = ({
       });
     }
 
-    return res
+    return mergedData
   })
 
   const initItems = useLoadingBar(async (initWorkOrderNo) => {
