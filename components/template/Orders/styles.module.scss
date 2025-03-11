@@ -40,7 +40,7 @@
 			position: relative;
 			padding-right: 5px;
 			// border-right: 1px solid $color_border_table;
-
+			// background-color: $color_gray_light;
 			.searchContainer {
 				padding: 10px;
 				border-bottom: 1px solid $color_gray;
@@ -54,6 +54,7 @@
 			}
 
 			.itemsDrawerContainer {
+				
 				flex-grow: 1;
 				.itemsContainer {
 					// overflow-y: scroll;
@@ -66,7 +67,8 @@
 						border-radius: 4px;
 						background-color: $color_background;
 						padding: 15px;
-						margin: 20px 10px 0px 10px;
+						// margin: 20px 10px 0px 10px;
+						margin: 15px 10px 5px 10px;
 					}
 				}
 			}
