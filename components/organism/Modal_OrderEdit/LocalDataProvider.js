@@ -234,13 +234,13 @@ export const LocalDataProvider = ({
       m_WorkOrderNo,
       m_MasterId,
       newStatus: v,
+
     };
 
-    const updatingIdField = `${_kind}_Id`;
     const updatingStatusField = `${_kind}_Status`;
+    payload['oldStatus'] = data[updatingStatusField];
 
-    payload[updatingIdField] = data[updatingIdField];
-    payload[updatingStatusField] = data[updatingStatusField];
+    payload['isWindow'] = _kind === 'w'
     await OrdersApi.updateWorkOrderStatus(payload);
 
     toast("Status updated", {type: "success"})

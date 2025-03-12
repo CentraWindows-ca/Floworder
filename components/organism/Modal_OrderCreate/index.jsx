@@ -86,10 +86,15 @@ const Com = (props) => {
   );
 };
 
-const FACILITY = {
+const WM_MAPPING = {
   WM_AB: "WM_AB",
   WM_BC: "WM_BC",
 };
+
+const FACILITY_MAPPING = {
+  "SI": 'Calgary',
+  'SO': 'Langley'
+}
 
 const Screen1 = ({
   setDbSource,
@@ -133,7 +138,7 @@ const Screen1 = ({
 
       if (_resList?.length === 1) {
         setWindowMakerData(_resList[0]?.data);
-        setDbSource(FACILITY[_resList[0]?.dbSource]);
+        setDbSource(WM_MAPPING[_resList[0]?.DBSource]);
       } else if (_resList?.length > 1) {
       } else {
         toast(
@@ -152,7 +157,7 @@ const Screen1 = ({
 
   const handleSelect = (wm_record) => {
     setWindowMakerData(wm_record);
-    setDbSource(FACILITY[wm_record?.dataSource]);
+    setDbSource(WM_MAPPING[wm_record?.dataSource]);
   };
 
   return (
@@ -235,8 +240,10 @@ const Screen2 = ({
       setManufacturingFacility(existingWorkOrder.m_ManufacturingFacility);
     } else {
       setInitValues({});
+
+      setManufacturingFacility(FACILITY_MAPPING[windowMakerData?.workType])
     }
-  }, [existingWorkOrder]);
+  }, [existingWorkOrder, windowMakerData ]);
 
   const disabled =
     (isWindow && !initValues?.winStartDate) ||
@@ -267,6 +274,7 @@ const Screen2 = ({
         workOrderNo,
         resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
         manufacturingFacility,
+        formStatus: '',
         ...updateValues,
       });
     } else {
@@ -274,6 +282,7 @@ const Screen2 = ({
         workOrderNo,
         resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
         manufacturingFacility,
+        formStatus: '',
         ...updateValues,
       });
     }
@@ -417,12 +426,6 @@ const Screen2 = ({
         </div>
       </div>
       <div className="form-group row">
-        <label className="col-lg-4 font-bold">Work Type</label>
-        <div className="col-lg-8 border-b border-gray-200">
-          {windowMakerData?.workType || "--"}
-        </div>
-      </div>
-      <div className="form-group row">
         <label className="col-lg-4 font-bold">Branch</label>
         <div className="col-lg-8 border-b border-gray-200">
           {windowMakerData?.branchName || "--"}
@@ -449,7 +452,11 @@ const Screen2 = ({
       <div className="form-group row">
         <label className="col-lg-4 font-bold">Job Type</label>
         <div className="col-lg-8 border-b border-gray-200">
-          {windowMakerData?.jobType || "--"}
+          {/* NOTE: 
+            in Window Maker the workType is our job type. 
+            the job type from Window Maker is useless 
+          */}
+          {windowMakerData?.workType || "--"}
         </div>
       </div>
       <hr />

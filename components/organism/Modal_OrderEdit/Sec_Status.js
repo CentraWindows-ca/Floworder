@@ -24,7 +24,7 @@ const Com = ({   }) => {
     kind,
   } = useContext(LocalDataContext);
 
-  const uIstatusObj =
+  const uIstatusObj = 
     ORDER_STATUS?.find((a) => a.key === data?.[`m_Status`]) || {};
   const { color, label, textColor } = uIstatusObj;
 

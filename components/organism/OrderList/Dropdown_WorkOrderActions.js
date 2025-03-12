@@ -73,10 +73,10 @@ const WorkOrderActions = ({
       m_MasterId,
       newStatus: key,
     };
-    const updatingIdField = `${_kind}_Id`;
+
     const updatingStatusField = `${_kind}_Status`;
-    payload[updatingIdField] = data[updatingIdField];
-    payload[updatingStatusField] = data[updatingStatusField];
+    payload['oldStatus'] = data[updatingStatusField];
+    payload['isWindow'] = _kind === 'w'
 
     await OrdersApi.updateWorkOrderStatus(payload);
 
