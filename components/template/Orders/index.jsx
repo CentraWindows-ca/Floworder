@@ -13,6 +13,8 @@ import OrdersApi from "lib/api/OrdersApi";
 import PageContainer from "components/atom/PageContainer";
 // import Search from "components/molecule/bak_Search";
 import Tabs_ManufacturingFacility from "components/molecule/Tabs_ManufacturingFacility";
+import { InterruptModal } from "lib/provider/InterruptProvider/InterruptModal";
+import Modal_StatusUpdate from "components/organism/Modal_StatusUpdate";
 
 import TabLinksFull from "components/atom/TabLinksFull";
 import States from "components/organism/States";
@@ -32,7 +34,15 @@ const Com = ({}) => {
   const [applyFilter, setApplyFilter] = useState(true);
   const [drawerOpen, handleToggleDrawer] = useState(true);
 
-  const { status, q, p = 0, facility, tab = "m", sort, isDeleted } = router?.query || {};
+  const {
+    status,
+    q,
+    p = 0,
+    facility,
+    tab = "m",
+    sort,
+    isDeleted,
+  } = router?.query || {};
 
   const defaultTab = "m";
   const tabs = [
@@ -114,7 +124,7 @@ const Com = ({}) => {
       : undefined,
     orderByItems: sortArr,
     kind: tab,
-    isActive: isDeleted ? 0 : 1
+    isActive: isDeleted ? 0 : 1,
   });
 
   // use swr
@@ -140,6 +150,9 @@ const Com = ({}) => {
   // ====== consts
   return (
     <div className={cn("w-full", styles.root)}>
+      <InterruptModal>
+        <Modal_StatusUpdate />
+      </InterruptModal>
       <PageContainer>
         {/* layout of panels */}
         <div className={styles.mainContainer}>
@@ -159,7 +172,8 @@ const Com = ({}) => {
               <div className={styles.itemsDrawerContainer}>
                 <div className={styles.itemsContainer}>
                   <div className={styles.itemsContainerTitle}>
-                    <i className="fa-solid fa-list-check me-2"></i>Production Status
+                    <i className="fa-solid fa-list-check me-2"></i>Production
+                    Status
                   </div>
                   <States />
                 </div>

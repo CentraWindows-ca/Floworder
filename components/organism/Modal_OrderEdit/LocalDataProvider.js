@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import _ from "lodash";
 import { GeneralContext } from "lib/provider/GeneralProvider";
+import { useInterrupt } from "lib/provider/InterruptProvider";
 
 import utils from "lib/utils";
 
@@ -8,10 +9,11 @@ import OrdersApi from "lib/api/OrdersApi";
 import GlassApi from "lib/api/GlassApi";
 
 import useLoadingBar from "lib/hooks/useLoadingBar";
-import constants, { ORDER_STATUS } from "lib/constants";
+import constants, { ORDER_STATUS, ORDER_TRANSFER_FIELDS } from "lib/constants";
 import { getOrderKind } from "lib/utils";
 
 import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
+
 
 export const LocalDataContext = createContext(null);
 
@@ -34,6 +36,7 @@ export const LocalDataProvider = ({
 }) => {
   const generalContext = useContext(GeneralContext);
   const { toast } = generalContext;
+  const { requestData } = useInterrupt();
   const [data, setData] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -117,7 +120,7 @@ export const LocalDataProvider = ({
     setData(null);
     setIsEditable(initIsEditable);
 
-    const mergedData = await initWo(initWorkOrderNo)
+    const mergedData = await initWo(initWorkOrderNo);
 
     if (mergedData) {
       if (initKind === "w" || getOrderKind(mergedData) === "w") {
@@ -169,13 +172,15 @@ export const LocalDataProvider = ({
   };
 
   const initWo = useLoadingBar(async (initWorkOrderNo) => {
-    const [res] = await Wrapper_OrdersApi.getWorkOrder(initWorkOrderNo, isDeleted ? 0 : 1);
+    const [res] = await Wrapper_OrdersApi.getWorkOrder(
+      initWorkOrderNo,
+      isDeleted ? 0 : 1,
+    );
     let mergedData = {};
     if (typeof res === "object") {
       // re-assemble data to easier to edit
 
       const { value } = res;
-
 
       mergedData = { ...value?.d, ...value?.m, ...value?.w };
       setData(mergedData);
@@ -188,14 +193,12 @@ export const LocalDataProvider = ({
       });
     }
 
-    return mergedData
-  })
+    return mergedData;
+  });
 
   const initItems = useLoadingBar(async (initWorkOrderNo) => {
     const doorItems = await Wrapper_OrdersApi.getDoorItems(initWorkOrderNo);
     const windowItems = await Wrapper_OrdersApi.getWindowItems(initWorkOrderNo);
-
-    console.log("inititems", windowItems)
 
     setDoorItems(_.orderBy(doorItems, ["Item"]));
     setWindowItems(_.orderBy(windowItems, ["Item"]));
@@ -223,29 +226,41 @@ export const LocalDataProvider = ({
   });
 
   //
-  const doUpdateStatus = useLoadingBar(async (v, _kind) => {
-    // await Wrapper_OrdersApi.updateWorkOrder(data, {
-    //   [`${kind}_Status`]: v,
-    // });
+  const doUpdateStatus = async (newStatus, _kind) => {
+    const payload = await getStatusPayload(data, newStatus, _kind);
+    if (payload === null) return null
+    await doMove(payload);
 
+    toast("Status updated", { type: "success" });
+    await init(initWorkOrder);
+    onSave();
+  };
+
+  const getStatusPayload = async (data, newStatus, _kind) => {
     const { m_WorkOrderNo, m_MasterId } = data;
-
     const payload = {
       m_WorkOrderNo,
       m_MasterId,
-      newStatus: v,
-
+      newStatus,
     };
-
     const updatingStatusField = `${_kind}_Status`;
-    payload['oldStatus'] = data[updatingStatusField];
+    payload["oldStatus"] = data[updatingStatusField];
+    payload["isWindow"] = _kind === "w";
 
-    payload['isWindow'] = _kind === 'w'
+    // different target has different required fields
+    const missingFields = ORDER_TRANSFER_FIELDS?.[newStatus] || {}
+
+    if (!_.isEmpty(missingFields)) {
+      const moreFields = await requestData(missingFields);
+      // cancel
+      if (moreFields === null) return null;
+      payload = { ...payload, ...moreFields };
+    }
+    return payload;
+  };
+
+  const doMove = useLoadingBar(async (payload) => {
     await OrdersApi.updateWorkOrderStatus(payload);
-
-    toast("Status updated", {type: "success"})
-    await init(initWorkOrder);
-    onSave();
   });
 
   const doUpdateTransferredLocation = useLoadingBar(async () => {
@@ -255,7 +270,7 @@ export const LocalDataProvider = ({
     });
 
     await init(initWorkOrder);
-    toast("Transfer location saved", {type: "success"})
+    toast("Transfer location saved", { type: "success" });
     onSave();
   });
 
@@ -271,7 +286,7 @@ export const LocalDataProvider = ({
     });
 
     await Promise.all(awaitList);
-    toast("Attachment updated", {type: "success"})
+    toast("Attachment updated", { type: "success" });
     await initAttachmentList(data?.m_MasterId);
   });
 
@@ -281,7 +296,7 @@ export const LocalDataProvider = ({
       id: _file.id,
     });
 
-    toast("File deleted", {type: "success"})
+    toast("File deleted", { type: "success" });
     await initAttachmentList(data?.m_MasterId);
   });
 
@@ -298,7 +313,7 @@ export const LocalDataProvider = ({
 
     await Promise.all(awaitList);
 
-    toast("Image updated", {type: "success"})
+    toast("Image updated", { type: "success" });
     await initImageList(data?.m_MasterId);
   });
 
@@ -308,7 +323,7 @@ export const LocalDataProvider = ({
       id: _file.id,
     });
 
-    toast("Image deleted", {type: "success"})
+    toast("Image deleted", { type: "success" });
     await initImageList(data?.m_MasterId);
   });
 
@@ -326,7 +341,7 @@ export const LocalDataProvider = ({
     }
 
     await Wrapper_OrdersApi.updateWorkOrder(data, changedData);
-    toast("Work order saved", {type: "success"})
+    toast("Work order saved", { type: "success" });
     await initWo(initWorkOrder);
     onSave();
   });
@@ -335,21 +350,21 @@ export const LocalDataProvider = ({
     if (_.isEmpty(item)) return null;
     await Wrapper_OrdersApi.updateWindowItem(item?.MasterId, Id, item);
 
-    toast("Item saved", {type: "success"})
+    toast("Item saved", { type: "success" });
     await initItems(initWorkOrder);
   });
 
   const doUpdateDoorItem = useLoadingBar(async (Id, item) => {
     if (_.isEmpty(item)) return null;
     await Wrapper_OrdersApi.updateDoorItem(item?.MasterId, Id, item);
-    toast("Item saved", {type: "success"})
+    toast("Item saved", { type: "success" });
     await initItems(initWorkOrder);
   });
 
   const doBatchUpdateItems = useLoadingBar(async (updateList, kind) => {
     if (_.isEmpty(updateList)) return null;
     await Wrapper_OrdersApi.updateItemList(data?.m_MasterId, updateList, kind);
-    toast("Items saved", {type: "success"})
+    toast("Items saved", { type: "success" });
     await initItems(initWorkOrder);
     return;
   });

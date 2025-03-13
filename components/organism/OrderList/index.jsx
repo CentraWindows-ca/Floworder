@@ -173,7 +173,7 @@ const Com = (props) => {
       },
     },
     {
-      title: "Form status",
+      title: "Current status",
       key: "m_FormStatus",
       display: isPending,
     },  

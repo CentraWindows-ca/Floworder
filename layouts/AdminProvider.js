@@ -1,4 +1,5 @@
 import { GeneralProvider } from "lib/provider/GeneralProvider";
+import { InterruptProvider } from "lib/provider/InterruptProvider";
 import LoadingBar from "components/atom/LoadingBar";
 import constants from "lib/constants";
 import { ConfigProvider } from "antd";
@@ -8,6 +9,7 @@ export default function Admin({ children, permissions, rawAuth }) {
   return (
     <GeneralProvider {...{ permissions, rawAuth }}>
       <LoadingBar />
+
       <ConfigProvider
         theme={{
           token: {
@@ -35,7 +37,9 @@ export default function Admin({ children, permissions, rawAuth }) {
           },
         }}
       >
-        <StyleProvider>{children}</StyleProvider>
+        <StyleProvider>
+          <InterruptProvider>{children}</InterruptProvider>
+        </StyleProvider>
       </ConfigProvider>
     </GeneralProvider>
   );

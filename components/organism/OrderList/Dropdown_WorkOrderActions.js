@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   EyeOutlined,
   EditOutlined,
@@ -10,19 +10,19 @@ import {
 
 import { Button } from "antd";
 import { GeneralContext } from "lib/provider/GeneralProvider";
+import { useInterrupt } from "lib/provider/InterruptProvider";
 
 import cn from "classnames";
 import _ from "lodash";
-import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
 import OrdersApi from "lib/api/OrdersApi";
 import Dropdown_Custom from "components/atom/Dropdown_Custom";
 import PermissionBlock from "components/atom/PermissionBlock";
-import External_FromApi from "lib/api/External_FromApi";
 
 import constants, {
   ORDER_STATUS,
   WORKORDER_WORKFLOW,
   WORKORDER_MAPPING,
+  ORDER_TRANSFER_FIELDS
 } from "lib/constants";
 
 // hooks
@@ -46,6 +46,8 @@ const WorkOrderActions = ({
   const { m_WorkOrderNo, m_IsActive, w_Status, d_Status } = data;
   const { toast } = useContext(GeneralContext);
 
+  const { requestData } = useInterrupt();
+
   // statusIndex
   let allowedStatusWindow = [];
   let allowedStatusDoor = [];
@@ -66,22 +68,39 @@ const WorkOrderActions = ({
     allowedStatusDoor = WORKORDER_WORKFLOW[getStatusName(d_Status)] || [];
   }
 
-  const handleMoveTo = useLoadingBar(async (key, _kind) => {
+  const handleMoveTo = async (newStatus, _kind) => {
+    const payload = await getStatusPayload(data,newStatus, _kind )
+    if (payload === null) return null
+    await doMove(payload);
+
+    toast("Status updated", { type: "success" });
+    onUpdate();
+  };
+
+  const getStatusPayload = async (data, newStatus, _kind) => {
     const { m_WorkOrderNo, m_MasterId } = data;
     const payload = {
       m_WorkOrderNo,
       m_MasterId,
-      newStatus: key,
+      newStatus,
     };
-
     const updatingStatusField = `${_kind}_Status`;
-    payload['oldStatus'] = data[updatingStatusField];
-    payload['isWindow'] = _kind === 'w'
+    payload["oldStatus"] = data[updatingStatusField];
+    payload["isWindow"] = _kind === "w";
 
+    // different target has different required fields
+    const missingFields = ORDER_TRANSFER_FIELDS?.[newStatus] || {}
+    if (!_.isEmpty(missingFields)) {
+      const moreFields = await requestData(missingFields, data);
+      // cancel
+      if (moreFields === null) return null;
+      payload = { ...payload, ...moreFields };
+    }
+    return payload
+  }
+
+  const doMove = useLoadingBar(async (payload) => {
     await OrdersApi.updateWorkOrderStatus(payload);
-
-    toast("Status updated", { type: "success" });
-    onUpdate();
   });
 
   const handleDelete = useLoadingBar(async () => {
@@ -262,25 +281,28 @@ const WorkOrderActions = ({
   );
 
   return (
-    <Dropdown_Custom
-      renderTrigger={(onClick) => {
-        return (
-          <span style={{ cursor: "pointer" }} onClick={onClick}>
-            {m_WorkOrderNo}
-          </span>
-        );
-      }}
-      content={m_IsActive ? actionsActive : actionsTrash}
-    />
+    <>
+      <Dropdown_Custom
+        renderTrigger={(onClick) => {
+          return (
+            <span style={{ cursor: "pointer" }} onClick={onClick}>
+              {m_WorkOrderNo}
+            </span>
+          );
+        }}
+        content={m_IsActive ? actionsActive : actionsTrash}
+      />
+    </>
   );
 };
 
 const FilterByStatus = ({ id, children, data }) => {
   if (data?.m_Status === WORKORDER_MAPPING.Pending.key) {
-    if (id !== 'viewOrder') return null
+    if (id !== "viewOrder") return null;
   }
 
   return children;
 };
+
 
 export default WorkOrderActions;
