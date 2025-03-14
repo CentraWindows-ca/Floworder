@@ -75,7 +75,7 @@ const Com = ({ missingFields, onSubmit, onCancel, isPaused, data }) => {
 
         {missingFields?.shippedDate && (
           <div className="form-group row">
-            <label className="col-lg-6">Shipping Date</label>
+            <label className="col-lg-6">Shipped Date</label>
             <div className="col-lg-6">
               <Editable.EF_Date
                 k="shippedDate"
