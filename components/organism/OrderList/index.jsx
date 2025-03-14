@@ -8,6 +8,7 @@ import TableSortable from "components/atom/TableSortable";
 import FiltersManager from "components/atom/TableSortable/FilterManager";
 
 import LabelDisplay from "components/atom/LabelDisplay";
+import constants from "lib/constants";
 
 // styles
 import styles from "./styles.module.scss";
@@ -71,9 +72,8 @@ const Com = (props) => {
 
   const isPending = status === WORKORDER_MAPPING.Pending.key
 
-  const columns = [
+  const columns = constants.applyField([
     {
-      title: "Work Order",
       key: "m_WorkOrderNo",
       fixed: "left",
       render: (text, record) => {
@@ -108,7 +108,6 @@ const Com = (props) => {
       width: 115,
     },
     {
-      title: "Master status",
       key: "m_Status_display",
       initKey: "m_Status",
       onCell: (record) => ({
@@ -129,7 +128,6 @@ const Com = (props) => {
       },
     },
     {
-      title: "Windows status",
       key: "w_Status_display",
       initKey: "w_Status",
       display: isWindow && !isPending,
@@ -151,7 +149,6 @@ const Com = (props) => {
       },
     },
     {
-      title: "Doors status",
       key: "d_Status_display",
       initKey: "d_Status",
       display: isDoor && !isPending,
@@ -173,41 +170,34 @@ const Com = (props) => {
       },
     },
     {
-      title: "Current status",
       key: "m_FormStatus",
       display: isPending,
     },  
     {
-      title: "Branch",
       key: "m_Branch",
       width: 80,
     },
     {
-      title: "Job Type",
       key: "m_JobType",
       width: 95,
     },
 
     {
-      title: "Window Batch#",
       key: "w_BatchNo",
       display: isWindow,
       width: 140,
     },
     {
-      title: "Window Block#",
       key: "w_BlockNo",
       display: isWindow,
       width: 140,
     },
     {
-      title: "Door Batch#",
       key: "d_BatchNo",
       display: isDoor,
       width: 120,
     },
     {
-      title: "Door Block#",
       key: "d_BlockNo",
       display: isDoor,
       width: 120,
@@ -240,7 +230,6 @@ const Com = (props) => {
       width: 80,
     },
     {
-      title: "INV Status",
       key: "m_InvStatus",
       width: 105,
     },
@@ -251,7 +240,6 @@ const Com = (props) => {
       width: 125,
     },
     {
-      title: "Created By",
       key: "m_CreatedBy",
     },
     {
@@ -260,14 +248,17 @@ const Com = (props) => {
       initKey: "m_CustomerDate",
       width: 135,
     },
-    {
-      title: "Glass Ordered Date",
-      key: "w_GlassOrderedDate_display",
-      initKey: "w_GlassOrderedDate",
-      display: isWindow,
-      minWidth: 50,
-    },
-  ]?.filter((a) => a.display === undefined || a.display);
+    // NOTE: it should generated data and it should be multiple lines
+    // {
+    //   title: "Glass Ordered Date",
+    //   key: "w_GlassOrderDate_display",
+    //   initKey: "w_GlassOrderDate",
+    //   display: isWindow,
+    //   minWidth: 50,
+    // },
+  ]?.filter((a) => a.display === undefined || a.display));
+
+
 
   const runTreatement = (data) => {
     let _data = JSON.parse(JSON.stringify(data));
@@ -285,7 +276,7 @@ const Com = (props) => {
         m_ShippingType,
         m_CreatedAt,
         m_CustomerDate,
-        w_GlassOrderedDate,
+        w_GlassOrderDate,
       } = merged;
 
       merged.m_Status_display = m_Status
@@ -307,7 +298,7 @@ const Com = (props) => {
 
       merged.m_CreatedAt_display = utils.formatDate(m_CreatedAt);
       merged.m_CustomerDate_display = utils.formatDate(m_CustomerDate);
-      merged.w_GlassOrderedDate_display = utils.formatDate(w_GlassOrderedDate);
+      // merged.w_GlassOrderDate_display = utils.formatDate(w_GlassOrderDate);
 
       return merged;
     });

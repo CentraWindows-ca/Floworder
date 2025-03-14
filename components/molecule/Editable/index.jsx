@@ -208,15 +208,28 @@ export const EF_MultiSelect = React.memo(
 );
 
 export const EF_Input = React.memo(
-  ({ onChange, value, className, ...props }) => {
+  ({ onChange, value, className, onPressEnter, onKeyDown, ...props }) => {
     const handleChange = (e) => {
       onChange(e.target.value);
     };
+
+    const handleKeyDown = (e) => {
+      if (onPressEnter) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          onPressEnter(e);
+        }
+        return;
+      }
+      onKeyDown(e);
+    };
+
     return (
       <input
         className={cn("form-control", className)}
         onChange={handleChange}
         value={value || ""}
+        onKeyDown={handleKeyDown}
         {...props}
       />
     );
@@ -309,7 +322,7 @@ export const EF_Rack = React.memo(
     className,
     size = "md",
     options = [], // prevent override
-    isDisplayAvilible= true,
+    isDisplayAvilible = true,
     ...props
   }) => {
     const { dictionary } = useContext(GeneralContext);
@@ -321,7 +334,7 @@ export const EF_Rack = React.memo(
         size={size}
         id={id}
         renderSuffix={(o) => {
-          if (!isDisplayAvilible) return null
+          if (!isDisplayAvilible) return null;
           return <span>{o.State}</span>;
         }}
         onChange={(v, o) => {
@@ -336,7 +349,7 @@ export const EF_Rack = React.memo(
             label: `${o.RackNumber || "--"}`,
             value: o.RackNumber,
           }))}
-          {...props}
+        {...props}
       />
     );
   },

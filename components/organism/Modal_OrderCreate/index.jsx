@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { List, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -20,7 +20,6 @@ import constants, { WORKORDER_MAPPING } from "lib/constants";
 
 const Com = (props) => {
   const { show, onHide, onCreate } = props;
-
   const [workOrderNo, setWorkOrderNo] = useState("");
   const [windowMakerData, setWindowMakerData] = useState(null);
   const [dbSource, setDbSource] = useState("");
@@ -92,9 +91,9 @@ const WM_MAPPING = {
 };
 
 const FACILITY_MAPPING = {
-  "SI": 'Calgary',
-  'SO': 'Langley'
-}
+  SI: "Calgary",
+  SO: "Langley",
+};
 
 const Screen1 = ({
   setDbSource,
@@ -105,6 +104,7 @@ const Screen1 = ({
   setExistingWorkOrder,
 }) => {
   const { toast } = useContext(GeneralContext);
+  const ref_s1 = useRef(null);
   const [resList, setResList] = useState();
 
   const doRead = useLoadingBar(async () => {
@@ -169,6 +169,8 @@ const Screen1 = ({
             k="workOrderNo"
             value={workOrderNo}
             onChange={(v) => setWorkOrderNo(v)}
+            onPressEnter={doRead}
+            autoFocus
           />
         </div>
       </div>
@@ -241,9 +243,9 @@ const Screen2 = ({
     } else {
       setInitValues({});
 
-      setManufacturingFacility(FACILITY_MAPPING[windowMakerData?.workType])
+      setManufacturingFacility(FACILITY_MAPPING[windowMakerData?.workType]);
     }
-  }, [existingWorkOrder, windowMakerData ]);
+  }, [existingWorkOrder, windowMakerData]);
 
   const disabled =
     (isWindow && !initValues?.winStartDate) ||
@@ -274,7 +276,6 @@ const Screen2 = ({
         workOrderNo,
         resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
         manufacturingFacility,
-        formStatus: '',
         ...updateValues,
       });
     } else {
@@ -282,7 +283,6 @@ const Screen2 = ({
         workOrderNo,
         resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
         manufacturingFacility,
-        formStatus: '',
         ...updateValues,
       });
     }
@@ -366,7 +366,7 @@ const Screen2 = ({
           {windowMakerData?.workOrderNumber}
         </div>
       </div>
-      
+
       {existingWorkOrder ? (
         <div className="form-group row">
           <label className="col-lg-4 font-bold">Status</label>
@@ -378,7 +378,9 @@ const Screen2 = ({
         <div className="form-group row">
           <label className="col-lg-4 font-bold">Status</label>
           <div className="col-lg-8 border-b border-gray-200 font-bold">
-            {isReservation ? WORKORDER_MAPPING.DraftReservation.label : WORKORDER_MAPPING.Scheduled.label}
+            {isReservation
+              ? WORKORDER_MAPPING.DraftReservation.label
+              : WORKORDER_MAPPING.Scheduled.label}
           </div>
         </div>
       )}
