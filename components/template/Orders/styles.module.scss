@@ -49,7 +49,7 @@
 			.toggleIcon {
 				position: absolute;
 				right: -30px;
-				top: 8px;
+				top: 6px;
 				z-index: 1000;
 			}
 
@@ -78,7 +78,7 @@
 				transition: width .3s;
 			}
 			&.drawerClose {
-				width: 20px;
+				width: 12px;
 				transition: width .3s;
 			}
 		}
