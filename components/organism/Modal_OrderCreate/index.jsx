@@ -111,7 +111,7 @@ const Screen1 = ({
     // check if exists
     const existingRecord = await OrdersApi.getIsExistByWOAsync({ workOrderNo });
     let _resList;
-    if (existingRecord) {
+    if (existingRecord && existingRecord.dbSource) {
       //
       // get exist work order
       let _wo = await Wrapper_OrdersApi.getWorkOrder(
