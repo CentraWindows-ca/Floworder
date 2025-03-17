@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import _ from "lodash";
 import Modal from "components/molecule/Modal";
+import constants from "lib/constants";
 
 import Editable from "components/molecule/Editable";
 const Com = ({ missingFields, onSubmit, onCancel, isPaused, data }) => {
@@ -14,17 +15,17 @@ const Com = ({ missingFields, onSubmit, onCancel, isPaused, data }) => {
     if (isPaused && data) {
       const _values = {};
       const mapping = {
-        transferredLocation: data['m_TransferredLocation'],
-        transferredDate: data['m_TransferredDate']|| new Date().toISOString(),
-        shippedDate: data['m_ShippedDate'] || new Date().toISOString()
-      }
+        transferredLocation: data["m_TransferredLocation"],
+        transferredDate: data["m_TransferredDate"] || new Date().toISOString(),
+        shippedDate: data["m_ShippedDate"] || new Date().toISOString(),
+      };
 
       // get init values
       _.keys(missingFields)?.map((k) => {
-        _values[k] = mapping[k] || null
+        _values[k] = mapping[k] || null;
       });
 
-      setValues(_values)
+      setValues(_values);
     }
   }, [isPaused, data]);
 
@@ -95,12 +96,14 @@ const Com = ({ missingFields, onSubmit, onCancel, isPaused, data }) => {
               {missingFields?.transferredLocation?.required && " *"}
             </label>
             <div className="col-lg-6">
-              <Editable.EF_Input
+              <Editable.EF_SelectWithLabel
                 k="transferredLocation"
-                value={values?.transferredLocation}
+                value={values?.transferredLocation || ""}
                 onChange={(v) =>
                   setValues((prev) => ({ ...prev, ["transferredLocation"]: v }))
                 }
+                placeholder={"Transferred Location"}
+                options={constants.WorkOrderSelectOptions.branches}
               />
             </div>
           </div>

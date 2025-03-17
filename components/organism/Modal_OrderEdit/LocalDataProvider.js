@@ -437,7 +437,7 @@ export const LocalDataProvider = ({
     glassTotal,
     uIstatusObj,
     initData,
-    isDeleted: !initData?.m_IsActive,
+    isDeleted: initData?.m_IsActive === false,
   };
   return (
     <LocalDataContext.Provider value={context}>

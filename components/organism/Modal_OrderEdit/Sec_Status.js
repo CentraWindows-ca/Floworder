@@ -14,7 +14,7 @@ import Editable from "components/molecule/Editable";
 import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
 
-const Com = ({   }) => {
+const Com = ({}) => {
   const {
     initData,
     data,
@@ -24,7 +24,7 @@ const Com = ({   }) => {
     kind,
   } = useContext(LocalDataContext);
 
-  const uIstatusObj = 
+  const uIstatusObj =
     ORDER_STATUS?.find((a) => a.key === data?.[`m_Status`]) || {};
   const { color, label, textColor } = uIstatusObj;
 
@@ -58,12 +58,14 @@ const Com = ({   }) => {
       {(isTransferred_w || isTransferred_d) && (
         <div>
           <div className="input-group">
-            <Editable.EF_Input
+            <Editable.EF_SelectWithLabel
               k="m_TransferredLocation"
               value={data?.m_TransferredLocation || ""}
               onChange={(v) => onChange(v, "m_TransferredLocation")}
               placeholder={"Transferred Location"}
+              options={constants.WorkOrderSelectOptions.branches}
             />
+
             <button
               className="btn btn-primary"
               disabled={
@@ -97,11 +99,7 @@ const StatusUpdate = ({ statusLabel, currentKind }) => {
 
   return (
     <>
-      <div
-        className={cn(
-          "align-items-center flex flex-row gap-2 font-normal",
-        )}
-      >
+      <div className={cn("align-items-center flex flex-row gap-2 font-normal")}>
         <OverlayWrapper
           isLock={!isEditable}
           renderTrigger={(onTrigger) => (
@@ -141,7 +139,8 @@ const StatusUpdate = ({ statusLabel, currentKind }) => {
 const PopoverEdit = ({ onChange, uIstatusObj, statusLabel }) => {
   const allowedStatusNames = WORKORDER_WORKFLOW[uIstatusObj?.systemName];
   const allowedStatus =
-    allowedStatusNames?.map((n) => WORKORDER_MAPPING[n]) || ORDER_STATUS.filter(a => a.key);
+    allowedStatusNames?.map((n) => WORKORDER_MAPPING[n]) ||
+    ORDER_STATUS.filter((a) => a.key);
 
   return (
     <div

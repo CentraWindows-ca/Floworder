@@ -46,7 +46,7 @@ const Com = ({}) => {
     doorItems,
     glassTotal,
     uIstatusObj,
-    isDeleted,
+    isDeleted = false,
   } = useContext(LocalDataContext);
 
   // use swr later
