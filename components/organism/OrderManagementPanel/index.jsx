@@ -251,6 +251,7 @@ const Com = ({
             },
             onApplyFilter: (v) => setApplyFilter(v),
             setSort: handleSortChange,
+            isDeleted: isDeleted == 1
           }}
         />
       </div>

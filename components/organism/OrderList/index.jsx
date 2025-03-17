@@ -38,7 +38,8 @@ const Com = (props) => {
     sort,
     setSort,
     isLoading,
-    status
+    status,
+    isDeleted
   } = props;
 
   const { toast } = useContext(GeneralContext);
@@ -71,7 +72,6 @@ const Com = (props) => {
   };
 
   const isPending = status === WORKORDER_MAPPING.Pending.key
-
   const columns = constants.applyField([
     {
       key: "m_WorkOrderNo",
@@ -110,6 +110,7 @@ const Com = (props) => {
     {
       key: "m_Status_display",
       initKey: "m_Status",
+      display: !isDeleted,
       onCell: (record) => ({
         style: {
           backgroundColor: record?.m_Status_display?.color,
@@ -130,7 +131,7 @@ const Com = (props) => {
     {
       key: "w_Status_display",
       initKey: "w_Status",
-      display: isWindow && !isPending,
+      display: isWindow && !isPending && !isDeleted,
       onCell: (record) => ({
         style: {
           backgroundColor: record?.w_Status_display?.color,
@@ -151,7 +152,7 @@ const Com = (props) => {
     {
       key: "d_Status_display",
       initKey: "d_Status",
-      display: isDoor && !isPending,
+      display: isDoor && !isPending && !isDeleted,
       onCell: (record) => ({
         style: {
           backgroundColor: record?.d_Status_display?.color,
@@ -171,7 +172,7 @@ const Com = (props) => {
     },
     {
       key: "m_FormStatus",
-      display: isPending,
+      display: isPending && !isDeleted,
     },  
     {
       key: "m_Branch",
@@ -278,6 +279,8 @@ const Com = (props) => {
         m_CustomerDate,
         w_GlassOrderDate,
       } = merged;
+
+      console.log()
 
       merged.m_Status_display = m_Status
         ? ORDER_STATUS?.find((a) => a.key.toString() === m_Status?.toString())

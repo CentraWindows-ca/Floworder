@@ -246,7 +246,7 @@ const Com = (props) => {
 
   const handleSave = async () => {
     const changedData = utils.findChanges(initItem, item);
-    onSave(initItem?.Id, changedData, item?.kind);
+    onSave(initItem?.Id, changedData, item?.kind, initItem);
     setItem(null);
     onHide();
   };

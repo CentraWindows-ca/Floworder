@@ -33,6 +33,7 @@ const Com = ({}) => {
     onHide,
     onAnchor,
     onSave,
+    onRestore,
 
     data,
 
@@ -45,6 +46,7 @@ const Com = ({}) => {
     doorItems,
     glassTotal,
     uIstatusObj,
+    isDeleted,
   } = useContext(LocalDataContext);
 
   // use swr later
@@ -62,7 +64,7 @@ const Com = ({}) => {
           featureCode={constants.FEATURE_CODES["om.prod.wo"]}
           op="canEdit"
         >
-          {!isEditable && (
+          {!isEditable && !isDeleted && (
             <button
               className="btn btn-outline-success me-2"
               onClick={() => setIsEditable(true)}
@@ -71,11 +73,25 @@ const Com = ({}) => {
               Edit Work Order
             </button>
           )}
+
+          {isDeleted && (
+            <button
+              className="btn btn-outline-success me-2"
+              onClick={() => onRestore()}
+            >
+              <i className="fa-solid fa-trash-can-arrow-up me-2" />
+              Restore
+            </button>
+          )}
         </PermissionBlock>
         {KindDisplay[kind]} Work Order # {initWorkOrder}
+        {isDeleted && (
+          <div className="align-items-center flex gap-2 text-red-400">
+            [DELETED]
+          </div>
+        )}
         <div className="align-items-center flex gap-2">
           <Sec_Status />
-
           {["Shipped"].includes(uIstatusObj?.key) &&
             data?.m_TransferredLocation && (
               <DisplayBlock id="m_TransferredLocation">

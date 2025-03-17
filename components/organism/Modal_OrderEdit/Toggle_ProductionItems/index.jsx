@@ -62,13 +62,13 @@ const Com = ({ title, id }) => {
     setEditingItem({ ...item, kind });
   };
 
-  const handleSaveItem = async (Id, item, kind) => {
+  const handleSaveItem = async (Id, item, kind, initItem) => {
     if (kind === "d") {
-      await onUpdateDoorItem(Id, item);
+      await onUpdateDoorItem(Id, item, initItem);
     }
 
     if (kind === "w") {
-      await onUpdateWindowItem(Id, item);
+      await onUpdateWindowItem(Id, item, initItem);
     }
   };
 
@@ -267,7 +267,8 @@ const TableWindow = ({ handleShowItem }) => {
                 ),
               id: `RackLocation`,
               isDisplayAvilible: false,
-              size: 'sm'
+              size: 'sm',
+              disabled: !isEditable,
             }}
           />
         );
@@ -290,7 +291,8 @@ const TableWindow = ({ handleShowItem }) => {
                 handleUpdate(record?.Id, v || null, "Status", record["Status"]),
               id: `Status`,
               options: ITEM_STATUS,
-              className: 'form-select form-select-sm'
+              className: 'form-select form-select-sm',
+              disabled: !isEditable,
             }}
           />
         );
@@ -340,14 +342,14 @@ const TableWindow = ({ handleShowItem }) => {
             <div>
               <button
                 className="btn btn-primary btn-sm me-2"
-                disabled={_.isEmpty(updatingValues)}
+                disabled={_.isEmpty(updatingValues) || !isEditable}
                 onClick={handleSave}
               >
                 Save
               </button>
               <button
                 className="btn btn-secondary btn-sm"
-                disabled={_.isEmpty(updatingValues)}
+                disabled={_.isEmpty(updatingValues) || !isEditable}
                 onClick={() => setUpdatingValues({})}
               >
                 Cancel
@@ -487,7 +489,8 @@ const TableDoor = ({ handleShowItem }) => {
                 ),
               id: `RackLocation`,
               isDisplayAvilible: false,
-              size: 'sm'
+              size: 'sm',
+              disabled: !isEditable,
             }}
           />
         );
@@ -510,7 +513,8 @@ const TableDoor = ({ handleShowItem }) => {
                 handleUpdate(record?.Id, v || null, "Status", record["Status"]),
               id: `Status`,
               options: ITEM_STATUS,
-              className: 'form-select form-select-sm'
+              className: 'form-select form-select-sm',
+              disabled: !isEditable,
             }}
           />
         );
@@ -560,14 +564,14 @@ const TableDoor = ({ handleShowItem }) => {
             <div>
               <button
                 className="btn btn-primary btn-sm me-2"
-                disabled={_.isEmpty(updatingValues)}
+                disabled={_.isEmpty(updatingValues) || !isEditable}
                 onClick={handleSave}
               >
                 Save
               </button>
               <button
                 className="btn btn-secondary btn-sm"
-                disabled={_.isEmpty(updatingValues)}
+                disabled={_.isEmpty(updatingValues) || !isEditable}
                 onClick={() => setUpdatingValues({})}
               >
                 Cancel

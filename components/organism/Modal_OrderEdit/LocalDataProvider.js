@@ -14,7 +14,6 @@ import { getOrderKind } from "lib/utils";
 
 import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
 
-
 export const LocalDataContext = createContext(null);
 
 const STATUS = {
@@ -228,7 +227,7 @@ export const LocalDataProvider = ({
   //
   const doUpdateStatus = async (newStatus, _kind) => {
     const payload = await getStatusPayload(data, newStatus, _kind);
-    if (payload === null) return null
+    if (payload === null) return null;
     await doMove(payload);
 
     toast("Status updated", { type: "success" });
@@ -248,7 +247,7 @@ export const LocalDataProvider = ({
     payload["isWindow"] = _kind === "w";
 
     // different target has different required fields
-    const missingFields = ORDER_TRANSFER_FIELDS?.[newStatus] || {}
+    const missingFields = ORDER_TRANSFER_FIELDS?.[newStatus] || {};
 
     if (!_.isEmpty(missingFields)) {
       const moreFields = await requestData(missingFields);
@@ -261,6 +260,12 @@ export const LocalDataProvider = ({
 
   const doMove = useLoadingBar(async (payload) => {
     await OrdersApi.updateWorkOrderStatus(payload);
+  });
+
+  const doRestore = useLoadingBar(async () => {
+    alert("TODO");
+
+    // change url string to delete isDelete
   });
 
   const doUpdateTransferredLocation = useLoadingBar(async () => {
@@ -346,17 +351,17 @@ export const LocalDataProvider = ({
     onSave();
   });
 
-  const doUpdateWindowItem = useLoadingBar(async (Id, item) => {
+  const doUpdateWindowItem = useLoadingBar(async (Id, item, initItem) => {
     if (_.isEmpty(item)) return null;
-    await Wrapper_OrdersApi.updateWindowItem(item?.MasterId, Id, item);
+    await Wrapper_OrdersApi.updateWindowItem(initItem?.MasterId, Id, item);
 
     toast("Item saved", { type: "success" });
     await initItems(initWorkOrder);
   });
 
-  const doUpdateDoorItem = useLoadingBar(async (Id, item) => {
+  const doUpdateDoorItem = useLoadingBar(async (Id, item, initItem) => {
     if (_.isEmpty(item)) return null;
-    await Wrapper_OrdersApi.updateDoorItem(item?.MasterId, Id, item);
+    await Wrapper_OrdersApi.updateDoorItem(initItem?.MasterId, Id, item);
     toast("Item saved", { type: "success" });
     await initItems(initWorkOrder);
   });
@@ -417,6 +422,7 @@ export const LocalDataProvider = ({
     onBatchUpdateItems: doBatchUpdateItems,
     onHide: handleHide,
     onSave: doSave,
+    onRestore: doRestore,
 
     windowItems,
     doorItems,
@@ -431,6 +437,7 @@ export const LocalDataProvider = ({
     glassTotal,
     uIstatusObj,
     initData,
+    isDeleted: !initData?.m_IsActive,
   };
   return (
     <LocalDataContext.Provider value={context}>
