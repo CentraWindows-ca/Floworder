@@ -327,6 +327,7 @@ export const LocalDataProvider = ({
     if (!confirm(`Delete ${_file.fileName}?`)) return null;
     await OrdersApi.deleteUploadImageByIdAsync({
       id: _file.id,
+      masterId: data?.m_MasterId,
     });
 
     toast("Image deleted", { type: "success" });

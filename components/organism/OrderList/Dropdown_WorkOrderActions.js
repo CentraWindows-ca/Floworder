@@ -244,7 +244,7 @@ const WorkOrderActions = ({
           icon={<SyncOutlined />}
           onClick={handleSyncWindowMaker}
         >
-          Sync From Window Maker
+          Get Window Maker
         </Button>
       </FilterByStatus>
 
