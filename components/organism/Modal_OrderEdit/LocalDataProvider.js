@@ -268,6 +268,32 @@ export const LocalDataProvider = ({
     // change url string to delete isDelete
   });
 
+  const doGetWindowMaker = useLoadingBar(async () => {
+    if (
+      !window.confirm(
+        `Are you sure to get WindowMaker data for [${data?.m_WorkOrderNo}]?`,
+      )
+    ) {
+      return null;
+    }
+
+    const dbSource = data.m_DBSource;
+    // fetch from WM
+    if (dbSource === "WM_AB") {
+      await OrdersApi.updateOnly_AB_WMByWorkOrderAsync(null, {
+        workOrderNo: data?.m_WorkOrderNo,
+      });
+    } else {
+      await OrdersApi.updateOnly_BC_WMByWorkOrderAsync(null, {
+        workOrderNo: data?.m_WorkOrderNo,
+      });
+    }
+
+    await init(initWorkOrder);
+    toast("Work order updated from WindowMaker", { type: "success" });
+    onSave()    
+  });
+
   const doUpdateTransferredLocation = useLoadingBar(async () => {
     const m_TransferredLocation = data?.m_TransferredLocation;
     await Wrapper_OrdersApi.updateWorkOrder(data, {
@@ -425,6 +451,7 @@ export const LocalDataProvider = ({
     onHide: handleHide,
     onSave: doSave,
     onRestore: doRestore,
+    onGetWindowMaker: doGetWindowMaker,
 
     windowItems,
     doorItems,

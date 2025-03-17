@@ -127,11 +127,11 @@ const WorkOrderActions = ({
     onUpdate();
   });
 
-  // update Items from window maker
-  const handleSyncWindowMaker = useLoadingBar(async () => {
+  // update Items from WindowMaker
+  const handleGetWindowMaker = useLoadingBar(async () => {
     if (
       !window.confirm(
-        `Are you sure to snyc Window Maker data for [${data?.m_WorkOrderNo}]?`,
+        `Are you sure to get WindowMaker data for [${data?.m_WorkOrderNo}]?`,
       )
     ) {
       return null;
@@ -149,7 +149,7 @@ const WorkOrderActions = ({
       });
     }
 
-    toast("Work order updated from Window Maker", { type: "success" });
+    toast("Work order updated from WindowMaker", { type: "success" });
     onUpdate();
   });
 
@@ -242,9 +242,9 @@ const WorkOrderActions = ({
         <Button
           type="text"
           icon={<SyncOutlined />}
-          onClick={handleSyncWindowMaker}
+          onClick={handleGetWindowMaker}
         >
-          Get Window Maker
+          Get WindowMaker
         </Button>
       </FilterByStatus>
 

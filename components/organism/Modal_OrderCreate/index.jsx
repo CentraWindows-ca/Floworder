@@ -266,7 +266,7 @@ const Screen2 = ({
 
     if (selectedOverrideOption === "ResetWorkOrder") {
       confirm(
-        "Are you sure you want to delete current work order and then refetch from Window Maker?",
+        "Are you sure you want to delete current work order and then refetch from WindowMaker?",
       );
     }
 
@@ -455,8 +455,8 @@ const Screen2 = ({
         <label className="col-lg-4 font-bold">Job Type</label>
         <div className="col-lg-8 border-b border-gray-200">
           {/* NOTE: 
-            in Window Maker the workType is our job type. 
-            the job type from Window Maker is useless 
+            in WindowMaker the workType is our job type. 
+            the job type from WindowMaker is useless 
           */}
           {windowMakerData?.workType || "--"}
         </div>
