@@ -299,6 +299,7 @@ export const LocalDataProvider = ({
     if (!confirm(`Delete ${_file.fileName}?`)) return null;
     await OrdersApi.deleteUploadFileByIdAsync({
       id: _file.id,
+      masterId: data?.m_MasterId,
     });
 
     toast("File deleted", { type: "success" });
