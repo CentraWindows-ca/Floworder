@@ -78,7 +78,7 @@ const Com = ({
     return data;
   };
 
-  const handleEdit = (order, isEdit) => {
+  const handleEdit = (order, isEdit, activeOnly = false) => {
     // setEditingOrder(order);
     const pathname = router?.asPath?.split("?")?.[0];
 
@@ -91,6 +91,11 @@ const Com = ({
     if (!order) {
       delete query.order;
       delete query.modalType;
+    }
+
+    if (activeOnly) {
+      // only when create. we dont stay with deleted
+      delete query.isDeleted
     }
 
     router.replace(
@@ -158,7 +163,8 @@ const Com = ({
   };
 
   const handleCreateDone = async (m_WorkOrderNo) => {
-    handleEdit(m_WorkOrderNo, true);
+    // jump to the order and not deleted
+    handleEdit(m_WorkOrderNo, true, true);
     mutate(null);
     // endPoint
   };
@@ -166,6 +172,27 @@ const Com = ({
   const handleSaveDone = async () => {
     mutate(null);
     // endPoint
+  };
+
+  const handleRestoreDone = async () => {
+    mutate(null);
+
+    const pathname = router?.asPath?.split("?")?.[0];
+
+    const query = {
+      ...router.query,
+    };
+
+    delete query.isDeleted;
+
+    router.replace(
+      {
+        pathname,
+        query,
+      },
+      undefined,
+      { shallow: true },
+    );
   };
 
   const [sortBy, dir] = sort?.split(":") || [];
@@ -236,7 +263,7 @@ const Com = ({
           onHistory={(wo) => handleHistory(wo)}
           onUpdate={handleSaveDone}
           isLoading={!data}
-          status = {status}
+          status={status}
           count={treatedData?.total}
           {...{
             uiIsShowWindow,
@@ -251,7 +278,7 @@ const Com = ({
             },
             onApplyFilter: (v) => setApplyFilter(v),
             setSort: handleSortChange,
-            isDeleted: isDeleted == 1
+            isDeleted: isDeleted == 1,
           }}
         />
       </div>
@@ -259,6 +286,7 @@ const Com = ({
       <Modal_OrderEdit
         onHide={() => handleEdit()}
         onSave={handleSaveDone}
+        onRestore={handleRestoreDone}
         initWorkOrder={editingOrder}
         isDeleted={isDeleted == 1}
         kind={tab}

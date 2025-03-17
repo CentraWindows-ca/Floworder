@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import _ from "lodash";
+import { useRouter } from "next/router";
 import { GeneralContext } from "lib/provider/GeneralProvider";
 import { useInterrupt } from "lib/provider/InterruptProvider";
 
@@ -29,12 +30,14 @@ export const LocalDataProvider = ({
   facility,
   onSave,
   onHide,
+  onRestore,
   initIsEditable,
   isDeleted,
   ...props
 }) => {
   const generalContext = useContext(GeneralContext);
   const { toast } = generalContext;
+  const router = useRouter();
   const { requestData } = useInterrupt();
   const [data, setData] = useState(null);
 
@@ -66,7 +69,7 @@ export const LocalDataProvider = ({
     if (initWorkOrder) {
       init(initWorkOrder);
     }
-  }, [initWorkOrder]);
+  }, [initWorkOrder, isDeleted]);
 
   const handleChange = (v, k) => {
     setData((prev) => {
@@ -266,6 +269,9 @@ export const LocalDataProvider = ({
     alert("TODO");
 
     // change url string to delete isDelete
+
+    toast("Work order restored", { type: "success" });
+    onRestore()
   });
 
   const doGetWindowMaker = useLoadingBar(async () => {
@@ -291,7 +297,7 @@ export const LocalDataProvider = ({
 
     await init(initWorkOrder);
     toast("Work order updated from WindowMaker", { type: "success" });
-    onSave()    
+    onSave();
   });
 
   const doUpdateTransferredLocation = useLoadingBar(async () => {

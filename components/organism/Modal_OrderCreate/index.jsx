@@ -24,7 +24,7 @@ const Com = (props) => {
   const [windowMakerData, setWindowMakerData] = useState(null);
   const [dbSource, setDbSource] = useState("");
   const [isReservation, setIsReservation] = useState(false);
-  const [existingWorkOrder, setExistingWorkOrder] = useState(false);
+  const [existingWorkOrder, setExistingWorkOrder] = useState(null);
 
   const handleCreate = (...params) => {
     handleClear();
@@ -42,6 +42,7 @@ const Com = (props) => {
     setWindowMakerData(null);
     setDbSource("");
     setIsReservation(false);
+    setExistingWorkOrder(null)
   };
 
   return (
@@ -104,7 +105,6 @@ const Screen1 = ({
   setExistingWorkOrder,
 }) => {
   const { toast } = useContext(GeneralContext);
-  const ref_s1 = useRef(null);
   const [resList, setResList] = useState();
 
   const doRead = useLoadingBar(async () => {
@@ -156,8 +156,8 @@ const Screen1 = ({
   });
 
   const handleSelect = (wm_record) => {
-    setWindowMakerData(wm_record);
-    setDbSource(WM_MAPPING[wm_record?.dataSource]);
+    setWindowMakerData(wm_record?.data);
+    setDbSource(WM_MAPPING[wm_record?.DBSource]);
   };
 
   return (
@@ -187,7 +187,7 @@ const Screen1 = ({
                 className="cursor-pointer hover:bg-blue-100"
                 onClick={() => handleSelect(item)}
               >
-                <b>[{item.dataSource}]</b> {item.name} | {item.city}
+                <b>[{item?.DBSource}]</b> {item.data?.name} |                {item.data?.branchName}
               </List.Item>
             )}
           />

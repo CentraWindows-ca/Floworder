@@ -22,7 +22,7 @@ import constants, {
   ORDER_STATUS,
   WORKORDER_WORKFLOW,
   WORKORDER_MAPPING,
-  ORDER_TRANSFER_FIELDS
+  ORDER_TRANSFER_FIELDS,
 } from "lib/constants";
 
 // hooks
@@ -69,8 +69,8 @@ const WorkOrderActions = ({
   }
 
   const handleMoveTo = async (newStatus, _kind) => {
-    const payload = await getStatusPayload(data,newStatus, _kind )
-    if (payload === null) return null
+    const payload = await getStatusPayload(data, newStatus, _kind);
+    if (payload === null) return null;
     await doMove(payload);
 
     toast("Status updated", { type: "success" });
@@ -89,15 +89,15 @@ const WorkOrderActions = ({
     payload["isWindow"] = _kind === "w";
 
     // different target has different required fields
-    const missingFields = ORDER_TRANSFER_FIELDS?.[newStatus] || {}
+    const missingFields = ORDER_TRANSFER_FIELDS?.[newStatus] || {};
     if (!_.isEmpty(missingFields)) {
       const moreFields = await requestData(missingFields, data);
       // cancel
       if (moreFields === null) return null;
       payload = { ...payload, ...moreFields };
     }
-    return payload
-  }
+    return payload;
+  };
 
   const doMove = useLoadingBar(async (payload) => {
     await OrdersApi.updateWorkOrderStatus(payload);
@@ -239,13 +239,17 @@ const WorkOrderActions = ({
         </PermissionBlock>
       </FilterByStatus>
       <FilterByStatus id="syncFromWindowMaker" data={data}>
-        <Button
-          type="text"
-          icon={<SyncOutlined />}
-          onClick={handleGetWindowMaker}
+        <PermissionBlock
+          featureCode={constants.FEATURE_CODES["om.prod.woGetWindowMaker"]}
         >
-          Get WindowMaker
-        </Button>
+          <Button
+            type="text"
+            icon={<SyncOutlined />}
+            onClick={handleGetWindowMaker}
+          >
+            Get WindowMaker
+          </Button>
+        </PermissionBlock>
       </FilterByStatus>
 
       <FilterByStatus id="viewOrderHistory" data={data}>
@@ -303,6 +307,5 @@ const FilterByStatus = ({ id, children, data }) => {
 
   return children;
 };
-
 
 export default WorkOrderActions;

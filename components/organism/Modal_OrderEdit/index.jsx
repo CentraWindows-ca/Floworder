@@ -66,24 +66,33 @@ const Com = ({}) => {
           op="canEdit"
         >
           {!isEditable && !isDeleted && (
-            <>
-              <button
-                className="btn btn-outline-success me-2"
-                onClick={() => setIsEditable(true)}
-              >
-                <i className="fa-solid fa-pen-to-square me-2" />
-                Edit Work Order
-              </button>
-              <button
-                className="btn btn-primary me-2"
-                onClick={() => onGetWindowMaker()}
-              >
-                <i className="fa-solid fa-pen-to-square me-2" />
-                Get WindowMaker
-              </button>
-            </>
+            <button
+              className="btn btn-outline-success me-2"
+              onClick={() => setIsEditable(true)}
+            >
+              <i className="fa-solid fa-pen-to-square me-2" />
+              Edit Work Order
+            </button>
           )}
-
+        </PermissionBlock>
+        <PermissionBlock
+          featureCode={constants.FEATURE_CODES["om.prod.woGetWindowMaker"]}
+          op="canDelete"
+        >
+          {!isEditable && !isDeleted && (
+            <button
+              className="btn btn-primary me-2"
+              onClick={() => onGetWindowMaker()}
+            >
+              <i className="fa-solid fa-pen-to-square me-2" />
+              Get WindowMaker
+            </button>
+          )}
+        </PermissionBlock>
+        <PermissionBlock
+          featureCode={constants.FEATURE_CODES["om.prod.wo"]}
+          op="canDelete"
+        >
           {isDeleted && (
             <button
               className="btn btn-outline-success me-2"

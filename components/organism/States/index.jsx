@@ -55,9 +55,9 @@ const Com = (props) => {
 
   return (
     <div className={cn("w-full", styles.root)}>
-      {ORDER_STATUS_AS_GROUP?.map((group) => {
+      {ORDER_STATUS_AS_GROUP?.map((group, i) => {
         return (
-          <div className={cn(styles.statusGroups)}>
+          <div className={cn(styles.statusGroups)} key = {`status_group_${i}`}>
             {group?.map((a) => {
               const { key, label } = a;
               let isActive = false;
