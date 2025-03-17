@@ -68,15 +68,6 @@ const WorkOrderActions = ({
     allowedStatusDoor = WORKORDER_WORKFLOW[getStatusName(d_Status)] || [];
   }
 
-  const handleMoveTo = async (newStatus, _kind) => {
-    const payload = await getStatusPayload(data, newStatus, _kind);
-    if (payload === null) return null;
-    await doMove(payload);
-
-    toast("Status updated", { type: "success" });
-    onUpdate();
-  };
-
   const getStatusPayload = async (data, newStatus, _kind) => {
     const { m_WorkOrderNo, m_MasterId } = data;
     const payload = {
@@ -99,9 +90,22 @@ const WorkOrderActions = ({
     return payload;
   };
 
-  const doMove = useLoadingBar(async (payload) => {
-    await OrdersApi.updateWorkOrderStatus(payload);
-  });
+  const handleMoveTo = async (newStatus, _kind) => {
+    const payload = await getStatusPayload(data, newStatus, _kind);
+    if (payload === null) return null;
+    if (
+      !window.confirm(
+        `For work order [${data?.m_WorkOrderNo}], are you sure to update Status to ${newStatus}?`,
+      )
+    ) {
+      return null;
+    }
+
+    await doMove(payload);
+
+    toast("Status updated", { type: "success" });
+    onUpdate();
+  };
 
   const handleDelete = useLoadingBar(async () => {
     if (!window.confirm(`Are you sure to delete [${data?.m_WorkOrderNo}]?`)) {
@@ -151,6 +155,10 @@ const WorkOrderActions = ({
 
     toast("Work order updated from WindowMaker", { type: "success" });
     onUpdate();
+  });
+
+  const doMove = useLoadingBar(async (payload) => {
+    await OrdersApi.updateWorkOrderStatus(payload);
   });
 
   const actionsActive = (
