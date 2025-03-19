@@ -108,9 +108,20 @@ const Com = (props) => {
       width: 115,
     },
     {
+      title: "Created On",
+      key: "m_CreatedAt_display",
+      display: isPending,
+      initKey: "m_CreatedAt",
+      width: 125,
+    },
+    {
+      key: "m_CreatedBy",
+      display: isPending,
+    },
+    {
       key: "m_Status_display",
       initKey: "m_Status",
-      display: !isDeleted,
+      display:  !isPending && !isDeleted,
       onCell: (record) => ({
         style: {
           backgroundColor: record?.m_Status_display?.color,
@@ -237,11 +248,13 @@ const Com = (props) => {
     {
       title: "Created On",
       key: "m_CreatedAt_display",
+      display: !isPending,
       initKey: "m_CreatedAt",
       width: 125,
     },
     {
       key: "m_CreatedBy",
+      display: !isPending,
     },
     {
       title: "Customer Date",

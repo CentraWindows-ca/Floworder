@@ -14,6 +14,8 @@ import Modal_OrderEdit from "components/organism/Modal_OrderEdit";
 import Modal_OrderCreate from "components/organism/Modal_OrderCreate";
 import Modal_OrderHistory from "components/organism/Modal_OrderHistory";
 
+import { ORDER_STATUS } from "lib/constants";
+
 // styles
 import styles from "./styles.module.scss";
 
@@ -95,7 +97,7 @@ const Com = ({
 
     if (activeOnly) {
       // only when create. we dont stay with deleted
-      delete query.isDeleted
+      delete query.isDeleted;
     }
 
     router.replace(
@@ -196,13 +198,57 @@ const Com = ({
   };
 
   const [sortBy, dir] = sort?.split(":") || [];
+  const statusDisplay =
+    ORDER_STATUS?.find((a) => status?.trim() === a.key?.trim()) || null;
+
+  const jsxStatus = (
+    <>
+      <div className="align-items-center flex gap-2">
+        <div
+          style={{
+            border: "1px solid #A0A0A0",
+            height: 15,
+            width: 15,
+            backgroundColor: statusDisplay?.color,
+          }}
+        />
+        <div className="align-items-center flex gap-1">
+          {statusDisplay?.label}
+        </div>
+      </div>
+    </>
+  );
+
+  const jsxTrash = (
+    <>
+      <div
+        style={{
+          height: 15,
+          width: 15,
+          fontSize: "13px",
+          color: "#B0B0B0",
+        }}
+        className="align-items-center flex me-1"
+      >
+        <i className="fa-solid fa-trash-can" />
+      </div>
+      <div
+        className="align-items-center flex gap-1"
+        // style={{ color: "#999" }}
+      >
+        {"Trash Bin"}
+      </div>
+    </>
+  );
 
   // ====== consts
   return (
     <div className={cn("w-full", styles.root)}>
       <div className={cn(styles.topBar)} style={{ paddingLeft: "25px" }}>
-        {/* <div>{status}</div> */}
-        <div className="align-items-center flex gap-2">
+        <div className="align-items-center justify-content-between flex gap-2">
+          <label className="align-items-center me-3 flex">
+            {isDeleted == 1 ? jsxTrash : statusDisplay && jsxStatus}
+          </label>
           <PermissionBlock
             featureCode={constants.FEATURE_CODES["om.prod.wo"]}
             op="canAdd"
