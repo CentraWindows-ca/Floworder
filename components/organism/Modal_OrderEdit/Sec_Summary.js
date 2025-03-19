@@ -69,8 +69,8 @@ const Com = ({ className, ...props }) => {
   const totalNumber =
     (data["m_NumberOfWindows"] || 0) +
     (data["m_NumberOfPatioDoors"] || 0) +
-    (data["m_NumberOfDoors"] || 0);
-
+    (data["m_NumberOfDoors"] || 0) +
+    (data["m_NumberOfSwingDoors"] || 0);
   const totalGlassQty =
     (data["w_TotalGlassQty"] || 0) + (data["d_TotalGlassQty"] || 0);
 
@@ -81,9 +81,51 @@ const Com = ({ className, ...props }) => {
     [
       data["m_NumberOfWindows"],
       data["m_NumberOfDoors"],
+      data["m_NumberOfSwingDoors"],
       data["m_NumberOfOthers"],
       data["m_NumberOfPatioDoors"],
     ]?.filter((a) => a)?.length > 1;
+
+  const groupByWindowDoor = {
+    w: {
+      otherFields: {
+        TotalGlassQty: data.w_TotalGlassQty,
+        TotalBoxQty: data.w_TotalBoxQty,
+        TotalLBRMin: data.w_TotalLBRMin,
+      },
+      numbers: [
+        {
+          label: "Windows",
+          number: data["m_NumberOfWindows"],
+          displayNumber: utils.formatNumber(data["m_NumberOfWindows"]),
+        },
+        {
+          label: "Patio Doors",
+          number: data["m_NumberOfPatioDoors"],
+          displayNumber: utils.formatNumber(data["m_NumberOfPatioDoors"]),
+        },
+      ],
+    },
+    d: {
+      otherFieldsF: {
+        TotalGlassQty: data.d_TotalGlassQty,
+        TotalBoxQty: data.d_TotalBoxQty,
+        TotalLBRMin: data.d_TotalLBRMin,
+      },
+      numbers: [
+        {
+          label: "Exterior Doors",
+          number: data["m_NumberOfDoors"],
+          displayNumber: utils.formatNumber(data["m_NumberOfDoors"]),
+        },
+        {
+          label: "Swing Doors",
+          number: data["m_NumberOfSwingDoors"],
+          displayNumber: utils.formatNumber(data["m_NumberOfSwingDoors"]),
+        },
+      ],
+    },
+  };
 
   return (
     <>
@@ -110,6 +152,33 @@ const Com = ({ className, ...props }) => {
                 <td>{utils.formatNumber(data["m_TotalLBRMin"])}</td>
               </tr>
             )}
+
+            {_.keys(groupByWindowDoor)?.map((k) => {
+              const prd = groupByWindowDoor[k];
+              const numbers = groupByWindowDoor[k].numbers?.filter(
+                (n) => n.number,
+              );
+              const rowSpan = numbers.length;
+
+              return (
+                <React.Fragment key={k}>
+                  {numbers?.map((num) => {
+                    const { label, displayNumber } = num;
+                    return (
+                      <tr key={label} rowSpan = {rowSpan}>
+                        <th>{label}</th>
+                        <td>--</td>
+                        <td>{displayNumber}</td>
+                        <td>
+                          {utils.formatNumber(prd.otherFields.TotalGlassQty)}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </React.Fragment>
+              );
+            })}
+
             {data["m_NumberOfWindows"] ? (
               <tr>
                 <th>Windows</th>
@@ -135,7 +204,7 @@ const Com = ({ className, ...props }) => {
 
             {data["m_NumberOfDoors"] ? (
               <tr>
-                <th>Doors</th>
+                <th>Exterior Doors</th>
                 {/* <td>${utils.formatCurrency2Decimal(data["d_TotalPrice"])}</td> */}
                 <td>--</td>
                 <td>{utils.formatNumber(data["m_NumberOfDoors"])}</td>
@@ -144,6 +213,19 @@ const Com = ({ className, ...props }) => {
                 <td>{utils.formatNumber(data["d_TotalLBRMin"])}</td>
               </tr>
             ) : null}
+
+            {data["m_NumberOfSwingDoors"] ? (
+              <tr>
+                <th>Swing Doors</th>
+                {/* <td>${utils.formatCurrency2Decimal(data["d_TotalPrice"])}</td> */}
+                <td>--</td>
+                <td>{utils.formatNumber(data["m_NumberOfSwingDoors"])}</td>
+                <td>--</td>
+                <td>--</td>
+                <td>--</td>
+              </tr>
+            ) : null}
+
             {data["m_NumberOfOthers"] ? (
               <tr>
                 <th>Others</th>
@@ -167,24 +249,37 @@ const Com = ({ className, ...props }) => {
               }
               return (
                 <div key={title} className={styles.summaryLabor}>
-                  <div className={cn(styles.summaryLaborSubtitle, 'bg-gray-100')}>{title}</div>
+                  <div
+                    className={cn(styles.summaryLaborSubtitle, "bg-gray-100")}
+                  >
+                    {title}
+                  </div>
                   <div className={styles.summaryLaborNumbers}>
                     <div
                       className="justify-content-between align-items-center flex gap-3 pb-1"
                       style={{ borderBottom: "1px solid #D0D0D0" }}
                       title={`Quantity: ${utils.formatNumber(data[qty])}`}
                     >
-                      <div className=""><i className="fas fa-box me-2"></i><span>Qty</span></div>
-                      <span className={cn(styles.summaryLaborNumberSpan)}>{utils.formatNumber(data[qty])}</span>
-                      
+                      <div className="">
+                        <i className="fas fa-box me-2"></i>
+                        <span>Qty</span>
+                      </div>
+                      <span className={cn(styles.summaryLaborNumberSpan)}>
+                        {utils.formatNumber(data[qty])}
+                      </span>
                     </div>
                     <div
                       className="justify-content-between align-items-center flex gap-3"
                       title={`Labor hours: ${utils.formatNumber(data[lbr])}`}
                     >
-                      <div className=""><i className="far fa-clock me-2"></i><span>Min</span></div>
-                      
-                      <span className={cn(styles.summaryLaborNumberSpan)}>{utils.formatNumber(data[lbr])}</span> 
+                      <div className="">
+                        <i className="far fa-clock me-2"></i>
+                        <span>Min</span>
+                      </div>
+
+                      <span className={cn(styles.summaryLaborNumberSpan)}>
+                        {utils.formatNumber(data[lbr])}
+                      </span>
                     </div>
                   </div>
                 </div>

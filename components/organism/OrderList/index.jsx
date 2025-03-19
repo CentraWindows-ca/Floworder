@@ -198,21 +198,25 @@ const Com = (props) => {
       key: "w_BatchNo",
       display: isWindow,
       width: 140,
+      display: !isPending
     },
     {
       key: "w_BlockNo",
       display: isWindow,
       width: 140,
+      display: !isPending
     },
     {
       key: "d_BatchNo",
       display: isDoor,
       width: 120,
+      display: !isPending
     },
     {
       key: "d_BlockNo",
       display: isDoor,
       width: 120,
+      display: !isPending
     },
     {
       title: "Windows",
@@ -229,11 +233,18 @@ const Com = (props) => {
       width: 115,
     },
     {
-      title: "Doors",
+      title: "Exterior Doors",
       key: "m_NumberOfDoors",
       display: isDoor,
       className: "text-right",
-      width: 75,
+      width: 135,
+    },
+    {
+      title: "Swing Doors",
+      key: "m_NumberOfSwingDoors",
+      display: isDoor,
+      className: "text-right",
+      width: 135,
     },
     {
       title: "Others",
@@ -244,6 +255,7 @@ const Com = (props) => {
     {
       key: "m_InvStatus",
       width: 105,
+      display: !isPending
     },
     {
       title: "Created On",
@@ -257,10 +269,18 @@ const Com = (props) => {
       display: !isPending,
     },
     {
-      title: "Customer Date",
-      key: "m_CustomerDate_display",
-      initKey: "m_CustomerDate",
-      width: 135,
+      title: "Window Customer Date",
+      key: "w_CustomerDate_display",
+      initKey: "w_CustomerDate",
+      width: 195,
+      display: isWindow,
+    },
+    {
+      title: "Door Customer Date",
+      key: "d_CustomerDate_display",
+      initKey: "w_CustomerDate",
+      width: 195,
+      display: isDoor
     },
     // NOTE: it should generated data and it should be multiple lines
     // {
@@ -291,6 +311,8 @@ const Com = (props) => {
         m_CreatedAt,
         m_CustomerDate,
         w_GlassOrderDate,
+        w_CustomerDate ,
+        d_CustomerDate
       } = merged;
 
       console.log()
@@ -314,6 +336,11 @@ const Com = (props) => {
 
       merged.m_CreatedAt_display = utils.formatDate(m_CreatedAt);
       merged.m_CustomerDate_display = utils.formatDate(m_CustomerDate);
+
+      merged.w_CustomerDate_display = utils.formatDate(w_CustomerDate);      
+      merged.d_CustomerDate_display = utils.formatDate(d_CustomerDate);
+
+
       // merged.w_GlassOrderDate_display = utils.formatDate(w_GlassOrderDate);
 
       return merged;
