@@ -202,7 +202,7 @@ const Com = ({
     ORDER_STATUS?.find((a) => status?.trim() === a.key?.trim()) || null;
 
   const jsxStatus = (
-    <>
+    <label className="align-items-center me-3 flex">
       <div className="align-items-center flex gap-2">
         <div
           style={{
@@ -212,15 +212,15 @@ const Com = ({
             backgroundColor: statusDisplay?.color,
           }}
         />
-        <div className="align-items-center flex gap-1">
+        <div className="align-items-center flex gap-1 font-bold">
           {statusDisplay?.label}
         </div>
       </div>
-    </>
+    </label>
   );
 
   const jsxTrash = (
-    <>
+    <label className="align-items-center me-3 flex">
       <div
         style={{
           height: 15,
@@ -228,17 +228,17 @@ const Com = ({
           fontSize: "13px",
           color: "#B0B0B0",
         }}
-        className="align-items-center flex me-1"
+        className="align-items-center me-1 flex"
       >
         <i className="fa-solid fa-trash-can" />
       </div>
       <div
-        className="align-items-center flex gap-1"
+        className="align-items-center flex gap-1 font-bold"
         // style={{ color: "#999" }}
       >
         {"Trash Bin"}
       </div>
-    </>
+    </label>
   );
 
   // ====== consts
@@ -246,9 +246,8 @@ const Com = ({
     <div className={cn("w-full", styles.root)}>
       <div className={cn(styles.topBar)} style={{ paddingLeft: "25px" }}>
         <div className="align-items-center justify-content-between flex gap-2">
-          <label className="align-items-center me-3 flex">
-            {isDeleted == 1 ? jsxTrash : statusDisplay && jsxStatus}
-          </label>
+          {isDeleted == 1 ? jsxTrash : statusDisplay && jsxStatus}
+
           <PermissionBlock
             featureCode={constants.FEATURE_CODES["om.prod.wo"]}
             op="canAdd"
