@@ -246,6 +246,20 @@ const WorkOrderActions = ({
           </Button>
         </PermissionBlock>
       </FilterByStatus>
+      <PermissionBlock
+        featureCode={constants.FEATURE_CODES["om.prod.woAdmin"]}
+        op="canDelete"
+      >
+        <Button
+          type="text"
+          icon={<DeleteOutlined />}
+          onClick={handleDelete}
+          // disabled={true}
+        >
+          Admin: Delete Order
+        </Button>
+      </PermissionBlock>
+
       <FilterByStatus id="syncFromWindowMaker" data={data}>
         <PermissionBlock
           featureCode={constants.FEATURE_CODES["om.prod.woGetWindowMaker"]}

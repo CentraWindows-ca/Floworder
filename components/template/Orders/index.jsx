@@ -26,6 +26,13 @@ import useDataInit from "lib/hooks/useDataInit";
 // styles
 import styles from "./styles.module.scss";
 
+const DEFAULT_SORT = [
+  {
+    field: "m_LastModifiedAt",
+    isDescending: true,
+  }
+]
+
 const Com = ({}) => {
   const router = useRouter();
 
@@ -122,7 +129,7 @@ const Com = ({}) => {
           conditions: conditions?.filter((a) => a.value),
         }
       : undefined,
-    orderByItems: sortArr,
+    orderByItems: _.isEmpty(sortArr)? DEFAULT_SORT: sortArr,
     kind: tab,
     isActive: isDeleted ? 0 : 1,
   });
