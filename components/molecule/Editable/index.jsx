@@ -221,7 +221,9 @@ export const EF_Input = React.memo(
         }
         return;
       }
-      onKeyDown(e);
+      if (onKeyDown) {
+        onKeyDown(e);
+      }      
     };
 
     return (

@@ -107,7 +107,7 @@ const Com = ({ className, ...props }) => {
       ],
     },
     d: {
-      otherFieldsF: {
+      otherFields: {
         TotalGlassQty: data.d_TotalGlassQty,
         TotalBoxQty: data.d_TotalBoxQty,
         TotalLBRMin: data.d_TotalLBRMin,
@@ -158,73 +158,38 @@ const Com = ({ className, ...props }) => {
               const numbers = groupByWindowDoor[k].numbers?.filter(
                 (n) => n.number,
               );
-              const rowSpan = numbers.length;
+              const colSpan = numbers.length;
 
               return (
                 <React.Fragment key={k}>
-                  {numbers?.map((num) => {
+                  {numbers?.map((num, j) => {
                     const { label, displayNumber } = num;
                     return (
-                      <tr key={label} rowSpan = {rowSpan}>
+                      <tr key={label}>
                         <th>{label}</th>
                         <td>--</td>
                         <td>{displayNumber}</td>
-                        <td>
-                          {utils.formatNumber(prd.otherFields.TotalGlassQty)}
-                        </td>
+                        {j === 0 && (
+                          <>
+                            <td rowSpan={colSpan}>
+                              {utils.formatNumber(
+                                prd.otherFields?.TotalGlassQty,
+                              )}
+                            </td>
+                            <td rowSpan={colSpan}>
+                              {utils.formatNumber(prd.otherFields?.totalBoxQty)}
+                            </td>
+                            <td rowSpan={colSpan}>
+                              {utils.formatNumber(prd.otherFields?.TotalLBRMin)}
+                            </td>
+                          </>
+                        )}
                       </tr>
                     );
                   })}
                 </React.Fragment>
               );
             })}
-
-            {data["m_NumberOfWindows"] ? (
-              <tr>
-                <th>Windows</th>
-                {/* <td>${utils.formatCurrency2Decimal(data["w_TotalPrice"])}</td> */}
-                <td>--</td>
-                <td>{utils.formatNumber(data["m_NumberOfWindows"])}</td>
-                <td>{utils.formatNumber(data["w_TotalGlassQty"])}</td>
-                <td>{utils.formatNumber(data["w_TotalBoxQty"])}</td>
-                <td>{utils.formatNumber(data["w_TotalLBRMin"])}</td>
-              </tr>
-            ) : null}
-
-            {data["m_NumberOfPatioDoors"] ? (
-              <tr>
-                <th>Patio Doors</th>
-                <td>--</td>
-                <td>{utils.formatNumber(data["m_NumberOfPatioDoors"])}</td>
-                <td>--</td>
-                <td>--</td>
-                <td>--</td>
-              </tr>
-            ) : null}
-
-            {data["m_NumberOfDoors"] ? (
-              <tr>
-                <th>Exterior Doors</th>
-                {/* <td>${utils.formatCurrency2Decimal(data["d_TotalPrice"])}</td> */}
-                <td>--</td>
-                <td>{utils.formatNumber(data["m_NumberOfDoors"])}</td>
-                <td>{utils.formatNumber(data["d_TotalGlassQty"])}</td>
-                <td>{utils.formatNumber(data["d_TotalBoxQty"])}</td>
-                <td>{utils.formatNumber(data["d_TotalLBRMin"])}</td>
-              </tr>
-            ) : null}
-
-            {data["m_NumberOfSwingDoors"] ? (
-              <tr>
-                <th>Swing Doors</th>
-                {/* <td>${utils.formatCurrency2Decimal(data["d_TotalPrice"])}</td> */}
-                <td>--</td>
-                <td>{utils.formatNumber(data["m_NumberOfSwingDoors"])}</td>
-                <td>--</td>
-                <td>--</td>
-                <td>--</td>
-              </tr>
-            ) : null}
 
             {data["m_NumberOfOthers"] ? (
               <tr>
