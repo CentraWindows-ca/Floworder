@@ -61,9 +61,10 @@ const Com = (props) => {
             {group?.map((a) => {
               const { key, label } = a;
               let isActive = false;
-              if (typeof status !== "undefined") {
-                isActive = key?.toString() === status?.toString();
+              if (!isDeleted) {
+                isActive = key?.toString() === (status?.toString() || "");
               }
+
               return (
                 <Item
                   item={a}
