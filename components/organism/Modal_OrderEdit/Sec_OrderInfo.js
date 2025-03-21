@@ -5,7 +5,6 @@ import constants from "lib/constants";
 
 import Editable from "components/molecule/Editable";
 
-
 // styles
 import styles from "./styles.module.scss";
 
@@ -18,6 +17,11 @@ const COMMON_FIELDS = constants.applyField([
     Component: Editable.EF_SelectWithLabel,
     id: "m_BranchId",
     options: constants.WorkOrderSelectOptions.branches,
+    overrideOnChange: (onChange, params) => {
+      const [ v, id, o ] = params;
+      onChange(v, "m_BranchId");
+      onChange(o?.label, "m_Branch");
+    },
   },
   {
     Component: Editable.EF_SelectWithLabel,
@@ -108,9 +112,8 @@ const DOOR_FIELDS = constants.applyField([
   },
 ]);
 
-const Com = ({  }) => {
-  const {  uiOrderType, kind, } =
-    useContext(LocalDataContext);
+const Com = ({}) => {
+  const { uiOrderType, kind } = useContext(LocalDataContext);
 
   const [doorInputs, setDoorInputs] = useState(null);
   const [windowInputs, setWindowInputs] = useState(null);
@@ -141,9 +144,7 @@ const Com = ({  }) => {
       {!_.isEmpty(windowInputs) && (
         <>
           <div className={styles.subTitle}>
-            <label>
-              Window
-            </label>
+            <label>Window</label>
           </div>
           <div className={cn(styles.columnInputsContainer)}>
             {windowInputs?.map((a) => {
@@ -155,9 +156,7 @@ const Com = ({  }) => {
       {!_.isEmpty(doorInputs) && (
         <>
           <div className={styles.subTitle}>
-            <label>
-              Door
-            </label>
+            <label>Door</label>
           </div>
           <div className={cn(styles.columnInputsContainer)}>
             {doorInputs?.map((a) => {
@@ -173,10 +172,11 @@ const Com = ({  }) => {
 const Block = ({ inputData }) => {
   const { data, onChange, isEditable, dictionary } =
     useContext(LocalDataContext);
-  let { Component, title, id, options, ...rest } = inputData;
+  let { Component, title, id, options, overrideOnChange, ...rest } = inputData;
   if (typeof options === "function") {
     options = options(dictionary);
   }
+
   return (
     <DisplayBlock id={id}>
       <label>{title}</label>
@@ -184,7 +184,13 @@ const Block = ({ inputData }) => {
         <Component
           id={id}
           value={data?.[id]}
-          onChange={(v) => onChange(v, id)}
+          onChange={(v, ...o) => {
+            if (typeof overrideOnChange === "function") {
+              overrideOnChange(onChange, [v, ...o]);
+            } else {
+              onChange(v, id);
+            }
+          }}
           disabled={!isEditable}
           options={options}
           {...rest}
