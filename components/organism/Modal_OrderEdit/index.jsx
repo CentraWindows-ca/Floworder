@@ -84,7 +84,7 @@ const Com = ({}) => {
               className="btn btn-primary me-2"
               onClick={() => onGetWindowMaker()}
             >
-              <i className="fa-solid fa-pen-to-square me-2" />
+              <i className="fa-solid fa-cloud-arrow-down me-2"></i>
               Get WindowMaker
             </button>
           )}

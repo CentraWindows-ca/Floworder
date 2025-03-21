@@ -266,7 +266,7 @@ const WorkOrderActions = ({
         >
           <Button
             type="text"
-            icon={<SyncOutlined />}
+            icon={<i className="fa-solid fa-cloud-arrow-down"></i>}
             onClick={handleGetWindowMaker}
           >
             Get WindowMaker

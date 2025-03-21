@@ -8,6 +8,9 @@
     gap: 5px;
     font-size: 1rem;
     // align-items: flex-start;
+    :global(.ant-btn-icon) {
+        width: 20px;
+    }
 }
 
 .workorderActionsContainer button {
