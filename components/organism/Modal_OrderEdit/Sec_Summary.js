@@ -70,7 +70,10 @@ const Com = ({ className, ...props }) => {
     (data["m_NumberOfWindows"] || 0) +
     (data["m_NumberOfPatioDoors"] || 0) +
     (data["m_NumberOfDoors"] || 0) +
-    (data["m_NumberOfSwingDoors"] || 0);
+    (data["m_NumberOfOthers"] || 0) +
+    (data["m_NumberOfSwingDoors"] || 0)
+    
+    ;
   const totalGlassQty =
     (data["w_TotalGlassQty"] || 0) + (data["d_TotalGlassQty"] || 0);
 
