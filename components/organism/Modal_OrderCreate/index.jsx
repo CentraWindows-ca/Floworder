@@ -272,19 +272,33 @@ const Screen2 = ({
 
     // fetch from WM
     if (dbSource === "WM_AB") {
-      await OrdersApi.sync_AB_WindowMakerByWorkOrderAsync(null, {
+      const resWo = await OrdersApi.sync_AB_WindowMakerByWorkOrderAsync(null, {
         workOrderNo,
         resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
         manufacturingFacility,
         ...updateValues,
       });
+
+      if (resWo?.currentMasterId) {
+        await OrdersApi.sync_AB_Order_FF_Async({
+          workOrderNo,
+          masterId:resWo?.currentMasterId
+        })
+      }
     } else {
-      await OrdersApi.sync_BC_WindowMakerByWorkOrderAsync(null, {
+      const resWo = await OrdersApi.sync_BC_WindowMakerByWorkOrderAsync(null, {
         workOrderNo,
         resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
         manufacturingFacility,
         ...updateValues,
       });
+
+      if (resWo?.currentMasterId) {
+        await OrdersApi.sync_BC_Order_FF_Async({
+          workOrderNo,
+          masterId:resWo?.currentMasterId
+        })
+      }
     }
 
     // update init values
