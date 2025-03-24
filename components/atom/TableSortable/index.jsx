@@ -48,22 +48,23 @@ const Com = (props) => {
               return (
                 <tr key={a[keyField]}>
                   {columns?.map((b) => {
-                    const { key, render, onCell, className } = b;
+                    const { key, render, onCell, onWrapper, className } = b;
 
                     let cell = onCell ? onCell(a) : null;
+                    let wrapper = onWrapper ? onWrapper(a) : null;
 
                     if (typeof render === "function") {
                       return (
                         <React.Fragment key={key}>
                           <td {...cell}>
-                            <div>{render("", a, b)}</div>
+                            <div {...wrapper}>{render("", a, b)}</div>
                           </td>
                         </React.Fragment>
                       );
                     }
                     return (
                       <td className={cn(className)} key={key} {...cell}>
-                        <div className={cn(styles.tableTdWrapper)}>
+                        <div className={cn(styles.tableTdWrapper, wrapper?.className)} {...wrapper}>
                           <LabelDisplay>{a[key]}</LabelDisplay>
                         </div>
                       </td>
@@ -140,7 +141,12 @@ export const TableHeader = ({
           return (
             <th key={key} style={{ width: width || "auto" }}>
               {!isNotTitle ? (
-                <div className={cn(styles.tableTitle, !!setSort && styles.sortableTitle)}>
+                <div
+                  className={cn(
+                    styles.tableTitle,
+                    !!setSort && styles.sortableTitle,
+                  )}
+                >
                   <span className={cn(styles.sortTitle)}>{title}</span>
                   {setSort ? (
                     <OrderByIcon

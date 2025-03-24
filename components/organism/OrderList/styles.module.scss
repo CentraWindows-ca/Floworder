@@ -7,6 +7,7 @@
     text-align: left;
     gap: 5px;
     font-size: 1rem;
+
     // align-items: flex-start;
     :global(.ant-btn-icon) {
         width: 20px;
@@ -25,6 +26,7 @@
     overflow: auto;
     height: 100%;
     border-radius: 4px;
+
     .orderNumber {
         span {
             cursor: pointer;
@@ -59,6 +61,22 @@
         &:hover {
             color: $color_centraBlue_hover;
         }
+    }
+}
+
+.tableStatusBlock {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    .tableStatusColor {
+        position: absolute;
+        padding: 4px;
+        top: 1px;
+        bottom: 1px;
+        left: 1px;
+        right: 1px;
     }
 }
 
