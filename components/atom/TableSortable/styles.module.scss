@@ -97,10 +97,8 @@
         &>div {
             position: absolute;
             width: 100%;
-            // height: calc(100% - 1px);
-
+            height: 100%;
             top: 0;
-            bottom: 1px;
             background-color: white; // Prevents content from being overlapped  
         }
     }

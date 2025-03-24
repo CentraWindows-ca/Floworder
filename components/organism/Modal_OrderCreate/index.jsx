@@ -92,8 +92,8 @@ const WM_MAPPING = {
 };
 
 const FACILITY_MAPPING = {
-  SI: "Calgary",
-  SO: "Langley",
+  WM_AB: "Calgary",
+  WM_BC: "Langley",
 };
 
 const Screen1 = ({
@@ -243,7 +243,7 @@ const Screen2 = ({
     } else {
       setInitValues({});
 
-      setManufacturingFacility(FACILITY_MAPPING[windowMakerData?.workType]);
+      setManufacturingFacility(FACILITY_MAPPING[dbSource]);
     }
   }, [existingWorkOrder, windowMakerData]);
 
