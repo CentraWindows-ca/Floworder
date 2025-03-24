@@ -42,7 +42,7 @@ const Com = (props) => {
     setWindowMakerData(null);
     setDbSource("");
     setIsReservation(false);
-    setExistingWorkOrder(null)
+    setExistingWorkOrder(null);
   };
 
   return (
@@ -187,7 +187,8 @@ const Screen1 = ({
                 className="cursor-pointer hover:bg-blue-100"
                 onClick={() => handleSelect(item)}
               >
-                <b>[{item?.DBSource}]</b> {item.data?.name} |                {item.data?.branchName}
+                <b>[{item?.DBSource}]</b> {item.data?.name} |{" "}
+                {item.data?.branchName}
               </List.Item>
             )}
           />
@@ -265,9 +266,13 @@ const Screen2 = ({
     }
 
     if (selectedOverrideOption === "ResetWorkOrder") {
-      confirm(
-        "Are you sure you want to delete current work order and then refetch from WindowMaker?",
-      );
+      if (
+        !confirm(
+          "Are you sure you want to delete current work order and then refetch from WindowMaker?",
+        )
+      ) {
+        return
+      }
     }
 
     // fetch from WM
@@ -282,8 +287,8 @@ const Screen2 = ({
       if (resWo?.currentMasterId) {
         await OrdersApi.sync_AB_Order_FF_Async({
           workOrderNo,
-          masterId:resWo?.currentMasterId
-        })
+          masterId: resWo?.currentMasterId,
+        });
       }
     } else {
       const resWo = await OrdersApi.sync_BC_WindowMakerByWorkOrderAsync(null, {
@@ -296,8 +301,8 @@ const Screen2 = ({
       if (resWo?.currentMasterId) {
         await OrdersApi.sync_BC_Order_FF_Async({
           workOrderNo,
-          masterId:resWo?.currentMasterId
-        })
+          masterId: resWo?.currentMasterId,
+        });
       }
     }
 
