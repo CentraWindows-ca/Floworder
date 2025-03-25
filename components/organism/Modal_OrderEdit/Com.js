@@ -7,7 +7,7 @@ import OrdersApi from "lib/api/OrdersApi";
 import GlassApi from "lib/api/GlassApi";
 import { LocalDataContext } from "./LocalDataProvider";
 
-const _ifDisplay = ({ kind, uiOrderType, id, displayAs }) => {
+const _ifDisplay = ({ kind, uiOrderType, id, displayAs }, data) => {
   let currentKind = "m";
   if (id?.startsWith("m_")) currentKind = "m";
   else if (id?.startsWith("w_")) currentKind = "w";
@@ -18,6 +18,11 @@ const _ifDisplay = ({ kind, uiOrderType, id, displayAs }) => {
   if (!uiOrderType?.m && currentKind === "m") return null;
   if (!uiOrderType?.w && currentKind === "w") return null;
   if (!uiOrderType?.d && currentKind === "d") return null;
+
+  if (id === 'm_Community') {
+    //
+    return data?.m_JobType === "SO" && constants.checkProvince(data?.m_Branch) === 'AB'
+  }
 
   if (currentKind === kind || currentKind === "m" || kind === "m") {
     return true;
@@ -35,7 +40,7 @@ export const displayFilter = (itemList, { kind, uiOrderType }) => {
       uiOrderType,
       id,
       displayAs,
-    });
+    }, a);
   });
 };
 
@@ -48,7 +53,7 @@ export const DisplayBlock = ({ children, id = "m", displayAs, ...props }) => {
     uiOrderType,
     id,
     displayAs,
-  });
+  }, data);
 
   if (display) {
     return children;

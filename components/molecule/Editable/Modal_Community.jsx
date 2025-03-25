@@ -14,32 +14,32 @@ import useDataInit from "lib/hooks/useDataInit";
 import styles from "./styles.module.scss";
 
 const columns = [
+  // {
+  //   title: "comm_code",
+  //   key: "comm_code",
+  // },
   {
-    title: "comm_code",
-    key: "comm_code",
-  },
-  {
-    title: "name",
+    title: "Community Name",
     key: "name",
   },
   {
-    title: "sector",
+    title: "Quadrents",
     key: "sector",
   },
+  // {
+  //   title: "class",
+  //   key: "class",
+  // },
   {
-    title: "class",
-    key: "class",
-  },
-  {
-    title: "srg",
+    title: "Status",
     key: "srg",
   },
   {
-    title: "comm_structure",
+    title: "Structure",
     key: "comm_structure",
   },
   {
-    title: "ward_num",
+    title: "Ward Number",
     key: "ward_num",
   },
 ];
@@ -47,29 +47,35 @@ const Com = (props) => {
   const { onHide, show, value, onSelect } = props;
   const [data, setData] = useState([]);
   const [filters, setFilters] = useState({});
+
+  const [sort, setSort] = useState({});
+
   useEffect(() => {
     doInit();
   }, []);
 
   const doInit = async () => {
     const res = await External_FromApi.getAllCWBPCommunityAsync();
+    // data will be only SO + AB. set from Modal_OrderEdit/Com
     setData(res);
   };
 
   const handleSelect = (row) => {
-    onSelect(row.name)
+    onSelect(row.name);
   };
 
-  const filteredData = data?.filter(a => {    
-    const checkList = _.keys(filters)?.map(k => {
-      if (!filters[k]) return true
-      const lowerValue = a?.[k]?.toLowerCase()
-      const lowerFilter = filters[k]?.toLowerCase()
-      return lowerValue?.includes(lowerFilter)
-    })
+  const filteredData = data?.filter((a) => {
+    const checkList = _.keys(filters)?.map((k) => {
+      if (!filters[k]) return true;
+      const lowerValue = a?.[k]?.toLowerCase();
+      const lowerFilter = filters[k]?.toLowerCase();
+      return lowerValue?.includes(lowerFilter);
+    });
 
-    return _.every(checkList)
-  })
+    return _.every(checkList);
+  });
+
+  const { sortBy = "name", dir = "asc" } = sort || {};
 
   return (
     <Modal
@@ -83,9 +89,11 @@ const Com = (props) => {
       <div className="p-2">
         <TableSortable
           {...{
-            data: _.orderBy(filteredData, ["comm_code"], ["asc"]),
+            data: _.orderBy(filteredData, [sortBy], [dir]),
             columns,
             isLockFirstColumn: false,
+            sort,
+            setSort,
             filters,
             setFilters,
             className: styles.community,
