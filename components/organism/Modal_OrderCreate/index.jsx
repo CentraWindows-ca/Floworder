@@ -237,8 +237,8 @@ const Screen2 = ({
   useEffect(() => {
     if (existingWorkOrder) {
       setInitValues({
-        winStartDate: existingWorkOrder.d_ProductionStartDate,
-        doorStartDate: existingWorkOrder.w_ProductionStartDate,
+        winStartDate: existingWorkOrder.w_ProductionStartDate,
+        doorStartDate: existingWorkOrder.d_ProductionStartDate,
       });
       setManufacturingFacility(existingWorkOrder.m_ManufacturingFacility);
     } else {
