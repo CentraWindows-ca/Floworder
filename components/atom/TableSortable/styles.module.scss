@@ -1,7 +1,7 @@
 @use "styles/theme" as *;
 
 .root {
-    border: 1px solid $color_border_table;
+    border-right: 1px solid $color_border_table;
     border-top: none;
     border-bottom: none;
 }
@@ -19,7 +19,7 @@
     position: sticky;
     top: 0;
     z-index: 2;
-
+    border-left: 1px solid $color_border_table;
     th,
     td {
         padding: 0px;
@@ -28,8 +28,10 @@
             // border-right: 1px solid $color_border_table;
             background-color: $color_background_tableHeader;
             border-bottom: 1px solid $color_border_table;
+
             left: -1px !important;
             top: -1px !important;
+            // margin-left: -1px;
             right: 0px;
         }
 
@@ -39,6 +41,7 @@
     td>div {
         border-bottom: 3px double $color_border_table;
     }
+
     tr:first-child {
 
         th>div,
@@ -72,41 +75,51 @@
 
 }
 
+.isLockFirstColumn {
+    border: 1px solid $color_border_table;
+    .orderTable {
+
+        th:first-child,
+        td:first-child {
+            position: sticky;
+            left: 0;
+
+            &>div {
+                position: relative;
+                left: -1px;
+                border-right: 1px double $color_border_table;
+
+            }
+        }
+
+        td:first-child {
+            z-index: 1; // Ensures it stays above other columns when scrolling
+
+            &>div {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                background-color: white; // Prevents content from being overlapped  
+            }
+        }
+
+
+        th:first-child {
+            background-color: $color_background_tableHeader;
+        }
+    }
+
+}
+
 .orderTable {
     width: max-content;
     table-layout: fixed;
     min-width: 100%;
-    border-left: 1px solid $color_border_table;
+    // border-left: 1px solid $color_border_table;
     background-color: white;
 
-    th:first-child,
-    td:first-child {
-        position: sticky;
-        left: 0;
-        &>div {
-            position: relative;
-            left: -1px;
-            border-right: 1px double $color_border_table;
-            
-        }
-    }
 
-    td:first-child {
-        z-index: 1; // Ensures it stays above other columns when scrolling
-
-        &>div {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            background-color: white; // Prevents content from being overlapped  
-        }
-    }
-
-
-    th:first-child {
-        background-color: $color_background_tableHeader;
-    }
 
     tbody td {
         border-bottom: 1px solid $color_border_table;

@@ -24,13 +24,16 @@ const Com = (props) => {
     keyField = "m_MasterId",
     className,
     headerClassName,
+    isLockFirstColumn = true,
+    trParams = () => {},
+    ...rest
   } = props;
 
   return (
     <>
-      <div className={cn("w-full", styles.root, className)}>
+      <div className={cn("w-full", styles.root, isLockFirstColumn && styles.isLockFirstColumn,className)} {...rest}>
         <table
-          className={cn(styles.orderTable, "table-sm table-hover mb-0 table")}
+          className={cn(styles.orderTable,  "table-sm table-hover mb-0 table")}
         >
           <TableHeader
             {...{
@@ -45,8 +48,9 @@ const Com = (props) => {
           />
           <tbody>
             {data?.map((a) => {
+              const _trParams = trParams(a)
               return (
-                <tr key={a[keyField]}>
+                <tr key={a[keyField]} {..._trParams}>
                   {columns?.map((b) => {
                     const { key, render, onCell, onWrapper, className } = b;
 

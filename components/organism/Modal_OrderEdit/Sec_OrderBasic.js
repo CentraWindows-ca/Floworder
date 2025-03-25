@@ -63,12 +63,14 @@ const COMMON_FIELDS = constants.applyField([
     Component: Editable.EF_Input,
     id: "m_OtherContactNumber",
   },
+  {
+    Component: Editable.EF_Community,
+    id: "m_Community",
+  },
 ]);
 
-
-const Com = ({  }) => {
-  const { data, onChange, isEditable, } =
-    useContext(LocalDataContext);
+const Com = ({}) => {
+  const { data, onChange, isEditable } = useContext(LocalDataContext);
 
   return (
     <div className={cn(styles.columnInputsContainer)}>

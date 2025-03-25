@@ -7,6 +7,7 @@ import TypeaheadMultiSelect from "components/molecule/TypeaheadMultiSelect";
 import Typeahead from "components/atom/Typeahead";
 import DebouncedInput from "components/atom/DebouncedInput";
 import { GeneralContext } from "lib/provider/GeneralProvider";
+import Modal_Community from "./Modal_Community";
 
 // styles
 import styles from "./styles.module.scss";
@@ -65,7 +66,7 @@ export const EF_SelectWithLabel = React.memo(
         className="form-select w-full"
         value={value || ""}
         onChange={(e) => {
-          const o = renderOptions?.find(op => op.key === e.target.value)
+          const o = renderOptions?.find((op) => op.key === e.target.value);
           onChange(e.target.value, id, o);
         }}
         {...rest}
@@ -224,7 +225,7 @@ export const EF_Input = React.memo(
       }
       if (onKeyDown) {
         onKeyDown(e);
-      }      
+      }
     };
 
     return (
@@ -359,6 +360,45 @@ export const EF_Rack = React.memo(
   preventUpdate,
 );
 
+export const EF_Community = React.memo(
+  ({
+    id,
+    value = null,
+    onChange,
+    placeholder,
+    className,
+    size = "md",
+    options = [], // prevent override
+    isDisplayAvilible = true,
+    ...props
+  }) => {
+    const [show, setShow] = useState(false);
+
+    return (
+      <>
+        <div className="input-group w-full" title={value}>
+          <input className="form-control" value={value || ""} disabled={true} />
+          <button className="btn btn-secondary" onClick={() => setShow(true)}>
+            <i className="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+        <Modal_Community
+          show={show}
+          onHide={() => {
+            setShow(false);
+          }}
+          value={value}
+          onSelect={(v) => {
+            onChange(v);
+            setShow(false);
+          }}
+        />
+      </>
+    );
+  },
+  preventUpdate,
+);
+
 export const Editable = {
   EF_Date,
   EF_Select,
@@ -371,6 +411,7 @@ export const Editable = {
   EF_Checkbox_Yesno,
   EF_Label,
   EF_Rack,
+  EF_Community,
 };
 
 export default Editable;
