@@ -327,6 +327,11 @@ const FilterByStatus = ({ id, children, data }) => {
     if (id !== "viewOrder") return null;
   }
 
+  if (data?.m_Status === WORKORDER_MAPPING.Cancelled.key) {
+    if (id !== "viewOrder" && id !== "deleteOrder" && id !== "viewOrderHistory")
+      return null;
+  }
+
   return children;
 };
 
