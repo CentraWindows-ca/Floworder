@@ -73,10 +73,31 @@ const WINDOW_FIELDS = constants.applyField([
   {
     icon: () => <WaterTestingIcon />,
     id: "w_WaterTestingRequired",
-  },
-  {
-    icon: () => <WaterResistanceIcon />,
-    id: "w_WaterPenetrationResistance",
+
+    // NOTE: specific layout. triggered by w_WaterTestingRequired
+    renderSubItem: (data, onChange, isEditable) => {
+      if (data["w_WaterTestingRequired"] == 1) {
+        return (
+          <div className={styles.columnOptionsSubContainer}>
+            <label>
+              {
+                constants.constants_labelMapping["w_WaterPenetrationResistance"]
+                  .title
+              }
+            </label>
+            <Editable.EF_Input
+              className="text-right"
+              type="number"
+              id={"w_WaterPenetrationResistance"}
+              value={data?.["w_WaterPenetrationResistance"]}
+              onChange={(v) => onChange(v, "w_WaterPenetrationResistance")}
+              disabled={!isEditable}
+            />
+          </div>
+        );
+      }
+      return null;
+    },
   },
 ]);
 const DOOR_FIELDS = constants.applyField([
@@ -176,7 +197,7 @@ const Com = ({}) => {
 const Block = ({ inputData }) => {
   const { data, onChange, isEditable, dictionary } =
     useContext(LocalDataContext);
-  let { title, icon, id } = inputData;
+  let { title, icon, id, renderSubItem } = inputData;
   return (
     <DisplayBlock id={id} key={id}>
       <div>
@@ -187,16 +208,21 @@ const Block = ({ inputData }) => {
           disabled={!isEditable}
         />
       </div>
-      <label
-        htmlFor={id}
-        className="align-items-center flex gap-1"
-        style={{
-          cursor: isEditable ? "pointer" : "default",
-        }}
-      >
-        <div className="w-6">{icon()}</div>
-        {title}
-      </label>
+      <div>
+        <label
+          htmlFor={id}
+          className="align-items-center flex gap-1"
+          style={{
+            cursor: isEditable ? "pointer" : "default",
+          }}
+        >
+          <div className="w-6">{icon()}</div>
+          {title}
+        </label>
+        {typeof renderSubItem === "function"
+          ? renderSubItem(data, onChange, isEditable)
+          : null}
+      </div>
     </DisplayBlock>
   );
 };
