@@ -76,7 +76,7 @@ const WINDOW_FIELDS = constants.applyField([
 
     // NOTE: specific layout. triggered by w_WaterTestingRequired
     renderSubItem: (data, onChange, isEditable) => {
-      if (data["w_WaterTestingRequired"] == 1) {
+      if (data?.["w_WaterTestingRequired"] == 1) {
         return (
           <div className={styles.columnOptionsSubContainer}>
             <label>
