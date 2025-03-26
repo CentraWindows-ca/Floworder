@@ -367,6 +367,7 @@ const TableWindow = ({ handleShowItem }) => {
               keyField: "Id",
               className: "text-left",
               headerClassName: cn(styles.thead),
+              isLockFirstColumn: false,
             }}
           />
         </div>
@@ -589,6 +590,7 @@ const TableDoor = ({ handleShowItem }) => {
               keyField: "Id",
               className: "text-left",
               headerClassName: cn(styles.thead),
+              isLockFirstColumn: false,
             }}
           />
         </div>

@@ -31,56 +31,89 @@ const Com = (props) => {
 
   return (
     <>
-      <div className={cn("w-full", styles.root, isLockFirstColumn && styles.isLockFirstColumn,className)} {...rest}>
-        <table
-          className={cn(styles.orderTable,  "table-sm table-hover mb-0 table")}
-        >
-          <TableHeader
-            {...{
-              columns,
-              sort,
-              setSort,
-              filters,
-              setFilters,
-              applyFilter,
-              className: headerClassName,
-            }}
-          />
-          <tbody>
-            {data?.map((a) => {
-              const _trParams = trParams(a)
-              return (
-                <tr key={a[keyField]} {..._trParams}>
-                  {columns?.map((b) => {
-                    const { key, render, onCell, onWrapper, className } = b;
+      <TableWrapper
+        {...{
+          isLockFirstColumn,
+          className,
+          ...rest
+        }}
+      >
+        <TableHeader
+          {...{
+            columns,
+            sort,
+            setSort,
+            filters,
+            setFilters,
+            applyFilter,
+            className: headerClassName,
+          }}
+        />
+        <tbody>
+          {data?.map((a) => {
+            const _trParams = trParams(a);
+            return (
+              <tr key={a[keyField]} {..._trParams}>
+                {columns?.map((b) => {
+                  const { key, render, onCell, onWrapper, className } = b;
 
-                    let cell = onCell ? onCell(a) : null;
-                    let wrapper = onWrapper ? onWrapper(a) : null;
+                  let cell = onCell ? onCell(a) : null;
+                  let wrapper = onWrapper ? onWrapper(a) : null;
 
-                    if (typeof render === "function") {
-                      return (
-                        <React.Fragment key={key}>
-                          <td {...cell}>
-                            <div {...wrapper}>{render("", a, b)}</div>
-                          </td>
-                        </React.Fragment>
-                      );
-                    }
+                  if (typeof render === "function") {
                     return (
-                      <td className={cn(className)} key={key} {...cell}>
-                        <div className={cn(styles.tableTdWrapper, wrapper?.className)} {...wrapper}>
-                          <LabelDisplay>{a[key]}</LabelDisplay>
-                        </div>
-                      </td>
+                      <React.Fragment key={key}>
+                        <td {...cell}>
+                          <div {...wrapper}>{render("", a, b)}</div>
+                        </td>
+                      </React.Fragment>
                     );
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+                  }
+                  return (
+                    <td className={cn(className)} key={key} {...cell}>
+                      <div
+                        className={cn(
+                          styles.tableTdWrapper,
+                          wrapper?.className,
+                        )}
+                        {...wrapper}
+                      >
+                        <LabelDisplay>{a[key]}</LabelDisplay>
+                      </div>
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </TableWrapper>
     </>
+  );
+};
+
+export const TableWrapper = ({
+  children,
+  isLockFirstColumn = true,
+  className,
+  ...rest
+}) => {
+  return (
+    <div
+      className={cn(
+        "w-full",
+        styles.root,
+        isLockFirstColumn && styles.isLockFirstColumn,
+        className,
+      )}
+      {...rest}
+    >
+      <table
+        className={cn(styles.orderTable, "table-sm table-hover mb-0 table")}
+      >
+        {children}
+      </table>
+    </div>
   );
 };
 

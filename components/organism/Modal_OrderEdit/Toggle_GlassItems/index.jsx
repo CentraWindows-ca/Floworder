@@ -1,15 +1,18 @@
 import React, { useState, useContext } from "react";
+import cn from "classnames";
 import constants from "lib/constants";
 
 import _ from "lodash";
 
-import { TableHeader } from "components/atom/TableSortable";
-
-// styles
-import styles from "../styles.module.scss";
+import { TableHeader, TableWrapper } from "components/atom/TableSortable";
 
 import { LocalDataContext } from "../LocalDataProvider";
 import { ToggleBlock } from "../Com";
+// styles
+import stylesRoot from "../styles.module.scss";
+import stylesCurrent from "./styles.module.scss";
+
+const styles = { ...stylesRoot, ...stylesCurrent };
 
 const Com = ({}) => {
   const { glassTotal, glassItems } = useContext(LocalDataContext);
@@ -39,7 +42,7 @@ const Com = ({}) => {
     },
     {
       key: "qty",
-      width: 120
+      width: 120,
     },
     {
       // title: "Item",
@@ -102,12 +105,16 @@ const Com = ({}) => {
     <ToggleBlock title={jsxTitle} id={"glassItems"}>
       {!_.isEmpty(glassItems) ? (
         <div className={styles.togglePadding}>
-          <div className={styles.itemSubTitle}>
+          <div className={cn(styles.itemSubTitle, styles.subTitle)}>
             <label>Windows</label>
           </div>
           <table
-            className="table-xs table-bordered table-hover mb-0 table border"
-            style={{ borderTop: "none" }}
+            className={cn("table-xs table-hover mb-0 table border table-clean", styles.itemTableBorder)}
+            style={{
+              borderTop: "none",
+              borderCollapse: "separate",
+              borderSpacing: 0,
+            }}
           >
             <TableHeader
               {...{
@@ -116,6 +123,7 @@ const Com = ({}) => {
                 setSort,
                 filters,
                 setFilters,
+                className: styles.thead,
               }}
             />
 

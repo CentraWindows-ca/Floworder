@@ -13,3 +13,8 @@ $primary-hover: #0273e2;
 .bg-notempty {
     background-color: beige;
 }
+
+.table-clean td,
+.table-clean th {
+  border: none;
+}
