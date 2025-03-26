@@ -296,11 +296,12 @@ export const EF_Checkbox = React.memo(
 );
 
 export const EF_Checkbox_Yesno = React.memo(({ onChange, value, ...props }) => {
+  // 20250306: decide the whole database use 1/0 as boolean
   const handleChange = (e) => {
-    onChange(e.target.checked ? "Yes" : "No");
+    onChange(e.target.checked ? "1" : "0");
   };
 
-  const checked = value === "Yes"; // can be true or "true"
+  const checked = value === "1"; // can be true or "true"
 
   return (
     <input
