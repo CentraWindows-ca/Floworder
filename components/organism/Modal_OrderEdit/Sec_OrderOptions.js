@@ -117,10 +117,10 @@ const DOOR_FIELDS = constants.applyField([
     icon: () => <GridIcon />,
     id: "d_GridIcon",
   },
-  {
-    icon: () => <WaterTestingIcon />,
-    id: "d_WaterTestingRequired",
-  },
+  // {
+  //   icon: () => <WaterTestingIcon />,
+  //   id: "d_WaterTestingRequired",
+  // },
   {
     icon: () => <MiniBlindIcon />,
     id: "d_MiniblindIcon",
