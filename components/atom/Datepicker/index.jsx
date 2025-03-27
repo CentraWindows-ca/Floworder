@@ -59,6 +59,7 @@ const DFDatePicker = ({
       className={cn(
         "form-control",
         size === "sm" ? styles.containersm : styles.container,
+        disabled ? styles.disabled : "",
         className,
       )}
       style={style}

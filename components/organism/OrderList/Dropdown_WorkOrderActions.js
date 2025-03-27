@@ -323,6 +323,7 @@ const WorkOrderActions = ({
 };
 
 const FilterByStatus = ({ id, children, data }) => {
+  // NOTE: same rule applies to popup edit button. if pending or cancelled cant edit
   if (data?.m_Status === WORKORDER_MAPPING.Pending.key) {
     if (id !== "viewOrder") return null;
   }

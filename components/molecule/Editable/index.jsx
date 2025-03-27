@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import { parseISO, formatISO, format, addMinutes, subMinutes } from "date-fns";
 import _ from "lodash";
 import cn from "classnames";
 
@@ -8,6 +9,8 @@ import Typeahead from "components/atom/Typeahead";
 import DebouncedInput from "components/atom/DebouncedInput";
 import { GeneralContext } from "lib/provider/GeneralProvider";
 import Modal_Community from "./Modal_Community";
+
+import utils from "lib/utils";
 
 // styles
 import styles from "./styles.module.scss";
@@ -23,16 +26,22 @@ const preventUpdate = (prev, nex) => {
 export const EF_Date = React.memo(
   ({ id, value, onChange, onSelect, ...rest }) => {
     const handleSelect = (d, str) => {
-      const newDate = d; // || new Date()
-      onChange(str);
+      if (!str) return;
+
+      // str is in local time, e.g., "2025-03-26T00:00:00"
+      const utcStr = utils.datetimeFromLocalToUTC(str)
+      onChange(utcStr);
     };
+
+    // Convert UTC string to local time string in same format
+    const localValue = utils.datetimeFromUTCToLocal(value);
 
     return (
       <Datepicker
         id={id}
         onChange={onChange}
         onSelect={handleSelect}
-        value={value || null}
+        value={localValue}
         {...rest}
       />
     );

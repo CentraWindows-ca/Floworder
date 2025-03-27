@@ -216,31 +216,6 @@ const Com = (props) => {
         key: "m_JobType",
         width: 95,
       },
-
-      {
-        key: "w_BatchNo",
-        display: isWindow,
-        width: 140,
-        display: !isPending,
-      },
-      {
-        key: "w_BlockNo",
-        display: isWindow,
-        width: 140,
-        display: !isPending,
-      },
-      {
-        key: "d_BatchNo",
-        display: isDoor,
-        width: 120,
-        display: !isPending,
-      },
-      {
-        key: "d_BlockNo",
-        display: isDoor,
-        width: 120,
-        display: !isPending,
-      },
       {
         title: "Windows",
         key: "m_NumberOfWindows",
@@ -275,6 +250,31 @@ const Com = (props) => {
         className: "text-right",
         width: 80,
       },
+      {
+        key: "w_BatchNo",
+        display: isWindow,
+        width: 140,
+        display: !isPending,
+      },
+      {
+        key: "w_BlockNo",
+        display: isWindow,
+        width: 140,
+        display: !isPending,
+      },
+      {
+        key: "d_BatchNo",
+        display: isDoor,
+        width: 120,
+        display: !isPending,
+      },
+      {
+        key: "d_BlockNo",
+        display: isDoor,
+        width: 120,
+        display: !isPending,
+      },
+     
       {
         key: "m_InvStatus",
         width: 105,

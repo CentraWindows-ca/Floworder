@@ -18,7 +18,7 @@ import Toggle_GlassItems from "./Toggle_GlassItems";
 import Toggle_Images from "./Toggle_Images";
 import Toggle_Files from "./Toggle_Files";
 import { DisplayBlock } from "./Com";
-import constants from "lib/constants";
+import constants, {WORKORDER_MAPPING} from "lib/constants";
 
 // styles
 import styles from "./styles.module.scss";
@@ -58,6 +58,10 @@ const Com = ({}) => {
     d: <b className="text-primary">[Door]</b>,
   };
 
+  const isOnStatusAllowToEdit = ![
+    WORKORDER_MAPPING.Pending.key,
+  ].includes(data?.['m_Status'])
+
   const jsxTitle = (
     <div className="justify-content-between align-items-center flex-grow-1 flex">
       <div className="align-items-center flex gap-2">
@@ -65,7 +69,7 @@ const Com = ({}) => {
           featureCode={constants.FEATURE_CODES["om.prod.wo"]}
           op="canEdit"
         >
-          {!isEditable && !isDeleted && (
+          {!isEditable && !isDeleted && isOnStatusAllowToEdit && (
             <button
               className="btn btn-outline-success me-2"
               onClick={() => setIsEditable(true)}

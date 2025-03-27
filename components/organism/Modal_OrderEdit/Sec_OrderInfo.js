@@ -26,11 +26,7 @@ const COMMON_FIELDS = constants.applyField([
   {
     Component: Editable.EF_SelectWithLabel,
     id: "m_ManufacturingFacility",
-    options: _.keys(constants.ManufacturingFacilities)?.map((k) => ({
-      label: k,
-      value: k,
-      key: k,
-    })),
+    options: constants.WorkOrderSelectOptions.manufacturingFacilities,
   },
   {
     Component: Editable.EF_SelectWithLabel,
