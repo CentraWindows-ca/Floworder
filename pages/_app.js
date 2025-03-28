@@ -156,7 +156,7 @@ const ComAuthNav = ({ onLoaded }) => {
   return (
     <AuthNav
       options={{
-        zIndex: 99999999999999999,
+        zIndex: 999999,
         onRoute: handleOnRoute,
         onAction: handleAction,
         appCode: "OM",
