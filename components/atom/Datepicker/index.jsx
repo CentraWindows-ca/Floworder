@@ -11,7 +11,7 @@ const DFDatePicker = ({
   className,
   onChange,
   onSelect,
-  style = { width: "100px" },
+  style = { width: "120px" },
   size,
   viewType = "",
   disabled,
@@ -39,9 +39,7 @@ const DFDatePicker = ({
       break;
   }
 
-  const dateValue = value
-    ? parseISO(value)
-    : null;
+  const dateValue = value ? parseISO(value) : null;
 
   const handleSelect = (v) => {
     const formattedDate = v ? format(v, "yyyy-MM-dd'T'HH:mm:ss") : null;
@@ -53,27 +51,44 @@ const DFDatePicker = ({
     onChange(v, formattedDate);
   };
 
+  // text for disabled
+  const valueTextDisabled = dateValue ? format(dateValue, otherProps.dateFormat) : ""
+
   // 01/15/2025 14:27:05
   return (
-    <div
-      className={cn(
-        "form-control",
-        size === "sm" ? styles.containersm : styles.container,
-        disabled ? styles.disabled : "",
-        className,
+    <>
+      {disabled ? (
+        <input 
+        {...props}
+        style = {style}
+        value = {valueTextDisabled || ''}
+        onChange={() => {}}
+        className={cn("form-control text-center",size === "sm" ? styles.containersm : styles.container,className )}
+        disabled
+        />
+      ) : (
+        <div
+          className={cn(
+            "form-control",
+            size === "sm" ? styles.containersm : styles.container,
+            disabled ? styles.disabled : "",
+            className,
+          )}
+          style={style}
+        >
+          <DatePicker
+            selected={dateValue}
+            onChange={handleChange}
+            onSelect={handleSelect}
+            className={styles.root}
+            readOnly={disabled}
+            {...otherProps}
+            {...props}
+          />
+        </div>
       )}
-      style={style}
-    >
-      <DatePicker
-        selected={dateValue}
-        onChange={handleChange}
-        onSelect={handleSelect}
-        className={styles.root}
-        readOnly={disabled}
-        {...otherProps}
-        {...{ props }}
-      />
-    </div>
+     
+    </>
   );
 };
 

@@ -380,6 +380,7 @@ export const EF_Community = React.memo(
     size = "md",
     options = [], // prevent override
     isDisplayAvilible = true,
+    disabled,
     ...props
   }) => {
     const [show, setShow] = useState(false);
@@ -388,7 +389,7 @@ export const EF_Community = React.memo(
       <>
         <div className="input-group w-full" title={value}>
           <input className="form-control" value={value || ""} disabled={true} />
-          <button className="btn btn-secondary" onClick={() => setShow(true)}>
+          <button className="btn btn-secondary" onClick={() => setShow(true)} disabled={disabled}>
             <i className="fa-solid fa-magnifying-glass"></i>
           </button>
         </div>
