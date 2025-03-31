@@ -277,33 +277,19 @@ const Screen2 = ({
 
     // fetch from WM
     if (dbSource === "WM_AB") {
-      const resWo = await OrdersApi.sync_AB_WindowMakerByWorkOrderAsync(null, {
+      await OrdersApi.sync_AB_WindowMakerByWorkOrderAsync(null, {
         workOrderNo,
         resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
         manufacturingFacility,
         ...updateValues,
       });
-
-      if (resWo?.currentMasterId) {
-        await OrdersApi.sync_AB_Order_FF_Async({
-          workOrderNo,
-          masterId: resWo?.currentMasterId,
-        });
-      }
     } else {
-      const resWo = await OrdersApi.sync_BC_WindowMakerByWorkOrderAsync(null, {
+      await OrdersApi.sync_BC_WindowMakerByWorkOrderAsync(null, {
         workOrderNo,
         resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
         manufacturingFacility,
         ...updateValues,
       });
-
-      if (resWo?.currentMasterId) {
-        await OrdersApi.sync_BC_Order_FF_Async({
-          workOrderNo,
-          masterId: resWo?.currentMasterId,
-        });
-      }
     }
 
     // update init values
@@ -320,7 +306,7 @@ const Screen2 = ({
           <div className="col-lg-3 justify-content-center flex">
             <Editable.EF_Date
               id="winStartDate"
-              value={initValues?.winStartDate}
+              value={initValues?.winStartDate || null}
               onChange={(v) =>
                 setInitValues((prev) => ({
                   ...prev,
@@ -337,7 +323,7 @@ const Screen2 = ({
           <div className="col-lg-3 justify-content-center flex">
             <Editable.EF_Date
               id="doorStartDate "
-              value={initValues?.doorStartDate}
+              value={initValues?.doorStartDate || null}
               onChange={(v) =>
                 setInitValues((prev) => ({
                   ...prev,

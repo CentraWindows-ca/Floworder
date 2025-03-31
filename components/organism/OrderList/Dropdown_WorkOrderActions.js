@@ -44,7 +44,7 @@ const WorkOrderActions = ({
   kind,
 }) => {
   const { m_WorkOrderNo, m_IsActive, w_Status, d_Status } = data;
-  const { toast } = useContext(GeneralContext);
+  const { toast, permissions } = useContext(GeneralContext);
 
   const { requestData } = useInterrupt();
 
@@ -163,21 +163,21 @@ const WorkOrderActions = ({
 
   const actionsActive = (
     <div className={cn(styles.workorderActionsContainer)}>
-      <FilterByStatus id="viewOrder" data={data}>
+      <PermissionBlock isHidden={filterOutByStatus({ id: "viewOrder", data })}>
         <Button type="text" icon={<EyeOutlined />} onClick={onView}>
           View Order
         </Button>
-      </FilterByStatus>
-      <FilterByStatus id="editOrder" data={data}>
-        <PermissionBlock
-          featureCode={constants.FEATURE_CODES["om.prod.wo"]}
-          op="canEdit"
-        >
-          <Button type="text" icon={<EditOutlined />} onClick={onEdit}>
-            Edit Order
-          </Button>
-        </PermissionBlock>
-      </FilterByStatus>
+      </PermissionBlock>
+
+      <PermissionBlock
+        featureCode={constants.FEATURE_CODES["om.prod.wo"]}
+        isHidden={filterOutByStatus({ id: "editOrder", data })}
+        op="canEdit"
+      >
+        <Button type="text" icon={<EditOutlined />} onClick={onEdit}>
+          Edit Order
+        </Button>
+      </PermissionBlock>
 
       <PermissionBlock
         featureCode={constants.FEATURE_CODES["om.prod.statusSwitchGeneral"]}
@@ -185,7 +185,10 @@ const WorkOrderActions = ({
         {allowedStatusWindow?.map((stepName) => {
           const { label, color, key } = WORKORDER_MAPPING[stepName];
           return (
-            <FilterByStatus key={key} id={`windowStatus_${key}`} data={data}>
+            <PermissionBlock
+              key={key}
+              isHidden={filterOutByStatus({ id: `windowStatus_${key}`, data })}
+            >
               <Button
                 type="text"
                 icon={<ArrowRightOutlined />}
@@ -202,14 +205,17 @@ const WorkOrderActions = ({
                 />
                 <b>{label}</b>
               </Button>
-            </FilterByStatus>
+            </PermissionBlock>
           );
         })}
 
         {allowedStatusDoor?.map((stepName) => {
           const { label, color, key } = WORKORDER_MAPPING[stepName];
           return (
-            <FilterByStatus key={key} id={`doorStatus_${key}`} data={data}>
+            <PermissionBlock
+              key={key}
+              isHidden={filterOutByStatus({ id: `doorStatus_${key}`, data })}
+            >
               <Button
                 type="text"
                 icon={<ArrowRightOutlined />}
@@ -227,27 +233,17 @@ const WorkOrderActions = ({
                 />
                 <b>{label}</b>
               </Button>
-            </FilterByStatus>
+            </PermissionBlock>
           );
         })}
       </PermissionBlock>
-      <FilterByStatus id="deleteOrder" data={data}>
-        <PermissionBlock
-          featureCode={constants.FEATURE_CODES["om.prod.wo"]}
-          op="canDelete"
-        >
-          <Button
-            type="text"
-            icon={<DeleteOutlined />}
-            onClick={handleDelete}
-            // disabled={true}
-          >
-            Delete Order
-          </Button>
-        </PermissionBlock>
-      </FilterByStatus>
+
       <PermissionBlock
-        featureCode={constants.FEATURE_CODES["om.prod.woAdmin"]}
+        featureCode={[
+          constants.FEATURE_CODES["om.prod.wo"],
+          constants.FEATURE_CODES["om.prod.woAdmin"],
+        ]}
+        isHidden={filterOutByStatus({ id: "deleteOrder", data, permissions })}
         op="canDelete"
       >
         <Button
@@ -256,33 +252,30 @@ const WorkOrderActions = ({
           onClick={handleDelete}
           // disabled={true}
         >
-          Admin: Delete Order
+          Delete Order
+        </Button>
+      </PermissionBlock>
+      <PermissionBlock
+        featureCode={constants.FEATURE_CODES["om.prod.woGetWindowMaker"]}
+        isHidden={filterOutByStatus({ id: "syncFromWindowMaker", data })}
+      >
+        <Button
+          type="text"
+          icon={<i className="fa-solid fa-cloud-arrow-down"></i>}
+          onClick={handleGetWindowMaker}
+        >
+          Get WindowMaker
         </Button>
       </PermissionBlock>
 
-      <FilterByStatus id="syncFromWindowMaker" data={data}>
-        <PermissionBlock
-          featureCode={constants.FEATURE_CODES["om.prod.woGetWindowMaker"]}
-        >
-          <Button
-            type="text"
-            icon={<i className="fa-solid fa-cloud-arrow-down"></i>}
-            onClick={handleGetWindowMaker}
-          >
-            Get WindowMaker
-          </Button>
-        </PermissionBlock>
-      </FilterByStatus>
-
-      <FilterByStatus id="viewOrderHistory" data={data}>
-        <PermissionBlock
-          featureCode={constants.FEATURE_CODES["om.prod.woHistory"]}
-        >
-          <Button type="text" icon={<HistoryOutlined />} onClick={onHistory}>
-            View Order History
-          </Button>
-        </PermissionBlock>
-      </FilterByStatus>
+      <PermissionBlock
+        featureCode={constants.FEATURE_CODES["om.prod.woHistory"]}
+        isHidden={filterOutByStatus({ id: "viewOrderHistory", data })}
+      >
+        <Button type="text" icon={<HistoryOutlined />} onClick={onHistory}>
+          View Order History
+        </Button>
+      </PermissionBlock>
     </div>
   );
 
@@ -322,18 +315,25 @@ const WorkOrderActions = ({
   );
 };
 
-const FilterByStatus = ({ id, children, data }) => {
+const filterOutByStatus = ({ id, data, permissions }) => {
+  // admin is able to delete
+  if (permissions?.['om.prod.woAdmin']?.['canDelete']) {
+    if (id === 'deleteOrder') {
+      return false
+    }
+  }
+
   // NOTE: same rule applies to popup edit button. if pending or cancelled cant edit
   if (data?.m_Status === WORKORDER_MAPPING.Pending.key) {
-    if (id !== "viewOrder") return null;
+    if (id !== "viewOrder") return true;
   }
 
   if (data?.m_Status === WORKORDER_MAPPING.Cancelled.key) {
     if (id !== "viewOrder" && id !== "deleteOrder" && id !== "viewOrderHistory")
-      return null;
+      return true;
   }
 
-  return children;
+  return false;
 };
 
 export default WorkOrderActions;
