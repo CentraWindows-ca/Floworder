@@ -13,20 +13,20 @@ const Com = ({
   maxWidth = "800px",
   zIndex = 1070,
   children,
-  toggle = false
+  toggle = false,
 }) => {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
     if (show) {
       // Create overlay element
-      const overlay = document.createElement('div');
-      overlay.style.position = 'fixed';
+      const overlay = document.createElement("div");
+      overlay.style.position = "fixed";
       overlay.style.top = 0;
       overlay.style.left = 0;
-      overlay.style.width = '100vw';
-      overlay.style.height = '100vh';
-      overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+      overlay.style.width = "100vw";
+      overlay.style.height = "100vh";
+      overlay.style.backgroundColor = "rgba(0, 0, 0, 0.3)";
       overlay.style.zIndex = zIndex - 1; // Ensure it's above other content
 
       // Append to body
@@ -41,15 +41,15 @@ const Com = ({
 
   useEffect(() => {
     setShow(false);
-  }, [toggle])
-   
+  }, [toggle]);
+
   const handleTrigger = () => {
     setShow((prev) => !prev);
   };
 
   return (
     <>
-      <div style={{ position: "relative" }}>
+      <div style={{ position: "relative", opacity: isLock ? 0.6 : 1 }}>
         <OverlayTrigger
           show={show}
           trigger="click"

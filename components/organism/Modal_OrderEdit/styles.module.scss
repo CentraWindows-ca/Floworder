@@ -9,6 +9,7 @@
     min-width: 300px;
     padding: 20px;
 }
+
 .statesContainer {
     border-radius: 4px;
     padding: 4px 10px;
@@ -32,10 +33,10 @@
 
 .gridsOfMainInfo {
     display: grid;
-    gap: 5px;
+    gap: 10px;
     grid-template-columns: repeat(4, 1fr);
 
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 
     // .grid-1 {
     //     grid-column: 1;
@@ -44,29 +45,6 @@
 
     // .grid-2 {
     //     grid-column: 1;
-    // }
-}
-
-
-.gridsOfBelowInfo {
-    display: grid;
-    gap: 5px;
-    grid-template-columns: repeat(2, 1fr);
-
-    // .mainItem-1 {
-    //     grid-column: 1;
-    // }
-
-    // .mainItem-2 {
-    //     grid-column: 2;
-    // }
-
-    // .mainItem-3 {
-    //     grid-column: 3;
-    // }
-
-    // .mainItem-4 {
-    //     grid-column: 4;
     // }
 }
 
@@ -162,6 +140,7 @@
     label {
         text-align: left;
     }
+
     .columnOptionsSubContainer {
         border: 1px solid $color_border_table;
         background-color: $color_active;
@@ -230,6 +209,7 @@
             text-decoration: underline;
         }
     }
+
     font-size: 10px;
 }
 
@@ -244,11 +224,15 @@
     // min-height: 100px;
 }
 
+.modalHeader {
+    padding: 10px;
+}
+
 .modalBody {
     padding: 0px;
     display: flex;
     flex-direction: column;
-
+    background-color: #F4F4F4;
     .modalToolBar {
         padding: 5px 15px;
         // height: 50px;
@@ -278,6 +262,10 @@
 
 .showingContainer {
     flex-grow: 1;
+}
+.buttonContainer {
+    background-color: $color_background_lightBlue;
+    border: 1px solid $color_border_table
 }
 
 .showmore {
@@ -341,10 +329,10 @@
             .summaryLaborNumbers {
                 padding: 10px;
                 // font-weight: bold;
-                
+
                 .summaryLaborNumberSpan {
                     // color: $color_red;
-                    color:black;
+                    color: black;
                     font-weight: bold;
                 }
             }
@@ -356,4 +344,3 @@
         }
     }
 }
-

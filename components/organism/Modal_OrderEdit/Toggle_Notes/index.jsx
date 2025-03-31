@@ -55,7 +55,7 @@ const Com = ({}) => {
           );
         })
       ) : (
-        <NoData title="Create Notes" className="hover:text-blue-600" />
+        <NoData title={`No Data`} className="hover:text-blue-600" />
       )}
     </div>
   );
@@ -95,7 +95,6 @@ const Com = ({}) => {
         <div className={cn("grid grid-cols-2", styles.notesContainer)}>
           {jsxNoteBlock("m_ShippingNotes")}
           {jsxNoteBlock("m_ProjectManagementNotes")}
-
           {jsxNoteBlock("m_ReturnTripNotes")}
           {jsxNoteBlock("w_OfficeNotes")}
           {jsxNoteBlock("w_PlantNotes")}

@@ -40,7 +40,11 @@ const Com = ({}) => {
       {kind === "m" && (
         <div
           className={cn(styles.statesContainer, "font-normal")}
-          style={{ color: textColor, backgroundColor: color }}
+          style={{
+            color: textColor,
+            backgroundColor: color,
+            opacity: isEditable ? 1 : 0.6, // to follow the style of dropdowns
+          }}
         >
           <span>{label}</span>
         </div>

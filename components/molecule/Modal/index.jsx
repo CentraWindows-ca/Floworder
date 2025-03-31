@@ -21,6 +21,7 @@ export default style(
       footer,
       className,
       bodyClassName,
+      headerClassName,
       fullscreen,
       layer = 0,
       style,
@@ -52,7 +53,7 @@ export default style(
             backdropClassName={`custom-backdrop_${layer}`}
             {...rest}
           >
-            <Modal.Header closeButton={closeButton}>
+            <Modal.Header closeButton={closeButton} className={headerClassName}>
               <Modal.Title className={titleClassName}> {title} </Modal.Title> {subtitle}
             </Modal.Header>
             {hasModalBody ? (

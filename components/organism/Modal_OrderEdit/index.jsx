@@ -165,6 +165,7 @@ const Com = ({}) => {
       onHide={onHide}
       fullscreen={true}
       bodyClassName={styles.modalBody}
+      headerClassName = {styles.modalHeader}
       titleClassName={"flex justify-content-between flex-grow-1"}
     >
       <span id="basic" />
@@ -204,13 +205,13 @@ const Com = ({}) => {
               </CollapseContainer>
             </div>
           </div>
-          <div className="flex-column flex" style={{ marginTop: "5px" }}>
+          <div className="flex-column flex" style={{ marginTop: "10px", marginBottom: "10px" }}>
             <Toggle_Notes />
           </div>
           {isEditable && (
             <div
-              className="justify-content-center flex bg-slate-100 p-2"
-              style={{ margin: "5px 0px" }}
+              className={cn("justify-content-center flex p-2", styles.buttonContainer)}
+              style={{ margin: "10px 0px" }}
             >
               <button
                 className="btn btn-primary px-4"
@@ -222,7 +223,9 @@ const Com = ({}) => {
             </div>
           )}
 
-          <div className="flex-column flex" style={{ gap: "5px" }}>
+          <hr/>
+
+          <div className="flex-column flex" style={{ gap: "10px" }}>
             <Toggle_Images title={"Images"} id={"images"} />
             <Toggle_Files title={"Attachment Files"} id={"files"} />
             <Toggle_ProductionItems
