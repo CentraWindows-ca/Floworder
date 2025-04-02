@@ -90,12 +90,16 @@ const Com = ({ data, dataProfile, onRefresh }) => {
       return {
         ...merged,
         profileList,
-        totalNeeded: _.round(profileList?.reduce((p, c) => {
-          return p + c.neededofBars;
-        }, 0)),
-        totalWasted: _.round(profileList?.reduce((p, c) => {
-          return p + c.wastedofBars;
-        }, 0)),
+        totalNeeded: _.round(
+          profileList?.reduce((p, c) => {
+            return p + c.neededofBars;
+          }, 0),
+        ),
+        totalWasted: _.round(
+          profileList?.reduce((p, c) => {
+            return p + c.wastedofBars;
+          }, 0),
+        ),
       };
     });
 
@@ -123,13 +127,14 @@ const Com = ({ data, dataProfile, onRefresh }) => {
   };
 
   const handleGetWindowMaker = useLoadingBar(async (workOrderNo, masterId) => {
-    if (!confirm(`Are you going to get window maker for [${workOrderNo}]?`)) return
+    if (!confirm(`Are you going to get window maker for [${workOrderNo}]?`))
+      return;
     await Prod2FFApi.sync_optimized_Bar_Async({
       workOrderNo,
       masterId,
     });
 
-    onRefresh()
+    onRefresh();
   });
 
   const jsxTitle = (
@@ -178,98 +183,107 @@ const Com = ({ data, dataProfile, onRefresh }) => {
           </div>
         </div>
         <div>
-          <table
-            className={cn(
-              "table-xs table-hover table-clean mb-0 table border",
-              styles.itemTableBorder,
-            )}
-          >
-            <TableHeader
-              {...{
-                columns,
-                sort,
-                setSort,
-                className: styles.thead,
-              }}
-            />
-            <tbody>
-              {treatedData?.map((a, i) => {
-                const {
-                  m_WorkOrderNo,
-                  m_ManufacturingFacility,
-                  m_MasterId,
-                  m_Branch,
-                  profileList,
-                  totalNeeded,
-                  totalWasted,
-                } = a;
-                // console.log(a);
+          {treatedData && (
+            <table
+              className={cn(
+                "table-xs table-hover table-clean mb-0 table border",
+                styles.itemTableBorder,
+              )}
+            >
+              <TableHeader
+                {...{
+                  columns,
+                  sort,
+                  setSort,
+                  className: styles.thead,
+                }}
+              />
+              <tbody>
+                {treatedData?.length > 0 ? (
+                  treatedData?.map((a, i) => {
+                    const {
+                      m_WorkOrderNo,
+                      m_ManufacturingFacility,
+                      m_MasterId,
+                      m_Branch,
+                      profileList,
+                      totalNeeded,
+                      totalWasted,
+                    } = a;
+                    // console.log(a);
 
-                return !_.isEmpty(profileList) ? (
-                  <React.Fragment key={m_MasterId}>
-                    <tr>
-                      <td>{m_WorkOrderNo}</td>
-                      <td>{m_ManufacturingFacility}</td>
-                      <td>{m_Branch}</td>
-                      <td className="text-right">
-                      (profiles) <b>{profileList?.length}</b>
-                      </td>
-                      <td className="text-right">
-                      (total) <b>{totalNeeded}</b>
-                      </td>
-                      <td className="text-right">
-                      (total) <b>{totalWasted}</b>
-                      </td>
-                    </tr>
-                    {profileList?.map((b, j) => {
-                      const { barProfileName, neededofBars, wastedofBars } = b;
-                      return (
-                        <tr
-                          key={j}
-                          className={cn(
-                            styles.subRow,
-                            j === profileList?.length - 1
-                              ? styles.subRowLast
-                              : "",
-                          )}
-                        >
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td>{barProfileName}</td>
-                          <td className="text-right">{neededofBars}</td>
-                          <td className="text-right">{wastedofBars}</td>
+                    return !_.isEmpty(profileList) ? (
+                      <React.Fragment key={m_MasterId}>
+                        <tr>
+                          <td>{m_WorkOrderNo}</td>
+                          <td>{m_ManufacturingFacility}</td>
+                          <td>{m_Branch}</td>
+                          <td className="text-right">
+                            (profiles) <b>{profileList?.length}</b>
+                          </td>
+                          <td className="text-right">
+                            (total) <b>{totalNeeded}</b>
+                          </td>
+                          <td className="text-right">
+                            (total) <b>{totalWasted}</b>
+                          </td>
                         </tr>
-                      );
-                    })}
-                  </React.Fragment>
+                        {profileList?.map((b, j) => {
+                          const { barProfileName, neededofBars, wastedofBars } =
+                            b;
+                          return (
+                            <tr
+                              key={j}
+                              className={cn(
+                                styles.subRow,
+                                j === profileList?.length - 1
+                                  ? styles.subRowLast
+                                  : "",
+                              )}
+                            >
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td>{barProfileName}</td>
+                              <td className="text-right">{neededofBars}</td>
+                              <td className="text-right">{wastedofBars}</td>
+                            </tr>
+                          );
+                        })}
+                      </React.Fragment>
+                    ) : (
+                      <tr className={cn(styles.subRowLast)}>
+                        <td>{m_WorkOrderNo}</td>
+                        <td>{m_ManufacturingFacility}</td>
+                        <td>{m_Branch}</td>
+                        <td
+                          colSpan={3}
+                          className="py-0 text-right"
+                          style={{
+                            verticalAlign: "middle",
+                          }}
+                        >
+                          No Data{" "}
+                          <button
+                            className="btn btn-success btn-sm ms-2"
+                            onClick={() =>
+                              handleGetWindowMaker(m_WorkOrderNo, m_MasterId)
+                            }
+                          >
+                            Get From Windowmaker
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
                 ) : (
-                  <tr className={cn(styles.subRowLast)}>
-                    <td>{m_WorkOrderNo}</td>
-                    <td>{m_ManufacturingFacility}</td>
-                    <td>{m_Branch}</td>
-                    <td
-                      colSpan={3}
-                      className="py-0 text-right"
-                      style={{
-                        verticalAlign: "middle",
-                      }}
-                    >
-                      No Data{" "}
-                      <button
-                        className="btn btn-success btn-sm ms-2"
-                        onClick={() =>
-                          handleGetWindowMaker(m_WorkOrderNo, m_MasterId)
-                        }
-                      >
-                        Get From Windowmaker
-                      </button>
-                    </td>
+                  <tr>
+                    <td colSpan={6} className="text-center">-- No Data --</td>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>
