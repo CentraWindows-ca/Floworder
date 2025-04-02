@@ -50,36 +50,35 @@ const Com = ({}) => {
     },
   ];
 
-  const endPoint = OrdersApi.initQueryWorkOrderHeaderWithPrefixAsync(
-    q
-      ? {
-          page: 0,
-          pageSize: 0,
-          filterGroup: conditions?.length
-            ? {
-                logicOp: "AND",
-                conditions: conditions?.filter((a) => a.value),
-              }
-            : undefined,
-          orderByItems: DEFAULT_SORT,
-          kind: "m",
-          isActive: 1,
-        }
-      : null,
-  );
+  const endPoint = q
+    ? OrdersApi.initQueryWorkOrderHeaderWithPrefixAsync({
+        page: 0,
+        pageSize: 0,
+        filterGroup: conditions?.length
+          ? {
+              logicOp: "AND",
+              conditions: conditions?.filter((a) => a.value),
+            }
+          : undefined,
+        orderByItems: DEFAULT_SORT,
+        kind: "m",
+        isActive: 1,
+      })
+    : null;
 
-  const endPointProfile = Prod2FFApi.initGetOptimizedBarAsync(
-    q
-      ? {
-          workOrderNo: q,
-        }
-      : null,
-  );
+  const endPointProfile = q
+    ? Prod2FFApi.initGetOptimizedBarAsync({
+        workOrderNo: q,
+      })
+    : null;
 
   // use swr
   const { data, error, mutate } = useDataInit(endPoint);
-  const { data: dataProfile, errorProfile, mutate: mutateProfile } =
-    useDataInit(endPointProfile);
+  const {
+    data: dataProfile,
+    errorProfile,
+    mutate: mutateProfile,
+  } = useDataInit(endPointProfile);
 
   const handleRefreshWorkOrderList = () => {
     mutate(null);
@@ -93,7 +92,7 @@ const Com = ({}) => {
         {...{
           data,
           dataProfile,
-          onRefresh: handleRefreshWorkOrderList
+          onRefresh: handleRefreshWorkOrderList,
         }}
       />
     </Framework>
