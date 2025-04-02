@@ -39,3 +39,38 @@
         background-color: $color_background_lightBlue;
     }
 }
+
+.thead {
+    top: 0px;
+}
+
+.itemTableBorder {
+    border-top: none;
+    border-collapse: separate;
+    border-spacing: 0;
+
+    tbody td {
+        border-right: 1px solid $color_border_table;
+        border-bottom: 1px solid $color_border_table;
+    }
+    tbody td:last-child {
+        border-right:none;
+    }
+
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
+}
+
+.subRow {
+    td {
+        // background-color: $color_background_lightBlue;
+        border-right: 1px solid transparent !important;
+        border-bottom: 1px solid $color_background_lightBlue !important;
+    }
+}
+.subRowLast {
+    td {
+        border-bottom: 1px solid $color_centraBlack !important;
+    }
+}

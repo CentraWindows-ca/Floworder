@@ -46,7 +46,7 @@ const Com = ({}) => {
               return (
                 <DisplayBlock id={id} key={id}>
                   <tr>
-                    <th>
+                    <th style={{whiteSpace: 'nowrap', width: '100px', paddingRight: '20px'}}>
                       <b>{title}</b>
                     </th>
                     <td>

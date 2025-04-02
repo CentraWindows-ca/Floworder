@@ -9,6 +9,7 @@ import Tooltip from "components/atom/Tooltip";
 import constants from "lib/constants";
 
 import OrdersApi from "lib/api/OrdersApi";
+import Prod2FFApi from "lib/api/Prod2FFApi";
 // components
 import PageContainer from "components/atom/PageContainer";
 // import Search from "components/molecule/bak_Search";
@@ -26,6 +27,7 @@ import useDataInit from "lib/hooks/useDataInit";
 
 // styles
 import styles from "./styles.module.scss";
+import useLoadingBar from "lib/hooks/useLoadingBar";
 
 const DEFAULT_SORT = [
   {
@@ -38,29 +40,7 @@ const Com = ({}) => {
   const router = useRouter();
 
   // ====== search
-  const [filters, setFilters] = useState({});
-  const [applyFilter, setApplyFilter] = useState(true);
-
-  const { q, p = 0 } = router?.query || {};
-
-  const defaultTab = "m";
-  const tabs = [
-    {
-      eventKey: "m",
-      title: "Master Orders",
-    },
-    {
-      eventKey: "w",
-      title: "Window Orders",
-    },
-    {
-      eventKey: "d",
-      title: "Door Orders",
-    },
-  ];
-
-  const filtersObj = {};
-  let sortArr = [];
+  const { q } = router?.query || {};
 
   const conditions = [
     {
@@ -73,8 +53,8 @@ const Com = ({}) => {
   const endPoint = OrdersApi.initQueryWorkOrderHeaderWithPrefixAsync(
     q
       ? {
-          page: (parseInt(p) || 0) + 1,
-          pageSize: 50,
+          page: 0,
+          pageSize: 0,
           filterGroup: conditions?.length
             ? {
                 logicOp: "AND",
@@ -88,16 +68,22 @@ const Com = ({}) => {
       : null,
   );
 
-  const endPointProfile = null
+  const endPointProfile = Prod2FFApi.initGetOptimizedBarAsync(
+    q
+      ? {
+          workOrderNo: q,
+        }
+      : null,
+  );
 
   // use swr
   const { data, error, mutate } = useDataInit(endPoint);
-  const { dataProfile, errorProfile, mutateProfile } = useDataInit(endPointProfile);
-  
+  const { data: dataProfile, errorProfile, mutate: mutateProfile } =
+    useDataInit(endPointProfile);
 
   const handleRefreshWorkOrderList = () => {
     mutate(null);
-    mutateProfile(null)
+    mutateProfile(null);
   };
 
   // ====== consts
@@ -107,6 +93,7 @@ const Com = ({}) => {
         {...{
           data,
           dataProfile,
+          onRefresh: handleRefreshWorkOrderList
         }}
       />
     </Framework>

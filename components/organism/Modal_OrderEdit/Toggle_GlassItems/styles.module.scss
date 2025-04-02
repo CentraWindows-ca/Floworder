@@ -16,6 +16,10 @@
 }
 
 .itemTableBorder {
+    border-top: none;
+    border-collapse: separate;
+    border-spacing: 0;
+
     tbody td {
         border-right: 1px solid $color_border_table;
         border-bottom: 1px solid $color_border_table;

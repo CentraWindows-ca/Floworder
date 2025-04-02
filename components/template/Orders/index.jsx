@@ -52,22 +52,6 @@ const Com = ({}) => {
     isDeleted,
   } = router?.query || {};
 
-  const defaultTab = "m";
-  const tabs = [
-    {
-      eventKey: "m",
-      title: "Master Orders",
-    },
-    {
-      eventKey: "w",
-      title: "Window Orders",
-    },
-    {
-      eventKey: "d",
-      title: "Door Orders",
-    },
-  ];
-
   const filtersObj = {};
   const sortObj = {};
   let sortArr = [];

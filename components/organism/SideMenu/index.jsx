@@ -13,19 +13,25 @@ const Com = (props) => {
   const router = useRouter();
   const status = router?.query?.status;
   const isDeleted = router?.query?.isDeleted;
-  const activeKey = router?.asPath?.split("?")?.[0]
+  const activeKey = router?.asPath?.split("?")?.[0];
 
   const handleClick = (v) => {
-    const newQuery = {
-      ...router.query,
-      status: v,
-    };
-    delete newQuery.p;
-    delete newQuery.isDeleted;
+    const currentPath = router?.asPath?.split("?")?.[0];
+    const targetPath = "/";
+    let newQuery = {};
+
+    if (currentPath === targetPath) {
+      newQuery = {
+        ...router.query,
+        status: v,
+      };
+      delete newQuery.p;
+      delete newQuery.isDeleted;
+    }
 
     router.replace(
       {
-        pathname: '/',
+        pathname: targetPath,
         query: newQuery,
       },
       undefined,
@@ -34,17 +40,21 @@ const Com = (props) => {
   };
 
   const handleTrash = (v) => {
-    const newQuery = {
-      ...router.query,
-      isDeleted: 1,
-    };
+    const currentPath = router?.asPath?.split("?")?.[0];
+    const targetPath = "/";
+    let newQuery = {};
+    if (currentPath === targetPath) {
+      newQuery = {
+        ...router.query,
+        isDeleted: 1,
+      };
 
-    delete newQuery.p;
-    delete newQuery.status;
-
+      delete newQuery.p;
+      delete newQuery.status;
+    }
     router.replace(
       {
-        pathname: '/',
+        pathname: targetPath,
         query: newQuery,
       },
       undefined,
@@ -53,8 +63,17 @@ const Com = (props) => {
   };
 
   const handleNavigate = (path) => {
-    router.push(path)
-  }
+    const currentPath = router?.asPath?.split("?")?.[0];
+
+    router.replace(
+      {
+        pathname: path,
+        query: {},
+      },
+      undefined,
+      { shallow: true },
+    );
+  };
 
   return (
     <div className={cn("w-full", styles.root)}>
@@ -65,7 +84,9 @@ const Com = (props) => {
               const { key, label } = a;
               let isActive = false;
               if (!isDeleted) {
-                isActive = activeKey === '/' && key?.toString() === (status?.toString() || "");
+                isActive =
+                  activeKey === "/" &&
+                  key?.toString() === (status?.toString() || "");
               }
 
               return (
@@ -90,22 +111,22 @@ const Com = (props) => {
             color: "#B0B0B0",
             icon: <i className="fa-solid fa-trash-can" />,
           }}
-          isActive={activeKey === '/' && !!isDeleted?.toString()}
+          isActive={activeKey === "/" && !!isDeleted?.toString()}
           onClick={() => {
             handleTrash();
           }}
         />
-        {/* <ItemSideMenu
+        <ItemSideMenu
           item={{
             label: "Profile Lookup",
             color: "#bd148a",
             icon: <i className="fa-solid fa-magnifying-glass" />,
           }}
-          isActive={activeKey === '/profileLookup'}
+          isActive={activeKey === "/profileLookup"}
           onClick={() => {
-            handleNavigate('/profileLookup');
+            handleNavigate("/profileLookup");
           }}
-        /> */}
+        />
       </div>
     </div>
   );

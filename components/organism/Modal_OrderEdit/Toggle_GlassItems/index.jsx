@@ -110,11 +110,6 @@ const Com = ({}) => {
           </div>
           <table
             className={cn("table-xs table-hover mb-0 table border table-clean", styles.itemTableBorder)}
-            style={{
-              borderTop: "none",
-              borderCollapse: "separate",
-              borderSpacing: 0,
-            }}
           >
             <TableHeader
               {...{

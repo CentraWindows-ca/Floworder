@@ -337,8 +337,6 @@ const Com = (props) => {
         d_CustomerDate,
       } = merged;
 
-      console.log();
-
       merged.m_Status_display = m_Status
         ? ORDER_STATUS?.find((a) => a.key.toString() === m_Status?.toString())
         : null;

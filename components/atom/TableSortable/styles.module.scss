@@ -20,10 +20,12 @@
     top: 0;
     z-index: 2;
     border-left: 1px solid $color_border_table;
+
     th,
     td {
         padding: 0px;
         background-color: $color_background_tableHeader;
+
         &>div {
             // border-right: 1px solid $color_border_table;
             background-color: $color_background_tableHeader;
@@ -59,6 +61,11 @@
 
     .tableTitle {
         transition: background-color 0.3s;
+        // min-height: 32px;
+        display: flex;
+        // padding-left: 5px;
+        align-items: center;
+        padding: 5px;
     }
 
     .sortableTitle {
@@ -77,6 +84,7 @@
 
 .isLockFirstColumn {
     border: 1px solid $color_border_table;
+
     .orderTable {
 
         th:first-child,

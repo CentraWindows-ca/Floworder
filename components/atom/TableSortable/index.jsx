@@ -173,7 +173,7 @@ export const TableHeader = ({
     <thead className={cn(styles.thead, className)}>
       <tr>
         {columns?.map((a) => {
-          const { title, key, width, initKey, isNotTitle } = a;
+          const { title, key, width, initKey, isNotTitle, isNotSortable } = a;
           const sortKey = initKey || key;
           return (
             <th key={key} style={{ width: width || "auto" }}>
@@ -181,11 +181,11 @@ export const TableHeader = ({
                 <div
                   className={cn(
                     styles.tableTitle,
-                    !!setSort && styles.sortableTitle,
+                    !!setSort && !isNotSortable && styles.sortableTitle,
                   )}
                 >
                   <span className={cn(styles.sortTitle)}>{title}</span>
-                  {setSort ? (
+                  {(!isNotSortable && setSort) ? (
                     <OrderByIcon
                       orderBy={sort}
                       col={sortKey}
