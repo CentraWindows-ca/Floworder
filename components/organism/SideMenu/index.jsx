@@ -13,9 +13,9 @@ const Com = (props) => {
   const router = useRouter();
   const status = router?.query?.status;
   const isDeleted = router?.query?.isDeleted;
+  const activeKey = router?.asPath?.split("?")?.[0]
 
   const handleClick = (v) => {
-    const pathname = router?.asPath?.split("?")?.[0];
     const newQuery = {
       ...router.query,
       status: v,
@@ -25,7 +25,7 @@ const Com = (props) => {
 
     router.replace(
       {
-        pathname,
+        pathname: '/',
         query: newQuery,
       },
       undefined,
@@ -34,7 +34,6 @@ const Com = (props) => {
   };
 
   const handleTrash = (v) => {
-    const pathname = router?.asPath?.split("?")?.[0];
     const newQuery = {
       ...router.query,
       isDeleted: 1,
@@ -45,7 +44,7 @@ const Com = (props) => {
 
     router.replace(
       {
-        pathname,
+        pathname: '/',
         query: newQuery,
       },
       undefined,
@@ -53,20 +52,24 @@ const Com = (props) => {
     );
   };
 
+  const handleNavigate = (path) => {
+    router.push(path)
+  }
+
   return (
     <div className={cn("w-full", styles.root)}>
       {ORDER_STATUS_AS_GROUP?.map((group, i) => {
         return (
-          <div className={cn(styles.statusGroups)} key = {`status_group_${i}`}>
+          <div className={cn(styles.statusGroups)} key={`status_group_${i}`}>
             {group?.map((a) => {
               const { key, label } = a;
               let isActive = false;
               if (!isDeleted) {
-                isActive = key?.toString() === (status?.toString() || "");
+                isActive = activeKey === '/' && key?.toString() === (status?.toString() || "");
               }
 
               return (
-                <Item
+                <ItemStatus
                   item={a}
                   key={key}
                   isActive={isActive}
@@ -79,22 +82,36 @@ const Com = (props) => {
           </div>
         );
       })}
-      <ItemTrash
-        item={{
-          label: "Trash Bin",
-          color: "",
-          icon: <i className="fa-solid fa-trash-can" />,
-        }}
-        isActive={!!isDeleted?.toString()}
-        onClick={() => {
-          handleTrash();
-        }}
-      />
+
+      <div className={cn(styles.statusGroups)}>
+        <ItemSideMenu
+          item={{
+            label: "Trash Bin",
+            color: "#B0B0B0",
+            icon: <i className="fa-solid fa-trash-can" />,
+          }}
+          isActive={activeKey === '/' && !!isDeleted?.toString()}
+          onClick={() => {
+            handleTrash();
+          }}
+        />
+        <ItemSideMenu
+          item={{
+            label: "Profile Lookup",
+            color: "#bd148a",
+            icon: <i className="fa-solid fa-magnifying-glass" />,
+          }}
+          isActive={activeKey === '/profileLookup'}
+          onClick={() => {
+            handleNavigate('/profileLookup');
+          }}
+        />
+      </div>
     </div>
   );
 };
 
-const Item = ({ onClick, item, isActive }) => {
+const ItemStatus = ({ onClick, item, isActive }) => {
   const { label, color, icon } = item;
 
   return (
@@ -118,7 +135,7 @@ const Item = ({ onClick, item, isActive }) => {
   );
 };
 
-const ItemTrash = ({ onClick, item, isActive }) => {
+const ItemSideMenu = ({ onClick, item, isActive }) => {
   const { label, color, icon } = item;
 
   return (
@@ -132,7 +149,7 @@ const ItemTrash = ({ onClick, item, isActive }) => {
             height: 15,
             width: 15,
             fontSize: "13px",
-            color: "#B0B0B0",
+            color,
           }}
           className="align-items-center flex"
         >

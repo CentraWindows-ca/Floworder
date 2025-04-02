@@ -19,7 +19,7 @@ import Modal_StatusUpdate from "components/organism/Modal_StatusUpdate";
 import Framework from "components/organism/Framework";
 import TabLinksFull from "components/atom/TabLinksFull";
 import SideMenu from "components/organism/SideMenu";
-import Panel_OrderManagement from "components/organism/Panel_OrderManagement";
+import Panel_ProfileLookup from "components/organism/Panel_ProfileLookup";
 
 // hooks
 import useDataInit from "lib/hooks/useDataInit";
@@ -40,17 +40,8 @@ const Com = ({}) => {
   // ====== search
   const [filters, setFilters] = useState({});
   const [applyFilter, setApplyFilter] = useState(true);
-  const [drawerOpen, handleToggleDrawer] = useState(true);
 
-  const {
-    status,
-    q,
-    p = 0,
-    facility,
-    tab = "m",
-    sort,
-    isDeleted,
-  } = router?.query || {};
+  const { q, p = 0 } = router?.query || {};
 
   const defaultTab = "m";
   const tabs = [
@@ -69,97 +60,57 @@ const Com = ({}) => {
   ];
 
   const filtersObj = {};
-  const sortObj = {};
   let sortArr = [];
 
-  if (q) {
-    filtersObj["m_WorkOrderNo"] = {
+  const conditions = [
+    {
       operator: constants.FILTER_OPERATOR.Contains,
       value: q,
-    };
-  }
-
-  if (facility) {
-    filtersObj[tab + "_ManufacturingFacility"] = {
-      operator: constants.FILTER_OPERATOR.Equals,
-      value: facility,
-    };
-  }
-
-  if (status) {
-    filtersObj[tab + "_Status"] = {
-      operator: constants.FILTER_OPERATOR.Equals,
-      value: status,
-    };
-  }
-
-  if (sort) {
-    sort?.split(",")?.map((sortKey) => {
-      const [field, dir] = sortKey?.split(":");
-      sortObj[field] = dir;
-    });
-
-    sortArr = _.keys(sortObj)?.map((k) => ({
-      field: k,
-      isDescending: sortObj[k]?.toLocaleLowerCase() === "desc",
-    }));
-  }
-
-  const conditions = [
-    ..._.keys(filtersObj)?.map((k) => {
-      return {
-        ...filtersObj[k],
-        field: k,
-      };
-    }),
-    ..._.keys(applyFilter ? filters : {})?.map((k) => {
-      return {
-        operator: constants.FILTER_OPERATOR.Contains,
-        value: filters[k],
-        field: k,
-      };
-    }),
+      field: "m_WorkOrderNo",
+    },
   ];
 
-  const endPoint = OrdersApi.initQueryWorkOrderHeaderWithPrefixAsync({
-    page: (parseInt(p) || 0) + 1,
-    pageSize: 50,
-    filterGroup: conditions?.length
+  const endPoint = OrdersApi.initQueryWorkOrderHeaderWithPrefixAsync(
+    q
       ? {
-          logicOp: "AND",
-          conditions: conditions?.filter((a) => a.value),
+          page: (parseInt(p) || 0) + 1,
+          pageSize: 50,
+          filterGroup: conditions?.length
+            ? {
+                logicOp: "AND",
+                conditions: conditions?.filter((a) => a.value),
+              }
+            : undefined,
+          orderByItems: DEFAULT_SORT,
+          kind: "m",
+          isActive: 1,
         }
-      : undefined,
-    orderByItems: _.isEmpty(sortArr) ? DEFAULT_SORT : sortArr,
-    kind: tab,
-    isActive: isDeleted ? 0 : 1,
-  });
+      : null,
+  );
+
+  const endPointProfile = null
 
   // use swr
   const { data, error, mutate } = useDataInit(endPoint);
+  const { dataProfile, errorProfile, mutateProfile } = useDataInit(endPointProfile);
+  
 
   const handleRefreshWorkOrderList = () => {
     mutate(null);
+    mutateProfile(null)
   };
-
 
   // ====== consts
   return (
-    <Framework onRefresh = {handleRefreshWorkOrderList}>
-      <Panel_OrderManagement
+    <Framework onRefresh={handleRefreshWorkOrderList}>
+      <Panel_ProfileLookup
         {...{
-          filters,
-          setFilters,
-          applyFilter,
-          setApplyFilter,
           data,
-          mutate,
-          sortObj,
+          dataProfile,
         }}
       />
     </Framework>
   );
 };
-
 
 export default Com;

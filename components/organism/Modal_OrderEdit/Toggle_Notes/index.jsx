@@ -39,21 +39,30 @@ const Com = ({}) => {
       )}
     >
       {collapsedList?.length > 0 ? (
-        collapsedList?.map((a) => {
-          const { id, title } = a;
-          return (
-            <DisplayBlock id={id} key={id}>
-              <div className="flex gap-2">
-                <b>[{title}]:</b>
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: data?.[id],
-                  }}
-                />
-              </div>
-            </DisplayBlock>
-          );
-        })
+        <table className="table bordered table-hover">
+          <tbody>
+            {collapsedList?.map((a) => {
+              const { id, title } = a;
+              return (
+                <DisplayBlock id={id} key={id}>
+                  <tr>
+                    <th>
+                      <b>{title}</b>
+                    </th>
+                    <td>
+                      <div
+                        className={cn(styles.notesText)}
+                        dangerouslySetInnerHTML={{
+                          __html: data?.[id],
+                        }}
+                      />
+                    </td>
+                  </tr>
+                </DisplayBlock>
+              );
+            })}{" "}
+          </tbody>
+        </table>
       ) : (
         <NoData title={`No Data`} className="hover:text-blue-600" />
       )}
@@ -77,7 +86,7 @@ const Com = ({}) => {
             value={data?.[id]}
             onChange={(v) => onChange(v, id)}
             disabled={!isEditable}
-            rows={2}
+            rows={3}
           />
         </div>
       </DisplayBlock>
