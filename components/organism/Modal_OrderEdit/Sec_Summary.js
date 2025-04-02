@@ -59,7 +59,18 @@ const WINDOW_LBR_FIELDS = [
     qty: "w__68VS",
     lbr: "w__68VSMin",
   },
+  {
+    title: "88SL",
+    qty: "w__88SL",
+    lbr: "w__88SLMin",
+  },
+  {
+    title: "88VS",
+    qty: "w__88VS",
+    lbr: "w__88VSMin",
+  },
 ];
+
 
 const Com = ({ className, ...props }) => {
   const { data, onChange, onHide } = useContext(LocalDataContext);

@@ -95,7 +95,7 @@ const Com = (props) => {
             handleTrash();
           }}
         />
-        <ItemSideMenu
+        {/* <ItemSideMenu
           item={{
             label: "Profile Lookup",
             color: "#bd148a",
@@ -105,7 +105,7 @@ const Com = (props) => {
           onClick={() => {
             handleNavigate('/profileLookup');
           }}
-        />
+        /> */}
       </div>
     </div>
   );
