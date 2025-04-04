@@ -111,6 +111,13 @@ const Screen1 = ({
     // check if exists
     const existingRecord = await OrdersApi.getIsExistByWOAsync({ workOrderNo });
     let _resList;
+
+    // NOTE: its possible exist in our db, but duplicate from WM
+    _resList = [
+      await External_FromApi.getWindowMakerWorkerOrder(workOrderNo, "WM_BC"),
+      await External_FromApi.getWindowMakerWorkerOrder(workOrderNo, "WM_AB"),
+    ]?.filter((a) => a?.data);
+
     if (existingRecord && existingRecord.dbSource) {
       //
       // get exist work order
@@ -131,11 +138,6 @@ const Screen1 = ({
 
       setWindowMakerData(res?.data);
     } else {
-      _resList = [
-        await External_FromApi.getWindowMakerWorkerOrder(workOrderNo, "WM_BC"),
-        await External_FromApi.getWindowMakerWorkerOrder(workOrderNo, "WM_AB"),
-      ]?.filter((a) => a?.data);
-
       if (_resList?.length === 1) {
         setWindowMakerData(_resList[0]?.data);
         setDbSource(WM_MAPPING[_resList[0]?.DBSource]);
