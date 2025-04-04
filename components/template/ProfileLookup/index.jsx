@@ -9,7 +9,7 @@ import Tooltip from "components/atom/Tooltip";
 import constants from "lib/constants";
 
 import OrdersApi from "lib/api/OrdersApi";
-import Prod2FFApi from "lib/api/Prod2FFApifix";
+import Prod2FFApi from "lib/api/Prod2FFApi";
 // components
 import PageContainer from "components/atom/PageContainer";
 // import Search from "components/molecule/bak_Search";

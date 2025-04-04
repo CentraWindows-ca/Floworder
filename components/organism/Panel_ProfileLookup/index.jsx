@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import cn from "classnames";
 import _ from "lodash";
 
-import Prod2FFApi from "lib/api/Prod2FFApifix";
+import Prod2FFApi from "lib/api/Prod2FFApi";
 
 import { TableHeader, TableWrapper } from "components/atom/TableSortable";
 
