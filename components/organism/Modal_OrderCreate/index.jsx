@@ -231,6 +231,13 @@ const Screen2 = ({
     constants.ManufacturingFacilities.Langley,
   );
 
+  const [doorManufacturingFacility, setDoorManufacturingFacility] = useState(
+    constants.ManufacturingFacilities.Langley,
+  );
+  const [windowManufacturingFacility, setWindowManufacturingFacility] = useState(
+    constants.ManufacturingFacilities.Calgary,
+  );
+
   const isWindow = !!(
     windowMakerData?.wmWindows || windowMakerData?.wmPatioDoors
   );
@@ -243,6 +250,10 @@ const Screen2 = ({
         doorStartDate: existingWorkOrder.d_ProductionStartDate,
       });
       setManufacturingFacility(existingWorkOrder.m_ManufacturingFacility);
+      setDoorManufacturingFacility(existingWorkOrder.d_ManufacturingFacility);
+      setWindowManufacturingFacility(existingWorkOrder.w_ManufacturingFacility);
+
+
     } else {
       setInitValues({});
 
