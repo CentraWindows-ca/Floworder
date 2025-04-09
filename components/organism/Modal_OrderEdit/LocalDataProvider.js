@@ -25,7 +25,7 @@ const STATUS = {
 
 export const LocalDataProvider = ({
   children,
-  initWorkOrder,
+  initWorkOrderNo,
   kind: initKind,
   facility,
   onSave,
@@ -37,7 +37,6 @@ export const LocalDataProvider = ({
 }) => {
   const generalContext = useContext(GeneralContext);
   const { toast } = generalContext;
-  const router = useRouter();
   const { requestData } = useInterrupt();
   const [data, setData] = useState(null);
 
@@ -66,10 +65,10 @@ export const LocalDataProvider = ({
   const [expands, setExpands] = useState({});
 
   useEffect(() => {
-    if (initWorkOrder) {
-      init(initWorkOrder);
+    if (initWorkOrderNo) {
+      doInit(initWorkOrderNo);
     }
-  }, [initWorkOrder, isDeleted]);
+  }, [initWorkOrderNo, isDeleted]);
 
   const handleChange = (v, k) => {
     setData((prev) => {
@@ -117,12 +116,12 @@ export const LocalDataProvider = ({
     setInitData(null);
   };
 
-  const init = async (initWorkOrderNo) => {
+  const doInit = async (initWorkOrderNo) => {
     setIsLoading(true);
     setData(null);
     setIsEditable(initIsEditable);
 
-    const mergedData = await initWo(initWorkOrderNo);
+    const mergedData = await doInitWo(initWorkOrderNo);
 
     if (mergedData) {
       if (initKind === "w" || getOrderKind(mergedData) === "w") {
@@ -173,7 +172,7 @@ export const LocalDataProvider = ({
     setIsLoading(false);
   };
 
-  const initWo = useLoadingBar(async (initWorkOrderNo) => {
+  const doInitWo = useLoadingBar(async (initWorkOrderNo) => {
     const [res] = await Wrapper_OrdersApi.getWorkOrder(
       initWorkOrderNo,
       isDeleted ? 0 : 1,
@@ -234,7 +233,7 @@ export const LocalDataProvider = ({
     await doMove(payload);
 
     toast("Status updated", { type: "success" });
-    await init(initWorkOrder);
+    await doInit(initWorkOrderNo);
     onSave();
   };
 
@@ -262,7 +261,7 @@ export const LocalDataProvider = ({
   };
 
   const doMove = useLoadingBar(async (payload) => {
-    await OrdersApi.updateWorkOrderStatus(payload);
+    await OrdersApi.updateWorkOrderStatus(null, payload, initData);
   });
 
   const doRestore = useLoadingBar(async () => {
@@ -271,7 +270,7 @@ export const LocalDataProvider = ({
     // change url string to delete isDelete
 
     toast("Work order restored", { type: "success" });
-    onRestore()
+    onRestore();
   });
 
   const doGetWindowMaker = useLoadingBar(async () => {
@@ -286,27 +285,39 @@ export const LocalDataProvider = ({
     const dbSource = data.m_DBSource;
     // fetch from WM
     if (dbSource === "WM_AB") {
-      await OrdersApi.updateOnly_AB_WMByWorkOrderAsync(null, {
-        workOrderNo: data?.m_WorkOrderNo,
-      });
+      await OrdersApi.updateOnly_AB_WMByWorkOrderAsync(
+        null,
+        {
+          workOrderNo: data?.m_WorkOrderNo,
+        },
+        initData,
+      );
     } else {
-      await OrdersApi.updateOnly_BC_WMByWorkOrderAsync(null, {
-        workOrderNo: data?.m_WorkOrderNo,
-      });
+      await OrdersApi.updateOnly_BC_WMByWorkOrderAsync(
+        null,
+        {
+          workOrderNo: data?.m_WorkOrderNo,
+        },
+        initData,
+      );
     }
 
-    await init(initWorkOrder);
+    await doInit(initWorkOrderNo);
     toast("Work order updated from WindowMaker", { type: "success" });
     onSave();
   });
 
   const doUpdateTransferredLocation = useLoadingBar(async () => {
     const m_TransferredLocation = data?.m_TransferredLocation;
-    await Wrapper_OrdersApi.updateWorkOrder(data, {
-      m_TransferredLocation,
-    });
+    await Wrapper_OrdersApi.updateWorkOrder(
+      data,
+      {
+        m_TransferredLocation,
+      },
+      initData,
+    );
 
-    await init(initWorkOrder);
+    await doInit(initWorkOrderNo);
     toast("Transfer location saved", { type: "success" });
     onSave();
   });
@@ -314,12 +325,16 @@ export const LocalDataProvider = ({
   const doUploadAttachment = useLoadingBar(async (_files) => {
     const awaitList = _files?.map((_f) => {
       const { file, notes } = _f;
-      return OrdersApi.uploadFileAsync({
-        masterId: data?.m_MasterId,
-        prodTypeId: constants.PROD_TYPES.m,
-        uploadingFile: file,
-        notes,
-      });
+      return OrdersApi.uploadFileAsync(
+        null,
+        {
+          masterId: data?.m_MasterId,
+          prodTypeId: constants.PROD_TYPES.m,
+          uploadingFile: file,
+          notes,
+        },
+        initData,
+      );
     });
 
     await Promise.all(awaitList);
@@ -329,10 +344,14 @@ export const LocalDataProvider = ({
 
   const doDeleteAttachment = useLoadingBar(async (_file) => {
     if (!confirm(`Delete ${_file.fileName}?`)) return null;
-    await OrdersApi.deleteUploadFileByIdAsync({
-      id: _file.id,
-      masterId: data?.m_MasterId,
-    });
+    await OrdersApi.deleteUploadFileByIdAsync(
+      {
+        id: _file.id,
+        masterId: data?.m_MasterId,
+      },
+      null,
+      initData,
+    );
 
     toast("File deleted", { type: "success" });
     await initAttachmentList(data?.m_MasterId);
@@ -341,12 +360,16 @@ export const LocalDataProvider = ({
   const doUploadImage = useLoadingBar(async (_files) => {
     const awaitList = _files?.map((_f) => {
       const { file, notes } = _f;
-      return OrdersApi.uploadImageAsync({
-        masterId: data?.m_MasterId,
-        prodTypeId: constants.PROD_TYPES.m,
-        uploadingFile: file,
-        notes,
-      });
+      return OrdersApi.uploadImageAsync(
+        null,
+        {
+          masterId: data?.m_MasterId,
+          prodTypeId: constants.PROD_TYPES.m,
+          uploadingFile: file,
+          notes,
+        },
+        initData,
+      );
     });
 
     await Promise.all(awaitList);
@@ -357,10 +380,14 @@ export const LocalDataProvider = ({
 
   const doDeleteImage = useLoadingBar(async (_file) => {
     if (!confirm(`Delete ${_file.fileName}?`)) return null;
-    await OrdersApi.deleteUploadImageByIdAsync({
-      id: _file.id,
-      masterId: data?.m_MasterId,
-    });
+    await OrdersApi.deleteUploadImageByIdAsync(
+      {
+        id: _file.id,
+        masterId: data?.m_MasterId,
+      },
+      null,
+      initData,
+    );
 
     toast("Image deleted", { type: "success" });
     await initImageList(data?.m_MasterId);
@@ -379,32 +406,47 @@ export const LocalDataProvider = ({
       changedData.d_ProductionEndDate = changedData.d_ProductionStartDate;
     }
 
-    await Wrapper_OrdersApi.updateWorkOrder(data, changedData);
+    await Wrapper_OrdersApi.updateWorkOrder(data, changedData, initData);
     toast("Work order saved", { type: "success" });
-    await initWo(initWorkOrder);
+    await doInitWo(initWorkOrderNo);
     onSave();
   });
 
   const doUpdateWindowItem = useLoadingBar(async (Id, item, initItem) => {
     if (_.isEmpty(item)) return null;
-    await Wrapper_OrdersApi.updateWindowItem(initItem?.MasterId, Id, item);
+    await Wrapper_OrdersApi.updateWindowItem(
+      initItem?.MasterId,
+      Id,
+      item,
+      initData,
+    );
 
     toast("Item saved", { type: "success" });
-    await initItems(initWorkOrder);
+    await initItems(initWorkOrderNo);
   });
 
   const doUpdateDoorItem = useLoadingBar(async (Id, item, initItem) => {
     if (_.isEmpty(item)) return null;
-    await Wrapper_OrdersApi.updateDoorItem(initItem?.MasterId, Id, item);
+    await Wrapper_OrdersApi.updateDoorItem(
+      initItem?.MasterId,
+      Id,
+      item,
+      initData,
+    );
     toast("Item saved", { type: "success" });
-    await initItems(initWorkOrder);
+    await initItems(initWorkOrderNo);
   });
 
   const doBatchUpdateItems = useLoadingBar(async (updateList, kind) => {
     if (_.isEmpty(updateList)) return null;
-    await Wrapper_OrdersApi.updateItemList(data?.m_MasterId, updateList, kind);
+    await Wrapper_OrdersApi.updateItemList(
+      data?.m_MasterId,
+      updateList,
+      kind,
+      initData,
+    );
     toast("Items saved", { type: "success" });
-    await initItems(initWorkOrder);
+    await initItems(initWorkOrderNo);
     return;
   });
 
@@ -430,7 +472,7 @@ export const LocalDataProvider = ({
     ...generalContext,
     ...props,
     isLoading,
-    initWorkOrder,
+    initWorkOrderNo,
     data,
     kind,
     facility,

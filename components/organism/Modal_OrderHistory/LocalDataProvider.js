@@ -17,7 +17,7 @@ export const LocalDataContext = createContext(null);
 
 export const LocalDataProvider = ({
   children,
-  initWorkOrder,
+  initWorkOrderNo,
   kind: initKind,
   facility,
   onSave,
@@ -32,10 +32,10 @@ export const LocalDataProvider = ({
 
   // only display. upload/delete will directly call function
   useEffect(() => {
-    if (initWorkOrder) {
-      init(initWorkOrder);
+    if (initWorkOrderNo) {
+      init(initWorkOrderNo);
     }
-  }, [initWorkOrder]);
+  }, [initWorkOrderNo]);
 
   // ====== api calls
   const clear = () => {
@@ -66,7 +66,7 @@ export const LocalDataProvider = ({
     ...generalContext,
     ...props,
     isLoading,
-    initWorkOrder,
+    initWorkOrderNo,
     data,
     setData,
     onHide

@@ -332,7 +332,7 @@ const Com = ({
         onHide={() => handleEdit()}
         onSave={handleSaveDone}
         onRestore={handleRestoreDone}
-        initWorkOrder={editingOrder}
+        initWorkOrderNo={editingOrder}
         isDeleted={isDeleted == 1}
         kind={tab}
         facility={facility}
@@ -344,7 +344,7 @@ const Com = ({
         onHide={() => setIsShowCreate(false)}
       />
       <Modal_OrderHistory
-        initWorkOrder={historyOrder}
+        initWorkOrderNo={historyOrder}
         onHide={() => handleHistory()}
       />
     </div>

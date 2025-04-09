@@ -51,7 +51,7 @@ const Com = ({}) => {
   ];
 
   const endPoint = q
-    ? OrdersApi.initQueryWorkOrderHeaderWithPrefixAsync({
+    ? OrdersApi.initQueryWorkOrderHeaderWithPrefixAsync(null, {
         page: 0,
         pageSize: 0,
         filterGroup: conditions?.length

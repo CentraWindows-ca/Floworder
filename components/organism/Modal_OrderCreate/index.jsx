@@ -295,14 +295,14 @@ const Screen2 = ({
         resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
         manufacturingFacility,
         ...updateValues,
-      });
+      }, existingWorkOrder);
     } else {
       await OrdersApi.sync_BC_WindowMakerByWorkOrderAsync(null, {
         workOrderNo,
         resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
         manufacturingFacility,
         ...updateValues,
-      });
+      }, existingWorkOrder);
     }
 
     // update init values

@@ -126,13 +126,10 @@ const Com = ({ data, dataProfile, onRefresh }) => {
     );
   };
 
-  const handleGetWindowMaker = useLoadingBar(async (workOrderNo, masterId) => {
+  const handleGetWindowMaker = useLoadingBar(async (ref) => {
     if (!confirm(`Are you going to get window maker for [${workOrderNo}]?`))
       return;
-    await Prod2FFApi.sync_optimized_Bar_Async({
-      workOrderNo,
-      masterId,
-    });
+    await Prod2FFApi.sync_optimized_Bar_Async(ref);
 
     onRefresh();
   });
@@ -267,8 +264,9 @@ const Com = ({ data, dataProfile, onRefresh }) => {
                           <button
                             className="btn btn-success btn-sm ms-2"
                             onClick={() =>
-                              handleGetWindowMaker(m_WorkOrderNo, m_MasterId)
+                              handleGetWindowMaker(a)
                             }
+                            type="button"
                           >
                             Get From Windowmaker
                           </button>

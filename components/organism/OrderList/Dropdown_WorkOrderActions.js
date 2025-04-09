@@ -6,6 +6,7 @@ import {
   DeleteOutlined,
   HistoryOutlined,
   SyncOutlined,
+  UndoOutlined
 } from "@ant-design/icons";
 
 import { Button } from "antd";
@@ -112,8 +113,18 @@ const WorkOrderActions = ({
       return null;
     }
 
-    await OrdersApi.softDeleteProductionsWorkOrder(data);
+    await OrdersApi.softDeleteProductionsWorkOrder(null, null, data);
     toast("Work order moved to trash bin", { type: "success" });
+    onUpdate();
+  });
+
+  const handleUndoDelete = useLoadingBar(async () => {
+    if (!window.confirm(`Are you sure to delete [${data?.m_WorkOrderNo}]?`)) {
+      return null;
+    }
+
+    await OrdersApi.undoSoftDeleteProductionsWorkOrder(null, null, data);
+    toast("Work order restored", { type: "success" });
     onUpdate();
   });
 
@@ -126,7 +137,7 @@ const WorkOrderActions = ({
       return null;
     }
 
-    await OrdersApi.hardDeleteProductionsWorkOrder(data);
+    await OrdersApi.hardDeleteProductionsWorkOrder(null, data, data);
     toast("Work order deleted permenantly", { type: "success" });
     onUpdate();
   });
@@ -146,11 +157,11 @@ const WorkOrderActions = ({
     if (dbSource === "WM_AB") {
       await OrdersApi.updateOnly_AB_WMByWorkOrderAsync(null, {
         workOrderNo: data?.m_WorkOrderNo,
-      });
+      }, data);
     } else {
       await OrdersApi.updateOnly_BC_WMByWorkOrderAsync(null, {
         workOrderNo: data?.m_WorkOrderNo,
-      });
+      }, data);
     }
 
     toast("Work order updated from WindowMaker", { type: "success" });
@@ -158,7 +169,7 @@ const WorkOrderActions = ({
   });
 
   const doMove = useLoadingBar(async (payload) => {
-    await OrdersApi.updateWorkOrderStatus(payload);
+    await OrdersApi.updateWorkOrderStatus(null, payload, data);
   });
 
   const actionsActive = (
@@ -283,6 +294,10 @@ const WorkOrderActions = ({
     <div className={cn(styles.workorderActionsContainer)}>
       <Button type="text" icon={<EyeOutlined />} onClick={onView}>
         View Order
+      </Button>
+
+      <Button type="text" icon={<UndoOutlined />} onClick={handleUndoDelete}>
+        Undo Order Deletion
       </Button>
       <PermissionBlock
         featureCode={constants.FEATURE_CODES["om.prod.wo"]}
