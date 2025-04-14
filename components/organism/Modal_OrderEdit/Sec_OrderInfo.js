@@ -54,20 +54,14 @@ const COMMON_FIELDS = constants.applyField([
     options: constants.WorkOrderSelectOptions.project,
   },
   {
-    Component: Editable.EF_SelectWithLabel,
-    id: "m_SalesRep",
+    Component: Editable.EF_SelectEmployee,
+    id: "m_SalesRepKeyAccount",
     placeholder: "-",
-    options: (dictionary) =>
-      dictionary?.salesRepsList?.map((a) => {
-        const { name: salesRepName, department, email } = a;
-
-        // some email empty. cant use it as reliable value
-        return {
-          label: salesRepName,
-          value: salesRepName,
-          key: salesRepName,
-        };
-      }),
+    overrideOnChange: (onChange, params) => {
+      const [ v, id, o ] = params;
+      onChange(v, "m_SalesRepKeyAccount");
+      onChange(o?.[0]?.name, "m_SalesRep");
+    },
   },
 ]);
 

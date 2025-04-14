@@ -35,8 +35,15 @@ const COMMON_FIELDS = constants.applyField([
     rows: 1,
   },
   {
-    Component: Editable.EF_Input,
+    Component: Editable.EF_SelectEmployee,
     id: "m_ProjectManager",
+    placeholder: "-",
+    group: "projectManagerList",
+    overrideOnChange: (onChange, params) => {
+      const [v, id, o] = params;
+      onChange(v, "m_ProjectManager");
+      onChange(o?.[0]?.name, "m_ProjectManagerName");
+    },
   },
   {
     Component: Editable.EF_Input,
@@ -75,7 +82,8 @@ const Com = ({}) => {
   return (
     <div className={cn(styles.columnInputsContainer)}>
       {COMMON_FIELDS?.map((a, i) => {
-        const { id, Component, title, ...rest } = a;
+        const { id, Component, title, overrideOnChange, ...rest } = a;
+
         return (
           <DisplayBlock id={id} key={id}>
             <label>{title}</label>
@@ -83,7 +91,13 @@ const Com = ({}) => {
               <Component
                 id={id}
                 value={data?.[id] || ""}
-                onChange={(v) => onChange(v, id)}
+                onChange={(v, ...o) => {
+                  if (typeof overrideOnChange === "function") {
+                    overrideOnChange(onChange, [v, ...o]);
+                  } else {
+                    onChange(v, id);
+                  }
+                }}
                 disabled={!isEditable}
                 {...rest}
               />

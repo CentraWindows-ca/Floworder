@@ -29,7 +29,7 @@ export const EF_Date = React.memo(
       if (!str) return;
 
       // str is in local time, e.g., "2025-03-26T00:00:00"
-      const utcStr = utils.datetimeFromLocalToUTC(str)
+      const utcStr = utils.datetimeFromLocalToUTC(str);
       onChange(utcStr);
     };
 
@@ -370,6 +370,46 @@ export const EF_Rack = React.memo(
   preventUpdate,
 );
 
+export const EF_SelectEmployee = React.memo(
+  ({
+    id,
+    value = null,
+    onChange,
+    placeholder,
+    className,
+    size = "md",
+    options = [], // prevent override
+    isDisplayAvilible = true,
+    group = 'salesRepsList', 
+    ...props
+  }) => {
+    const { dictionary } = useContext(GeneralContext);
+    return (
+      <Typeahead
+        className={cn(className)}
+        labelKey="label"
+        valueKey="value"
+        size={size}
+        id={id}
+        onChange={(v, o) => {
+          onChange(v, id, o);
+        }}
+        value={value}
+        placeholder={placeholder}
+        options={dictionary?.[group]
+          ?.sort((a, b) => (a.name > b.name ? 1 : -1))
+          ?.map((o) => ({
+            ...o,
+            label: `${o.name || "--"}`,
+            value: o.id,
+          }))}
+        {...props}
+      />
+    );
+  },
+  preventUpdate,
+);
+
 export const EF_Community = React.memo(
   ({
     id,
@@ -389,7 +429,11 @@ export const EF_Community = React.memo(
       <>
         <div className="input-group w-full" title={value}>
           <input className="form-control" value={value || ""} disabled={true} />
-          <button className="btn btn-secondary" onClick={() => setShow(true)} disabled={disabled}>
+          <button
+            className="btn btn-secondary"
+            onClick={() => setShow(true)}
+            disabled={disabled}
+          >
             <i className="fa-solid fa-magnifying-glass"></i>
           </button>
         </div>
@@ -414,6 +458,7 @@ export const Editable = {
   EF_Date,
   EF_Select,
   EF_SelectWithLabel,
+  EF_SelectEmployee,
   EF_MultiSelect,
   EF_Input,
   EF_InputDebounce,
