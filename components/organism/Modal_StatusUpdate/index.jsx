@@ -64,6 +64,7 @@ const Com = ({ missingFields, onSubmit, onCancel, isPaused, data }) => {
             </label>
             <div className="col-lg-6">
               <Editable.EF_Date
+                id="transferredDate"
                 k="transferredDate"
                 value={values?.transferredDate}
                 onChange={(v) =>
@@ -80,6 +81,7 @@ const Com = ({ missingFields, onSubmit, onCancel, isPaused, data }) => {
             <div className="col-lg-6">
               <Editable.EF_Date
                 k="shippedDate"
+                id="shippedDate"
                 value={values?.shippedDate}
                 onChange={(v) =>
                   setValues((prev) => ({ ...prev, ["shippedDate"]: v }))

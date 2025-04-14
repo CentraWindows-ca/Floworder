@@ -70,9 +70,8 @@ const DOOR_FIELDS = constants.applyField([
   },
 ]);
 
-const Com = ({  }) => {
-  const {  kind, uiOrderType } =
-    useContext(LocalDataContext);
+const Com = ({}) => {
+  const { kind, uiOrderType } = useContext(LocalDataContext);
 
   const [doorInputs, setDoorInputs] = useState(null);
   const [windowInputs, setWindowInputs] = useState(null);
@@ -105,7 +104,7 @@ const Com = ({  }) => {
       {!_.isEmpty(windowInputs) && (
         <>
           <div className={styles.subTitle}>
-            <label >Window</label>
+            <label>Window</label>
           </div>
           <div className={cn(styles.columnInputsContainer)}>
             {windowInputs?.map((a) => {
@@ -119,7 +118,7 @@ const Com = ({  }) => {
       {!_.isEmpty(doorInputs) && (
         <>
           <div className={styles.subTitle}>
-            <label >Door</label>
+            <label>Door</label>
           </div>
           <div className={cn(styles.columnInputsContainer)}>
             {doorInputs?.map((a) => {
@@ -144,6 +143,7 @@ const DisplayDate = ({ id, title }) => {
       <div className="justify-content-end align-items-center flex">
         <Editable.EF_Date
           k={id}
+          id={id}
           value={data?.[id]}
           onChange={(v) => onChange(v, id)}
           disabled={!isEditable}

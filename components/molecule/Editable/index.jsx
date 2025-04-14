@@ -34,7 +34,7 @@ export const EF_Date = React.memo(
     };
 
     // Convert UTC string to local time string in same format
-    const localValue = utils.datetimeFromUTCToLocal(value);
+    const localValue = utils.datetimeFromUTCToLocal(value, id);
 
     return (
       <Datepicker
