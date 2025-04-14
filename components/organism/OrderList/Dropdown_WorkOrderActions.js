@@ -16,6 +16,7 @@ import { useInterrupt } from "lib/provider/InterruptProvider";
 import cn from "classnames";
 import _ from "lodash";
 import OrdersApi from "lib/api/OrdersApi";
+import WM2CWProdApi from "lib/api/WM2CWProdApi"
 import Dropdown_Custom from "components/atom/Dropdown_Custom";
 import PermissionBlock from "components/atom/PermissionBlock";
 
@@ -155,11 +156,11 @@ const WorkOrderActions = ({
     const dbSource = data.m_DBSource;
     // fetch from WM
     if (dbSource === "WM_AB") {
-      await OrdersApi.updateOnly_AB_WMByWorkOrderAsync(null, {
+      await WM2CWProdApi.updateOnly_AB_WMByWorkOrderAsync(null, {
         workOrderNo: data?.m_WorkOrderNo,
       }, data);
     } else {
-      await OrdersApi.updateOnly_BC_WMByWorkOrderAsync(null, {
+      await WM2CWProdApi.updateOnly_BC_WMByWorkOrderAsync(null, {
         workOrderNo: data?.m_WorkOrderNo,
       }, data);
     }

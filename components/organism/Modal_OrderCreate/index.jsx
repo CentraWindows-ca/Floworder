@@ -7,6 +7,7 @@ import _ from "lodash";
 import Modal from "components/molecule/Modal";
 import LoadingBlock from "components/atom/LoadingBlock";
 import OrdersApi from "lib/api/OrdersApi";
+import WM2CWProdApi from "lib/api/WM2CWProdApi";
 import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
 import External_FromApi from "lib/api/External_FromApi";
 
@@ -288,16 +289,18 @@ const Screen2 = ({
       }
     }
 
+    let res = null
+
     // fetch from WM
     if (dbSource === "WM_AB") {
-      await OrdersApi.sync_AB_WindowMakerByWorkOrderAsync(null, {
+      res = await WM2CWProdApi.sync_AB_WindowMakerByWorkOrderAsync(null, {
         workOrderNo,
         resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
         manufacturingFacility,
         ...updateValues,
       }, existingWorkOrder);
     } else {
-      await OrdersApi.sync_BC_WindowMakerByWorkOrderAsync(null, {
+      res = await WM2CWProdApi.sync_BC_WindowMakerByWorkOrderAsync(null, {
         workOrderNo,
         resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
         manufacturingFacility,
@@ -308,7 +311,8 @@ const Screen2 = ({
     // update init values
     setInitValues({});
     setIsLoading(false);
-    onCreate(workOrderNo);
+
+    onCreate(res?.masterId);
   };
 
   return (

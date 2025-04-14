@@ -17,7 +17,7 @@ export const LocalDataContext = createContext(null);
 
 export const LocalDataProvider = ({
   children,
-  initWorkOrderNo,
+  initMasterId,
   kind: initKind,
   facility,
   onSave,
@@ -32,25 +32,24 @@ export const LocalDataProvider = ({
 
   // only display. upload/delete will directly call function
   useEffect(() => {
-    if (initWorkOrderNo) {
-      init(initWorkOrderNo);
+    if (initMasterId) {
+      init(initMasterId);
     }
-  }, [initWorkOrderNo]);
+  }, [initMasterId]);
 
   // ====== api calls
   const clear = () => {
     setData(null);
   };
 
-  const init = async (initWorkOrderNo) => {
+  const init = async (initMasterId) => {
     setIsLoading(true);
     setData(null);
     // fetch data
-    const res =  await Wrapper_OrdersApi.getWorkOrderHistory(initWorkOrderNo);
-
-    if (res) {
+    const res =  await Wrapper_OrdersApi.getWorkOrderHistory(initMasterId);
+    if (res?.data) {
       setData(
-        res.map((a) => {
+        res?.data.map((a) => {
           return {
             ...a,
             CreatedAt: utils.formatDate(a.CreatedAt),
@@ -66,7 +65,7 @@ export const LocalDataProvider = ({
     ...generalContext,
     ...props,
     isLoading,
-    initWorkOrderNo,
+    initMasterId,
     data,
     setData,
     onHide

@@ -44,7 +44,6 @@ const Com = ({}) => {
 
   const {
     status,
-    q,
     p = 0,
     facility,
     tab = "m",
@@ -55,13 +54,6 @@ const Com = ({}) => {
   const filtersObj = {};
   const sortObj = {};
   let sortArr = [];
-
-  if (q) {
-    filtersObj["m_WorkOrderNo"] = {
-      operator: constants.FILTER_OPERATOR.Contains,
-      value: q,
-    };
-  }
 
   if (facility) {
     filtersObj[tab + "_ManufacturingFacility"] = {

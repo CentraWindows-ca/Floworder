@@ -71,6 +71,24 @@ const WINDOW_LBR_FIELDS = [
   },
 ];
 
+const DOOR_LBR_FIELDS = [
+  {
+    title: "REDR",
+    qty: "d__REDR",
+    lbr: "d__REDRMin",
+  },
+  // its bought, no need here
+  // {
+  //   title: "REDR",
+  //   qty: "d__CDLD",
+  //   lbr: "d__CDLDMin",
+  // },
+  // {
+  //   title: "REDR",
+  //   qty: "d__RESD",
+  //   lbr: "d__RESDMin",
+  // }
+];
 
 const Com = ({ className, ...props }) => {
   const { data, onChange, onHide } = useContext(LocalDataContext);
@@ -82,9 +100,8 @@ const Com = ({ className, ...props }) => {
     (data["m_NumberOfPatioDoors"] || 0) +
     (data["m_NumberOfDoors"] || 0) +
     (data["m_NumberOfOthers"] || 0) +
-    (data["m_NumberOfSwingDoors"] || 0)
-    
-    ;
+    (data["m_NumberOfSwingDoors"] || 0);
+
   const totalGlassQty =
     (data["w_TotalGlassQty"] || 0) + (data["d_TotalGlassQty"] || 0);
 
@@ -106,6 +123,7 @@ const Com = ({ className, ...props }) => {
         TotalGlassQty: data.w_TotalGlassQty,
         TotalBoxQty: data.w_TotalBoxQty,
         TotalLBRMin: data.w_TotalLBRMin,
+        TotalPrice: data.w_TotalPrice,
       },
       numbers: [
         {
@@ -125,6 +143,7 @@ const Com = ({ className, ...props }) => {
         TotalGlassQty: data.d_TotalGlassQty,
         TotalBoxQty: data.d_TotalBoxQty,
         TotalLBRMin: data.d_TotalLBRMin,
+        TotalPrice: data.d_TotalPrice,
       },
       numbers: [
         {
@@ -181,7 +200,14 @@ const Com = ({ className, ...props }) => {
                     return (
                       <tr key={label}>
                         <th>{label}</th>
-                        <td>--</td>
+                        {j === 0 && (
+                          <>
+                            <td rowSpan={colSpan}>
+                              ${utils.formatCurrency2Decimal(prd.otherFields?.TotalPrice)}
+                            </td>
+                          </>
+                        )}
+
                         <td>{displayNumber}</td>
                         {j === 0 && (
                           <>
@@ -221,7 +247,7 @@ const Com = ({ className, ...props }) => {
         <div>
           <div className={styles.summaryLaborsTitle}>LBR Breakdown:</div>
           <div className={styles.summaryLaborsContainer}>
-            {WINDOW_LBR_FIELDS?.map((a) => {
+            {[...WINDOW_LBR_FIELDS, ...DOOR_LBR_FIELDS]?.map((a) => {
               const { title, qty, lbr } = a;
               if (!data[qty] && !data[lbr]) {
                 return null;
@@ -267,35 +293,6 @@ const Com = ({ className, ...props }) => {
           </div>
         </div>
       </div>
-
-      {/* <div className={cn(styles.columnSummaryContainer)}>
-        {COMMON_FIELDS?.map((a) => {
-          return <Block key={a.id} inputData={a} />;
-        })}
-      </div>
-      <DisplayBlock displayAs={"w"}>
-        <div className={styles.subTitle}>
-          <label>Window</label>
-        </div>
-        <div className={cn(styles.columnSummaryContainer)}>
-          {WINDOW_FIELDS?.map((a) => {
-            return <Block key={a.id} inputData={a} />;
-          })}
-          {WINDOW_LBR_FIELDS?.map((a) => {
-            return <Block key={a.id} inputData={a} />;
-          })}
-        </div>
-      </DisplayBlock>
-      <DisplayBlock displayAs={"d"}>
-        <div className={styles.subTitle}>
-          <label>Door</label>
-        </div>
-        <div className={cn(styles.columnSummaryContainer)}>
-          {DOOR_FIELDS?.map((a) => {
-            return <Block key={a.id} inputData={a} />;
-          })}
-        </div>
-      </DisplayBlock> */}
     </>
   );
 };

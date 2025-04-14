@@ -31,7 +31,7 @@ const Com = ({
   const {
     facility,
     tab = "m",
-    order,
+    masterId, 
     modalType,
     sort,
     status,
@@ -41,10 +41,10 @@ const Com = ({
   const [treatedData, setTreatedData] = useState({});
   const [isShowCreate, setIsShowCreate] = useState(false);
 
-  const [editingOrder, setEditingOrder] = useState(null);
+  const [editingOrderMasterId, setEditingOrderMasterId] = useState(null);
   const [isEditable, setIsEditable] = useState(false);
 
-  const [historyOrder, setHistoryOrder] = useState(null);
+  const [historyOrderMasterId, setHistoryOrderMasterId] = useState(null);
 
   const [uiIsShowWindow, setUiIsShowWindow] = useState(true);
   const [uiIsShowDoor, setUiIsShowDoor] = useState(true);
@@ -52,23 +52,23 @@ const Com = ({
   useEffect(() => {
     switch (modalType) {
       case "edit":
-        setEditingOrder(order);
+        setEditingOrderMasterId(masterId);
         setIsEditable(true);
         break;
       case "view":
-        setEditingOrder(order);
+        setEditingOrderMasterId(masterId);
         setIsEditable(false);
         break;
       case "history":
-        setHistoryOrder(order);
+        setHistoryOrderMasterId(masterId);
         break;
       default:
-        setEditingOrder(null);
-        setHistoryOrder(null);
+        setEditingOrderMasterId(null);
+        setHistoryOrderMasterId(null);
         setIsEditable(false);
         break;
     }
-  }, [order, modalType]);
+  }, [masterId, modalType]);
 
   useEffect(() => {
     if (data) {
@@ -80,18 +80,17 @@ const Com = ({
     return data;
   };
 
-  const handleEdit = (order, isEdit, activeOnly = false) => {
-    // setEditingOrder(order);
+  const handleEdit = (masterId, isEdit, activeOnly = false) => {
     const pathname = router?.asPath?.split("?")?.[0];
 
     const query = {
       ...router.query,
-      order,
+      masterId,
       modalType: isEdit ? "edit" : "view",
     };
 
-    if (!order) {
-      delete query.order;
+    if (!masterId) {
+      delete query.masterId;
       delete query.modalType;
     }
 
@@ -110,17 +109,16 @@ const Com = ({
     );
   };
 
-  const handleHistory = (order) => {
-    // setEditingOrder(order);
+  const handleHistory = (masterId) => {
     const pathname = router?.asPath?.split("?")?.[0];
 
     const query = {
       ...router.query,
-      order,
+      masterId,
       modalType: "history",
     };
-    if (!order) {
-      delete query.order;
+    if (!masterId) {
+      delete query.masterId;
       delete query.modalType;
     }
 
@@ -164,9 +162,9 @@ const Com = ({
     setIsShowCreate(true);
   };
 
-  const handleCreateDone = async (m_WorkOrderNo) => {
-    // jump to the order and not deleted
-    handleEdit(m_WorkOrderNo, true, true);
+  const handleCreateDone = async (masterId) => {
+    // jump to the masterId and not deleted
+    handleEdit(masterId, true, true);
     mutate(null);
     // endPoint
   };
@@ -303,9 +301,9 @@ const Com = ({
       <div className={cn(styles.detail)}>
         <OrderList
           kind={tab}
-          onEdit={(wo) => handleEdit(wo, true)}
-          onView={(wo) => handleEdit(wo, false)}
-          onHistory={(wo) => handleHistory(wo)}
+          onEdit={(woMasterId) => handleEdit(woMasterId, true)}
+          onView={(woMasterId) => handleEdit(woMasterId, false)}
+          onHistory={(woMasterId) => handleHistory(woMasterId)}
           onUpdate={handleSaveDone}
           isLoading={!data}
           status={status}
@@ -332,7 +330,7 @@ const Com = ({
         onHide={() => handleEdit()}
         onSave={handleSaveDone}
         onRestore={handleRestoreDone}
-        initWorkOrderNo={editingOrder}
+        initMasterId = {editingOrderMasterId}
         isDeleted={isDeleted == 1}
         kind={tab}
         facility={facility}
@@ -344,7 +342,7 @@ const Com = ({
         onHide={() => setIsShowCreate(false)}
       />
       <Modal_OrderHistory
-        initWorkOrderNo={historyOrder}
+        initMasterId = {historyOrderMasterId}
         onHide={() => handleHistory()}
       />
     </div>

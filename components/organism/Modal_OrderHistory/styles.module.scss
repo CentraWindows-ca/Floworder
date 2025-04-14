@@ -42,7 +42,11 @@
     }
 
 }
+.itemInfoRow {
 
+    margin-bottom: 10px;
+    border-bottom: 2px solid $color_border_table;
+}
 .changedItemRow {
     padding: 5px;   
     border-bottom: 1px solid $color_border_table;

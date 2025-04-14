@@ -29,7 +29,7 @@ import LoadingBlock from "components/atom/LoadingBlock";
 const Com = ({}) => {
   const {
     isLoading,
-    initWorkOrderNo,
+    initMasterId,
     onHide,
     onAnchor,
     onSave,
@@ -107,7 +107,7 @@ const Com = ({}) => {
             </button>
           )}
         </PermissionBlock>
-        {KindDisplay[kind]} Work Order # {initWorkOrderNo}
+        {KindDisplay[kind]} Work Order # {data?.m_WorkOrderNo}
         {isDeleted && (
           <div className="align-items-center flex gap-2 text-red-400">
             [DELETED]
@@ -159,7 +159,7 @@ const Com = ({}) => {
 
   return (
     <Modal
-      show={initWorkOrderNo}
+      show={initMasterId}
       title={jsxTitle}
       size="xl"
       onHide={onHide}

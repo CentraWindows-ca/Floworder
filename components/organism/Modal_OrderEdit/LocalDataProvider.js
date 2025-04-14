@@ -7,6 +7,7 @@ import { useInterrupt } from "lib/provider/InterruptProvider";
 import utils from "lib/utils";
 
 import OrdersApi from "lib/api/OrdersApi";
+import WM2CWProdApi from "lib/api/WM2CWProdApi";
 import GlassApi from "lib/api/GlassApi";
 
 import useLoadingBar from "lib/hooks/useLoadingBar";
@@ -25,7 +26,7 @@ const STATUS = {
 
 export const LocalDataProvider = ({
   children,
-  initWorkOrderNo,
+  initMasterId,
   kind: initKind,
   facility,
   onSave,
@@ -58,6 +59,7 @@ export const LocalDataProvider = ({
   const [uiShowMore, setUiShowMore] = useState(true);
 
   const [initData, setInitData] = useState(null);
+  const [initDataItems, setInitDataItems] = useState(null);
 
   const [kind, setKind] = useState(initKind || "m");
 
@@ -65,10 +67,10 @@ export const LocalDataProvider = ({
   const [expands, setExpands] = useState({});
 
   useEffect(() => {
-    if (initWorkOrderNo) {
-      doInit(initWorkOrderNo);
+    if (initMasterId) {
+      doInit(initMasterId);
     }
-  }, [initWorkOrderNo, isDeleted]);
+  }, [initMasterId, isDeleted]);
 
   const handleChange = (v, k) => {
     setData((prev) => {
@@ -114,14 +116,15 @@ export const LocalDataProvider = ({
     setNewImages(null);
     setGlassItems(null);
     setInitData(null);
+    setInitDataItems(null);
   };
 
-  const doInit = async (initWorkOrderNo) => {
+  const doInit = async (initMasterId) => {
     setIsLoading(true);
     setData(null);
     setIsEditable(initIsEditable);
 
-    const mergedData = await doInitWo(initWorkOrderNo);
+    const mergedData = await doInitWo(initMasterId);
 
     if (mergedData) {
       if (initKind === "w" || getOrderKind(mergedData) === "w") {
@@ -132,12 +135,12 @@ export const LocalDataProvider = ({
         setKind("m");
       }
 
-      await initItems(initWorkOrderNo);
+      await initItems(initMasterId);
       initAttachmentList(mergedData?.m_MasterId);
       initImageList(mergedData?.m_MasterId);
 
       const resGlassItems = await GlassApi.getGlassItems(
-        initWorkOrderNo,
+        mergedData.m_WorkOrderNo,
         mergedData.m_ManufacturingFacility,
       );
 
@@ -172,9 +175,9 @@ export const LocalDataProvider = ({
     setIsLoading(false);
   };
 
-  const doInitWo = useLoadingBar(async (initWorkOrderNo) => {
+  const doInitWo = useLoadingBar(async (initMasterId) => {
     const [res] = await Wrapper_OrdersApi.getWorkOrder(
-      initWorkOrderNo,
+      initMasterId,
       isDeleted ? 0 : 1,
     );
     let mergedData = {};
@@ -197,12 +200,23 @@ export const LocalDataProvider = ({
     return mergedData;
   });
 
-  const initItems = useLoadingBar(async (initWorkOrderNo) => {
-    const doorItems = await Wrapper_OrdersApi.getDoorItems(initWorkOrderNo);
-    const windowItems = await Wrapper_OrdersApi.getWindowItems(initWorkOrderNo);
+  const initItems = useLoadingBar(async (initMasterId) => {
+    const doorItems = await Wrapper_OrdersApi.getDoorItems(initMasterId);
+    const windowItems = await Wrapper_OrdersApi.getWindowItems(initMasterId);
 
     setDoorItems(_.orderBy(doorItems, ["Item"]));
     setWindowItems(_.orderBy(windowItems, ["Item"]));
+
+    setInitDataItems([
+      ...doorItems?.map((a) => ({
+        ...a,
+        itemType: "di",
+      })),
+      ...windowItems?.map((a) => ({
+        ...a,
+        itemType: "wi",
+      })),
+    ]);
   });
 
   const initAttachmentList = useLoadingBar(async (masterId) => {
@@ -233,7 +247,7 @@ export const LocalDataProvider = ({
     await doMove(payload);
 
     toast("Status updated", { type: "success" });
-    await doInit(initWorkOrderNo);
+    await doInit(initMasterId);
     onSave();
   };
 
@@ -285,7 +299,7 @@ export const LocalDataProvider = ({
     const dbSource = data.m_DBSource;
     // fetch from WM
     if (dbSource === "WM_AB") {
-      await OrdersApi.updateOnly_AB_WMByWorkOrderAsync(
+      await WM2CWProdApi.updateOnly_AB_WMByWorkOrderAsync(
         null,
         {
           workOrderNo: data?.m_WorkOrderNo,
@@ -293,7 +307,7 @@ export const LocalDataProvider = ({
         initData,
       );
     } else {
-      await OrdersApi.updateOnly_BC_WMByWorkOrderAsync(
+      await WM2CWProdApi.updateOnly_BC_WMByWorkOrderAsync(
         null,
         {
           workOrderNo: data?.m_WorkOrderNo,
@@ -302,7 +316,7 @@ export const LocalDataProvider = ({
       );
     }
 
-    await doInit(initWorkOrderNo);
+    await doInit(initMasterId);
     toast("Work order updated from WindowMaker", { type: "success" });
     onSave();
   });
@@ -317,7 +331,7 @@ export const LocalDataProvider = ({
       initData,
     );
 
-    await doInit(initWorkOrderNo);
+    await doInit(initMasterId);
     toast("Transfer location saved", { type: "success" });
     onSave();
   });
@@ -408,7 +422,7 @@ export const LocalDataProvider = ({
 
     await Wrapper_OrdersApi.updateWorkOrder(data, changedData, initData);
     toast("Work order saved", { type: "success" });
-    await doInitWo(initWorkOrderNo);
+    await doInitWo(initMasterId);
     onSave();
   });
 
@@ -422,7 +436,7 @@ export const LocalDataProvider = ({
     );
 
     toast("Item saved", { type: "success" });
-    await initItems(initWorkOrderNo);
+    await initItems(initMasterId);
   });
 
   const doUpdateDoorItem = useLoadingBar(async (Id, item, initItem) => {
@@ -434,7 +448,7 @@ export const LocalDataProvider = ({
       initData,
     );
     toast("Item saved", { type: "success" });
-    await initItems(initWorkOrderNo);
+    await initItems(initMasterId);
   });
 
   const doBatchUpdateItems = useLoadingBar(async (updateList, kind) => {
@@ -444,9 +458,10 @@ export const LocalDataProvider = ({
       updateList,
       kind,
       initData,
+      initDataItems,
     );
     toast("Items saved", { type: "success" });
-    await initItems(initWorkOrderNo);
+    await initItems(initMasterId);
     return;
   });
 
@@ -472,7 +487,7 @@ export const LocalDataProvider = ({
     ...generalContext,
     ...props,
     isLoading,
-    initWorkOrderNo,
+    initMasterId,
     data,
     kind,
     facility,

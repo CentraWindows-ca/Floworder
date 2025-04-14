@@ -87,9 +87,9 @@ const Com = (props) => {
               <Dropdown_WorkOrderActions
                 data={record}
                 {...{
-                  onEdit: () => onEdit(record?.m_WorkOrderNo),
-                  onView: () => onView(record?.m_WorkOrderNo),
-                  onHistory: () => onHistory(record?.m_WorkOrderNo),
+                  onEdit: () => onEdit(record?.m_MasterId),
+                  onView: () => onView(record?.m_MasterId),
+                  onHistory: () => onHistory(record?.m_MasterId),
                   onUpdate,
                   kind,
                 }}

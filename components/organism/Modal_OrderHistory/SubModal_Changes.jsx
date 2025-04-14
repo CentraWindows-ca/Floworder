@@ -29,15 +29,6 @@ const Com = ({ data, onHide }) => {
   // ======
 
   const doInit = (data) => {
-    console.log(data);
-    let PreData = JSON.parse(data.PreData);
-
-    PreData = {
-      ...PreData?.d,
-      ...PreData?.m,
-      ...PreData?.w,
-    };
-
     let ChangedData = JSON.parse(data.ChangedData);
     const ChangedData_Order = ChangedData?.OrderLevelChanges?.reduce(
       (prev, curr) => {
@@ -60,7 +51,6 @@ const Com = ({ data, onHide }) => {
       ...data,
       ChangedData_Order,
       ChangedData_ItemList,
-      PreData,
     };
 
     setHistoryData(_data);
@@ -83,12 +73,10 @@ const Com = ({ data, onHide }) => {
       >
         <LoadingBlock isLoading={false}>
           <div className="mb-2">
-            Record has been modified by {historyData?.ChangedBy || "--"} at{" "}
-            {historyData?.CreatedAt}
+            Record has been modified by <b>{historyData?.ChangedBy || "--"}</b> at{" "}
+            <b>{historyData?.CreatedAt}</b>
             <br />
-            Work Order Status: {historyData?.PreData?.m_Status} | Window Status:{" "}
-            {historyData?.PreData?.w_Status} | Door Status:{" "}
-            {historyData?.PreData?.d_Status}
+            Source : {historyData?.Source}
           </div>
           <Tabs
             activeKey={tab}
@@ -99,13 +87,13 @@ const Com = ({ data, onHide }) => {
             <Tab eventKey="changesOnly" title={"Changes Only"} className="pt-2">
               <ChangesOnly {...{ historyData }} />
             </Tab>
-            <Tab
+            {/* <Tab
               eventKey="allFields"
               title={"All operation fields"}
               className="pt-2"
             >
               <AllFields {...{ historyData }} />
-            </Tab>
+            </Tab> */}
           </Tabs>
         </LoadingBlock>
       </Modal>
@@ -154,7 +142,7 @@ const ChangesOnly = ({ historyData }) => {
 };
 
 const Items = ({ list, type, label }) => {
-  const displayList = list?.filter((a) => a.ItemType === type);
+  const displayList = list?.filter((a) => a.ItemInfo?.ItemType === type);
   if (_.isEmpty(displayList)) return null;
 
   return (
@@ -163,13 +151,13 @@ const Items = ({ list, type, label }) => {
       <div className={cn(styles.changesCurrent)}>
         <div className={cn(styles.changedItemList)}>
           {displayList?.map((a) => {
-            const { ItemId } = a;
+            const { ItemId, ItemNo, System, SubQty } = a?.ItemInfo;
             return (
-              <div key={ItemId}>
-                <div className={cn(styles.changedItemRow)}>Item: {ItemId} </div>
+              <div key={ItemId} className = {cn(styles.itemInfoRow)}>
+                <div className={cn(styles.changedItemRow)}>Item: [{System}] {ItemNo}: {SubQty} </div>
                 {a?.Changes?.map((b) => {
                   const { Field, OldValue, NewValue } = b;
-                  const displayField = Field?.slice(3);
+                  const displayField = Field;
                   return (
                     <div
                       key={`item_changed_${Field}`}
@@ -193,39 +181,39 @@ const Items = ({ list, type, label }) => {
   );
 };
 
-const AllFields = ({ historyData }) => {
-  return (
-    <div className={cn(styles.changesList)}>
-      {_.keys(historyData?.PreData)
-        ?.sort(sortByPrefix)
-        ?.map((k) => {
-          if (constants.constants_labelMapping[k] === false) return null;
-          const value = historyData?.PreData[k];
-          let jsxValue = <></>;
-          if (historyData?.ChangedData_Order[k]) {
-            const { OldValue, NewValue } = historyData?.ChangedData_Order[k];
-            jsxValue = (
-              <>
-                <div className={cn(styles.changesOld)}>{OldValue}</div>
-                <div className={cn(styles.changesNew)}>{NewValue}</div>
-              </>
-            );
-          } else {
-            jsxValue = <div className={cn(styles.changesCurrent)}>{value}</div>;
-          }
+// const AllFields = ({ historyData }) => {
+//   return (
+//     <div className={cn(styles.changesList)}>
+//       {_.keys(historyData?.PreData)
+//         ?.sort(sortByPrefix)
+//         ?.map((k) => {
+//           if (constants.constants_labelMapping[k] === false) return null;
+//           const value = historyData?.PreData[k];
+//           let jsxValue = <></>;
+//           if (historyData?.ChangedData_Order[k]) {
+//             const { OldValue, NewValue } = historyData?.ChangedData_Order[k];
+//             jsxValue = (
+//               <>
+//                 <div className={cn(styles.changesOld)}>{OldValue}</div>
+//                 <div className={cn(styles.changesNew)}>{NewValue}</div>
+//               </>
+//             );
+//           } else {
+//             jsxValue = <div className={cn(styles.changesCurrent)}>{value}</div>;
+//           }
 
-          return (
-            <div key={`changed_${k}`} className={cn(styles.changesRow)}>
-              <div className={cn(styles.changesField)} title={k}>
-                {constants.constants_labelMapping[k]?.title || k}
-              </div>
-              {jsxValue}
-            </div>
-          );
-        })}
-    </div>
-  );
-};
+//           return (
+//             <div key={`changed_${k}`} className={cn(styles.changesRow)}>
+//               <div className={cn(styles.changesField)} title={k}>
+//                 {constants.constants_labelMapping[k]?.title || k}
+//               </div>
+//               {jsxValue}
+//             </div>
+//           );
+//         })}
+//     </div>
+//   );
+// };
 
 const sortByPrefix = (a, b) => {
   const prefixA = a?.split("_")?.[0];

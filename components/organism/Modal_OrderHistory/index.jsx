@@ -15,7 +15,7 @@ import { LocalDataContext, LocalDataProvider } from "./LocalDataProvider";
 import LoadingBlock from "components/atom/LoadingBlock";
 
 const Com = ({}) => {
-  const { isLoading, initWorkOrderNo, onHide, data } =
+  const { isLoading, initMasterId, onHide, data } =
     useContext(LocalDataContext);
 
   const [idChanges, setIdChanges] = useState(null);
@@ -59,7 +59,7 @@ const Com = ({}) => {
   const jsxTitle = (
     <div className="justify-content-between align-items-center flex-grow-1 flex">
       <div className="align-items-center flex gap-2">
-        Work Order # {initWorkOrderNo}
+        Work Order # {data?.m_WorkOrderNo}
         <div className="align-items-center flex gap-2"></div>
       </div>
       <div></div>
@@ -69,7 +69,7 @@ const Com = ({}) => {
   return (
     <>
       <Modal
-        show={initWorkOrderNo}
+        show={initMasterId}
         title={jsxTitle}
         size="lg"
         onHide={onHide}
