@@ -4,6 +4,8 @@ import _ from "lodash";
 import { GeneralContext } from "lib/provider/GeneralProvider";
 import { Spin } from "antd";
 
+import OrdersApi from "lib/api/OrdersApi";
+
 import TableSortable from "components/atom/TableSortable";
 import FiltersManager from "components/atom/TableSortable/FilterManager";
 
@@ -122,6 +124,14 @@ const Com = (props) => {
       {
         key: "m_CreatedBy",
         display: isPending,
+      },
+      {
+        key: "m_InstallStatus",
+        initKey: "m_InstallStatus",
+        display: isPending && !isDeleted,
+        isNotSortable: true,
+        isNotFilter: true
+
       },
       {
         key: "m_Status_display",
@@ -316,8 +326,16 @@ const Com = (props) => {
     ]?.filter((a) => a.display === undefined || a.display),
   );
 
-  const runTreatement = (data) => {
+  const runTreatement = async (data) => {
     let _data = JSON.parse(JSON.stringify(data));
+
+    let resInstallStatusMapping = {}
+    // if its pending, get install status
+    if (isPending && !_.isEmpty(_data)) {
+      resInstallStatusMapping = await OrdersApi.getWorkOrdersInstallationStatusAsync(null, {
+        workOrderNos: _data?.map(data => data?.value?.m?.m_WorkOrderNo)
+      })
+    }
 
     _data = _data?.map((a) => {
       if (!a) return null;
@@ -362,8 +380,11 @@ const Com = (props) => {
 
       // merged.w_GlassOrderDate_display = utils.formatDate(w_GlassOrderDate);
 
+      merged.m_InstallStatus = resInstallStatusMapping[merged.m_WorkOrderNo] || null
+
       return merged;
     });
+
 
     setTreatedData(_data);
   };

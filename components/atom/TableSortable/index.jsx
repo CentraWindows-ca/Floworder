@@ -206,11 +206,11 @@ export const TableHeader = ({
       {setFilters ? (
         <tr>
           {columns?.map((a) => {
-            const { key, initKey, isNotTitle, filterPlaceHolder = "--" } = a;
+            const { key, initKey, isNotTitle, isNotFilter, filterPlaceHolder = "--" } = a;
             return (
               <td key={`filter_${a.key}`}>
                 <div style={{ padding: 2 }}>
-                  {!isNotTitle ? (
+                  {(!isNotTitle && !isNotFilter) ? (
                     <Editable.EF_InputDebounce
                       value={filters?.[initKey || key]}
                       onChange={(v) => handleFilterChange(v, initKey || key)}
