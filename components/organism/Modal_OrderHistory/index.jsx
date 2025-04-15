@@ -82,6 +82,7 @@ const Com = ({}) => {
               {...{
                 data: _.orderBy(data, ["CreatedAt", "Id"], ["desc", "desc"]),
                 columns,
+                keyField: 'Id',
                 isLockFirstColumn: false
               }}
             />

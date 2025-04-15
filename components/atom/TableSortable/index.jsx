@@ -50,10 +50,10 @@ const Com = (props) => {
           }}
         />
         <tbody>
-          {data?.map((a) => {
+          {data?.map((a, i) => {
             const _trParams = trParams(a);
             return (
-              <tr key={a[keyField]} {..._trParams}>
+              <tr key={`table_${a[keyField]}_${i}`} {..._trParams}>
                 {columns?.map((b) => {
                   const { key, render, onCell, onWrapper, className } = b;
 
@@ -172,11 +172,11 @@ export const TableHeader = ({
   return (
     <thead className={cn(styles.thead, className)}>
       <tr>
-        {columns?.map((a) => {
+        {columns?.map((a, i) => {
           const { title, key, width, initKey, isNotTitle, isNotSortable } = a;
           const sortKey = initKey || key;
           return (
-            <th key={key} style={{ width: width || "auto" }}>
+            <th key={`${sortKey}_${i}`} style={{ width: width || "auto" }}>
               {!isNotTitle ? (
                 <div
                   className={cn(

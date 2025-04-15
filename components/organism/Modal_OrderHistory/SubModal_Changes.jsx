@@ -30,6 +30,7 @@ const Com = ({ data, onHide }) => {
 
   const doInit = (data) => {
     let ChangedData = JSON.parse(data.ChangedData);
+    
     const ChangedData_Order = ChangedData?.OrderLevelChanges?.reduce(
       (prev, curr) => {
         return { ...prev, [curr.Field]: curr };
@@ -47,10 +48,19 @@ const Com = ({ data, onHide }) => {
       };
     });
 
+    const ChangedData_AttachmentList = ChangedData?.Attachments?.filter(
+      (a) => a.Type === "file",
+    );
+    const ChangedData_ImageList = ChangedData?.Attachments?.filter(
+      (a) => a.Type === "image",
+    );
+
     const _data = {
       ...data,
       ChangedData_Order,
       ChangedData_ItemList,
+      ChangedData_AttachmentList,
+      ChangedData_ImageList,
     };
 
     setHistoryData(_data);
@@ -73,8 +83,8 @@ const Com = ({ data, onHide }) => {
       >
         <LoadingBlock isLoading={false}>
           <div className="mb-2">
-            Record has been modified by <b>{historyData?.ChangedBy || "--"}</b> at{" "}
-            <b>{historyData?.CreatedAt}</b>
+            Record has been modified by <b>{historyData?.ChangedBy || "--"}</b>{" "}
+            at <b>{historyData?.CreatedAt}</b>
             <br />
             Source : {historyData?.Source}
           </div>
@@ -102,6 +112,7 @@ const Com = ({ data, onHide }) => {
 };
 
 const prefixOrder = { m: 0, w: 1, d: 2, wi: 3, di: 4 };
+
 
 const ChangesOnly = ({ historyData }) => {
   return (
@@ -137,6 +148,18 @@ const ChangesOnly = ({ historyData }) => {
           label: "Door Items",
         }}
       />
+      {/* <Files
+        {...{
+          list: historyData?.ChangedData_ImageList,
+          label: "Images",
+        }}
+      />
+      <Files
+        {...{
+          list: historyData?.ChangedData_AttachmentList,
+          label: "Attachments",
+        }}
+      /> */}
     </div>
   );
 };
@@ -153,8 +176,10 @@ const Items = ({ list, type, label }) => {
           {displayList?.map((a) => {
             const { ItemId, ItemNo, System, SubQty } = a?.ItemInfo;
             return (
-              <div key={ItemId} className = {cn(styles.itemInfoRow)}>
-                <div className={cn(styles.changedItemRow)}>Item: [{System}] {ItemNo}: {SubQty} </div>
+              <div key={ItemId} className={cn(styles.itemInfoRow)}>
+                <div className={cn(styles.changedItemRow)}>
+                  Item: [{System}] {ItemNo}: {SubQty}{" "}
+                </div>
                 {a?.Changes?.map((b) => {
                   const { Field, OldValue, NewValue } = b;
                   const displayField = Field;
@@ -172,6 +197,34 @@ const Items = ({ list, type, label }) => {
                     </div>
                   );
                 })}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const Files = ({ list, label }) => {
+  const displayList = list
+  if (_.isEmpty(displayList)) return null;
+
+  return (
+    <div className={cn(styles.changesRow)}>
+      <div className={cn(styles.changesField)}>{label}</div>
+      <div className={cn(styles.changesCurrent)}>
+        <div className={cn(styles.changedItemList)}>
+          {displayList?.map((a) => {
+            const { Id, Type, Notes } = a;
+            return (
+              <div key={`item_files_${Id}`} className={cn(styles.itemInfoRow)}>
+                <div className={cn(styles.changedItemRow)}>Id: [{Id}]</div>
+                <div
+                  className={cn(styles.changesRow)}
+                >
+                  <div className={cn(styles.changesOld)}>{Notes}</div>
+                </div>
               </div>
             );
           })}

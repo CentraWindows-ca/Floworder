@@ -97,6 +97,7 @@ const Com = (props) => {
             filters,
             setFilters,
             className: styles.community,
+            // keyField: '',
             trParams: (row) => {
               return {
                 style: {
