@@ -112,7 +112,7 @@ const Screen1 = ({
     // check if exists
     const existingRecord = await OrdersApi.getIsExistByWOAsync({ workOrderNo });
     let _resList;
-    if (existingRecord && existingRecord.DBSource) {
+    if (existingRecord && existingRecord.dbSource) {
       //
       // get exist work order
       let _wo = await Wrapper_OrdersApi.getWorkOrder(
@@ -124,10 +124,10 @@ const Screen1 = ({
 
       setExistingWorkOrder(_wo);
 
-      setDbSource(existingRecord.DBSource);
+      setDbSource(existingRecord.dbSource);
       const res = await External_FromApi.getWindowMakerWorkerOrder(
         workOrderNo,
-        existingRecord.DBSource,
+        existingRecord.dbSource,
       );
 
       setWindowMakerData(res?.data);
@@ -140,7 +140,7 @@ const Screen1 = ({
 
       if (_resList?.length === 1) {
         setWindowMakerData(_resList[0]?.data);
-        setDbSource(WM_MAPPING[_resList[0]?.DBSource]);
+        setDbSource(WM_MAPPING[_resList[0]?.dbSource]);
       } else if (_resList?.length > 1) {
       } else {
         toast(
@@ -159,7 +159,7 @@ const Screen1 = ({
 
   const handleSelect = (wm_record) => {
     setWindowMakerData(wm_record?.data);
-    setDbSource(WM_MAPPING[wm_record?.DBSource]);
+    setDbSource(WM_MAPPING[wm_record?.dbSource]);
   };
 
   return (
@@ -189,7 +189,7 @@ const Screen1 = ({
                 className="cursor-pointer hover:bg-blue-100"
                 onClick={() => handleSelect(item)}
               >
-                <b>[{item?.DBSource}]</b> {item.data?.name} |{" "}
+                <b>[{item?.dbSource}]</b> {item.data?.name} |{" "}
                 {item.data?.branchName}
               </List.Item>
             )}
