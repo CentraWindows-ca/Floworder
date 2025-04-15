@@ -42,11 +42,13 @@ const DFDatePicker = ({
   const dateValue = value ? parseISO(value) : null;
 
   const handleSelect = (v) => {
+    // const formattedDate = v ? format(v, "yyyy-MM-dd'T'HH:mm:ss") : null;
     const formattedDate = v ? format(v, "yyyy-MM-dd") : null;
     onSelect(v, formattedDate);
   };
 
   const handleChange = (v) => {
+    // const formattedDate = v ? format(v, "yyyy-MM-dd'T'HH:mm:ss") : null;
     const formattedDate = v ? format(v, "yyyy-MM-dd") : null;
     onChange(v, formattedDate);
   };

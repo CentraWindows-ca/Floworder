@@ -112,7 +112,7 @@ const Screen1 = ({
     // check if exists
     const existingRecord = await OrdersApi.getIsExistByWOAsync({ workOrderNo });
     let _resList;
-    if (existingRecord && existingRecord.dbSource) {
+    if (existingRecord && existingRecord.DBSource) {
       //
       // get exist work order
       let _wo = await Wrapper_OrdersApi.getWorkOrder(
@@ -124,10 +124,10 @@ const Screen1 = ({
 
       setExistingWorkOrder(_wo);
 
-      setDbSource(existingRecord.dbSource);
+      setDbSource(existingRecord.DBSource);
       const res = await External_FromApi.getWindowMakerWorkerOrder(
         workOrderNo,
-        existingRecord.dbSource,
+        existingRecord.DBSource,
       );
 
       setWindowMakerData(res?.data);
@@ -320,7 +320,7 @@ const Screen2 = ({
         <div className="form-group row">
           <label className="col-lg-3">Window Production Date</label>
           <div className="col-lg-3 justify-content-center flex">
-            <Editable.EF_Date
+            <Editable.EF_DateOnly
               id="winStartDate"
               value={initValues?.winStartDate || null}
               onChange={(v) =>
@@ -337,7 +337,7 @@ const Screen2 = ({
         <div className="form-group row">
           <label className="col-lg-3">Door Production Date</label>
           <div className="col-lg-3 justify-content-center flex">
-            <Editable.EF_Date
+            <Editable.EF_DateOnly
               id="doorStartDate "
               value={initValues?.doorStartDate || null}
               onChange={(v) =>

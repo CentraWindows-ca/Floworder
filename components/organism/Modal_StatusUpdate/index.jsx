@@ -63,7 +63,7 @@ const Com = ({ missingFields, onSubmit, onCancel, isPaused, data }) => {
               Transferred Date{missingFields?.transferredDate?.required && " *"}
             </label>
             <div className="col-lg-6">
-              <Editable.EF_Date
+              <Editable.EF_DateOnly
                 id="transferredDate"
                 k="transferredDate"
                 value={values?.transferredDate}
@@ -79,7 +79,7 @@ const Com = ({ missingFields, onSubmit, onCancel, isPaused, data }) => {
           <div className="form-group row">
             <label className="col-lg-6">Shipped Date</label>
             <div className="col-lg-6">
-              <Editable.EF_Date
+              <Editable.EF_DateOnly
                 k="shippedDate"
                 id="shippedDate"
                 value={values?.shippedDate}

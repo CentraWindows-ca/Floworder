@@ -42,7 +42,7 @@ const COMMON_FIELDS = constants.applyField([
     overrideOnChange: (onChange, params) => {
       const [v, id, o] = params;
       onChange(v, "m_ProjectManager");
-      onChange(o?.[0]?.name, "m_ProjectManagerName");
+      onChange(o?.name, "m_ProjectManagerName");
     },
   },
   {

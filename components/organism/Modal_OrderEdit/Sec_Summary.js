@@ -77,14 +77,14 @@ const DOOR_LBR_FIELDS = [
     qty: "d__REDR",
     lbr: "d__REDRMin",
   },
-  // its bought, no need here
+  // these products are bought from other company, we dont need to show them here as production tool
   // {
-  //   title: "REDR",
+  //   title: "CDLD",
   //   qty: "d__CDLD",
   //   lbr: "d__CDLDMin",
   // },
   // {
-  //   title: "REDR",
+  //   title: "RESD",
   //   qty: "d__RESD",
   //   lbr: "d__RESDMin",
   // }

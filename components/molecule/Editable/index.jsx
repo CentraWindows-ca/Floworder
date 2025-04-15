@@ -23,25 +23,45 @@ const preventUpdate = (prev, nex) => {
   );
 };
 
-export const EF_Date = React.memo(
+// export const EF_DateTime = React.memo(
+//   ({ id, value, onChange, onSelect, ...rest }) => {
+//     const handleSelect = (d, str) => {
+//       if (!str) return;
+
+//       // str is in local time, e.g., "2025-03-26T00:00:00"
+//       const utcStr = utils.datetimeFromLocalToUTC(str);
+//       onChange(utcStr);
+//     };
+
+//     // Convert UTC string to local time string in same format
+//     const localValue = utils.datetimeFromUTCToLocal(value, id);
+
+//     return (
+//       <Datepicker
+//         id={id}
+//         onChange={onChange}
+//         onSelect={handleSelect}
+//         value={localValue}
+//         {...rest}
+//       />
+//     );
+//   },
+//   preventUpdate,
+// );
+
+export const EF_DateOnly = React.memo(
   ({ id, value, onChange, onSelect, ...rest }) => {
     const handleSelect = (d, str) => {
-      if (!str) return;
-
-      // str is in local time, e.g., "2025-03-26T00:00:00"
-      const utcStr = utils.datetimeFromLocalToUTC(str);
-      onChange(utcStr);
+      if (!str) return;;
+      onChange(str);
     };
-
-    // Convert UTC string to local time string in same format
-    const localValue = utils.datetimeFromUTCToLocal(value, id);
 
     return (
       <Datepicker
         id={id}
         onChange={onChange}
         onSelect={handleSelect}
-        value={localValue}
+        value={value}
         {...rest}
       />
     );
@@ -335,11 +355,12 @@ export const EF_Rack = React.memo(
     placeholder,
     className,
     size = "md",
-    options = [], // prevent override
+    options = null, // prevent override
     isDisplayAvilible = true,
     ...props
   }) => {
     const { dictionary } = useContext(GeneralContext);
+
     return (
       <Typeahead
         className={cn(className)}
@@ -352,7 +373,7 @@ export const EF_Rack = React.memo(
           return <span>{o.State}</span>;
         }}
         onChange={(v, o) => {
-          onChange(v, id);
+          onChange(v, id, o?.[0]);
         }}
         value={value}
         placeholder={placeholder}
@@ -361,7 +382,7 @@ export const EF_Rack = React.memo(
           ?.map((o) => ({
             ...o,
             label: `${o.RackNumber || "--"}`,
-            value: o.RackNumber,
+            value: o.RecordID,
           }))}
         {...props}
       />
@@ -392,7 +413,7 @@ export const EF_SelectEmployee = React.memo(
         size={size}
         id={id}
         onChange={(v, o) => {
-          onChange(v, id, o);
+          onChange(v, id, o?.[0]);
         }}
         value={value}
         placeholder={placeholder}
@@ -455,7 +476,7 @@ export const EF_Community = React.memo(
 );
 
 export const Editable = {
-  EF_Date,
+  EF_DateOnly,
   EF_Select,
   EF_SelectWithLabel,
   EF_SelectEmployee,

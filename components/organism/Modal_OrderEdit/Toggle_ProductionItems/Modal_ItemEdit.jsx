@@ -11,69 +11,56 @@ import styles from "../styles.module.scss";
 const WINDOW_FIELDS = constants.applyField([
   {
     Component: Editable.EF_Label,
-    title: "Item",
     id: "Item",
   },
   {
     Component: Editable.EF_Label,
-    title: "System",
     id: "System",
   },
   {
     Component: Editable.EF_Label,
-    title: "Description",
     id: "Description",
   },
   {
     Component: Editable.EF_Label,
-    title: "Size",
     id: "Size",
   },
   {
     Component: Editable.EF_Label,
-    title: "Quantity",
     id: "Quantity",
   },
   {
     Component: Editable.EF_Label,
-    title: "SubQty",
     id: "SubQty",
   },
   {
     Component: Editable.EF_Text,
-    title: "Notes",
     id: "Notes",
   },
   {
     Component: Editable.EF_SelectWithLabel,
     options: ITEM_STATUS,
-    title: "Status",
     id: "Status",
     sortBy: "sort",
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    title: "BTO",
     id: "BTO",
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    title: "HighRisk",
     id: "HighRisk",
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    title: "Custom",
     id: "Custom",
   },
   {
     Component: Editable.EF_Input,
-    title: "BoxQty",
     id: "BoxQty",
   },
   {
     Component: Editable.EF_Input,
-    title: "GlassQty",
     id: "GlassQty",
   },
   {
@@ -83,28 +70,28 @@ const WINDOW_FIELDS = constants.applyField([
   },
   {
     Component: Editable.EF_Rack,
-    title: "RackLocation",
-    id: "RackLocation",
+    id: "RackLocationId",
+    overrideOnChange: (onChange, params) => {
+      const [ v, id, o ] = params;
+      onChange(v, "RackLocationId");
+      onChange(o?.RackNumber, "RackLocation");
+    },
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    title: "RBMIcon",
     id: "RBMIcon",
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    title: "Wraped",
     id: "Wraped",
   },
 
   {
     Component: Editable.EF_Checkbox_Yesno,
-    title: "PaintLineal",
     id: "PaintLineal",
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    title: "Painted",
     id: "Painted",
   },
 ]);
@@ -213,6 +200,11 @@ const DOOR_FIELDS = constants.applyField([
   {
     Component: Editable.EF_Rack,
     id: "RackLocation",
+    overrideOnChange: (onChange, params) => {
+      const [ v, id, o ] = params;
+      onChange(v, "RackLocationId");
+      onChange(o?.RackNumber, "RackLocation");
+    },
   },
   {
     Component: Editable.EF_Input,
@@ -285,7 +277,7 @@ const Com = (props) => {
 };
 
 const Block = ({ item, setItem, inputData, isEditable }) => {
-  let { Component, title, id, options, ...rest } = inputData;
+  let { Component, title, id, options, overrideOnChange, ...rest } = inputData;
   const handleChange = (v, id) => {
     setItem((prev) => ({
       ...prev,
@@ -300,7 +292,13 @@ const Block = ({ item, setItem, inputData, isEditable }) => {
         <Component
           id={id}
           value={item?.[id]}
-          onChange={(v) => handleChange(v, id)}
+          onChange={(v, ...o) => {
+            if (typeof overrideOnChange === "function") {
+              overrideOnChange(handleChange, [v, ...o]);
+            } else {
+              handleChange(v, id);
+            }
+          }}
           options={options}
           disabled = {!isEditable}
           {...rest}

@@ -1,0 +1,40 @@
+@use "styles/theme" as *;
+
+.containerBoth {
+	background-color: var(--bs-body-bg);
+    background-clip: padding-box;
+    border: var(--bs-border-width) solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+.containersm {
+	display: inline-block;
+	padding: 0px 5px;
+	min-height: 20px;	
+	width: 80px !important;
+	text-align: center;
+
+	.root {
+		width: 100%;
+		height: 18px;
+		font-size: 12px;
+		padding: 0px;
+	}
+	:global(.react-datepicker__input-container) {
+		input {
+			width: 70px
+		}
+	}
+}
+
+.container {
+	.root {
+		padding: 0;
+		border: none;
+		width: 80px
+	}
+}
+
+.disabled {
+	
+}

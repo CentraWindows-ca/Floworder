@@ -141,7 +141,7 @@ const TableWindow = ({ handleShowItem }) => {
       fields: updatingValues[k],
     }));
     await onBatchUpdateItems(updates, "w");
-    setUpdatingValues({})
+    setUpdatingValues({});
   };
 
   const [filters, setFilters] = useState({});
@@ -182,7 +182,7 @@ const TableWindow = ({ handleShowItem }) => {
         return (
           <Editable.EF_Checkbox_Yesno
             {...{
-              id: `wi_${updatingKey}`,
+              id: `wi_${updatingKey}_${record?.Id}`,
               value:
                 overrideValue !== undefined
                   ? overrideValue
@@ -205,7 +205,7 @@ const TableWindow = ({ handleShowItem }) => {
         return (
           <Editable.EF_Checkbox_Yesno
             {...{
-              id: `wi_${updatingKey}`,
+              id: `wi_${updatingKey}_${record?.Id}`,
               value:
                 overrideValue !== undefined
                   ? overrideValue
@@ -228,7 +228,7 @@ const TableWindow = ({ handleShowItem }) => {
         return (
           <Editable.EF_Checkbox_Yesno
             {...{
-              id: `wi_${updatingKey}`,
+              id: `wi_${updatingKey}_${record?.Id}`,
               value:
                 overrideValue !== undefined
                   ? overrideValue
@@ -246,10 +246,10 @@ const TableWindow = ({ handleShowItem }) => {
     },
     {
       title: "Location",
-      key: "RackLocation",
+      key: "RackLocationId",
       width: 120,
       render: (t, record) => {
-        const updatingKey = "RackLocation";
+        const updatingKey = "RackLocationId";
         const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
         return (
           <Editable.EF_Rack
@@ -258,16 +258,23 @@ const TableWindow = ({ handleShowItem }) => {
                 overrideValue !== undefined
                   ? overrideValue
                   : record[updatingKey],
-              onChange: (v) =>
+              onChange: (v, rid, o) => {
                 handleUpdate(
                   record?.Id,
-                  v || null,
+                  o.RackNumber || null,
                   "RackLocation",
                   record["RackLocation"],
-                ),
-              id: `RackLocation`,
+                );
+                handleUpdate(
+                  record?.Id,
+                  o.RecordID || null,
+                  updatingKey,
+                  record[updatingKey],
+                );
+              },
+              id: `${record?.Id}_RackLocation`,
               isDisplayAvilible: false,
-              size: 'sm',
+              size: "sm",
               disabled: !isEditable,
             }}
           />
@@ -289,9 +296,9 @@ const TableWindow = ({ handleShowItem }) => {
                   : record[updatingKey],
               onChange: (v) =>
                 handleUpdate(record?.Id, v || null, "Status", record["Status"]),
-              id: `Status`,
+              id: `Status_${record?.Id}`,
               options: ITEM_STATUS,
-              className: 'form-select form-select-sm',
+              className: "form-select form-select-sm",
               disabled: !isEditable,
             }}
           />
@@ -406,7 +413,7 @@ const TableDoor = ({ handleShowItem }) => {
       fields: updatingValues[k],
     }));
     await onBatchUpdateItems(updates, "d");
-    setUpdatingValues({})
+    setUpdatingValues({});
   };
 
   const [filters, setFilters] = useState({});
@@ -446,7 +453,7 @@ const TableDoor = ({ handleShowItem }) => {
         return (
           <Editable.EF_Checkbox_Yesno
             {...{
-              id: `di_${updatingKey}`,
+              id: `di_${updatingKey}_${record?.Id}`,
               value:
                 overrideValue !== undefined
                   ? overrideValue
@@ -469,10 +476,10 @@ const TableDoor = ({ handleShowItem }) => {
     },
     {
       title: "Location",
-      key: "RackLocation",
+      key: "RackLocationId",
       width: 120,
       render: (t, record) => {
-        const updatingKey = "RackLocation";
+        const updatingKey = "RackLocationId";
         const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
         return (
           <Editable.EF_Rack
@@ -481,16 +488,23 @@ const TableDoor = ({ handleShowItem }) => {
                 overrideValue !== undefined
                   ? overrideValue
                   : record[updatingKey],
-              onChange: (v) =>
+              onChange: (v, rid, o) => {
                 handleUpdate(
                   record?.Id,
-                  v,
+                  o.RackNumber || null,
                   "RackLocation",
                   record["RackLocation"],
-                ),
-              id: `RackLocation`,
+                );
+                handleUpdate(
+                  record?.Id,
+                  o.RecordID || null,
+                  updatingKey,
+                  record[updatingKey],
+                );
+              },
+              id: `${record?.Id}_RackLocation`,
               isDisplayAvilible: false,
-              size: 'sm',
+              size: "sm",
               disabled: !isEditable,
             }}
           />
@@ -512,9 +526,9 @@ const TableDoor = ({ handleShowItem }) => {
                   : record[updatingKey],
               onChange: (v) =>
                 handleUpdate(record?.Id, v || null, "Status", record["Status"]),
-              id: `Status`,
+              id: `Status_${record?.Id}`,
               options: ITEM_STATUS,
-              className: 'form-select form-select-sm',
+              className: "form-select form-select-sm",
               disabled: !isEditable,
             }}
           />

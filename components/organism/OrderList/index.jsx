@@ -373,12 +373,11 @@ const Com = (props) => {
       )?.label;
 
       merged.m_CreatedAt_display = utils.formatDate(m_CreatedAt);
-      merged.m_CustomerDate_display = utils.formatDate(m_CustomerDate, "yyyy-MM-dd");
+      merged.m_CustomerDate_display = m_CustomerDate;
 
-      merged.w_CustomerDate_display = utils.formatDate(w_CustomerDate, "yyyy-MM-dd");
-      merged.d_CustomerDate_display = utils.formatDate(d_CustomerDate, "yyyy-MM-dd");
+      merged.w_CustomerDate_display = w_CustomerDate;
+      merged.d_CustomerDate_display = d_CustomerDate;
 
-      // merged.w_GlassOrderDate_display = utils.formatDate(w_GlassOrderDate);
 
       merged.m_InstallStatus = resInstallStatusMapping[merged.m_WorkOrderNo] || null
 

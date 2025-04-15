@@ -141,7 +141,7 @@ const DisplayDate = ({ id, title }) => {
         {title}
       </label>
       <div className="justify-content-end align-items-center flex">
-        <Editable.EF_Date
+        <Editable.EF_DateOnly
           k={id}
           id={id}
           value={data?.[id]}

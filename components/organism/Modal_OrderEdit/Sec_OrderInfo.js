@@ -60,7 +60,7 @@ const COMMON_FIELDS = constants.applyField([
     overrideOnChange: (onChange, params) => {
       const [ v, id, o ] = params;
       onChange(v, "m_SalesRepKeyAccount");
-      onChange(o?.[0]?.name, "m_SalesRep");
+      onChange(o?.name, "m_SalesRep");
     },
   },
 ]);
