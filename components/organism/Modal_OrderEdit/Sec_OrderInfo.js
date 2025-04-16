@@ -77,12 +77,22 @@ const WINDOW_FIELDS = constants.applyField([
   {
     Component: Editable.EF_SelectWithLabel,
     id: "w_GlassSupplier",
-    options: constants.WorkOrderSelectOptions.glassSuppliers,
+    options: (dictionary) => {
+      return dictionary?.glassSupplierList?.map(a => ({
+        value: a.id,
+        label: a.name
+      }))
+    },
   },
   {
     Component: Editable.EF_SelectWithLabel,
     id: "w_GlassOptions",
-    options: constants.WorkOrderSelectOptions.glassOptions,
+    options: (dictionary) => {
+      return dictionary?.glassOptionList?.map(a => ({
+        value: a.id,
+        label: a.name
+      }))
+    },
   },
 ]);
 

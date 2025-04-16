@@ -116,7 +116,7 @@ const Screen1 = ({
       //
       // get exist work order
       let _wo = await Wrapper_OrdersApi.getWorkOrder(
-        workOrderNo,
+        existingRecord.masterId,
         existingRecord.isActive,
       );
       _wo = _wo?.[0];
