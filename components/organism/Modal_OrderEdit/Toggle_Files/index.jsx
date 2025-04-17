@@ -10,14 +10,14 @@ import utils from "lib/utils";
 import { LocalDataContext } from "../LocalDataProvider";
 import { ToggleBlock, NoData } from "../Com";
 
-const Com = ({ title, id, }) => {
+const Com = ({ title, id }) => {
   const {
     newAttachments,
     setNewAttachments,
     existingAttachments,
     onUploadAttachment,
     onDeleteAttachment,
-    isEditable,
+    checkEditable,
   } = useContext(LocalDataContext);
 
   const handleImageChange = (event) => {
@@ -55,13 +55,10 @@ const Com = ({ title, id, }) => {
   return (
     <ToggleBlock title={jsxTitle} id={id}>
       <div className={styles.togglePadding}>
-        {isEditable && (
-          <div className="justify-content-between align-items-center mb-2 flex pb-2 border-b border-gray-200">
+        {checkEditable(id) && (
+          <div className="justify-content-between align-items-center mb-2 flex border-b border-gray-200 pb-2">
             <div>
-              <label
-                htmlFor="file-upload"
-                className="btn btn-success"
-              >
+              <label htmlFor="file-upload" className="btn btn-success">
                 Upload Files
               </label>
 
@@ -108,13 +105,18 @@ const Com = ({ title, id, }) => {
                       {size} KB
                     </td>
                     <td className="text-left">
-                     {submittedBy ? <><b>[{submittedBy}]:</b><br/></> : null}
-                       {notes || "--"}
+                      {submittedBy ? (
+                        <>
+                          <b>[{submittedBy}]:</b>
+                          <br />
+                        </>
+                      ) : null}
+                      {notes || "--"}
                     </td>
                     <td style={{ width: 60 }}>
                       <button
                         className="btn btn-sm btn-danger"
-                        disabled={!isEditable}
+                        disabled={!checkEditable(id)}
                         onClick={() => onDeleteAttachment(a)}
                       >
                         delete

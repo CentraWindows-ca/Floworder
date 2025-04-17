@@ -30,6 +30,7 @@ const getValue = (k, arrName) => {
 const Com = (props) => {
   const {
     onEdit,
+    onEditPending,
     onView,
     onUpdate,
     onHistory,
@@ -90,6 +91,7 @@ const Com = (props) => {
                 data={record}
                 {...{
                   onEdit: () => onEdit(record?.m_MasterId),
+                  onEditPending: () => onEditPending(record?.m_MasterId),
                   onView: () => onView(record?.m_MasterId),
                   onHistory: () => onHistory(record?.m_MasterId),
                   onUpdate,
@@ -130,8 +132,7 @@ const Com = (props) => {
         initKey: "m_InstallStatus",
         display: isPending && !isDeleted,
         isNotSortable: true,
-        isNotFilter: true
-
+        isNotFilter: true,
       },
       {
         key: "m_Status_display",
@@ -264,27 +265,27 @@ const Com = (props) => {
         key: "w_BatchNo",
         display: isWindow,
         width: 140,
-        display: !isPending,
+        display: isWindow && !isPending,
       },
       {
         key: "w_BlockNo",
         display: isWindow,
         width: 140,
-        display: !isPending,
+        display: isWindow && !isPending,
       },
       {
         key: "d_BatchNo",
         display: isDoor,
         width: 120,
-        display: !isPending,
+        display: isDoor && !isPending,
       },
       {
         key: "d_BlockNo",
         display: isDoor,
         width: 120,
-        display: !isPending,
+        display: isDoor && !isPending,
       },
-     
+
       {
         key: "m_InvStatus",
         width: 105,
@@ -329,12 +330,13 @@ const Com = (props) => {
   const runTreatement = async (data) => {
     let _data = JSON.parse(JSON.stringify(data));
 
-    let resInstallStatusMapping = {}
+    let resInstallStatusMapping = {};
     // if its pending, get install status
     if (isPending && !_.isEmpty(_data)) {
-      resInstallStatusMapping = await OrdersApi.getWorkOrdersInstallationStatusAsync(null, {
-        workOrderNos: _data?.map(data => data?.value?.m?.m_WorkOrderNo)
-      })
+      resInstallStatusMapping =
+        await OrdersApi.getWorkOrdersInstallationStatusAsync(null, {
+          workOrderNos: _data?.map((data) => data?.value?.m?.m_WorkOrderNo),
+        });
     }
 
     _data = _data?.map((a) => {
@@ -378,12 +380,11 @@ const Com = (props) => {
       merged.w_CustomerDate_display = w_CustomerDate;
       merged.d_CustomerDate_display = d_CustomerDate;
 
-
-      merged.m_InstallStatus = resInstallStatusMapping[merged.m_WorkOrderNo] || null
+      merged.m_InstallStatus =
+        resInstallStatusMapping[merged.m_WorkOrderNo] || null;
 
       return merged;
     });
-
 
     setTreatedData(_data);
   };

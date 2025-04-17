@@ -39,7 +39,7 @@ const Com = ({}) => {
     data,
 
     kind,
-    isEditable,
+    isEditable, checkEditable,
     setIsEditable,
     existingAttachments,
     existingImages,

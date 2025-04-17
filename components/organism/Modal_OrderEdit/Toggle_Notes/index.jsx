@@ -12,7 +12,7 @@ import { LocalDataContext } from "../LocalDataProvider";
 import { ToggleFull, NoData, DisplayBlock, displayFilter } from "../Com";
 
 const Com = ({}) => {
-  const { data, kind, uiOrderType, onChange, isEditable, onHide } =
+  const { data, kind, uiOrderType, onChange, checkEditable, onHide } =
     useContext(LocalDataContext);
 
   const COMMON_FIELDS = constants.applyField([
@@ -85,7 +85,7 @@ const Com = ({}) => {
             k={id}
             value={data?.[id]}
             onChange={(v) => onChange(v, id)}
-            disabled={!isEditable}
+            disabled={!checkEditable()}
             rows={3}
           />
         </div>

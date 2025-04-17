@@ -234,9 +234,8 @@ const Screen2 = ({
   const [doorManufacturingFacility, setDoorManufacturingFacility] = useState(
     constants.ManufacturingFacilities.Langley,
   );
-  const [windowManufacturingFacility, setWindowManufacturingFacility] = useState(
-    constants.ManufacturingFacilities.Calgary,
-  );
+  const [windowManufacturingFacility, setWindowManufacturingFacility] =
+    useState(constants.ManufacturingFacilities.Calgary);
 
   const isWindow = !!(
     windowMakerData?.wmWindows || windowMakerData?.wmPatioDoors
@@ -252,8 +251,6 @@ const Screen2 = ({
       setManufacturingFacility(existingWorkOrder.m_ManufacturingFacility);
       setDoorManufacturingFacility(existingWorkOrder.d_ManufacturingFacility);
       setWindowManufacturingFacility(existingWorkOrder.w_ManufacturingFacility);
-
-
     } else {
       setInitValues({});
 
@@ -265,17 +262,15 @@ const Screen2 = ({
     (isWindow && !initValues?.winStartDate) ||
     (isDoor && !initValues?.doorStartDate);
 
-  const doFetch = async () => {
+  const doFetch = async (newStatus = "") => {
     setIsLoading(true);
     const updateValues = {
       ...initValues,
     };
 
     // if existing. dont touch status
-    if (!existingWorkOrder && isReservation) {
-      updateValues.status = WORKORDER_MAPPING.DraftReservation.key;
-    } else {
-      updateValues.status = WORKORDER_MAPPING.Scheduled.key;
+    if (newStatus) {
+      updateValues.status = newStatus;
     }
 
     if (selectedOverrideOption === "ResetWorkOrder") {
@@ -284,27 +279,35 @@ const Screen2 = ({
           "Are you sure you want to delete current work order and then refetch from WindowMaker?",
         )
       ) {
-        return
+        return;
       }
     }
 
-    let res = null
+    let res = null;
 
     // fetch from WM
     if (dbSource === "WM_AB") {
-      res = await WM2CWProdApi.sync_AB_WindowMakerByWorkOrderAsync(null, {
-        workOrderNo,
-        resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
-        manufacturingFacility,
-        ...updateValues,
-      }, existingWorkOrder);
+      res = await WM2CWProdApi.sync_AB_WindowMakerByWorkOrderAsync(
+        null,
+        {
+          workOrderNo,
+          resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
+          manufacturingFacility,
+          ...updateValues,
+        },
+        existingWorkOrder,
+      );
     } else {
-      res = await WM2CWProdApi.sync_BC_WindowMakerByWorkOrderAsync(null, {
-        workOrderNo,
-        resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
-        manufacturingFacility,
-        ...updateValues,
-      }, existingWorkOrder);
+      res = await WM2CWProdApi.sync_BC_WindowMakerByWorkOrderAsync(
+        null,
+        {
+          workOrderNo,
+          resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
+          manufacturingFacility,
+          ...updateValues,
+        },
+        existingWorkOrder,
+      );
     }
 
     // update init values
@@ -366,20 +369,6 @@ const Screen2 = ({
           />
         </div>
       </div>
-      {/* new order needs it */}
-      {!existingWorkOrder && (
-        <div className="form-group row">
-          <label className="col-lg-3">Reservation</label>
-          <div className="col-lg-3 justify-content-center flex">
-            <Editable.EF_Checkbox
-              id="reservation"
-              value={isReservation}
-              onChange={(v) => setIsReservation((prev) => v)}
-            />
-          </div>
-        </div>
-      )}
-
       <hr />
       <div className="form-group row">
         <label className="col-lg-4 font-bold">Work Order Number</label>
@@ -507,21 +496,83 @@ const Screen2 = ({
           </div>
         </div>
       ) : null}
+      {/* new order needs it */}
 
       <div className="justify-content-center flex gap-2">
-        <button
-          className="btn btn-primary align-items-center flex gap-2"
-          onClick={doFetch}
-          disabled={disabled}
-        >
-          <Spin
-            size="small"
-            indicator={<LoadingOutlined />}
-            spinning={isLoading}
-            style={{ color: "white" }}
-          />
-          <span>Save</span>
-        </button>
+        {!existingWorkOrder ? (
+          <>
+            {/* <div className="form-group row">
+              <label className="col-lg-3">Reservation</label>
+              <div className="col-lg-3 justify-content-center flex">
+                <Editable.EF_Checkbox
+                  id="reservation"
+                  value={isReservation}
+                  onChange={(v) => setIsReservation((prev) => v)}
+                />
+              </div>
+            </div> */}
+            <button
+              className="btn btn-outline-secondary align-items-center flex gap-2"
+              onClick={() => doFetch(WORKORDER_MAPPING.DraftReservation.key)}
+              disabled={disabled}
+            >
+              <Spin
+                size="small"
+                indicator={<LoadingOutlined />}
+                spinning={isLoading}
+                style={{ color: "blue" }}
+              />
+              <div
+                style={{
+                  display: "inline-block",
+                  height: "15px",
+                  width: "15px",
+                  background: WORKORDER_MAPPING.DraftReservation.color,
+                  border: '1px solid, white'
+                }}
+              ></div>
+              <span>Save as Draft Reservation</span>
+            </button>
+            <button
+              className="btn btn-outline-secondary align-items-center flex gap-2"
+              onClick={() => doFetch(WORKORDER_MAPPING.Scheduled.key)}
+              disabled={disabled}
+            >
+              <Spin
+                size="small"
+                indicator={<LoadingOutlined />}
+                spinning={isLoading}
+                style={{ color: "white" }}
+              />{" "}
+              <div
+                style={{
+                  display: "inline-block",
+                  height: "15px",
+                  width: "15px",
+                  background: WORKORDER_MAPPING.Scheduled.color,
+                  border:  '1px solid, white'
+                }}
+              ></div>
+              <span>Save as Scheduled</span>
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              className="btn btn-primary align-items-center flex gap-2"
+              onClick={doFetch}
+              disabled={disabled}
+            >
+              <Spin
+                size="small"
+                indicator={<LoadingOutlined />}
+                spinning={isLoading}
+                style={{ color: "white" }}
+              />
+              <span>Save</span>
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

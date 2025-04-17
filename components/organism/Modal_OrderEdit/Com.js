@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
 import cn from "classnames";
-import constants, { HEADER_COLUMNS } from "lib/constants";
+import constants, { HEADER_COLUMNS, WORKORDER_MAPPING } from "lib/constants";
 // styles
 import styles from "./styles.module.scss";
 import OrdersApi from "lib/api/OrdersApi";
@@ -162,3 +162,28 @@ export const ToggleFull = ({
 export const NoData = ({ title = "No Data", className }) => {
   return <div className={cn("text-center text-slate-400", className)}>-- {title} --</div>;
 };
+
+
+export const checkEditableById = (id, data) => {
+  if (!id) return true
+  if (data?.m_Status === WORKORDER_MAPPING.Pending.key) {
+    if ([
+      'm_ShippingStartDate',
+      'm_RevisedDeliveryDate',
+      'w_CustomerDate',
+      'w_ProductionStartDate',
+      'w_PaintStartDate',
+      'w_GlassOrderDate',
+      'w_GlassRecDate',
+      'd_CustomerDate',
+      'd_ProductionStartDate',
+      'd_PaintStartDate',
+      'd_GlassOrderDate'
+    ].includes(id)) {
+      return true
+    } else {
+      return false
+    }
+  }
+  return true
+}

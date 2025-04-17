@@ -15,7 +15,7 @@ const Com = ({ }) => {
     newImages,
     setNewImages,
     existingImages,
-    isEditable,
+    checkEditable,
     onUploadAttachment,
     onDeleteAttachment,
   } = useContext(LocalDataContext);
@@ -48,7 +48,7 @@ const Com = ({ }) => {
     <>
       <div className={cn(styles.sectionTitle)}>
         <span>Images</span>
-        {isEditable && (
+        {checkEditable() && (
           <div>
             <label
               htmlFor="file-upload"
@@ -94,7 +94,7 @@ const Com = ({ }) => {
                     <td style={{ width: 60 }}>
                       <button
                         className="btn btn-sm btn-danger"
-                        disabled={!isEditable}
+                        disabled={!checkEditable()}
                         onClick={() => onDeleteAttachment(a)}
                       >
                         delete

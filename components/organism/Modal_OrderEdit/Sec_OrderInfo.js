@@ -108,7 +108,12 @@ const DOOR_FIELDS = constants.applyField([
   {
     Component: Editable.EF_SelectWithLabel,
     id: "d_GlassSupplier",
-    options: constants.WorkOrderSelectOptions.glassSuppliers,
+    options: (dictionary) => {
+      return dictionary?.glassSupplierList?.map(a => ({
+        value: a.id,
+        label: a.name
+      }))
+    },
   },
 ]);
 
@@ -170,7 +175,7 @@ const Com = ({}) => {
 };
 
 const Block = ({ inputData }) => {
-  const { data, onChange, isEditable, dictionary } =
+  const { data, onChange, checkEditable, dictionary } =
     useContext(LocalDataContext);
   let { Component, title, id, options, overrideOnChange, ...rest } = inputData;
   if (typeof options === "function") {
@@ -191,7 +196,7 @@ const Block = ({ inputData }) => {
               onChange(v, id);
             }
           }}
-          disabled={!isEditable}
+          disabled={!checkEditable(id)}
           options={options}
           {...rest}
         />

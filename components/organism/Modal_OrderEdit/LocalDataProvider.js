@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import _ from "lodash";
 import { useRouter } from "next/router";
 import { GeneralContext } from "lib/provider/GeneralProvider";
@@ -15,6 +15,7 @@ import constants, { ORDER_STATUS, ORDER_TRANSFER_FIELDS } from "lib/constants";
 import { getOrderKind } from "lib/utils";
 
 import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
+import { checkEditableById } from "./Com";
 
 export const LocalDataContext = createContext(null);
 
@@ -483,6 +484,10 @@ export const LocalDataProvider = ({
   const uIstatusObj =
     ORDER_STATUS?.find((a) => a.key === data?.[STATUS[kind]]) || {};
 
+  const checkEditable = useCallback((id) => {
+    return isEditable && checkEditableById(id, data);  
+  }, [isEditable, initMasterId]);
+
   const context = {
     ...generalContext,
     ...props,
@@ -523,6 +528,7 @@ export const LocalDataProvider = ({
     setExpands,
     isEditable,
     setIsEditable,
+    checkEditable,
     uiOrderType,
     uiShowMore,
     setUiShowMore,

@@ -22,7 +22,7 @@ const Com = ({ title, id }) => {
     existingImages,
     onUploadImage,
     onDeleteImage,
-    isEditable,
+    checkEditable,
   } = useContext(LocalDataContext);
 
   const handleImageChange = (event) => {
@@ -60,7 +60,7 @@ const Com = ({ title, id }) => {
   return (
     <ToggleBlock title={jsxTitle} id={id}>
       <div className={styles.togglePadding}>
-        {isEditable && (
+        {checkEditable(id) && (
           <div className="justify-content-between align-items-center mb-2 flex border-b border-gray-200 pb-2">
             <div>
               <label htmlFor="image-upload" className="btn btn-success">
@@ -116,7 +116,7 @@ const Com = ({ title, id }) => {
                     <div className="mt-2">
                       <button
                         className="btn btn-sm btn-danger"
-                        disabled={!isEditable}
+                        disabled={!checkEditable(id)}
                         onClick={() => onDeleteImage(a)}
                       >
                         delete

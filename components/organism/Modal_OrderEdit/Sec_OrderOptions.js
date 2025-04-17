@@ -70,35 +70,35 @@ const WINDOW_FIELDS = constants.applyField([
     icon: () => <GridIcon />,
     id: "w_GridsRequired",
   },
-  {
-    icon: () => <WaterTestingIcon />,
-    id: "w_WaterTestingRequired",
+  // {
+  //   icon: () => <WaterTestingIcon />,
+  //   id: "w_WaterTestingRequired",
 
-    // NOTE: specific layout. triggered by w_WaterTestingRequired
-    renderSubItem: (data, onChange, isEditable) => {
-      if (data?.["w_WaterTestingRequired"] == 1) {
-        return (
-          <div className={styles.columnOptionsSubContainer}>
-            <label>
-              {
-                constants.constants_labelMapping["w_WaterPenetrationResistance"]
-                  .title
-              }
-            </label>
-            <Editable.EF_Input
-              className="text-right"
-              type="number"
-              id={"w_WaterPenetrationResistance"}
-              value={data?.["w_WaterPenetrationResistance"]}
-              onChange={(v) => onChange(v, "w_WaterPenetrationResistance")}
-              disabled={!isEditable}
-            />
-          </div>
-        );
-      }
-      return null;
-    },
-  },
+  //   // NOTE: specific layout. triggered by w_WaterTestingRequired
+  //   renderSubItem: (data, onChange, isEditable) => {
+  //     if (data?.["w_WaterTestingRequired"] == 1) {
+  //       return (
+  //         <div className={styles.columnOptionsSubContainer}>
+  //           <label>
+  //             {
+  //               constants.constants_labelMapping["w_WaterPenetrationResistance"]
+  //                 .title
+  //             }
+  //           </label>
+  //           <Editable.EF_Input
+  //             className="text-right"
+  //             type="number"
+  //             id={"w_WaterPenetrationResistance"}
+  //             value={data?.["w_WaterPenetrationResistance"]}
+  //             onChange={(v) => onChange(v, "w_WaterPenetrationResistance")}
+  //             disabled={!isEditable}
+  //           />
+  //         </div>
+  //       );
+  //     }
+  //     return null;
+  //   },
+  // },
 ]);
 const DOOR_FIELDS = constants.applyField([
   {
@@ -117,10 +117,6 @@ const DOOR_FIELDS = constants.applyField([
     icon: () => <GridIcon />,
     id: "d_GridsRequired",
   },
-  // {
-  //   icon: () => <WaterTestingIcon />,
-  //   id: "d_WaterTestingRequired",
-  // },
   {
     icon: () => <MiniBlindIcon />,
     id: "d_MiniblindIcon",
@@ -195,7 +191,7 @@ const Com = ({}) => {
 };
 
 const Block = ({ inputData }) => {
-  const { data, onChange, isEditable, dictionary } =
+  const { data, onChange, checkEditable, dictionary } =
     useContext(LocalDataContext);
   let { title, icon, id, renderSubItem } = inputData;
   return (
@@ -205,7 +201,7 @@ const Block = ({ inputData }) => {
           id={id}
           value={data?.[id]}
           onChange={(v) => onChange(v, id)}
-          disabled={!isEditable}
+          disabled={!checkEditable(id)}
         />
       </div>
       <div>
@@ -213,14 +209,14 @@ const Block = ({ inputData }) => {
           htmlFor={id}
           className="align-items-center flex gap-1"
           style={{
-            cursor: isEditable ? "pointer" : "default",
+            cursor: checkEditable(id) ? "pointer" : "default",
           }}
         >
           <div className="w-6">{icon()}</div>
           {title}
         </label>
         {typeof renderSubItem === "function"
-          ? renderSubItem(data, onChange, isEditable)
+          ? renderSubItem(data, onChange, checkEditable(id))
           : null}
       </div>
     </DisplayBlock>

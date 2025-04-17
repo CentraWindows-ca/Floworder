@@ -225,7 +225,7 @@ const DOOR_FIELDS = constants.applyField([
 ]);
 
 const Com = (props) => {
-  const { onHide, initItem, onSave, isEditable } = props;
+  const { onHide, initItem, onSave, checkEditable } = props;
   const [item, setItem] = useState(null);
 
   useEffect(() => {
@@ -262,13 +262,13 @@ const Com = (props) => {
               setItem={setItem}
               key={`item_${a.id}`}
               inputData={a}
-              isEditable = {isEditable}
+              isEditable = {checkEditable(a.id)}
             />
           );
         })}
       </div>
       <div className="justify-content-center my-2 flex bg-slate-100 p-2">
-        <button className="btn btn-primary px-4" onClick={handleSave} disabled={!isEditable}>
+        <button className="btn btn-primary px-4" onClick={handleSave} disabled={!checkEditable()}>
           Save
         </button>
       </div>

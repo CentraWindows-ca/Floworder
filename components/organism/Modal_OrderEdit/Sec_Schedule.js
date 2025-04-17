@@ -133,7 +133,7 @@ const Com = ({}) => {
 };
 
 const DisplayDate = ({ id, title }) => {
-  const { data, onChange, isEditable } = useContext(LocalDataContext);
+  const { data, onChange, checkEditable } = useContext(LocalDataContext);
 
   return (
     <DisplayBlock id={id}>
@@ -146,7 +146,7 @@ const DisplayDate = ({ id, title }) => {
           id={id}
           value={data?.[id]}
           onChange={(v) => onChange(v, id)}
-          disabled={!isEditable}
+          disabled={!checkEditable(id)}
         />
       </div>
     </DisplayBlock>

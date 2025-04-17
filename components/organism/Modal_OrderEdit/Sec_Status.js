@@ -18,7 +18,7 @@ const Com = ({}) => {
   const {
     initData,
     data,
-    isEditable,
+    checkEditable,
     onUpdateTransferredLocation,
     onChange,
     kind,
@@ -43,7 +43,7 @@ const Com = ({}) => {
           style={{
             color: textColor,
             backgroundColor: color,
-            opacity: isEditable ? 1 : 0.6, // to follow the style of dropdowns
+            opacity: checkEditable() ? 1 : 0.6, // to follow the style of dropdowns
           }}
         >
           <span>{label}</span>
@@ -74,7 +74,7 @@ const Com = ({}) => {
               className="btn btn-primary"
               disabled={
                 initData?.m_TransferredLocation ===
-                  data?.m_TransferredLocation || !isEditable
+                  data?.m_TransferredLocation || !checkEditable()
               }
               onClick={onUpdateTransferredLocation}
             >
@@ -88,13 +88,7 @@ const Com = ({}) => {
 };
 
 const StatusUpdate = ({ statusLabel, currentKind }) => {
-  const {
-    data,
-    onUpdateStatus,
-    isEditable,
-    onUpdateTransferredLocation,
-    onChange,
-  } = useContext(LocalDataContext);
+  const { data, onUpdateStatus, checkEditable } = useContext(LocalDataContext);
 
   const uIstatusObj =
     ORDER_STATUS?.find((a) => a.key === data?.[`${currentKind}_Status`]) || {};
@@ -105,19 +99,19 @@ const StatusUpdate = ({ statusLabel, currentKind }) => {
     <>
       <div className={cn("align-items-center flex flex-row gap-2 font-normal")}>
         <OverlayWrapper
-          isLock={!isEditable}
+          isLock={!checkEditable()}
           renderTrigger={(onTrigger) => (
             <div
               className={cn(
                 styles.statesContainer,
-                isEditable && styles.statesContainerEditable,
+                checkEditable() && styles.statesContainerEditable,
               )}
               style={{ color: textColor, backgroundColor: color }}
             >
               <span>
                 {statusLabel}: {label}
               </span>
-              {isEditable && (
+              {checkEditable() && (
                 <div>
                   <i className="fa-solid fa-angle-down" />
                 </div>

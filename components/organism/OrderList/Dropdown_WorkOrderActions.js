@@ -41,6 +41,7 @@ const WorkOrderActions = ({
   data,
   onHistory,
   onEdit,
+  onEditPending,
   onView,
   onUpdate,
   kind,
@@ -192,6 +193,17 @@ const WorkOrderActions = ({
       </PermissionBlock>
 
       <PermissionBlock
+        featureCode={constants.FEATURE_CODES["om.prod.wo"]}
+        isHidden={filterOutByStatus({ id: "editPendingOrder", data })}
+        op="canEdit"
+      >
+        <Button type="text" icon={<EditOutlined />} onClick={onEditPending}>
+          Edit Pending Order
+        </Button>
+      </PermissionBlock>
+
+
+      <PermissionBlock
         featureCode={constants.FEATURE_CODES["om.prod.statusSwitchGeneral"]}
       >
         {allowedStatusWindow?.map((stepName) => {
@@ -341,7 +353,7 @@ const filterOutByStatus = ({ id, data, permissions }) => {
 
   // NOTE: same rule applies to popup edit button. if pending or cancelled cant edit
   if (data?.m_Status === WORKORDER_MAPPING.Pending.key) {
-    if (id !== "viewOrder") return true;
+    if (id !== "viewOrder" && id !== "editPendingOrder") return true;
   }
 
   if (data?.m_Status === WORKORDER_MAPPING.Cancelled.key) {

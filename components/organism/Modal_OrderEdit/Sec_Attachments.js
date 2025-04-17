@@ -14,7 +14,7 @@ const Com = ({}) => {
     newAttachments,
     setNewAttachments,
     existingAttachments,
-    isEditable,
+    checkEditable,
     onUploadAttachment,
     onDeleteAttachment,
   } = useContext(LocalDataContext);
@@ -42,12 +42,11 @@ const Com = ({}) => {
     });
   };
 
-
   return (
     <>
       <div className={cn(styles.sectionTitle)}>
         <span>Attachments</span>
-        {isEditable && (
+        {checkEditable() && (
           <div>
             <label
               htmlFor="file-upload"
@@ -71,30 +70,30 @@ const Com = ({}) => {
           <table className="table-xs table-bordered table-hover mb-0 table border">
             <tbody>
               {existingAttachments?.map((a, i) => {
-                const {
-                  fileName,
-                  fileType,
-                  fileRawData,
-                  notes,
-                  id
-                } = a;
+                const { fileName, fileType, fileRawData, notes, id } = a;
 
-                const size = utils.formatNumber(utils.calculateFileSize(fileRawData) / 1024 || 0);
+                const size = utils.formatNumber(
+                  utils.calculateFileSize(fileRawData) / 1024 || 0,
+                );
                 return (
                   <tr key={`${fileName}_${id}`}>
                     <td className="text-left">
-                      <span className="text-blue-500 hover:text-blue-400" style={{cursor: 'pointer'}} onClick={() => utils.downloadFile(fileRawData, fileName, fileType)}>
+                      <span
+                        className="text-blue-500 hover:text-blue-400"
+                        style={{ cursor: "pointer" }}
+                        onClick={() =>
+                          utils.downloadFile(fileRawData, fileName, fileType)
+                        }
+                      >
                         {fileName}
                       </span>
                     </td>
                     <td className="text-right">{size} KB</td>
-                    <td>
-                      {notes || ''}
-                    </td>
+                    <td>{notes || ""}</td>
                     <td style={{ width: 60 }}>
                       <button
                         className="btn btn-sm btn-danger"
-                        disabled={!isEditable}
+                        disabled={!checkEditable()}
                         onClick={() => onDeleteAttachment(a)}
                       >
                         delete
@@ -156,7 +155,5 @@ const Com = ({}) => {
     </>
   );
 };
-
-
 
 export default Com;

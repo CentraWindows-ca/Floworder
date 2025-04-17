@@ -31,7 +31,7 @@ const Com = ({
   const {
     facility,
     tab = "m",
-    masterId, 
+    masterId,
     modalType,
     sort,
     status,
@@ -52,6 +52,10 @@ const Com = ({
   useEffect(() => {
     switch (modalType) {
       case "edit":
+        setEditingOrderMasterId(masterId);
+        setIsEditable(true);
+        break;
+      case "editPending":
         setEditingOrderMasterId(masterId);
         setIsEditable(true);
         break;
@@ -80,13 +84,13 @@ const Com = ({
     return data;
   };
 
-  const handleEdit = (masterId, isEdit, activeOnly = false) => {
+  const handleEdit = (masterId, modalType = "edit", activeOnly = false) => {
     const pathname = router?.asPath?.split("?")?.[0];
 
     const query = {
       ...router.query,
       masterId,
-      modalType: isEdit ? "edit" : "view",
+      modalType,
     };
 
     if (!masterId) {
@@ -164,7 +168,7 @@ const Com = ({
 
   const handleCreateDone = async (masterId) => {
     // jump to the masterId and not deleted
-    handleEdit(masterId, true, true);
+    handleEdit(masterId, "edit", true);
     mutate(null);
     // endPoint
   };
@@ -301,8 +305,9 @@ const Com = ({
       <div className={cn(styles.detail)}>
         <OrderList
           kind={tab}
-          onEdit={(woMasterId) => handleEdit(woMasterId, true)}
-          onView={(woMasterId) => handleEdit(woMasterId, false)}
+          onEdit={(woMasterId) => handleEdit(woMasterId, "edit")}
+          onEditPending={(woMasterId) => handleEdit(woMasterId, "editPending")}
+          onView={(woMasterId) => handleEdit(woMasterId, "view")}
           onHistory={(woMasterId) => handleHistory(woMasterId)}
           onUpdate={handleSaveDone}
           isLoading={!data}
@@ -330,7 +335,7 @@ const Com = ({
         onHide={() => handleEdit()}
         onSave={handleSaveDone}
         onRestore={handleRestoreDone}
-        initMasterId = {editingOrderMasterId}
+        initMasterId={editingOrderMasterId}
         isDeleted={isDeleted == 1}
         kind={tab}
         facility={facility}
@@ -342,7 +347,7 @@ const Com = ({
         onHide={() => setIsShowCreate(false)}
       />
       <Modal_OrderHistory
-        initMasterId = {historyOrderMasterId}
+        initMasterId={historyOrderMasterId}
         onHide={() => handleHistory()}
       />
     </div>

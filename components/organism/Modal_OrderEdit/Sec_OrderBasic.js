@@ -77,7 +77,7 @@ const COMMON_FIELDS = constants.applyField([
 ]);
 
 const Com = ({}) => {
-  const { data, onChange, isEditable } = useContext(LocalDataContext);
+  const { data, onChange, checkEditable} = useContext(LocalDataContext);
 
   return (
     <div className={cn(styles.columnInputsContainer)}>
@@ -98,7 +98,7 @@ const Com = ({}) => {
                     onChange(v, id);
                   }
                 }}
-                disabled={!isEditable}
+                disabled={!checkEditable(id)}
                 {...rest}
               />
             </div>
