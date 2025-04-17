@@ -16,6 +16,24 @@ import stylesCurrent from "./styles.module.scss";
 
 const styles = { ...stylesRoot, ...stylesCurrent };
 
+const ITEM_CATEGORIES = {
+  W: {
+    label: "Windows",
+  },
+  PD: {
+    label: "Patio Doors",
+  },
+  SD: {
+    label: "Swing Doors",
+  },
+  ED: {
+    label: "Exterior Doors",
+  },
+  GL: {
+    label: "Glass",
+  },
+};
+
 const Com = ({ title, id }) => {
   const {
     windowItems,
@@ -32,7 +50,7 @@ const Com = ({ title, id }) => {
     const _stats = {
       W: 0,
       PD: 0,
-      VD: 0,
+      SD: 0,
       ED: 0,
       GL: 0,
     };
@@ -41,20 +59,27 @@ const Com = ({ title, id }) => {
       const { System } = a;
       switch (System) {
         case "52PD":
-          _stats["PD"] = _stats["PD"] + 1;
+          a.itemType = "PD";
           break;
         case "61DR":
-          _stats["VD"] = _stats["VD"] + 1;
+          a.itemType = "SD";
           break;
         case "GL01":
-          _stats["GL"] = _stats["GL"] + 1;
+          a.itemType = "GL";
           break;
         default:
-          _stats["W"] = _stats["W"] + 1;
+          a.itemType = "W";
           break;
       }
+      _stats[a.itemType] = _stats[a.itemType] + 1;
     });
-    _stats["ED"] = doorItems?.length;
+
+    doorItems?.map((a) => {
+      const { System } = a;
+      a.itemType = "ED";
+      _stats[a.itemType] = _stats[a.itemType] + 1;
+    });
+
     setStats(_stats);
   }, [windowItems, doorItems]);
 
@@ -92,11 +117,36 @@ const Com = ({ title, id }) => {
         <TableWindow
           {...{
             handleShowItem,
+            itemType: "W",
+            list: windowItems?.filter((a) => a.itemType === "W"),
+          }}
+        />
+        <TableWindow
+          {...{
+            handleShowItem,
+            itemType: "PD",
+            list: windowItems?.filter((a) => a.itemType === "PD"),
+          }}
+        />
+        <TableWindow
+          {...{
+            handleShowItem,
+            itemType: "VD",
+            list: windowItems?.filter((a) => a.itemType === "VD"),
           }}
         />
         <TableDoor
           {...{
             handleShowItem,
+            itemType: "ED",
+            list: doorItems?.filter((a) => a.itemType === "ED"),
+          }}
+        />
+        <TableWindow
+          {...{
+            handleShowItem,
+            itemType: "W",
+            list: windowItems?.filter((a) => a.itemType === "GL"),
           }}
         />
       </ToggleBlock>
@@ -104,18 +154,14 @@ const Com = ({ title, id }) => {
         onSave={handleSaveItem}
         onHide={handleCloseItem}
         initItem={editingItem}
-        checkEditable = {checkEditable}
+        checkEditable={checkEditable}
       />
     </>
   );
 };
 
-const TableWindow = ({ handleShowItem }) => {
-  const {
-    windowItems: data,
-    onBatchUpdateItems,
-    checkEditable,
-  } = useContext(LocalDataContext);
+const TableWindow = ({ handleShowItem, list: data, itemType }) => {
+  const { onBatchUpdateItems, checkEditable } = useContext(LocalDataContext);
 
   const [updatingValues, setUpdatingValues] = useState({});
   const handleUpdate = (id, v, k, initV) => {
@@ -345,7 +391,7 @@ const TableWindow = ({ handleShowItem }) => {
       <DisplayBlock id="WIN.windowItems">
         <div className={styles.togglePadding}>
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
-            <label>Windows</label>
+            <label>{ITEM_CATEGORIES[itemType]?.label}</label>
             <div>
               <button
                 className="btn btn-primary btn-sm me-2"
@@ -383,9 +429,8 @@ const TableWindow = ({ handleShowItem }) => {
   );
 };
 
-const TableDoor = ({ handleShowItem }) => {
+const TableDoor = ({ handleShowItem, list: data, itemType}) => {
   const {
-    doorItems: data,
     onBatchUpdateItems,
     checkEditable,
   } = useContext(LocalDataContext);
@@ -575,7 +620,7 @@ const TableDoor = ({ handleShowItem }) => {
       <DisplayBlock id="DOOR.doorItems">
         <div className={styles.togglePadding}>
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
-            <label>Doors</label>
+            <label>{ITEM_CATEGORIES[itemType]?.label}</label>
             <div>
               <button
                 className="btn btn-primary btn-sm me-2"

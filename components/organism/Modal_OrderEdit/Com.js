@@ -166,6 +166,7 @@ export const NoData = ({ title = "No Data", className }) => {
 
 export const checkEditableById = (id, data) => {
   if (!id) return true
+  // for pending, only allow to edit schedueld
   if (data?.m_Status === WORKORDER_MAPPING.Pending.key) {
     if ([
       'm_ShippingStartDate',

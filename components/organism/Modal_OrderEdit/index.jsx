@@ -39,7 +39,7 @@ const Com = ({}) => {
     data,
 
     kind,
-    isEditable, checkEditable,
+    checkEditable,
     setIsEditable,
     existingAttachments,
     existingImages,
@@ -69,7 +69,7 @@ const Com = ({}) => {
           featureCode={constants.FEATURE_CODES["om.prod.wo"]}
           op="canEdit"
         >
-          {!isEditable && !isDeleted && isOnStatusAllowToEdit && (
+          {!checkEditable() && !isDeleted && isOnStatusAllowToEdit && (
             <button
               className="btn btn-outline-success me-2"
               onClick={() => setIsEditable(true)}
@@ -83,7 +83,7 @@ const Com = ({}) => {
           featureCode={constants.FEATURE_CODES["om.prod.woGetWindowMaker"]}
           op="canDelete"
         >
-          {!isEditable && !isDeleted && (
+          {!checkEditable() && !isDeleted && (
             <button
               className="btn btn-primary me-2"
               onClick={() => onGetWindowMaker()}
@@ -208,7 +208,7 @@ const Com = ({}) => {
           <div className="flex-column flex" style={{ marginTop: "10px", marginBottom: "10px" }}>
             <Toggle_Notes />
           </div>
-          {isEditable && (
+          {checkEditable() && (
             <div
               className={cn("justify-content-center flex p-2", styles.buttonContainer)}
               style={{ margin: "10px 0px" }}

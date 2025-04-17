@@ -486,7 +486,7 @@ export const LocalDataProvider = ({
 
   const checkEditable = useCallback((id) => {
     return isEditable && checkEditableById(id, data);  
-  }, [isEditable, initMasterId]);
+  }, [isEditable, initMasterId, data?.m_Status]);
 
   const context = {
     ...generalContext,
