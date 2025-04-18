@@ -321,7 +321,7 @@ const WorkOrderActions = ({
         </Button>
       </PermissionBlock>
       <PermissionBlock
-        featureCode={constants.FEATURE_CODES["om.prod.wo"]}
+        featureCode={constants.FEATURE_CODES["om.prod.woGetWindowMaker"]}
         isHidden={filterOutByStatus({ id: "syncFromWindowMaker", data })}
         op="canEdit"
       >

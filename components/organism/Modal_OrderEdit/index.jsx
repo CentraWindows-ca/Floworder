@@ -90,8 +90,8 @@ const Com = ({}) => {
           )}
         </PermissionBlock>
         <PermissionBlock
-          featureCode={constants.FEATURE_CODES["om.prod.wo"]}
-          op="canAdd"
+          featureCode={constants.FEATURE_CODES["om.prod.woGetWindowMaker"]}
+          op="canEdit"
         >
           {!checkEditable() && !isDeleted && (
             <button
