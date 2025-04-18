@@ -129,6 +129,7 @@ const Com = ({}) => {
           applyFilter,
           setApplyFilter,
           data,
+          error,
           mutate,
           sortObj,
         }}

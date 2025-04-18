@@ -1,11 +1,17 @@
+import React, { useEffect } from "react";
 import { Dropdown } from "antd";
 import { useState } from "react";
 
-const Dropdown_Custom = ({
+const Dropdown_Custom =  ({
   renderTrigger = () => {},
+  closeToggle = false,
   content,
 }) => {
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    setOpen(false)
+  }, [closeToggle])
 
   return (
     <Dropdown
@@ -30,4 +36,4 @@ const Dropdown_Custom = ({
   );
 };
 
-export default Dropdown_Custom;
+export default React.memo(Dropdown_Custom);

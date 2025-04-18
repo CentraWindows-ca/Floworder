@@ -21,6 +21,7 @@ import styles from "./styles.module.scss";
 
 const Com = ({
   data,
+  error,
   mutate,
   filters,
   setFilters,
@@ -33,6 +34,7 @@ const Com = ({
     tab = "m",
     masterId,
     modalType,
+    subModalType,
     sort,
     status,
     isDeleted = "0",
@@ -63,16 +65,21 @@ const Com = ({
         setEditingOrderMasterId(masterId);
         setIsEditable(false);
         break;
+      default:
+        setEditingOrderMasterId(null);
+        setIsEditable(false);
+        break;
+    }
+
+    switch (subModalType) {
       case "history":
         setHistoryOrderMasterId(masterId);
         break;
       default:
-        setEditingOrderMasterId(null);
         setHistoryOrderMasterId(null);
-        setIsEditable(false);
         break;
     }
-  }, [masterId, modalType]);
+  }, [masterId, modalType, subModalType]);
 
   useEffect(() => {
     if (data) {
@@ -119,11 +126,11 @@ const Com = ({
     const query = {
       ...router.query,
       masterId,
-      modalType: "history",
+      subModalType: "history",
     };
     if (!masterId) {
       delete query.masterId;
-      delete query.modalType;
+      delete query.subModalType;
     }
 
     router.replace(
@@ -311,6 +318,7 @@ const Com = ({
           onHistory={(woMasterId) => handleHistory(woMasterId)}
           onUpdate={handleSaveDone}
           isLoading={!data}
+          error={error}
           status={status}
           count={treatedData?.total}
           {...{

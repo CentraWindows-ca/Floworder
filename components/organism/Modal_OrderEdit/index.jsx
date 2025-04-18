@@ -1,9 +1,17 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import Modal from "components/molecule/Modal";
 import PermissionBlock from "components/atom/PermissionBlock";
-
+import {
+  EyeOutlined,
+  EditOutlined,
+  ArrowRightOutlined,
+  DeleteOutlined,
+  HistoryOutlined,
+  SyncOutlined,
+  UndoOutlined,
+} from "@ant-design/icons";
 import Sec_Status from "./Sec_Status";
 
 import Sec_OrderInfo from "./Sec_OrderInfo";
@@ -20,6 +28,7 @@ import Toggle_Files from "./Toggle_Files";
 import { DisplayBlock } from "./Com";
 import constants, { WORKORDER_MAPPING } from "lib/constants";
 
+import Modal_OrderHistory from "components/organism/Modal_OrderHistory";
 // styles
 import styles from "./styles.module.scss";
 
@@ -51,6 +60,7 @@ const Com = ({}) => {
   } = useContext(LocalDataContext);
 
   // use swr later
+  const [historyOrderMasterId, setHistoryOrderMasterId] = useState(null);
 
   const KindDisplay = {
     m: null,
@@ -129,7 +139,7 @@ const Com = ({}) => {
       <div>
         <div
           className={cn(
-            "justify-content-between align-items-center me-4 flex",
+            "justify-content-between align-items-center me-2 flex",
             styles.modalToolBar,
           )}
         >
@@ -151,6 +161,14 @@ const Com = ({}) => {
             <span onClick={() => onAnchor("glassItems", true)}>
               Glass ({glassTotal?.qty || 0}/{glassTotal?.glassQty || 0})
             </span>
+            <div>
+              <button
+                className="btn btn-sm btn-outline-secondary ms-2"
+                onClick={() => setHistoryOrderMasterId(initMasterId)}
+              >
+                <i className="fa-solid fa-clock-rotate-left"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -242,6 +260,11 @@ const Com = ({}) => {
           </div>
         </div>
       </LoadingBlock>
+
+      <Modal_OrderHistory
+        initMasterId={historyOrderMasterId}
+        onHide={() => setHistoryOrderMasterId(null)}
+      />
     </Modal>
   );
 };

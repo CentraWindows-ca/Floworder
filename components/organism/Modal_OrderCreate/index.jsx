@@ -112,6 +112,7 @@ const Screen1 = ({
     // check if exists
     const existingRecord = await OrdersApi.getIsExistByWOAsync({ workOrderNo });
     let _resList;
+
     if (existingRecord && existingRecord.dbSource) {
       //
       // get exist work order
@@ -311,10 +312,6 @@ const Screen2 = ({
         existingWorkOrder,
       );
     }
-
-    console.log(res)
-
-    return null
 
     // update init values
     setInitValues({});

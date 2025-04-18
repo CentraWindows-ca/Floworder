@@ -35,6 +35,7 @@ const Com = (props) => {
     onUpdate,
     onHistory,
     data,
+    error,
     kind,
     uiIsShowWindow,
     uiIsShowDoor,
@@ -240,13 +241,13 @@ const Com = (props) => {
       },
       {
         key: "w_ProductionStartDate",
-        display: isWindow && isScheduled
-      },  
+        display: isWindow && isScheduled,
+      },
       {
         key: "d_ProductionStartDate",
 
-        display: isDoor && isScheduled
-      },        
+        display: isDoor && isScheduled,
+      },
       {
         title: "Windows",
         key: "m_NumberOfWindows",
@@ -284,25 +285,25 @@ const Com = (props) => {
       {
         key: "w_BatchNo",
         display: isWindow,
-        width: 140,
+        width: 145,
         display: isWindow && !isPending,
       },
       {
         key: "w_BlockNo",
         display: isWindow,
-        width: 140,
+        width: 145,
         display: isWindow && !isPending,
       },
       {
         key: "d_BatchNo",
         display: isDoor,
-        width: 120,
+        width: 125,
         display: isDoor && !isPending,
       },
       {
         key: "d_BlockNo",
         display: isDoor,
-        width: 120,
+        width: 125,
         display: isDoor && !isPending,
       },
 
@@ -424,13 +425,16 @@ const Com = (props) => {
 
   return (
     <>
-      {isLoading && (
-        <div className={cn(styles.tableLoading)}>
-          <Spin spinning={true} size="large">
-            <div>Content that is loading...</div>
-          </Spin>
+      {error ? (
+        <div className={cn(styles.tableError)}>
+          <div>Network Error</div>
         </div>
-      )}
+      ) : isLoading ? (
+        <div className={cn(styles.tableLoading)}>
+          <Spin spinning={true} size="large"/>
+        </div>
+      ) : null}
+
       <TableSortable
         {...{
           data: treatedData,

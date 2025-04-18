@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useCallback, useEffect } from "react";
 import {
   EyeOutlined,
   EditOutlined,
@@ -49,10 +49,12 @@ const WorkOrderActions = ({
 }) => {
   const { m_WorkOrderNo, m_IsActive, w_Status, d_Status } = data;
   const { toast, permissions } = useContext(GeneralContext);
-
   const { filterOutByStatus } = useFilterControl(permissions);
 
   const { requestData } = useInterrupt();
+
+  // toggle it to close dropdown
+  const [closeToggle, setCloseToggle] = useState(false);
 
   // statusIndex
   let allowedStatusWindow = [];
@@ -110,6 +112,7 @@ const WorkOrderActions = ({
     await doMove(payload);
 
     toast("Status updated", { type: "success" });
+    setCloseToggle((p) => !p);
     onUpdate();
   };
 
@@ -120,6 +123,7 @@ const WorkOrderActions = ({
 
     await OrdersApi.softDeleteProductionsWorkOrder(null, null, data);
     toast("Work order moved to trash bin", { type: "success" });
+    setCloseToggle((p) => !p);
     onUpdate();
   });
 
@@ -130,6 +134,7 @@ const WorkOrderActions = ({
 
     await OrdersApi.undoSoftDeleteProductionsWorkOrder(null, null, data);
     toast("Work order restored", { type: "success" });
+    setCloseToggle((p) => !p);
     onUpdate();
   });
 
@@ -144,6 +149,7 @@ const WorkOrderActions = ({
 
     await OrdersApi.hardDeleteProductionsWorkOrder(null, data, data);
     toast("Work order deleted permenantly", { type: "success" });
+    setCloseToggle((p) => !p);
     onUpdate();
   });
 
@@ -178,6 +184,7 @@ const WorkOrderActions = ({
     }
 
     toast("Work order updated from WindowMaker", { type: "success" });
+    setCloseToggle((p) => !p);
     onUpdate();
   });
 
@@ -188,7 +195,14 @@ const WorkOrderActions = ({
   const actionsActive = (
     <div className={cn(styles.workorderActionsContainer)}>
       <PermissionBlock isHidden={filterOutByStatus({ id: "viewOrder", data })}>
-        <Button type="text" icon={<EyeOutlined />} onClick={onView}>
+        <Button
+          type="text"
+          icon={<EyeOutlined />}
+          onClick={() => {
+            onView();
+            setCloseToggle((p) => !p);
+          }}
+        >
           View Order
         </Button>
       </PermissionBlock>
@@ -198,7 +212,14 @@ const WorkOrderActions = ({
         isHidden={filterOutByStatus({ id: "editOrder", data })}
         op="canEdit"
       >
-        <Button type="text" icon={<EditOutlined />} onClick={onEdit}>
+        <Button
+          type="text"
+          icon={<EditOutlined />}
+          onClick={() => {
+            onEdit();
+            setCloseToggle((p) => !p);
+          }}
+        >
           Edit Order
         </Button>
       </PermissionBlock>
@@ -208,7 +229,11 @@ const WorkOrderActions = ({
         isHidden={filterOutByStatus({ id: "editPendingOrder", data })}
         op="canEdit"
       >
-        <Button type="text" icon={<EditOutlined />} onClick={onEditPending}>
+        <Button type="text" icon={<EditOutlined />} onClick={() => {
+          onEditPending()
+          setCloseToggle((p) => !p);
+
+        }}>
           Edit Pending Order
         </Button>
       </PermissionBlock>
@@ -221,7 +246,10 @@ const WorkOrderActions = ({
           return (
             <PermissionBlock
               key={key}
-              isHidden={filterOutByStatus({ id: `windowStatus_${key}`, data })}
+              isHidden={filterOutByStatus({
+                id: `windowStatus_${key}`,
+                data,
+              })}
             >
               <Button
                 type="text"
@@ -312,7 +340,14 @@ const WorkOrderActions = ({
         isHidden={filterOutByStatus({ id: "viewOrderHistory", data })}
         op="canView"
       >
-        <Button type="text" icon={<HistoryOutlined />} onClick={onHistory}>
+        <Button
+          type="text"
+          icon={<i className="fa-solid fa-clock-rotate-left"></i>}
+          onClick={() => {
+            setCloseToggle((p) => !p);
+            onHistory();
+          }}
+        >
           View Order History
         </Button>
       </PermissionBlock>
@@ -321,7 +356,14 @@ const WorkOrderActions = ({
 
   const actionsTrash = (
     <div className={cn(styles.workorderActionsContainer)}>
-      <Button type="text" icon={<EyeOutlined />} onClick={onView}>
+      <Button
+        type="text"
+        icon={<EyeOutlined />}
+        onClick={() => {
+          onView();
+          setCloseToggle((p) => !p);
+        }}
+      >
         View Order
       </Button>
 
@@ -354,6 +396,7 @@ const WorkOrderActions = ({
           );
         }}
         content={m_IsActive ? actionsActive : actionsTrash}
+        closeToggle={closeToggle}
       />
     </>
   );
