@@ -11,7 +11,7 @@ const DFDatePicker = ({
   className,
   onChange,
   onSelect,
-  style = { width: "120px" },
+  style = { width: "140px" },
   size,
   viewType = "",
   disabled,
@@ -50,17 +50,46 @@ const DFDatePicker = ({
     }
   };
 
+  const handleClear = () => {
+    onSelect("", null);
+    onChange("", null);
+  }
+
   // const handleChange = (v) => {
   //   const formattedDate = v ? format(v, "yyyy-MM-dd") : null;
   //   onChange(v, formattedDate);
   // };
 
   // text for disabled
-  const valueTextDisabled = dateValue ? format(dateValue, otherProps.dateFormat) : ""
+  const valueTextDisabled = dateValue
+    ? format(dateValue, otherProps.dateFormat)
+    : "";
 
   const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
-    <div className={cn(value ? styles.dateInput : styles.dateInputBlank)} onClick={onClick} ref={ref}>
-      {value || "Select date"}
+    <div
+      className={cn(
+        "input-group",
+        size === "sm" ? styles.containersm : styles.container,
+        disabled ? styles.disabled : "",
+        className,
+      )}
+      style={style}
+    >
+      <div
+        className={cn(
+          "form-control",
+          value ? styles.dateInput : styles.dateInputBlank,
+        )}
+        onClick={onClick}
+        ref={ref}
+      >
+        {value || "Select Date..."}
+      </div>
+      {value && (
+        <button className="btn btn-secondary" onClick={handleClear}>
+          <i className="fa-solid fa-xmark" />
+        </button>
+      )}
     </div>
   ));
 
@@ -68,37 +97,30 @@ const DFDatePicker = ({
   return (
     <>
       {disabled ? (
-        <input 
-        {...props}
-        style = {style}
-        value = {valueTextDisabled || ''}
-        onChange={() => {}}
-        className={cn("form-control text-center",size === "sm" ? styles.containersm : styles.container,className )}
-        disabled
-        />
-      ) : (
-        <div
+        <input
+          {...props}
+          style={style}
+          value={valueTextDisabled || ""}
+          onChange={() => {}}
           className={cn(
-            "form-control",
+            "form-control text-center",
             size === "sm" ? styles.containersm : styles.container,
-            disabled ? styles.disabled : "",
             className,
           )}
-          style={style}
-        >
-          <DatePicker
-            selected={dateValue}
-            // onChange={handleChange}
-            onSelect={handleSelect}
-            className={styles.root}
-            readOnly={disabled}
-            customInput={<CustomInput />}
-            {...otherProps}
-            {...props}
-          />
-        </div>
+          disabled
+        />
+      ) : (
+        <DatePicker
+          selected={dateValue}
+          // onChange={handleChange}
+          onSelect={handleSelect}
+          className={styles.root}
+          readOnly={disabled}
+          customInput={<CustomInput />}
+          {...otherProps}
+          {...props}
+        />
       )}
-     
     </>
   );
 };

@@ -379,7 +379,6 @@ const Screen2 = ({
           {windowMakerData?.workOrderNumber}
         </div>
       </div>
-
       {existingWorkOrder ? (
         <div className="form-group row">
           <label className="col-lg-4 font-bold">Status</label>
@@ -387,17 +386,7 @@ const Screen2 = ({
             {existingWorkOrder?.m_Status}
           </div>
         </div>
-      ) : (
-        <div className="form-group row">
-          <label className="col-lg-4 font-bold">Status</label>
-          <div className="col-lg-8 border-b border-gray-200 font-bold">
-            {isReservation
-              ? WORKORDER_MAPPING.DraftReservation.label
-              : WORKORDER_MAPPING.Scheduled.label}
-          </div>
-        </div>
-      )}
-
+      ) : null}
       <div className="form-group row">
         <label className="col-lg-4 font-bold">Customer Number</label>
         <div className="col-lg-8 border-b border-gray-200">
@@ -489,10 +478,10 @@ const Screen2 = ({
                 onChange={(v) => setSelectedOverrideOption(v)}
                 options={[
                   { label: "Update it", key: "override" },
-                  {
-                    label: "Delete it and create a new one",
-                    key: "ResetWorkOrder",
-                  },
+                  // {
+                  //   label: "Delete it and create a new one",
+                  //   key: "ResetWorkOrder",
+                  // },
                 ]}
               />
             </div>

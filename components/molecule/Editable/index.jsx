@@ -92,7 +92,7 @@ export const EF_SelectWithLabel = React.memo(
     return (
       <select
         id={id}
-        className="form-select w-full"
+        className={cn("form-select w-full")}
         value={value || ""}
         onChange={(e) => {
           const o = renderOptions?.find((op) => op.key === e.target.value);

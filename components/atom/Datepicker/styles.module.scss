@@ -2,15 +2,16 @@
 
 .containerBoth {
 	background-color: var(--bs-body-bg);
-    background-clip: padding-box;
-    border: var(--bs-border-width) solid var(--bs-border-color);
-    border-radius: var(--bs-border-radius);
-    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+	background-clip: padding-box;
+	border: var(--bs-border-width) solid var(--bs-border-color);
+	border-radius: var(--bs-border-radius);
+	transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
+
 .containersm {
 	display: inline-block;
 	padding: 0px 5px;
-	min-height: 20px;	
+	min-height: 20px;
 	width: 80px !important;
 	text-align: center;
 
@@ -20,6 +21,7 @@
 		font-size: 12px;
 		padding: 0px;
 	}
+
 	:global(.react-datepicker__input-container) {
 		input {
 			width: 70px
@@ -33,16 +35,24 @@
 		border: none;
 		width: 80px
 	}
+
 }
 
-.disabled {
-	
-}
+.disabled {}
 
 .dateInput {
 	cursor: pointer;
+
+	&:hover {
+		color: $color_centraBlue_hover
+	}
 }
+
 .dateInputBlank {
 	color: $color_gray_dark;
 	cursor: pointer;
+
+	&:hover {
+		color: $color_centraBlue_hover
+	}
 }

@@ -14,7 +14,7 @@ import Editable from "components/molecule/Editable";
 import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
 
-const group = "status"
+const group = "status";
 
 const Com = ({}) => {
   const {
@@ -45,7 +45,7 @@ const Com = ({}) => {
           style={{
             color: textColor,
             backgroundColor: color,
-            opacity: checkEditable({group}) ? 1 : 0.6, // to follow the style of dropdowns
+            opacity: checkEditable({ group }) ? 1 : 0.6, // to follow the style of dropdowns
           }}
         >
           <span>{label}</span>
@@ -70,17 +70,15 @@ const Com = ({}) => {
               onChange={(v) => onChange(v, "m_TransferredLocation")}
               placeholder={"Transferred Location"}
               options={constants.WorkOrderSelectOptions.branches}
-              disabled={
-                initData?.m_TransferredLocation ===
-                  data?.m_TransferredLocation || !checkEditable({group})
-              }
+              disabled={!checkEditable({ id: "m_TransferredLocation", group })}
             />
 
             <button
               className="btn btn-primary"
               disabled={
                 initData?.m_TransferredLocation ===
-                  data?.m_TransferredLocation || !checkEditable({group})
+                  data?.m_TransferredLocation ||
+                !checkEditable({ id: "m_TransferredLocation", group })
               }
               onClick={onUpdateTransferredLocation}
             >
@@ -96,8 +94,9 @@ const Com = ({}) => {
 const StatusUpdate = ({ statusLabel, currentKind }) => {
   const { data, onUpdateStatus, checkEditable } = useContext(LocalDataContext);
 
-  const uIstatusObj =
-    ORDER_STATUS?.find((a) => a.key === data?.[`${currentKind}_Status`]) || {};
+  const id = `${currentKind}_Status`;
+
+  const uIstatusObj = ORDER_STATUS?.find((a) => a.key === data?.[id]) || {};
   const { color, label, textColor } = uIstatusObj;
   const [toggle, setToggle] = useState(false);
 
@@ -105,19 +104,19 @@ const StatusUpdate = ({ statusLabel, currentKind }) => {
     <>
       <div className={cn("align-items-center flex flex-row gap-2 font-normal")}>
         <OverlayWrapper
-          isLock={!checkEditable()}
+          isLock={!checkEditable({ id, group })}
           renderTrigger={(onTrigger) => (
             <div
               className={cn(
                 styles.statesContainer,
-                checkEditable({group}) && styles.statesContainerEditable,
+                checkEditable({ id, group }) && styles.statesContainerEditable,
               )}
               style={{ color: textColor, backgroundColor: color }}
             >
               <span>
                 {statusLabel}: {label}
               </span>
-              {checkEditable({group}) && (
+              {checkEditable({ id, group }) && (
                 <div>
                   <i className="fa-solid fa-angle-down" />
                 </div>
