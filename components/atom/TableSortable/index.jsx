@@ -22,6 +22,7 @@ const Com = (props) => {
     sort,
     setSort,
     keyField = "m_MasterId",
+    keyFieldPrefix = "",
     className,
     headerClassName,
     isLockFirstColumn = true,
@@ -52,17 +53,17 @@ const Com = (props) => {
         <tbody>
           {data?.map((a, i) => {
             const _trParams = trParams(a);
+            
             return (
-              <tr key={`table_${a[keyField]}_${i}`} {..._trParams}>
+              <tr key={`table_${keyFieldPrefix}_${a[keyField]}_${i}`} {..._trParams}>
                 {columns?.map((b) => {
                   const { key, render, onCell, onWrapper, className } = b;
-
                   let cell = onCell ? onCell(a) : null;
                   let wrapper = onWrapper ? onWrapper(a) : null;
 
                   if (typeof render === "function") {
                     return (
-                      <React.Fragment key={key}>
+                      <React.Fragment key={`${keyFieldPrefix}_${a[keyField]}_${key}`}>
                         <td {...cell}>
                           <div {...wrapper}>{render("", a, b)}</div>
                         </td>
@@ -70,7 +71,7 @@ const Com = (props) => {
                     );
                   }
                   return (
-                    <td className={cn(className)} key={key} {...cell}>
+                    <td className={cn(className)} key={`${keyFieldPrefix}_${a[keyField]}_${key}`} {...cell}>
                       <div
                         className={cn(
                           styles.tableTdWrapper,

@@ -97,7 +97,7 @@ const Com = (props) => {
             filters,
             setFilters,
             className: styles.community,
-            // keyField: '',
+            keyField: 'comm_code',
             trParams: (row) => {
               return {
                 style: {

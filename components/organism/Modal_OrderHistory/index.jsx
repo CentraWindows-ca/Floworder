@@ -14,6 +14,46 @@ import styles from "./styles.module.scss";
 import { LocalDataContext, LocalDataProvider } from "./LocalDataProvider";
 import LoadingBlock from "components/atom/LoadingBlock";
 
+const codeToTitleMap = {
+  ScheduleOrder: "Schedule Order",
+  AddRecord: "Add Record",
+  AddRecordCalgary: "Add Record (Calgary)",
+  UploadAttachments: "Upload Attachments",
+  EditRecord2: "Edit Record",
+  StartJob: "Start Job",
+  MovedToDraft: "Moved to Draft",
+  MovetoOnHold: "Move to On Hold",
+  Create: "Create",
+  EditRecord: "Edit Record",
+  SyncPSQLData: "Sync PostgreSQL Data",
+  MoveToTransferred: "Move to Transferred",
+  SoftDelete: "Soft Delete",
+  Update: "Update",
+  MoveShipped: "Move to Shipped",
+  CompleteReservation: "Complete Reservation",
+  MarkReadyToShip: "Mark Ready to Ship",
+  AddWOSupreme: "Add Work Order Supreme",
+  AddWMWOBC: "Add WM Work Order BC",
+  MovetoInProgress: "Move to In Progress",
+  BackToInProgress: "Back to In Progress",
+  BackToScheduled: "Back to Scheduled",
+  DeleteAttachments: "Delete Attachments",
+  MovebacktoDraftScheduled: "Move back to Draft (Scheduled)",
+  MoveToTrash: "Move to Trash",
+  AddWMWOAB: "Add WM Work Order AB",
+  MoveToScheduled: "Move to Scheduled",
+  RestoreFromTrash: "Restore from Trash",
+  ScheduleOrder1: "Schedule Order (Alt)",
+  MoveToScheduled1: "Move to Scheduled (Alt)",
+  BackToReadytoShip: "Back to Ready to Ship",
+  UndoSoftDelete: "Undo Soft Delete",
+  Transit: "Transit",
+  UpdateWorkOrder: "Update Work Order",
+  UpdateWindowMakerData: "Update Window Maker Data",
+  BacktoDraft: "Back to Draft",
+};
+
+
 const Com = ({ layer = 1 }) => {
   const { isLoading, initMasterId, onHide, data } =
     useContext(LocalDataContext);
@@ -27,7 +67,7 @@ const Com = ({ layer = 1 }) => {
       title: "Operation",
       key: "Operation",
       render: (v, record) => {
-        return `${record?.Operation}`
+        return `${codeToTitleMap[record?.Operation] || record?.Operation}`
       }
     },
     {
@@ -88,6 +128,7 @@ const Com = ({ layer = 1 }) => {
                 data: _.orderBy(data, ["CreatedAt", "Id"], ["desc", "desc"]),
                 columns,
                 keyField: "Id",
+                keyFieldPrefix: `history_${initMasterId}`,
                 isLockFirstColumn: false,
               }}
             />
