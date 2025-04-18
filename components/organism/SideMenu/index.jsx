@@ -75,8 +75,6 @@ const Com = (props) => {
     );
   };
 
-  console.log("???", activeKey)
-
   return (
     <div className={cn("w-full", styles.root)}>
       <div className={cn(styles.statusGroups)}>

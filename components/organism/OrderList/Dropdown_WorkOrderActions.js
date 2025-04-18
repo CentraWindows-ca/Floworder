@@ -5,7 +5,6 @@ import {
   ArrowRightOutlined,
   DeleteOutlined,
   HistoryOutlined,
-  SyncOutlined,
   UndoOutlined,
 } from "@ant-design/icons";
 
