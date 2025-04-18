@@ -14,7 +14,7 @@ import styles from "./styles.module.scss";
 import { LocalDataContext, LocalDataProvider } from "./LocalDataProvider";
 import LoadingBlock from "components/atom/LoadingBlock";
 
-const Com = ({layer = 1}) => {
+const Com = ({ layer = 1 }) => {
   const { isLoading, initMasterId, onHide, data } =
     useContext(LocalDataContext);
 
@@ -40,12 +40,16 @@ const Com = ({layer = 1}) => {
       render: (t, record) => {
         return (
           <div className="flex gap-2">
-            <button
-              className="btn btn-sm btn-outline-primary"
-              onClick={() => handleShowOrderChanges(record)}
-            >
-              Detail
-            </button>
+            {record.Source === "PlantProduction__history" ? (
+              <div className="text-gray-300">-- Legacy Data--</div>
+            ) : (
+              <button
+                className="btn btn-sm btn-outline-primary"
+                onClick={() => handleShowOrderChanges(record)}
+              >
+                Detail
+              </button>
+            )}
           </div>
         );
       },
@@ -83,14 +87,18 @@ const Com = ({layer = 1}) => {
               {...{
                 data: _.orderBy(data, ["CreatedAt", "Id"], ["desc", "desc"]),
                 columns,
-                keyField: 'Id',
-                isLockFirstColumn: false
+                keyField: "Id",
+                isLockFirstColumn: false,
               }}
             />
           </div>
         </LoadingBlock>
       </Modal>
-      <SubModal_Changes data={idChanges} onHide={() => setIdChanges(0)} layer = {layer + 1}/>
+      <SubModal_Changes
+        data={idChanges}
+        onHide={() => setIdChanges(0)}
+        layer={layer + 1}
+      />
     </>
   );
 };
