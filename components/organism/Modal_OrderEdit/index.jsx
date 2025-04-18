@@ -68,7 +68,7 @@ const Com = ({}) => {
     d: <b className="text-primary">[Doors]</b>,
   };
 
-  const isOnStatusAllowToEdit = true // ![WORKORDER_MAPPING.Pending.key].includes( data?.["m_Status"]);
+  const isOnStatusAllowToEdit = true; // ![WORKORDER_MAPPING.Pending.key].includes( data?.["m_Status"]);
 
   const jsxTitle = (
     <div className="justify-content-between align-items-center flex-grow-1 flex">
@@ -189,21 +189,21 @@ const Com = ({}) => {
         <div className={cn(styles.modalContentContainer)}>
           <div className={cn(styles.gridsOfMainInfo)}>
             <div className={cn(styles.mainItem, styles["grid-1"])}>
+              <div className={cn(styles.sectionTitle)}>Basic Information</div>
+              <CollapseContainer id="basicInformation">
+                <Sec_OrderBasic />
+              </CollapseContainer>
+            </div>
+            <div className={cn(styles.mainItem, styles["mainItem-1"])}>
               <div className={cn(styles.sectionTitle)}>Order Information</div>
               <CollapseContainer id="orderInformation">
                 <Sec_OrderInfo />
               </CollapseContainer>
             </div>
-            <div className={cn(styles.mainItem, styles["mainItem-1"])}>
+            <div className={cn(styles.mainItem, styles["grid-2"])}>
               <div className={cn(styles.sectionTitle)}>Order Options</div>
               <CollapseContainer id="orderOptions">
                 <Sec_OrderOptions />
-              </CollapseContainer>
-            </div>
-            <div className={cn(styles.mainItem, styles["grid-2"])}>
-              <div className={cn(styles.sectionTitle)}>Basic Information</div>
-              <CollapseContainer id="basicInformation">
-                <Sec_OrderBasic />
               </CollapseContainer>
             </div>
             <div className={cn(styles.mainItem, styles["mainItem-2"])}>

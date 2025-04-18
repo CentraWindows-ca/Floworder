@@ -26,9 +26,12 @@ const Com = ({ layer = 1 }) => {
     {
       title: "Operation",
       key: "Operation",
+      render: (v, record) => {
+        return `${record?.Operation}`
+      }
     },
     {
-      title: "Submission time",
+      title: "Operation time",
       key: "CreatedAt",
     },
     {
@@ -59,14 +62,11 @@ const Com = ({ layer = 1 }) => {
   ];
 
   // use swr later
-
   const jsxTitle = (
     <div className="justify-content-between align-items-center flex-grow-1 flex">
       <div className="align-items-center flex gap-2">
         Work Order # {data?.m_WorkOrderNo}
-        <div className="align-items-center flex gap-2"></div>
       </div>
-      <div></div>
     </div>
   );
 

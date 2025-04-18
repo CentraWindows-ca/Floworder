@@ -52,7 +52,7 @@ export const LocalDataProvider = ({
         res?.data.map((a) => {
           return {
             ...a,
-            CreatedAt: utils.formatDate(a.CreatedAt),
+            CreatedAt: utils.formatDate(a.CreatedAt, "yyyy-MM-dd HH:mm:ss"),
           };
         }),
       );

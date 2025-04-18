@@ -178,7 +178,7 @@ const Com = ({ className, ...props }) => {
             {shouldShowTotal && (
               <tr>
                 <th>Total</th>
-                <td>${utils.formatCurrency2Decimal(data["m_TotalPrice"])}</td>
+                <td>{utils.formatCurrency2Decimal(data["m_TotalPrice"], "$")}</td>
                 <td>{utils.formatNumber(totalNumber)}</td>
                 <td>{utils.formatNumber(totalGlassQty)} </td>
                 <td>{utils.formatNumber(totalBoxQty)}</td>
@@ -203,7 +203,7 @@ const Com = ({ className, ...props }) => {
                         {j === 0 && (
                           <>
                             <td rowSpan={colSpan}>
-                              ${utils.formatCurrency2Decimal(prd.otherFields?.TotalPrice)}
+                              {utils.formatCurrency2Decimal(prd.otherFields?.TotalPrice, "$")}
                             </td>
                           </>
                         )}

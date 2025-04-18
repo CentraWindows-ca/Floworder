@@ -15,18 +15,6 @@ const group = 'basic'
 
 const COMMON_FIELDS = constants.applyField([
   {
-    Component: Editable.EF_Input,
-    id: "m_SiteContact",
-  },
-  {
-    Component: Editable.EF_Input,
-    id: "m_SiteContactPhoneNumber",
-  },
-  {
-    Component: Editable.EF_Input,
-    id: "m_SiteContactEmail",
-  },
-  {
     Component: Editable.EF_Text,
     id: "m_CustomerName",
     rows: 1,
@@ -35,6 +23,27 @@ const COMMON_FIELDS = constants.applyField([
     Component: Editable.EF_Text,
     id: "m_ProjectName",
     rows: 1,
+  },
+  {
+    Component: Editable.EF_Text,
+    id: "m_Address",
+    rows: 1,
+  },
+  {
+    Component: Editable.EF_Input,
+    id: "m_City",
+  },
+  {
+    Component: Editable.EF_Input,
+    id: "m_Email",
+  },
+  {
+    Component: Editable.EF_Input,
+    id: "m_PhoneNumber",
+  },
+  {
+    Component: Editable.EF_Input,
+    id: "m_OtherContactNumber",
   },
   {
     Component: Editable.EF_SelectEmployee,
@@ -49,28 +58,19 @@ const COMMON_FIELDS = constants.applyField([
   },
   {
     Component: Editable.EF_Input,
+    id: "m_SiteContact",
+  },
+  {
+    Component: Editable.EF_Input,
+    id: "m_SiteContactPhoneNumber",
+  },
+  {
+    Component: Editable.EF_Input,
+    id: "m_SiteContactEmail",
+  },
+  {
+    Component: Editable.EF_Input,
     id: "m_Comment_1",
-  },
-  {
-    Component: Editable.EF_Input,
-    id: "m_City",
-  },
-  {
-    Component: Editable.EF_Text,
-    id: "m_Address",
-    rows: 1,
-  },
-  {
-    Component: Editable.EF_Input,
-    id: "m_Email",
-  },
-  {
-    Component: Editable.EF_Input,
-    id: "m_PhoneNumber",
-  },
-  {
-    Component: Editable.EF_Input,
-    id: "m_OtherContactNumber",
   },
   {
     Component: Editable.EF_Community,
