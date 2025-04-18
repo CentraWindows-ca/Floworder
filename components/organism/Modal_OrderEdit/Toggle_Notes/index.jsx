@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
@@ -11,20 +11,20 @@ import styles from "./styles.module.scss";
 import { LocalDataContext } from "../LocalDataProvider";
 import { ToggleFull, NoData, DisplayBlock, displayFilter } from "../Com";
 
-const group = "notes"
+const group = "notes";
 
 const Com = ({}) => {
   const { data, kind, uiOrderType, onChange, checkEditable, onHide } =
     useContext(LocalDataContext);
 
   const COMMON_FIELDS = constants.applyField([
-    { id: "m_ShippingNotes" },
+    { id: "w_OfficeNotes" },
+    { id: "d_OfficeNotes" },
+    { id: "w_PlantNotes" },
+    { id: "d_DoorShopNotes" },
     { id: "m_ProjectManagementNotes" },
     { id: "m_ReturnTripNotes" },
-    { id: "w_OfficeNotes" },
-    { id: "w_PlantNotes" },
-    { id: "d_OfficeNotes" },
-    { id: "d_DoorShopNotes" },
+    { id: "m_ShippingNotes" },
   ]);
 
   let collapsedList = COMMON_FIELDS.filter((a) => {
@@ -41,14 +41,20 @@ const Com = ({}) => {
       )}
     >
       {collapsedList?.length > 0 ? (
-        <table className="table bordered table-hover">
+        <table className="bordered table-hover table">
           <tbody>
             {collapsedList?.map((a) => {
               const { id, title } = a;
               return (
                 <DisplayBlock id={id} key={id}>
                   <tr>
-                    <th style={{whiteSpace: 'nowrap', width: '100px', paddingRight: '20px'}}>
+                    <th
+                      style={{
+                        whiteSpace: "nowrap",
+                        width: "100px",
+                        paddingRight: "20px",
+                      }}
+                    >
                       <b>{title}</b>
                     </th>
                     <td>
@@ -87,7 +93,7 @@ const Com = ({}) => {
             k={id}
             value={data?.[id]}
             onChange={(v) => onChange(v, id)}
-            disabled={!checkEditable({group})}
+            disabled={!checkEditable({ group })}
             rows={3}
           />
         </div>
@@ -104,13 +110,13 @@ const Com = ({}) => {
         id={"notes"}
       >
         <div className={cn("grid grid-cols-2", styles.notesContainer)}>
-          {jsxNoteBlock("m_ShippingNotes")}
+          {jsxNoteBlock("w_OfficeNotes")}
+          {jsxNoteBlock("d_OfficeNotes")}
+          {jsxNoteBlock("w_PlantNotes")}
+          {jsxNoteBlock("d_DoorShopNotes")}
           {jsxNoteBlock("m_ProjectManagementNotes")}
           {jsxNoteBlock("m_ReturnTripNotes")}
-          {jsxNoteBlock("w_OfficeNotes")}
-          {jsxNoteBlock("w_PlantNotes")}
-          {jsxNoteBlock("d_OfficeNotes")}
-          {jsxNoteBlock("d_DoorShopNotes")}
+          {jsxNoteBlock("m_ShippingNotes")}
         </div>
       </ToggleFull>
     </>

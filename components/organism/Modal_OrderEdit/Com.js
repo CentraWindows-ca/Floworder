@@ -207,7 +207,6 @@ export const checkEditableById = ({ id, group, permissions, data }) => {
     const isAllowWindow = _.get(permissions, [`om.prod.wo.${group}.window`, `canEdit`], false)
     const isAllowDoor = _.get(permissions, [`om.prod.wo.${group}.door`, `canEdit`], false)
     const isAllowBoth = _.get(permissions, [`om.prod.wo.${group}`, `canEdit`], false)
-
     if (id) {
       if (id?.startsWith("w_")) {
         return isAllowWindow

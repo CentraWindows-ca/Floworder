@@ -79,6 +79,7 @@ const Com = (props) => {
   };
 
   const isPending = status === WORKORDER_MAPPING.Pending.key;
+  const isScheduled = status === WORKORDER_MAPPING.Scheduled.key;
   const columns = constants.applyField(
     [
       {
@@ -128,14 +129,13 @@ const Com = (props) => {
         display: isPending,
       },
       {
-        title: "Changed At",
-        key: "m_ChangedAt_display",
+        key: "m_LastModifiedAt_display",
         display: isPending,
-        initKey: "m_ChangedAt",
+        initKey: "m_LastModifiedAt",
         width: 125,
       },
       {
-        key: "m_ChangedBy",
+        key: "m_LastModifiedBy",
         display: isPending,
       },
       {
@@ -239,6 +239,15 @@ const Com = (props) => {
         width: 95,
       },
       {
+        key: "w_ProductionStartDate",
+        display: isWindow && isScheduled
+      },  
+      {
+        key: "d_ProductionStartDate",
+
+        display: isDoor && isScheduled
+      },        
+      {
         title: "Windows",
         key: "m_NumberOfWindows",
         display: isWindow,
@@ -314,25 +323,24 @@ const Com = (props) => {
         display: !isPending,
       },
       {
-        title: "Changed At",
-        key: "m_ChangedAt_display",
+        key: "m_LastModifiedAt_display",
         display: !isPending,
-        initKey: "m_ChangedAt",
+        initKey: "m_LastModifiedAt",
         width: 125,
       },
       {
-        key: "m_ChangedBy",
+        key: "m_LastModifiedBy",
         display: !isPending,
       },
       {
-        title: "Window Customer Date",
+        title: "Windows Customer Date",
         key: "w_CustomerDate_display",
         initKey: "w_CustomerDate",
         width: 195,
         display: isWindow,
       },
       {
-        title: "Door Customer Date",
+        title: "Doors Customer Date",
         key: "d_CustomerDate_display",
         initKey: "w_CustomerDate",
         width: 195,
@@ -373,7 +381,7 @@ const Com = (props) => {
         m_JobType,
         m_ShippingType,
         m_CreatedAt,
-        m_ChangedAt,
+        m_LastModifiedAt,
         m_CustomerDate,
         w_GlassOrderDate,
         w_CustomerDate,
@@ -398,7 +406,7 @@ const Com = (props) => {
       )?.label;
 
       merged.m_CreatedAt_display = utils.formatDate(m_CreatedAt);
-      merged.m_ChangedAt_display = utils.formatDate(m_ChangedAt);
+      merged.m_LastModifiedAt_display = utils.formatDate(m_LastModifiedAt);
 
       merged.m_CustomerDate_display = m_CustomerDate;
 

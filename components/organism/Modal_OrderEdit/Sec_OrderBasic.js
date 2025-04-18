@@ -100,7 +100,7 @@ const Com = ({}) => {
                     onChange(v, id);
                   }
                 }}
-                disabled={!checkEditable({id, group })}
+                disabled={!checkEditable({group })}
                 {...rest}
               />
             </div>

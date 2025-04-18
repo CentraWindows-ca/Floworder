@@ -155,7 +155,7 @@ const Com = ({}) => {
       {!_.isEmpty(windowInputs) && (
         <>
           <div className={styles.subTitle}>
-            <label>Window</label>
+            <label>Windows</label>
           </div>
           <div className={cn(styles.columnInputsContainer)}>
             {windowInputs?.map((a) => {
@@ -167,7 +167,7 @@ const Com = ({}) => {
       {!_.isEmpty(doorInputs) && (
         <>
           <div className={styles.subTitle}>
-            <label>Door</label>
+            <label>Doors</label>
           </div>
           <div className={cn(styles.columnInputsContainer)}>
             {doorInputs?.map((a) => {

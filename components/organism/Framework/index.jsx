@@ -34,11 +34,11 @@ const Com = ({children, onRefresh}) => {
     },
     {
       eventKey: "w",
-      title: "Window Orders",
+      title: "Windows Orders",
     },
     {
       eventKey: "d",
-      title: "Door Orders",
+      title: "Doors Orders",
     },
   ];
 

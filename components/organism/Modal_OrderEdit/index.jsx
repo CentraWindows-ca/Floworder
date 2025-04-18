@@ -54,8 +54,8 @@ const Com = ({}) => {
 
   const KindDisplay = {
     m: null,
-    w: <b className="text-primary">[Window]</b>,
-    d: <b className="text-primary">[Door]</b>,
+    w: <b className="text-primary">[Windows]</b>,
+    d: <b className="text-primary">[Doors]</b>,
   };
 
   const isOnStatusAllowToEdit = ![WORKORDER_MAPPING.Pending.key].includes(

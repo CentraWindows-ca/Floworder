@@ -33,7 +33,7 @@ const Com = ({}) => {
     },
     {
       title: "Submitted by",
-      key: "ChangedBy",
+      key: "LastModifiedBy",
     },
     {
       title: "",

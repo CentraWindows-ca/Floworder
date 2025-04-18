@@ -271,6 +271,8 @@ const Screen2 = ({
     // if existing. dont touch status
     if (newStatus) {
       updateValues.status = newStatus;
+    } else {
+      updateValues.status = existingWorkOrder?.m_Status || WORKORDER_MAPPING.Scheduled.key;
     }
 
     if (selectedOverrideOption === "ResetWorkOrder") {
@@ -310,6 +312,10 @@ const Screen2 = ({
       );
     }
 
+    console.log(res)
+
+    return null
+
     // update init values
     setInitValues({});
     setIsLoading(false);
@@ -321,7 +327,7 @@ const Screen2 = ({
     <div className="flex-column flex gap-2">
       {isWindow && (
         <div className="form-group row">
-          <label className="col-lg-3">Window Production Date</label>
+          <label className="col-lg-3">Windows Production Date</label>
           <div className="col-lg-3 justify-content-center flex">
             <Editable.EF_DateOnly
               id="winStartDate"
@@ -338,7 +344,7 @@ const Screen2 = ({
       )}
       {isDoor && (
         <div className="form-group row">
-          <label className="col-lg-3">Door Production Date</label>
+          <label className="col-lg-3">Doors Production Date</label>
           <div className="col-lg-3 justify-content-center flex">
             <Editable.EF_DateOnly
               id="doorStartDate "
@@ -499,18 +505,8 @@ const Screen2 = ({
       {/* new order needs it */}
 
       <div className="justify-content-center flex gap-2">
-        {!existingWorkOrder ? (
+        {!existingWorkOrder || selectedOverrideOption === "ResetWorkOrder" ? (
           <>
-            {/* <div className="form-group row">
-              <label className="col-lg-3">Reservation</label>
-              <div className="col-lg-3 justify-content-center flex">
-                <Editable.EF_Checkbox
-                  id="reservation"
-                  value={isReservation}
-                  onChange={(v) => setIsReservation((prev) => v)}
-                />
-              </div>
-            </div> */}
             <button
               className="btn btn-outline-secondary align-items-center flex gap-2"
               onClick={() => doFetch(WORKORDER_MAPPING.DraftReservation.key)}
@@ -528,7 +524,7 @@ const Screen2 = ({
                   height: "15px",
                   width: "15px",
                   background: WORKORDER_MAPPING.DraftReservation.color,
-                  border: '1px solid, white'
+                  border: "1px solid, white",
                 }}
               ></div>
               <span>Save as Draft Reservation</span>
@@ -550,7 +546,7 @@ const Screen2 = ({
                   height: "15px",
                   width: "15px",
                   background: WORKORDER_MAPPING.Scheduled.color,
-                  border:  '1px solid, white'
+                  border: "1px solid, white",
                 }}
               ></div>
               <span>Save as Scheduled</span>
@@ -560,7 +556,7 @@ const Screen2 = ({
           <>
             <button
               className="btn btn-primary align-items-center flex gap-2"
-              onClick={doFetch}
+              onClick={() => doFetch(null)}
               disabled={disabled}
             >
               <Spin

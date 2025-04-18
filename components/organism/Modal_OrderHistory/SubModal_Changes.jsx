@@ -83,7 +83,7 @@ const Com = ({ data, onHide }) => {
       >
         <LoadingBlock isLoading={false}>
           <div className="mb-2">
-            Record has been modified by <b>{historyData?.ChangedBy || "--"}</b>{" "}
+            Record has been modified by <b>{historyData?.LastModifiedBy || "--"}</b>{" "}
             at <b>{historyData?.CreatedAt}</b>
             <br />
             Source : {historyData?.Source}
@@ -138,14 +138,14 @@ const ChangesOnly = ({ historyData }) => {
         {...{
           list: historyData?.ChangedData_ItemList,
           type: "wi",
-          label: "Window Items",
+          label: "Windows Items",
         }}
       />
       <Items
         {...{
           list: historyData?.ChangedData_ItemList,
           type: "di",
-          label: "Door Items",
+          label: "Doors Items",
         }}
       />
       {/* <Files

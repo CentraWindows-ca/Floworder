@@ -277,7 +277,7 @@ const Com = ({
                   htmlFor={"ui_window"}
                   className="align-items-center flex gap-1"
                 >
-                  Window Info
+                  Windows Info
                 </label>
               </div>
               <div className="align-items-center flex gap-2">
@@ -292,7 +292,7 @@ const Com = ({
                   htmlFor={"ui_door"}
                   className="align-items-center flex gap-1"
                 >
-                  Door Info
+                  Doors Info
                 </label>
               </div>
             </>

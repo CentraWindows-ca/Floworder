@@ -25,14 +25,20 @@ const Com = ({ title, id }) => {
     checkEditable,
   } = useContext(LocalDataContext);
 
-  const handleImageChange = (event) => {
-    const files = Array.from(event.target.files); // Convert FileList to Array
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files); // Convert FileList to Array
 
-    setNewImages(
-      files?.map((a) => ({
-        file: a,
-      })),
-    );
+    if (_.isEmpty(files)) {
+      setNewImages(null)
+    } else {
+      setNewImages(
+        files?.map((a) => ({
+          file: a,
+        })),
+      );
+    }
+
+    e.target.value = '';
   };
 
   const handleSave = async () => {
@@ -117,7 +123,7 @@ const Com = ({ title, id }) => {
                     <div className="mt-2">
                       <button
                         className="btn btn-sm btn-danger"
-                        disabled={!checkEditable({id,group: "images"})}
+                        disabled={!checkEditable({group: "images"})}
                         onClick={() => onDeleteImage(a)}
                       >
                         delete
@@ -133,7 +139,7 @@ const Com = ({ title, id }) => {
           <NoData />
         )}
       </div>
-      <Modal show={newImages} size="lg" onHide={() => setNewImages(null)}>
+      <Modal show={!!newImages} size="lg" onHide={() => setNewImages(null)}>
         <div>
           <div>
             <table className="table-sm table-bordered table-hover table border">

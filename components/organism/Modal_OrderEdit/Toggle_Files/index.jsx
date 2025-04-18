@@ -20,14 +20,20 @@ const Com = ({ title, id }) => {
     checkEditable,
   } = useContext(LocalDataContext);
 
-  const handleImageChange = (event) => {
-    const files = Array.from(event.target.files); // Convert FileList to Array
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files); // Convert FileList to Array
 
-    setNewAttachments(
-      files?.map((a) => ({
-        file: a,
-      })),
-    );
+    if (_.isEmpty(files)) {
+      setNewAttachments(null)
+    } else {
+      setNewAttachments(
+        files?.map((a) => ({
+          file: a,
+        })),
+      );
+    }
+
+    e.target.value = '';
   };
 
   const handleSave = async () => {
@@ -55,7 +61,7 @@ const Com = ({ title, id }) => {
   return (
     <ToggleBlock title={jsxTitle} id={id}>
       <div className={styles.togglePadding}>
-        {checkEditable({ id, group: "attachments" }) && (
+        {checkEditable({ group: "attachments" }) && (
           <div className="justify-content-between align-items-center mb-2 flex border-b border-gray-200 pb-2">
             <div>
               <label htmlFor="file-upload" className="btn btn-success">
@@ -67,7 +73,7 @@ const Com = ({ title, id }) => {
                 type="file"
                 multiple
                 className="d-none"
-                onChange={handleImageChange}
+                onChange={handleFileChange}
               />
             </div>
           </div>
@@ -88,9 +94,10 @@ const Com = ({ title, id }) => {
                 const size = utils.formatNumber(
                   utils.calculateFileSize(fileRawData) / 1024 || 0,
                 );
+                const submittedAt_display = submittedAt
                 return (
                   <tr key={`${title}_${id}`}>
-                    <td className="text-center" style={{ width: 300 }}>
+                    <td className="text-left">
                       <span
                         className="text-blue-500 hover:text-blue-400"
                         style={{ cursor: "pointer" }}
@@ -104,16 +111,7 @@ const Com = ({ title, id }) => {
                     <td className="text-right" style={{ width: 120 }}>
                       {size} KB
                     </td>
-                    <td>{submittedAt}</td>
-                    <td className="text-left">
-                      {submittedBy ? (
-                        <>
-                          <b>[{submittedBy}]:</b>
-                          <br />
-                        </>
-                      ) : null}
-                      {notes || "--"}
-                    </td>
+                    <td>{submittedAt_display}</td>
                     <td className="text-left">
                       {submittedBy ? (
                         <>

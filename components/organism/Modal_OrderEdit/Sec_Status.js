@@ -53,10 +53,10 @@ const Com = ({}) => {
       )}
 
       {(kind === "w" || kind === "m") && (
-        <StatusUpdate statusLabel="Window" currentKind="w" />
+        <StatusUpdate statusLabel="Windows" currentKind="w" />
       )}
       {(kind === "d" || kind === "m") && (
-        <StatusUpdate statusLabel="Door" currentKind="d" />
+        <StatusUpdate statusLabel="Doors" currentKind="d" />
       )}
       {/* 
         either window or door in transfered status, allow to input location
