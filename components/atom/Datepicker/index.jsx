@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import cn from "classnames";
 import DatePicker from "react-datepicker";
 import { parse, parseISO, formatISO, format } from "date-fns";
@@ -42,17 +42,27 @@ const DFDatePicker = ({
   const dateValue = value ? parseISO(value) : null;
 
   const handleSelect = (v) => {
-    const formattedDate = v ? format(v, "yyyy-MM-dd") : null;
-    onSelect(v, formattedDate);
+    try {
+      const formattedDate = v ? format(v, "yyyy-MM-dd") : null;
+      onSelect(v, formattedDate);
+    } catch (e) {
+      onSelect("", null);
+    }
   };
 
-  const handleChange = (v) => {
-    const formattedDate = v ? format(v, "yyyy-MM-dd") : null;
-    onChange(v, formattedDate);
-  };
+  // const handleChange = (v) => {
+  //   const formattedDate = v ? format(v, "yyyy-MM-dd") : null;
+  //   onChange(v, formattedDate);
+  // };
 
   // text for disabled
   const valueTextDisabled = dateValue ? format(dateValue, otherProps.dateFormat) : ""
+
+  const CustomInput = React.forwardRef(({ value, onClick }, ref) => (
+    <div className={cn(value ? styles.dateInput : styles.dateInputBlank)} onClick={onClick} ref={ref}>
+      {value || "Select date"}
+    </div>
+  ));
 
   // 01/15/2025 14:27:05
   return (
@@ -78,10 +88,11 @@ const DFDatePicker = ({
         >
           <DatePicker
             selected={dateValue}
-            onChange={handleChange}
+            // onChange={handleChange}
             onSelect={handleSelect}
             className={styles.root}
             readOnly={disabled}
+            customInput={<CustomInput />}
             {...otherProps}
             {...props}
           />

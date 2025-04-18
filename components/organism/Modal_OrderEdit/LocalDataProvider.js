@@ -339,7 +339,7 @@ export const LocalDataProvider = ({
     );
 
     await doInit(initMasterId);
-    toast("Transfer location saved", { type: "success" });
+    toast("Transferred location saved", { type: "success" });
     onSave();
   });
 

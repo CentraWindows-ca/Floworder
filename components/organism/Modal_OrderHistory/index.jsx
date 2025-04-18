@@ -14,7 +14,7 @@ import styles from "./styles.module.scss";
 import { LocalDataContext, LocalDataProvider } from "./LocalDataProvider";
 import LoadingBlock from "components/atom/LoadingBlock";
 
-const Com = ({}) => {
+const Com = ({layer = 1}) => {
   const { isLoading, initMasterId, onHide, data } =
     useContext(LocalDataContext);
 
@@ -32,8 +32,8 @@ const Com = ({}) => {
       key: "CreatedAt",
     },
     {
-      title: "Submitted by",
-      key: "LastModifiedBy",
+      title: "Changed by",
+      key: "ChangedBy",
     },
     {
       title: "",
@@ -75,6 +75,7 @@ const Com = ({}) => {
         onHide={onHide}
         bodyClassName={styles.modalBody}
         titleClassName={"flex justify-content-between flex-grow-1"}
+        layer={layer}
       >
         <LoadingBlock isLoading={isLoading}>
           <div className="p-2">
@@ -89,7 +90,7 @@ const Com = ({}) => {
           </div>
         </LoadingBlock>
       </Modal>
-      <SubModal_Changes data={idChanges} onHide={() => setIdChanges(0)} />
+      <SubModal_Changes data={idChanges} onHide={() => setIdChanges(0)} layer = {layer + 1}/>
     </>
   );
 };

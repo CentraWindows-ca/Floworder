@@ -68,9 +68,7 @@ const Com = ({}) => {
     d: <b className="text-primary">[Doors]</b>,
   };
 
-  const isOnStatusAllowToEdit = ![WORKORDER_MAPPING.Pending.key].includes(
-    data?.["m_Status"],
-  );
+  const isOnStatusAllowToEdit = true // ![WORKORDER_MAPPING.Pending.key].includes( data?.["m_Status"]);
 
   const jsxTitle = (
     <div className="justify-content-between align-items-center flex-grow-1 flex">
@@ -264,6 +262,7 @@ const Com = ({}) => {
       <Modal_OrderHistory
         initMasterId={historyOrderMasterId}
         onHide={() => setHistoryOrderMasterId(null)}
+        layer={1}
       />
     </Modal>
   );

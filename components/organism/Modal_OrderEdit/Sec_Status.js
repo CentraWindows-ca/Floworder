@@ -70,6 +70,10 @@ const Com = ({}) => {
               onChange={(v) => onChange(v, "m_TransferredLocation")}
               placeholder={"Transferred Location"}
               options={constants.WorkOrderSelectOptions.branches}
+              disabled={
+                initData?.m_TransferredLocation ===
+                  data?.m_TransferredLocation || !checkEditable({group})
+              }
             />
 
             <button

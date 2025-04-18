@@ -13,7 +13,7 @@ import styles from "./styles.module.scss";
 import { LocalDataContext, LocalDataProvider } from "./LocalDataProvider";
 import LoadingBlock from "components/atom/LoadingBlock";
 
-const Com = ({ data, onHide }) => {
+const Com = ({ data, layer, onHide }) => {
   const [historyData, setHistoryData] = useState(null);
   const [tab, setTab] = useState("changesOnly");
 
@@ -80,6 +80,7 @@ const Com = ({ data, onHide }) => {
         onHide={onHide}
         fullscreen={true}
         titleClassName={"flex justify-content-between flex-grow-1"}
+        layer={layer}
       >
         <LoadingBlock isLoading={false}>
           <div className="mb-2">
