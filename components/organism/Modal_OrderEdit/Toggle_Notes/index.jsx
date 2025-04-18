@@ -11,6 +11,8 @@ import styles from "./styles.module.scss";
 import { LocalDataContext } from "../LocalDataProvider";
 import { ToggleFull, NoData, DisplayBlock, displayFilter } from "../Com";
 
+const group = "notes"
+
 const Com = ({}) => {
   const { data, kind, uiOrderType, onChange, checkEditable, onHide } =
     useContext(LocalDataContext);
@@ -85,7 +87,7 @@ const Com = ({}) => {
             k={id}
             value={data?.[id]}
             onChange={(v) => onChange(v, id)}
-            disabled={!checkEditable()}
+            disabled={!checkEditable({group})}
             rows={3}
           />
         </div>

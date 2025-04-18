@@ -12,13 +12,15 @@ import { LocalDataContext } from "./LocalDataProvider";
 
 import { DisplayBlock, displayFilter } from "./Com";
 
+const group = 'information'
+
 const COMMON_FIELDS = constants.applyField([
   {
     Component: Editable.EF_SelectWithLabel,
     id: "m_BranchId",
     options: constants.WorkOrderSelectOptions.branches,
     overrideOnChange: (onChange, params) => {
-      const [ v, id, o ] = params;
+      const [v, id, o] = params;
       onChange(v, "m_BranchId");
       onChange(o?.label, "m_Branch");
     },
@@ -26,7 +28,11 @@ const COMMON_FIELDS = constants.applyField([
   {
     Component: Editable.EF_SelectWithLabel,
     id: "m_ManufacturingFacility",
-    options: constants.WorkOrderSelectOptions.manufacturingFacilities,
+    options: _.keys(constants.ManufacturingFacilities)?.map((k) => ({
+      label: k,
+      value: k,
+      key: k,
+    })),
   },
   {
     Component: Editable.EF_SelectWithLabel,
@@ -58,7 +64,7 @@ const COMMON_FIELDS = constants.applyField([
     id: "m_SalesRepKeyAccount",
     placeholder: "-",
     overrideOnChange: (onChange, params) => {
-      const [ v, id, o ] = params;
+      const [v, id, o] = params;
       onChange(v, "m_SalesRepKeyAccount");
       onChange(o?.name, "m_SalesRep");
     },
@@ -78,20 +84,20 @@ const WINDOW_FIELDS = constants.applyField([
     Component: Editable.EF_SelectWithLabel,
     id: "w_GlassSupplier",
     options: (dictionary) => {
-      return dictionary?.glassSupplierList?.map(a => ({
+      return dictionary?.glassSupplierList?.map((a) => ({
         value: a.id,
-        label: a.name
-      }))
+        label: a.name,
+      }));
     },
   },
   {
     Component: Editable.EF_SelectWithLabel,
     id: "w_GlassOptions",
     options: (dictionary) => {
-      return dictionary?.glassOptionList?.map(a => ({
+      return dictionary?.glassOptionList?.map((a) => ({
         value: a.id,
-        label: a.name
-      }))
+        label: a.name,
+      }));
     },
   },
 ]);
@@ -109,10 +115,10 @@ const DOOR_FIELDS = constants.applyField([
     Component: Editable.EF_SelectWithLabel,
     id: "d_GlassSupplier",
     options: (dictionary) => {
-      return dictionary?.glassSupplierList?.map(a => ({
+      return dictionary?.glassSupplierList?.map((a) => ({
         value: a.id,
-        label: a.name
-      }))
+        label: a.name,
+      }));
     },
   },
 ]);
@@ -196,7 +202,7 @@ const Block = ({ inputData }) => {
               onChange(v, id);
             }
           }}
-          disabled={!checkEditable(id)}
+          disabled={!checkEditable({ id, group })}
           options={options}
           {...rest}
         />

@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import _ from "lodash";
 import { useRouter } from "next/router";
 import { GeneralContext } from "lib/provider/GeneralProvider";
@@ -38,7 +44,7 @@ export const LocalDataProvider = ({
   ...props
 }) => {
   const generalContext = useContext(GeneralContext);
-  const { toast } = generalContext;
+  const { toast, permissions } = generalContext;
   const { requestData } = useInterrupt();
   const [data, setData] = useState(null);
 
@@ -484,9 +490,13 @@ export const LocalDataProvider = ({
   const uIstatusObj =
     ORDER_STATUS?.find((a) => a.key === data?.[STATUS[kind]]) || {};
 
-  const checkEditable = useCallback((id) => {
-    return isEditable && checkEditableById(id, data);  
-  }, [isEditable, initMasterId, data?.m_Status]);
+  const checkEditable = useCallback(
+    (params = {}) => {
+      const { id, group } = params;
+      return isEditable && checkEditableById({ id, group, data, permissions });
+    },
+    [isEditable, initMasterId, data?.m_Status, permissions],
+  );
 
   const context = {
     ...generalContext,

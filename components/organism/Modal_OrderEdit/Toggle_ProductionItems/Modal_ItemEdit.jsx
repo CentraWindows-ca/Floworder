@@ -245,6 +245,11 @@ const Com = (props) => {
 
   const fields = item?.kind === 'w' ? WINDOW_FIELDS : DOOR_FIELDS
 
+  const _editgroup = {
+    "w": "windowitems",
+    "d": "dooritems"
+  }
+
   return (
     <Modal
       show={initItem}
@@ -262,13 +267,13 @@ const Com = (props) => {
               setItem={setItem}
               key={`item_${a.id}`}
               inputData={a}
-              isEditable = {checkEditable(a.id)}
+              isEditable = {checkEditable({group: _editgroup[item?.kind]})}
             />
           );
         })}
       </div>
       <div className="justify-content-center my-2 flex bg-slate-100 p-2">
-        <button className="btn btn-primary px-4" onClick={handleSave} disabled={!checkEditable()}>
+        <button className="btn btn-primary px-4" onClick={handleSave} disabled={!checkEditable({group: _editgroup[item?.kind]})}>
           Save
         </button>
       </div>

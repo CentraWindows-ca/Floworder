@@ -83,6 +83,7 @@ export const EF_SelectWithLabel = React.memo(
     // sortBy = "label",
     ...rest
   }) => {
+
     let renderOptions = options;
     if (sortBy)
       renderOptions = renderOptions?.sort(

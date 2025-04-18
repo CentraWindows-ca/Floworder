@@ -18,7 +18,7 @@ import Toggle_GlassItems from "./Toggle_GlassItems";
 import Toggle_Images from "./Toggle_Images";
 import Toggle_Files from "./Toggle_Files";
 import { DisplayBlock } from "./Com";
-import constants, {WORKORDER_MAPPING} from "lib/constants";
+import constants, { WORKORDER_MAPPING } from "lib/constants";
 
 // styles
 import styles from "./styles.module.scss";
@@ -58,15 +58,15 @@ const Com = ({}) => {
     d: <b className="text-primary">[Door]</b>,
   };
 
-  const isOnStatusAllowToEdit = ![
-    WORKORDER_MAPPING.Pending.key,
-  ].includes(data?.['m_Status'])
+  const isOnStatusAllowToEdit = ![WORKORDER_MAPPING.Pending.key].includes(
+    data?.["m_Status"],
+  );
 
   const jsxTitle = (
     <div className="justify-content-between align-items-center flex-grow-1 flex">
       <div className="align-items-center flex gap-2">
         <PermissionBlock
-          featureCode={constants.FEATURE_CODES["om.prod.wo"]}
+          featureCodeGroup={constants.FEATURE_CODES["om.prod.wo"]}
           op="canEdit"
         >
           {!checkEditable() && !isDeleted && isOnStatusAllowToEdit && (
@@ -80,8 +80,8 @@ const Com = ({}) => {
           )}
         </PermissionBlock>
         <PermissionBlock
-          featureCode={constants.FEATURE_CODES["om.prod.woGetWindowMaker"]}
-          op="canDelete"
+          featureCode={constants.FEATURE_CODES["om.prod.wo"]}
+          op="canAdd"
         >
           {!checkEditable() && !isDeleted && (
             <button
@@ -134,7 +134,8 @@ const Com = ({}) => {
           )}
         >
           <div className={cn(styles.anchors)}>
-            <span onClick={() => onAnchor("basic", true)}>Basic</span>|
+            <span onClick={() => onAnchor("basic", true)}>Basic</span> |
+            <span onClick={() => onAnchor("notes", true)}>Notes</span> |
             <span onClick={() => onAnchor("images", true)}>
               Images ({existingImages?.length || 0})
             </span>
@@ -150,7 +151,6 @@ const Com = ({}) => {
             <span onClick={() => onAnchor("glassItems", true)}>
               Glass ({glassTotal?.qty || 0}/{glassTotal?.glassQty || 0})
             </span>
-            |<span onClick={() => onAnchor("notes", true)}>Notes</span>
           </div>
         </div>
       </div>
@@ -165,7 +165,7 @@ const Com = ({}) => {
       onHide={onHide}
       fullscreen={true}
       bodyClassName={styles.modalBody}
-      headerClassName = {styles.modalHeader}
+      headerClassName={styles.modalHeader}
       titleClassName={"flex justify-content-between flex-grow-1"}
     >
       <span id="basic" />
@@ -205,12 +205,18 @@ const Com = ({}) => {
               </CollapseContainer>
             </div>
           </div>
-          <div className="flex-column flex" style={{ marginTop: "10px", marginBottom: "10px" }}>
+          <div
+            className="flex-column flex"
+            style={{ marginTop: "10px", marginBottom: "10px" }}
+          >
             <Toggle_Notes />
           </div>
           {checkEditable() && (
             <div
-              className={cn("justify-content-center flex p-2", styles.buttonContainer)}
+              className={cn(
+                "justify-content-center flex p-2",
+                styles.buttonContainer,
+              )}
               style={{ margin: "10px 0px" }}
             >
               <button
@@ -223,7 +229,7 @@ const Com = ({}) => {
             </div>
           )}
 
-          <hr/>
+          <hr />
 
           <div className="flex-column flex" style={{ gap: "10px" }}>
             <Toggle_Images title={"Images"} id={"images"} />

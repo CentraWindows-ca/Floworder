@@ -19,9 +19,12 @@ const _ifDisplay = ({ kind, uiOrderType, id, displayAs }, data) => {
   if (!uiOrderType?.w && currentKind === "w") return null;
   if (!uiOrderType?.d && currentKind === "d") return null;
 
-  if (id === 'm_Community') {
+  if (id === "m_Community") {
     //
-    return data?.m_JobType === "SO" && constants.checkProvince(data?.m_Branch) === 'AB'
+    return (
+      data?.m_JobType === "SO" &&
+      constants.checkProvince(data?.m_Branch) === "AB"
+    );
   }
 
   if (currentKind === kind || currentKind === "m" || kind === "m") {
@@ -35,12 +38,15 @@ export const displayFilter = (itemList, { kind, uiOrderType }) => {
   return itemList?.filter((a) => {
     const { id = "m", displayAs } = a;
     // currentKind is data kind
-    return _ifDisplay({
-      kind,
-      uiOrderType,
-      id,
-      displayAs,
-    }, a);
+    return _ifDisplay(
+      {
+        kind,
+        uiOrderType,
+        id,
+        displayAs,
+      },
+      a,
+    );
   });
 };
 
@@ -48,12 +54,15 @@ export const DisplayBlock = ({ children, id = "m", displayAs, ...props }) => {
   // kind is UI selected kind
   const { uiOrderType, kind, data } = useContext(LocalDataContext);
 
-  const display = _ifDisplay({
-    kind,
-    uiOrderType,
-    id,
-    displayAs,
-  }, data);
+  const display = _ifDisplay(
+    {
+      kind,
+      uiOrderType,
+      id,
+      displayAs,
+    },
+    data,
+  );
 
   if (display) {
     return children;
@@ -160,31 +169,60 @@ export const ToggleFull = ({
 };
 
 export const NoData = ({ title = "No Data", className }) => {
-  return <div className={cn("text-center text-slate-400", className)}>-- {title} --</div>;
+  return (
+    <div className={cn("text-center text-slate-400", className)}>
+      -- {title} --
+    </div>
+  );
 };
 
+export const checkEditableById = ({ id, group, permissions, data }) => {
+  if (!id && !group) return true;
 
-export const checkEditableById = (id, data) => {
-  if (!id) return true
   // for pending, only allow to edit schedueld
   if (data?.m_Status === WORKORDER_MAPPING.Pending.key) {
-    if ([
-      'm_ShippingStartDate',
-      'm_RevisedDeliveryDate',
-      'w_CustomerDate',
-      'w_ProductionStartDate',
-      'w_PaintStartDate',
-      'w_GlassOrderDate',
-      'w_GlassRecDate',
-      'd_CustomerDate',
-      'd_ProductionStartDate',
-      'd_PaintStartDate',
-      'd_GlassOrderDate'
-    ].includes(id)) {
-      return true
+    if (
+      [
+        "m_ShippingStartDate",
+        "m_RevisedDeliveryDate",
+        "w_CustomerDate",
+        "w_ProductionStartDate",
+        "w_PaintStartDate",
+        "w_GlassOrderDate",
+        "w_GlassRecDate",
+        "d_CustomerDate",
+        "d_ProductionStartDate",
+        "d_PaintStartDate",
+        "d_GlassOrderDate",
+      ].includes(id)
+    ) {
+      return true;
     } else {
-      return false
+      return false;
     }
   }
-  return true
-}
+
+  // permissions checking
+  if (group) {
+    const isAllowWindow = _.get(permissions, [`om.prod.wo.${group}.window`, `canEdit`], false)
+    const isAllowDoor = _.get(permissions, [`om.prod.wo.${group}.door`, `canEdit`], false)
+    const isAllowBoth = _.get(permissions, [`om.prod.wo.${group}`, `canEdit`], false)
+
+    if (id) {
+      if (id?.startsWith("w_")) {
+        return isAllowWindow
+      }
+      if (id?.startsWith("d_")) {
+        return isAllowDoor
+      }
+      if (id?.startsWith("m_")) {
+        return isAllowWindow || isAllowDoor
+      }
+      return false
+    } else {
+      return isAllowBoth
+    }   
+  }
+
+  return true;
+};

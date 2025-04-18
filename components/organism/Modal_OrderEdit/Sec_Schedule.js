@@ -12,6 +12,8 @@ import { LocalDataContext } from "./LocalDataProvider";
 
 import { DisplayBlock, displayFilter } from "./Com";
 
+const group = "schedule"
+
 const COMMON_FIELDS = constants.applyField([
   {
     id: "m_ShippingStartDate",
@@ -146,7 +148,7 @@ const DisplayDate = ({ id, title }) => {
           id={id}
           value={data?.[id]}
           onChange={(v) => onChange(v, id)}
-          disabled={!checkEditable(id)}
+          disabled={!checkEditable({id, group})}
         />
       </div>
     </DisplayBlock>

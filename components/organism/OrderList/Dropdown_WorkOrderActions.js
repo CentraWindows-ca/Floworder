@@ -6,7 +6,7 @@ import {
   DeleteOutlined,
   HistoryOutlined,
   SyncOutlined,
-  UndoOutlined
+  UndoOutlined,
 } from "@ant-design/icons";
 
 import { Button } from "antd";
@@ -16,11 +16,12 @@ import { useInterrupt } from "lib/provider/InterruptProvider";
 import cn from "classnames";
 import _ from "lodash";
 import OrdersApi from "lib/api/OrdersApi";
-import WM2CWProdApi from "lib/api/WM2CWProdApi"
+import WM2CWProdApi from "lib/api/WM2CWProdApi";
 import Dropdown_Custom from "components/atom/Dropdown_Custom";
 import PermissionBlock from "components/atom/PermissionBlock";
 
 import constants, {
+  DraftReservation,
   ORDER_STATUS,
   WORKORDER_WORKFLOW,
   WORKORDER_MAPPING,
@@ -48,6 +49,8 @@ const WorkOrderActions = ({
 }) => {
   const { m_WorkOrderNo, m_IsActive, w_Status, d_Status } = data;
   const { toast, permissions } = useContext(GeneralContext);
+
+  const { filterOutByStatus } = useFilterControl(permissions);
 
   const { requestData } = useInterrupt();
 
@@ -157,13 +160,21 @@ const WorkOrderActions = ({
     const dbSource = data.m_DBSource;
     // fetch from WM
     if (dbSource === "WM_AB") {
-      await WM2CWProdApi.updateOnly_AB_WMByWorkOrderAsync(null, {
-        workOrderNo: data?.m_WorkOrderNo,
-      }, data);
+      await WM2CWProdApi.updateOnly_AB_WMByWorkOrderAsync(
+        null,
+        {
+          workOrderNo: data?.m_WorkOrderNo,
+        },
+        data,
+      );
     } else {
-      await WM2CWProdApi.updateOnly_BC_WMByWorkOrderAsync(null, {
-        workOrderNo: data?.m_WorkOrderNo,
-      }, data);
+      await WM2CWProdApi.updateOnly_BC_WMByWorkOrderAsync(
+        null,
+        {
+          workOrderNo: data?.m_WorkOrderNo,
+        },
+        data,
+      );
     }
 
     toast("Work order updated from WindowMaker", { type: "success" });
@@ -183,7 +194,7 @@ const WorkOrderActions = ({
       </PermissionBlock>
 
       <PermissionBlock
-        featureCode={constants.FEATURE_CODES["om.prod.wo"]}
+        featureCodeGroup={constants.FEATURE_CODES["om.prod.wo"]}
         isHidden={filterOutByStatus({ id: "editOrder", data })}
         op="canEdit"
       >
@@ -193,7 +204,7 @@ const WorkOrderActions = ({
       </PermissionBlock>
 
       <PermissionBlock
-        featureCode={constants.FEATURE_CODES["om.prod.wo"]}
+        featureCodeGroup={constants.FEATURE_CODES["om.prod.wo"]}
         isHidden={filterOutByStatus({ id: "editPendingOrder", data })}
         op="canEdit"
       >
@@ -202,9 +213,8 @@ const WorkOrderActions = ({
         </Button>
       </PermissionBlock>
 
-
       <PermissionBlock
-        featureCode={constants.FEATURE_CODES["om.prod.statusSwitchGeneral"]}
+        featureCode={constants.FEATURE_CODES["om.prod.wo.status.window"]}
       >
         {allowedStatusWindow?.map((stepName) => {
           const { label, color, key } = WORKORDER_MAPPING[stepName];
@@ -232,7 +242,11 @@ const WorkOrderActions = ({
             </PermissionBlock>
           );
         })}
+      </PermissionBlock>
 
+      <PermissionBlock
+        featureCode={constants.FEATURE_CODES["om.prod.wo.status.door"]}
+      >
         {allowedStatusDoor?.map((stepName) => {
           const { label, color, key } = WORKORDER_MAPPING[stepName];
           return (
@@ -280,8 +294,9 @@ const WorkOrderActions = ({
         </Button>
       </PermissionBlock>
       <PermissionBlock
-        featureCode={constants.FEATURE_CODES["om.prod.woGetWindowMaker"]}
+        featureCode={constants.FEATURE_CODES["om.prod.wo"]}
         isHidden={filterOutByStatus({ id: "syncFromWindowMaker", data })}
+        op="canEdit"
       >
         <Button
           type="text"
@@ -293,8 +308,9 @@ const WorkOrderActions = ({
       </PermissionBlock>
 
       <PermissionBlock
-        featureCode={constants.FEATURE_CODES["om.prod.woHistory"]}
+        featureCode={constants.FEATURE_CODES["om.prod.history"]}
         isHidden={filterOutByStatus({ id: "viewOrderHistory", data })}
+        op="canView"
       >
         <Button type="text" icon={<HistoryOutlined />} onClick={onHistory}>
           View Order History
@@ -343,25 +359,49 @@ const WorkOrderActions = ({
   );
 };
 
-const filterOutByStatus = ({ id, data, permissions }) => {
-  // admin is able to delete
-  if (permissions?.['om.prod.woAdmin']?.['canDelete']) {
-    if (id === 'deleteOrder') {
-      return false
+const useFilterControl = (permissions) => {
+  const filterOutByStatus = ({ id, data }) => {
+    // admin is able to delete
+    if (permissions?.["om.prod.woAdmin"]?.["canDelete"]) {
+      if (id === "deleteOrder") {
+        return false;
+      }
     }
-  }
 
-  // NOTE: same rule applies to popup edit button. if pending or cancelled cant edit
-  if (data?.m_Status === WORKORDER_MAPPING.Pending.key) {
-    if (id !== "viewOrder" && id !== "editPendingOrder") return true;
-  }
+    // NOTE: same rule applies to popup edit button. if pending or cancelled cant edit
+    if (data?.m_Status === WORKORDER_MAPPING.Pending.key) {
+      if (id !== "viewOrder" && id !== "editPendingOrder") return true;
+    } else {
+      if (id === "editPendingOrder") {
+        return true;
+      }
+    }
+    if (data?.m_Status === WORKORDER_MAPPING.Cancelled.key) {
+      if (
+        id !== "viewOrder" &&
+        id !== "deleteOrder" &&
+        id !== "viewOrderHistory"
+      )
+        return true;
+    }
 
-  if (data?.m_Status === WORKORDER_MAPPING.Cancelled.key) {
-    if (id !== "viewOrder" && id !== "deleteOrder" && id !== "viewOrderHistory")
-      return true;
-  }
+    if (
+      id === `doorStatus_${WORKORDER_MAPPING.DraftReservation.key}` ||
+      id === `windowStatus_${WORKORDER_MAPPING.DraftReservation.key}`
+    ) {
+      if (permissions?.["om.prod.wo.statusReservation"]?.["canEdit"]) {
+        return false;
+      } else {
+        return true;
+      }
+    }
 
-  return false;
+    return false;
+  };
+
+  return {
+    filterOutByStatus,
+  };
 };
 
 export default WorkOrderActions;

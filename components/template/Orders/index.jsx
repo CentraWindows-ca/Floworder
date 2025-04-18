@@ -29,7 +29,7 @@ import styles from "./styles.module.scss";
 
 const DEFAULT_SORT = [
   {
-    field: "m_LastModifiedAt",
+    field: "m_CreatedAt",
     isDescending: true,
   },
 ];

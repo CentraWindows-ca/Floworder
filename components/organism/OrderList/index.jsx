@@ -128,6 +128,17 @@ const Com = (props) => {
         display: isPending,
       },
       {
+        title: "Changed At",
+        key: "m_ChangedAt_display",
+        display: isPending,
+        initKey: "m_ChangedAt",
+        width: 125,
+      },
+      {
+        key: "m_ChangedBy",
+        display: isPending,
+      },
+      {
         key: "m_InstallStatus",
         initKey: "m_InstallStatus",
         display: isPending && !isDeleted,
@@ -292,7 +303,7 @@ const Com = (props) => {
         display: !isPending,
       },
       {
-        title: "Created On",
+        title: "Created At",
         key: "m_CreatedAt_display",
         display: !isPending,
         initKey: "m_CreatedAt",
@@ -300,6 +311,17 @@ const Com = (props) => {
       },
       {
         key: "m_CreatedBy",
+        display: !isPending,
+      },
+      {
+        title: "Changed At",
+        key: "m_ChangedAt_display",
+        display: !isPending,
+        initKey: "m_ChangedAt",
+        width: 125,
+      },
+      {
+        key: "m_ChangedBy",
         display: !isPending,
       },
       {
@@ -351,6 +373,7 @@ const Com = (props) => {
         m_JobType,
         m_ShippingType,
         m_CreatedAt,
+        m_ChangedAt,
         m_CustomerDate,
         w_GlassOrderDate,
         w_CustomerDate,
@@ -375,6 +398,8 @@ const Com = (props) => {
       )?.label;
 
       merged.m_CreatedAt_display = utils.formatDate(m_CreatedAt);
+      merged.m_ChangedAt_display = utils.formatDate(m_ChangedAt);
+
       merged.m_CustomerDate_display = m_CustomerDate;
 
       merged.w_CustomerDate_display = w_CustomerDate;

@@ -60,7 +60,7 @@ const Com = ({ title, id }) => {
   return (
     <ToggleBlock title={jsxTitle} id={id}>
       <div className={styles.togglePadding}>
-        {checkEditable(id) && (
+        {checkEditable({group: "images"}) && (
           <div className="justify-content-between align-items-center mb-2 flex border-b border-gray-200 pb-2">
             <div>
               <label htmlFor="image-upload" className="btn btn-success">
@@ -70,6 +70,7 @@ const Com = ({ title, id }) => {
               <input
                 id="image-upload"
                 type="file"
+                accept="image/*"
                 multiple
                 className="d-none"
                 onChange={handleImageChange}
@@ -116,7 +117,7 @@ const Com = ({ title, id }) => {
                     <div className="mt-2">
                       <button
                         className="btn btn-sm btn-danger"
-                        disabled={!checkEditable(id)}
+                        disabled={!checkEditable({id,group: "images"})}
                         onClick={() => onDeleteImage(a)}
                       >
                         delete

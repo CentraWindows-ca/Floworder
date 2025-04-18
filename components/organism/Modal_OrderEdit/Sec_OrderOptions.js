@@ -26,6 +26,8 @@ import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
 import { DisplayBlock, displayFilter } from "./Com";
 
+const group = "options"
+
 const COMMON_FIELDS = constants.applyField([
   {
     icon: () => <CustomerPickupIcon />,
@@ -201,7 +203,7 @@ const Block = ({ inputData }) => {
           id={id}
           value={data?.[id]}
           onChange={(v) => onChange(v, id)}
-          disabled={!checkEditable(id)}
+          disabled={!checkEditable({id, group})}
         />
       </div>
       <div>
@@ -209,14 +211,14 @@ const Block = ({ inputData }) => {
           htmlFor={id}
           className="align-items-center flex gap-1"
           style={{
-            cursor: checkEditable(id) ? "pointer" : "default",
+            cursor: checkEditable({id, group}) ? "pointer" : "default",
           }}
         >
           <div className="w-6">{icon()}</div>
           {title}
         </label>
         {typeof renderSubItem === "function"
-          ? renderSubItem(data, onChange, checkEditable(id))
+          ? renderSubItem(data, onChange, checkEditable({id, group}))
           : null}
       </div>
     </DisplayBlock>

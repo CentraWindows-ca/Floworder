@@ -55,7 +55,7 @@ const Com = ({ title, id }) => {
   return (
     <ToggleBlock title={jsxTitle} id={id}>
       <div className={styles.togglePadding}>
-        {checkEditable(id) && (
+        {checkEditable({ id, group: "attachments" }) && (
           <div className="justify-content-between align-items-center mb-2 flex border-b border-gray-200 pb-2">
             <div>
               <label htmlFor="file-upload" className="btn btn-success">
@@ -78,6 +78,7 @@ const Com = ({ title, id }) => {
               {existingAttachments?.map((a) => {
                 const {
                   submittedBy,
+                  submittedAt,
                   fileName,
                   fileType,
                   fileRawData,
@@ -87,7 +88,6 @@ const Com = ({ title, id }) => {
                 const size = utils.formatNumber(
                   utils.calculateFileSize(fileRawData) / 1024 || 0,
                 );
-
                 return (
                   <tr key={`${title}_${id}`}>
                     <td className="text-center" style={{ width: 300 }}>
@@ -104,6 +104,16 @@ const Com = ({ title, id }) => {
                     <td className="text-right" style={{ width: 120 }}>
                       {size} KB
                     </td>
+                    <td>{submittedAt}</td>
+                    <td className="text-left">
+                      {submittedBy ? (
+                        <>
+                          <b>[{submittedBy}]:</b>
+                          <br />
+                        </>
+                      ) : null}
+                      {notes || "--"}
+                    </td>
                     <td className="text-left">
                       {submittedBy ? (
                         <>
@@ -116,7 +126,7 @@ const Com = ({ title, id }) => {
                     <td style={{ width: 60 }}>
                       <button
                         className="btn btn-sm btn-danger"
-                        disabled={!checkEditable(id)}
+                        disabled={!checkEditable({ group: "attachments" })}
                         onClick={() => onDeleteAttachment(a)}
                       >
                         delete

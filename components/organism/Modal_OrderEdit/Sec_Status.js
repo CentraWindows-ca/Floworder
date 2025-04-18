@@ -14,6 +14,8 @@ import Editable from "components/molecule/Editable";
 import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
 
+const group = "status"
+
 const Com = ({}) => {
   const {
     initData,
@@ -43,7 +45,7 @@ const Com = ({}) => {
           style={{
             color: textColor,
             backgroundColor: color,
-            opacity: checkEditable() ? 1 : 0.6, // to follow the style of dropdowns
+            opacity: checkEditable({group}) ? 1 : 0.6, // to follow the style of dropdowns
           }}
         >
           <span>{label}</span>
@@ -74,7 +76,7 @@ const Com = ({}) => {
               className="btn btn-primary"
               disabled={
                 initData?.m_TransferredLocation ===
-                  data?.m_TransferredLocation || !checkEditable()
+                  data?.m_TransferredLocation || !checkEditable({group})
               }
               onClick={onUpdateTransferredLocation}
             >
@@ -104,14 +106,14 @@ const StatusUpdate = ({ statusLabel, currentKind }) => {
             <div
               className={cn(
                 styles.statesContainer,
-                checkEditable() && styles.statesContainerEditable,
+                checkEditable({group}) && styles.statesContainerEditable,
               )}
               style={{ color: textColor, backgroundColor: color }}
             >
               <span>
                 {statusLabel}: {label}
               </span>
-              {checkEditable() && (
+              {checkEditable({group}) && (
                 <div>
                   <i className="fa-solid fa-angle-down" />
                 </div>

@@ -167,17 +167,20 @@ button:hover {
 
 /* Change scrollbar thickness */
 ::-webkit-scrollbar {
-  width: 8px; /* Width for vertical scrollbar */
-  height: 8px; /* Height for horizontal scrollbar */
+  width: 12px; /* Width for vertical scrollbar */
+  height: 12px; /* Height for horizontal scrollbar */
+  cursor: pointer;
 }
 
 /* Change scrollbar thumb (the draggable part) */
 ::-webkit-scrollbar-thumb {
   background: #BBBBBB80; /* Color */
   border-radius: 4px; /* Rounded corners */
+  cursor: pointer;
 }
 
 /* Change scrollbar track (the background) */
 ::-webkit-scrollbar-track {
   background: #f5f5f5;
+  cursor: pointer;
 }
