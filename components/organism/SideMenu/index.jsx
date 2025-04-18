@@ -75,8 +75,25 @@ const Com = (props) => {
     );
   };
 
+  console.log("???", activeKey)
+
   return (
     <div className={cn("w-full", styles.root)}>
+      <div className={cn(styles.statusGroups)}>
+        <NavSideMenu
+          item={{
+            label: "All Work orders",
+            color: "#005db9",
+            textColor:  "#005db9",
+            icon: <i className="fa-solid fa-file-lines" style={{fontSize: '16px'}} />,
+          }}
+          isActive={activeKey === "/" && !status && !isDeleted?.toString()}
+          onClick={() => {
+            handleClick('');
+          }}
+        />
+      </div>
+
       {ORDER_STATUS_AS_GROUP?.map((group, i) => {
         return (
           <div className={cn(styles.statusGroups)} key={`status_group_${i}`}>
@@ -90,7 +107,7 @@ const Com = (props) => {
               }
 
               return (
-                <ItemStatus
+                <NavStatus
                   item={a}
                   key={key}
                   isActive={isActive}
@@ -105,7 +122,7 @@ const Com = (props) => {
       })}
 
       <div className={cn(styles.statusGroups)}>
-        <ItemSideMenu
+        <NavSideMenu
           item={{
             label: "Trash Bin",
             color: "#B0B0B0",
@@ -116,7 +133,7 @@ const Com = (props) => {
             handleTrash();
           }}
         />
-        <ItemSideMenu
+        <NavSideMenu
           item={{
             label: "Profile Lookup",
             color: "#bd148a",
@@ -131,8 +148,11 @@ const Com = (props) => {
     </div>
   );
 };
+{
+  /* <i class="fa-regular fa-file-lines"></i> */
+}
 
-const ItemStatus = ({ onClick, item, isActive }) => {
+const NavStatus = ({ onClick, item, isActive }) => {
   const { label, color, icon } = item;
 
   return (
@@ -156,8 +176,8 @@ const ItemStatus = ({ onClick, item, isActive }) => {
   );
 };
 
-const ItemSideMenu = ({ onClick, item, isActive }) => {
-  const { label, color, icon } = item;
+const NavSideMenu = ({ onClick, item, isActive }) => {
+  const { label, color, textColor, icon } = item;
 
   return (
     <div
@@ -178,7 +198,7 @@ const ItemSideMenu = ({ onClick, item, isActive }) => {
         </div>
         <div
           className="align-items-center flex gap-1"
-          // style={{ color: "#999" }}
+          style={{ color: textColor}}
         >
           {label}
         </div>

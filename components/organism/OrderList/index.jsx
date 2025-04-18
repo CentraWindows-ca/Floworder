@@ -336,7 +336,7 @@ const Com = (props) => {
         title: "Windows Customer Date",
         key: "w_CustomerDate_display",
         initKey: "w_CustomerDate",
-        width: 195,
+        width: 200,
         display: isWindow,
       },
       {

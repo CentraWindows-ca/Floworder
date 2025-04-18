@@ -510,7 +510,7 @@ const Screen2 = ({
             <button
               className="btn btn-outline-secondary align-items-center flex gap-2"
               onClick={() => doFetch(WORKORDER_MAPPING.DraftReservation.key)}
-              disabled={disabled}
+              disabled={disabled || isLoading}
             >
               <Spin
                 size="small"
@@ -532,13 +532,13 @@ const Screen2 = ({
             <button
               className="btn btn-outline-secondary align-items-center flex gap-2"
               onClick={() => doFetch(WORKORDER_MAPPING.Scheduled.key)}
-              disabled={disabled}
+              disabled={disabled || isLoading}
             >
               <Spin
                 size="small"
                 indicator={<LoadingOutlined />}
                 spinning={isLoading}
-                style={{ color: "white" }}
+                style={{ color: "blue" }}
               />{" "}
               <div
                 style={{
@@ -557,7 +557,7 @@ const Screen2 = ({
             <button
               className="btn btn-primary align-items-center flex gap-2"
               onClick={() => doFetch(null)}
-              disabled={disabled}
+              disabled={disabled || isLoading}
             >
               <Spin
                 size="small"
