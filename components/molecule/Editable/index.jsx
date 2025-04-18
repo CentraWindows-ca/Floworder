@@ -52,7 +52,7 @@ const preventUpdate = (prev, nex) => {
 export const EF_DateOnly = React.memo(
   ({ id, value, onChange, onSelect, ...rest }) => {
     const handleSelect = (d, str) => {
-      if (!str) return;;
+      if (!str) return;
       onChange(str);
     };
 
@@ -83,7 +83,6 @@ export const EF_SelectWithLabel = React.memo(
     // sortBy = "label",
     ...rest
   }) => {
-
     let renderOptions = options;
     if (sortBy)
       renderOptions = renderOptions?.sort(
@@ -240,7 +239,15 @@ export const EF_MultiSelect = React.memo(
 );
 
 export const EF_Input = React.memo(
-  ({ onChange, value, className, onPressEnter, onKeyDown, ...props }) => {
+  ({
+    onChange,
+    value,
+    className,
+    onPressEnter,
+    onKeyDown,
+    size = "md",
+    ...props
+  }) => {
     const handleChange = (e) => {
       onChange(e.target.value);
     };
@@ -258,9 +265,14 @@ export const EF_Input = React.memo(
       }
     };
 
+    const classSize = {
+      "md": "form-control",
+      "sm": "form-control-sm"
+    }
+
     return (
       <input
-        className={cn("form-control", className)}
+        className={cn("form-control", classSize[size],  className)}
         onChange={handleChange}
         value={value || ""}
         onKeyDown={handleKeyDown}
@@ -402,7 +414,7 @@ export const EF_SelectEmployee = React.memo(
     size = "md",
     options = [], // prevent override
     isDisplayAvilible = true,
-    group = 'salesRepsList', 
+    group = "salesRepsList",
     ...props
   }) => {
     const { dictionary } = useContext(GeneralContext);

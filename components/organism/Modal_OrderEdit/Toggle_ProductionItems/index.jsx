@@ -289,6 +289,27 @@ const TableWindow = ({ handleShowItem, list: data, itemType }) => {
     },
     {
       key: "Notes",
+      render: (t, record) => {
+        const updatingKey = "Notes";
+        const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
+
+        return (
+          <Editable.EF_Input
+            {...{
+              id: `wi_${updatingKey}_${record?.Id}`,
+              value:
+                overrideValue !== undefined
+                  ? overrideValue
+                  : record[updatingKey],
+              onChange: (v) =>
+                handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
+              disabled: !checkEditable({ group: "windowitems" }),
+              size: "sm",
+              placeholder: '--'
+            }}
+          />
+        );
+      },
     },
     {
       title: "Location",
@@ -521,6 +542,27 @@ const TableDoor = ({ handleShowItem, list: data, itemType }) => {
     },
     {
       key: "Notes",
+      render: (t, record) => {
+        const updatingKey = "Notes";
+        const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
+
+        return (
+          <Editable.EF_Input
+            {...{
+              id: `wi_${updatingKey}_${record?.Id}`,
+              value:
+                overrideValue !== undefined
+                  ? overrideValue
+                  : record[updatingKey],
+              onChange: (v) =>
+                handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
+              disabled: !checkEditable({ group: "windowitems" }),
+              size: "sm",
+              placeholder: '--'
+            }}
+          />
+        );
+      },
     },
     {
       title: "Location",
