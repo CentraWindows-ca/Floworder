@@ -217,7 +217,7 @@ const Com = ({ className, ...props }) => {
                               )}
                             </td>
                             <td rowSpan={colSpan}>
-                              {utils.formatNumber(prd.otherFields?.totalBoxQty)}
+                              {utils.formatNumber(prd.otherFields?.TotalBoxQty)}
                             </td>
                             <td rowSpan={colSpan}>
                               {utils.formatNumber(prd.otherFields?.TotalLBRMin)}
