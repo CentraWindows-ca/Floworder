@@ -14,11 +14,23 @@ import stylesCurrent from "./styles.module.scss";
 
 const styles = { ...stylesRoot, ...stylesCurrent };
 
+
+const STATUS_DISPLAY = (status, woRef) => {
+  // NOTE: 20250419 hardcode requirement from Meng
+  if (woRef.w_GlassSupplier === 'GlassFab') {
+    return "N/A"
+  }
+
+  return status  
+}
+
+
 const Com = ({}) => {
-  const { glassTotal, glassItems } = useContext(LocalDataContext);
+  const { glassTotal, glassItems, data: woRef } = useContext(LocalDataContext);
 
   const [sort, setSort] = useState(null);
   const [filters, setFilters] = useState(null);
+
 
   const jsxTitle = (
     <div className="flex gap-2">
@@ -131,6 +143,7 @@ const Com = ({}) => {
                     <SingleRow
                       data={a}
                       key={`glass_${workOrderNumber}_${item}_${i}`}
+                      woRef = {woRef}
                     />
                   );
 
@@ -138,6 +151,7 @@ const Com = ({}) => {
                   <MultiRow
                     data={a}
                     key={`glass_${workOrderNumber}_${item}_${i}`}
+                    woRef = {woRef}
                   />
                 );
               })}
@@ -151,7 +165,7 @@ const Com = ({}) => {
   );
 };
 
-const SingleRow = ({ data }) => {
+const SingleRow = ({ data, woRef }) => {
   const {
     workOrderNumber,
     item,
@@ -183,12 +197,12 @@ const SingleRow = ({ data }) => {
       <td>{shipDate}</td>
       <td>{size}</td>
       <td>{position}</td>
-      <td>{status}</td>
+      <td>{STATUS_DISPLAY(status, woRef)}</td>
     </tr>
   );
 };
 
-const MultiRow = ({ data }) => {
+const MultiRow = ({ data, woRef }) => {
   const {
     workOrderNumber,
     item,
@@ -225,7 +239,7 @@ const MultiRow = ({ data }) => {
             <td rowSpan={rowSpan}>{shipDate}</td>
             <td rowSpan={rowSpan}>{size}</td>
             <td rowSpan={rowSpan}>{position}</td>
-            <td rowSpan={rowSpan}>{status}</td>
+            <td rowSpan={rowSpan}>{STATUS_DISPLAY(status, woRef)}</td>
           </>
         )}
       </tr>

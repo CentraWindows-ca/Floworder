@@ -85,7 +85,7 @@ const WINDOW_FIELDS = constants.applyField([
     id: "w_GlassSupplier",
     options: (dictionary) => {
       return dictionary?.glassSupplierList?.map((a) => ({
-        value: a.key,
+        key: a.key,
         label: a.label,
       }));
     },
@@ -95,7 +95,7 @@ const WINDOW_FIELDS = constants.applyField([
     id: "w_GlassOptions",
     options: (dictionary) => {
       return dictionary?.glassOptionList?.map((a) => ({
-        value: a.key,
+        key: a.key,
         label: a.label,
       }));
     },
