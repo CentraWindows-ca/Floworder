@@ -159,14 +159,19 @@ const Com = ({}) => {
             <span onClick={() => onAnchor("glassItems", true)}>
               Glass ({glassTotal?.qty || 0}/{glassTotal?.glassQty || 0})
             </span>
-            <div>
-              <button
-                className="btn btn-sm btn-outline-secondary ms-2"
-                onClick={() => setHistoryOrderMasterId(initMasterId)}
-              >
-                <i className="fa-solid fa-clock-rotate-left"></i>
-              </button>
-            </div>
+            <PermissionBlock
+              featureCodeGroup={constants.FEATURE_CODES["om.prod.history"]}
+              op="canView"
+            >
+              <div>
+                <button
+                  className="btn btn-sm btn-outline-secondary ms-2"
+                  onClick={() => setHistoryOrderMasterId(initMasterId)}
+                >
+                  <i className="fa-solid fa-clock-rotate-left"></i>
+                </button>
+              </div>
+            </PermissionBlock>
           </div>
         </div>
       </div>
