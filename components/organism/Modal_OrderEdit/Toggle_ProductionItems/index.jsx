@@ -38,8 +38,7 @@ const Com = ({ title, id }) => {
   const {
     windowItems,
     doorItems,
-    onUpdateDoorItem,
-    onUpdateWindowItem,
+    onBatchUpdateItems,
     checkEditable,
   } = useContext(LocalDataContext);
 
@@ -87,14 +86,13 @@ const Com = ({ title, id }) => {
     setEditingItem({ ...item, kind });
   };
 
-  const handleSaveItem = async (Id, item, kind, initItem) => {
-    if (kind === "d") {
-      await onUpdateDoorItem(Id, item, initItem);
-    }
-
-    if (kind === "w") {
-      await onUpdateWindowItem(Id, item, initItem);
-    }
+  const handleSaveItem = async (Id, item, kind) => {
+    await onBatchUpdateItems([
+      {
+        keyValue: Id,
+        fields: item,
+      }
+    ], kind)
   };
 
   const handleCloseItem = () => {

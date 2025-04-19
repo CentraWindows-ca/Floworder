@@ -433,31 +433,6 @@ export const LocalDataProvider = ({
     onSave();
   });
 
-  const doUpdateWindowItem = useLoadingBar(async (Id, item, initItem) => {
-    if (_.isEmpty(item)) return null;
-    await Wrapper_OrdersApi.updateWindowItem(
-      initItem?.MasterId,
-      Id,
-      item,
-      initData,
-    );
-
-    toast("Item saved", { type: "success" });
-    await initItems(initMasterId);
-  });
-
-  const doUpdateDoorItem = useLoadingBar(async (Id, item, initItem) => {
-    if (_.isEmpty(item)) return null;
-    await Wrapper_OrdersApi.updateDoorItem(
-      initItem?.MasterId,
-      Id,
-      item,
-      initData,
-    );
-    toast("Item saved", { type: "success" });
-    await initItems(initMasterId);
-  });
-
   const doBatchUpdateItems = useLoadingBar(async (updateList, kind) => {
     if (_.isEmpty(updateList)) return null;
     await Wrapper_OrdersApi.updateItemList(
@@ -523,8 +498,6 @@ export const LocalDataProvider = ({
     onDeleteAttachment: doDeleteAttachment,
     onUploadImage: doUploadImage,
     onDeleteImage: doDeleteImage,
-    onUpdateWindowItem: doUpdateWindowItem,
-    onUpdateDoorItem: doUpdateDoorItem,
     onBatchUpdateItems: doBatchUpdateItems,
     onHide: handleHide,
     onSave: doSave,
