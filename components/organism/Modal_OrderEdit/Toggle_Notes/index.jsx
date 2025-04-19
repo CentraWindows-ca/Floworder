@@ -72,7 +72,7 @@ const Com = ({}) => {
           </tbody>
         </table>
       ) : (
-        <NoData title={`No Data`} className="hover:text-blue-600" />
+        <NoData title={<>No Data <b>[Click To Add Notes]</b></>} className="hover:text-blue-600" />
       )}
     </div>
   );
