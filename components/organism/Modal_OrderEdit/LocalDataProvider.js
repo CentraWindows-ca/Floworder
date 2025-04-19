@@ -48,7 +48,9 @@ export const LocalDataProvider = ({
   const { requestData } = useInterrupt();
   const [data, setData] = useState(null);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // hide the entire modal
+  const [isSaving, setIsSaving] = useState(false) // still show modal, but disable save button
+
   const [isEditable, setIsEditable] = useState(false);
 
   // only display. upload/delete will directly call function
@@ -415,6 +417,7 @@ export const LocalDataProvider = ({
   });
 
   const doSave = useLoadingBar(async () => {
+    setIsSaving(true)
     // identify changed data:
     const changedData = utils.findChanges(initData, data);
 
@@ -431,6 +434,7 @@ export const LocalDataProvider = ({
     toast("Work order saved", { type: "success" });
     await doInitWo(initMasterId);
     onSave();
+    setIsSaving(false)
   });
 
   const doBatchUpdateItems = useLoadingBar(async (updateList, kind) => {
@@ -477,6 +481,7 @@ export const LocalDataProvider = ({
     ...generalContext,
     ...props,
     isLoading,
+    isSaving,
     initMasterId,
     data,
     kind,

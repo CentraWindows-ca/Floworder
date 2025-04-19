@@ -1,5 +1,7 @@
 import React, { useContext, useState } from "react";
 import cn from "classnames";
+import { List, Spin } from "antd";
+import { LoadingOutlined, SaveOutlined } from "@ant-design/icons";
 import _ from "lodash";
 import Modal from "components/molecule/Modal";
 import PermissionBlock from "components/atom/PermissionBlock";
@@ -38,6 +40,7 @@ import LoadingBlock from "components/atom/LoadingBlock";
 const Com = ({}) => {
   const {
     isLoading,
+    isSaving,
     initMasterId,
     onHide,
     onAnchor,
@@ -241,10 +244,20 @@ const Com = ({}) => {
               style={{ margin: "10px 0px" }}
             >
               <button
-                className="btn btn-primary px-4"
-                disabled={!data?.m_WorkOrderNo}
+                className="btn btn-primary align-items-center flex gap-2 px-3"
+                disabled={!data?.m_WorkOrderNo || isSaving}
                 onClick={onSave}
               >
+                {!isSaving ? (
+                  <SaveOutlined size="small" />
+                ) : (
+                  <Spin
+                    size="small"
+                    indicator={<LoadingOutlined />}
+                    spinning={isSaving}
+                    style={{ color: "white" }}
+                  />
+                )}
                 Save
               </button>
             </div>
