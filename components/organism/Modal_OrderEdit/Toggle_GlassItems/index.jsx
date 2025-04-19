@@ -7,7 +7,7 @@ import _ from "lodash";
 import { TableHeader, TableWrapper } from "components/atom/TableSortable";
 
 import { LocalDataContext } from "../LocalDataProvider";
-import { ToggleBlock } from "../Com";
+import { ToggleBlock, NoData } from "../Com";
 // styles
 import stylesRoot from "../styles.module.scss";
 import stylesCurrent from "./styles.module.scss";
@@ -159,7 +159,7 @@ const Com = ({}) => {
           </table>
         </div>
       ) : (
-        <div>No Data</div>
+        <NoData/>
       )}
     </ToggleBlock>
   );
