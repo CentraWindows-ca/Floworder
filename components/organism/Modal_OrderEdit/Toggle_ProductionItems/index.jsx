@@ -105,7 +105,7 @@ const Com = ({ title, id }) => {
     <div className="flex gap-2">
       {title}
       <div className="text-primary font-normal">
-        W: {stats.W} | PD: {stats.PD} | VD: {stats.VD} | ED: {stats.ED} | GL:{" "}
+        W: {stats.W} | PD: {stats.PD} | SD: {stats.SD} | ED: {stats.ED} | GL:{" "}
         {stats.GL}
       </div>
     </div>
@@ -131,8 +131,8 @@ const Com = ({ title, id }) => {
         <TableWindow
           {...{
             handleShowItem,
-            itemType: "VD",
-            list: windowItems?.filter((a) => a.itemType === "VD"),
+            itemType: "SD",
+            list: windowItems?.filter((a) => a.itemType === "SD"),
           }}
         />
         <TableDoor
