@@ -145,7 +145,7 @@ const Com = ({ title, id }) => {
         <TableWindow
           {...{
             handleShowItem,
-            itemType: "W",
+            itemType: "GL",
             list: windowItems?.filter((a) => a.itemType === "GL"),
           }}
         />
