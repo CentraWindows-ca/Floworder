@@ -313,7 +313,6 @@ const Com = (props) => {
         display: !isPending,
       },
       {
-        title: "Created At",
         key: "m_CreatedAt_display",
         display: !isPending,
         initKey: "m_CreatedAt",
