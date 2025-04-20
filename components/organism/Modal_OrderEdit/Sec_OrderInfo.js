@@ -116,8 +116,8 @@ const DOOR_FIELDS = constants.applyField([
     id: "d_GlassSupplier",
     options: (dictionary) => {
       return dictionary?.glassSupplierList?.map((a) => ({
-        value: a.id,
-        label: a.name,
+        key: a.key,
+        label: a.label,
       }));
     },
   },

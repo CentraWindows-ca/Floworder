@@ -370,7 +370,7 @@ const WorkOrderActions = ({
         Undo Order Deletion
       </Button>
       <PermissionBlock
-        featureCode={constants.FEATURE_CODES["om.prod.wo"]}
+        featureCode={constants.FEATURE_CODES["om.prod.woHardDelete"]}
         op="canDelete"
       >
         <Button

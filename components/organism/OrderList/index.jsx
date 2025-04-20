@@ -119,7 +119,6 @@ const Com = (props) => {
         width: 115,
       },
       {
-        title: "Created On",
         key: "m_CreatedAt_display",
         display: isPending,
         initKey: "m_CreatedAt",

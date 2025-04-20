@@ -1,19 +1,10 @@
 import React, { useContext, useState } from "react";
 import cn from "classnames";
-import { List, Spin } from "antd";
-import { LoadingOutlined, SaveOutlined } from "@ant-design/icons";
 import _ from "lodash";
+import { Spin } from "antd";
+import { LoadingOutlined, SaveOutlined } from "@ant-design/icons";
 import Modal from "components/molecule/Modal";
 import PermissionBlock from "components/atom/PermissionBlock";
-import {
-  EyeOutlined,
-  EditOutlined,
-  ArrowRightOutlined,
-  DeleteOutlined,
-  HistoryOutlined,
-  SyncOutlined,
-  UndoOutlined,
-} from "@ant-design/icons";
 import Sec_Status from "./Sec_Status";
 
 import Sec_OrderInfo from "./Sec_OrderInfo";
@@ -37,14 +28,16 @@ import styles from "./styles.module.scss";
 import { LocalDataContext, LocalDataProvider } from "./LocalDataProvider";
 import LoadingBlock from "components/atom/LoadingBlock";
 
+import { SaveButton } from "./Com";
+
 const Com = ({}) => {
   const {
-    isLoading,
     isSaving,
+    onSave,
+    isLoading,
     initMasterId,
     onHide,
     onAnchor,
-    onSave,
     onRestore,
     onGetWindowMaker,
 
@@ -114,7 +107,7 @@ const Com = ({}) => {
               onClick={() => onRestore()}
             >
               <i className="fa-solid fa-trash-can-arrow-up me-2" />
-              Restore
+              Undo Order Deletion
             </button>
           )}
         </PermissionBlock>
@@ -201,24 +194,28 @@ const Com = ({}) => {
               <CollapseContainer id="basicInformation">
                 <Sec_OrderBasic />
               </CollapseContainer>
+              <SaveButton group={"basic"} />
             </div>
             <div className={cn(styles.mainItem, styles["mainItem-1"])}>
               <div className={cn(styles.sectionTitle)}>Order Information</div>
               <CollapseContainer id="orderInformation">
                 <Sec_OrderInfo />
               </CollapseContainer>
+              <SaveButton group={"information"} />
             </div>
             <div className={cn(styles.mainItem, styles["grid-2"])}>
               <div className={cn(styles.sectionTitle)}>Order Options</div>
               <CollapseContainer id="orderOptions">
                 <Sec_OrderOptions />
               </CollapseContainer>
+              <SaveButton group={"options"} />
             </div>
             <div className={cn(styles.mainItem, styles["mainItem-2"])}>
               <div className={cn(styles.sectionTitle)}>Schedule</div>
               <CollapseContainer id="schedule">
                 <Sec_Schedule />
               </CollapseContainer>
+              <SaveButton group={"schedule"} />
             </div>
           </div>
           <div>

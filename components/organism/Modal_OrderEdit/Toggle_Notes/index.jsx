@@ -2,14 +2,12 @@ import React, { useState, useEffect, useContext, useMemo } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
-
 import Editable from "components/molecule/Editable";
-
 // styles
 import styles from "./styles.module.scss";
 
 import { LocalDataContext } from "../LocalDataProvider";
-import { ToggleFull, NoData, DisplayBlock, displayFilter } from "../Com";
+import { ToggleFull, NoData, DisplayBlock, displayFilter, SaveButton } from "../Com";
 
 const group = "notes";
 
@@ -74,6 +72,7 @@ const Com = ({}) => {
       ) : (
         <NoData title={<>No Data <b>[Click To Add Notes]</b></>} className="hover:text-blue-600" />
       )}
+      
     </div>
   );
 
@@ -118,6 +117,7 @@ const Com = ({}) => {
           {jsxNoteBlock("m_ReturnTripNotes")}
           {jsxNoteBlock("m_ShippingNotes")}
         </div>
+        <SaveButton group={'notes'}/>
       </ToggleFull>
     </>
   );

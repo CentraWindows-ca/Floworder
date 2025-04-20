@@ -43,7 +43,6 @@ const Com = ({}) => {
   // ====== search
   const [filters, setFilters] = useState({});
   const [applyFilter, setApplyFilter] = useState(true);
-  const [drawerOpen, handleToggleDrawer] = useState(true);
 
   const {
     status,

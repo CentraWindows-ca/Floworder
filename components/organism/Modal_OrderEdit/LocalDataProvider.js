@@ -18,10 +18,11 @@ import GlassApi from "lib/api/GlassApi";
 
 import useLoadingBar from "lib/hooks/useLoadingBar";
 import constants, { ORDER_STATUS, ORDER_TRANSFER_FIELDS } from "lib/constants";
+import { uiWoFieldEditGroupMapping } from "lib/constants/constants_labelMapping";
 import { getOrderKind } from "lib/utils";
 
 import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
-import { checkEditableById } from "./Com";
+import { checkEditableById, checkEditableByGroup } from "./Com";
 
 export const LocalDataContext = createContext(null);
 
@@ -184,7 +185,7 @@ export const LocalDataProvider = ({
     setIsLoading(false);
   };
 
-  const doInitWo = useLoadingBar(async (initMasterId) => {
+  const doInitWo = useLoadingBar(async (initMasterId, stillEditingData = {}) => {
     const [res] = await Wrapper_OrdersApi.getWorkOrder(
       initMasterId,
       isDeleted ? 0 : 1,
@@ -196,9 +197,15 @@ export const LocalDataProvider = ({
       const { value } = res;
 
       mergedData = { ...value?.d, ...value?.m, ...value?.w };
-      setData(mergedData);
+
+      // set init fields from newest wo
       setInitData(JSON.parse(JSON.stringify(mergedData)));
 
+      // if use has pending edits
+      setData({...mergedData, ...stillEditingData});
+
+      // save button for groups
+      
       setUiOrderType({
         m: !!value?.m,
         d: !!value?.d,
@@ -288,8 +295,11 @@ export const LocalDataProvider = ({
   });
 
   const doRestore = useLoadingBar(async () => {
-    alert("TODO");
+    if (!window.confirm(`Are you sure to delete [${data?.m_WorkOrderNo}]?`)) {
+      return null;
+    }
 
+    await OrdersApi.undoSoftDeleteProductionsWorkOrder(null, null, initData);
     // change url string to delete isDelete
 
     toast("Work order restored", { type: "success" });
@@ -416,7 +426,7 @@ export const LocalDataProvider = ({
     await initImageList(data?.m_MasterId);
   });
 
-  const doSave = useLoadingBar(async () => {
+  const doSave = useLoadingBar(async (group) => {
     setIsSaving(true)
     // identify changed data:
     const changedData = utils.findChanges(initData, data);
@@ -430,9 +440,20 @@ export const LocalDataProvider = ({
       changedData.d_ProductionEndDate = changedData.d_ProductionStartDate;
     }
 
+    let stillEditingData = {}
+    if (group && uiWoFieldEditGroupMapping?.[group]) {
+      // only save group fields
+      const allFieldsFromGroup = uiWoFieldEditGroupMapping[group]
+      _.keys(changedData)?.map(k => {
+        if(!allFieldsFromGroup[k]) {
+          stillEditingData[k] = changedData[k]
+        }
+      })      
+    }
+
     await Wrapper_OrdersApi.updateWorkOrder(data, changedData, initData);
     toast("Work order saved", { type: "success" });
-    await doInitWo(initMasterId);
+    await doInitWo(initMasterId, stillEditingData);
     onSave();
     setIsSaving(false)
   });
@@ -473,6 +494,14 @@ export const LocalDataProvider = ({
     (params = {}) => {
       const { id, group } = params;
       return isEditable && checkEditableById({ id, group, data, permissions });
+    },
+    [isEditable, initMasterId, data?.m_Status, permissions],
+  );
+  
+  const checkEditableForSave = useCallback(
+    (params = {}) => {
+      const { group } = params;
+      return isEditable && checkEditableByGroup({group, data, permissions})
     },
     [isEditable, initMasterId, data?.m_Status, permissions],
   );
@@ -517,6 +546,7 @@ export const LocalDataProvider = ({
     isEditable,
     setIsEditable,
     checkEditable,
+    checkEditableForSave,
     uiOrderType,
     uiShowMore,
     setUiShowMore,

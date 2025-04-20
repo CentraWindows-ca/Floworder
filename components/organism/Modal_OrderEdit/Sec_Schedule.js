@@ -18,9 +18,6 @@ const COMMON_FIELDS = constants.applyField([
   {
     id: "m_ShippingStartDate",
   },
-  // {
-  //   id: "m_ShippingEndDate",
-  // },
   {
     id: "m_RevisedDeliveryDate",
   },
@@ -32,17 +29,9 @@ const WINDOW_FIELDS = constants.applyField([
   {
     id: "w_ProductionStartDate",
   },
-  // auto update by start
-  // {
-  //   title: "Windows Production End",
-  //   id: "w_ProductionEndDate",
-  // },
   {
     id: "w_PaintStartDate",
   },
-  // {
-  //   id: "w_PaintEndDate",
-  // },
   {
     id: "w_GlassOrderDate",
   },
@@ -57,16 +46,9 @@ const DOOR_FIELDS = constants.applyField([
   {
     id: "d_ProductionStartDate",
   },
-  // {
-  //   title: "Doors Production End",
-  //   id: "d_ProductionEndDate",
-  // },
   {
     id: "d_PaintStartDate",
   },
-  // {
-  //   id: "d_PaintEndDate",
-  // },
   {
     id: "d_GlassOrderDate",
   },

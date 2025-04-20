@@ -1,10 +1,10 @@
-import { useState, useContext } from "react";
+import { useState, useContext, memo } from "react";
 import cn from "classnames";
-import constants, { HEADER_COLUMNS, WORKORDER_MAPPING } from "lib/constants";
+import { Spin } from "antd";
+import { LoadingOutlined, SaveOutlined } from "@ant-design/icons";
+import constants, { WORKORDER_MAPPING } from "lib/constants";
 // styles
 import styles from "./styles.module.scss";
-import OrdersApi from "lib/api/OrdersApi";
-import GlassApi from "lib/api/GlassApi";
 import { LocalDataContext } from "./LocalDataProvider";
 
 const _ifDisplay = ({ kind, uiOrderType, id, displayAs }, data) => {
@@ -49,6 +49,46 @@ export const displayFilter = (itemList, { kind, uiOrderType }) => {
     );
   });
 };
+
+export const SaveButton = memo(({ group }) => {
+  const { checkEditableForSave, data, isSaving, onSave } =
+    useContext(LocalDataContext);
+
+  if (!checkEditableForSave({ group })) {
+    return false;
+  }
+
+  return null
+
+  return (
+    <div
+      className={cn("justify-content-center flex")}
+      style={{
+        margin: " 0px",
+        padding: "10px",
+        borderTop: "1px solid #F0F0F0",
+      }}
+    >
+      <button
+        className="btn btn-primary align-items-center flex gap-2 px-3"
+        disabled={!data?.m_WorkOrderNo || isSaving}
+        onClick={() => onSave(group)}
+      >
+        {!isSaving ? (
+          <SaveOutlined size="small" />
+        ) : (
+          <Spin
+            size="small"
+            indicator={<LoadingOutlined />}
+            spinning={isSaving}
+            style={{ color: "white" }}
+          />
+        )}
+        Save
+      </button>
+    </div>
+  );
+});
 
 export const DisplayBlock = ({ children, id = "m", displayAs, ...props }) => {
   // kind is UI selected kind
@@ -219,7 +259,7 @@ export const checkEditableById = ({ id, group, permissions, data }) => {
       [`om.prod.wo.${group}`, `canEdit`],
       false,
     );
-    const isAllowAny = isAllowWindow || isAllowDoor;
+    const isAllowAny = isAllowWindow || isAllowDoor || isAllowBoth;
 
     if (id) {
       if (id?.startsWith("w_")) {
@@ -238,4 +278,31 @@ export const checkEditableById = ({ id, group, permissions, data }) => {
   }
 
   return true;
+};
+
+export const checkEditableByGroup = ({ group, permissions, data }) => {
+  if (!group) return true;
+
+  const isAllowWindow = _.get(
+    permissions,
+    [`om.prod.wo.${group}.window`, `canEdit`],
+    false,
+  );
+  const isAllowDoor = _.get(
+    permissions,
+    [`om.prod.wo.${group}.door`, `canEdit`],
+    false,
+  );
+  const isAllowBoth = _.get(
+    permissions,
+    [`om.prod.wo.${group}`, `canEdit`],
+    false,
+  );
+  const isAllowAny = isAllowWindow || isAllowDoor || isAllowBoth;
+
+  return isAllowAny;
+};
+
+export default {
+  SaveButton,
 };
