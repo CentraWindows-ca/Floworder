@@ -112,14 +112,6 @@ const DOOR_FIELDS = constants.applyField([
     id: "d_PaintIcon",
   },
   {
-    icon: () => <RbmIcon />,
-    id: "d_RBMIcon",
-  },
-  {
-    icon: () => <GridIcon />,
-    id: "d_GridsRequired",
-  },
-  {
     icon: () => <MiniBlindIcon />,
     id: "d_MiniblindIcon",
   },
@@ -128,8 +120,16 @@ const DOOR_FIELDS = constants.applyField([
     id: "d_EngineeredIcon",
   },
   {
+    icon: () => <RbmIcon />,
+    id: "d_RBMIcon",
+  },
+  {
     icon: () => <ShapesIcon />,
     id: "d_ShapesRequires",
+  },
+  {
+    icon: () => <GridIcon />,
+    id: "d_GridsRequired",
   },
 ]);
 

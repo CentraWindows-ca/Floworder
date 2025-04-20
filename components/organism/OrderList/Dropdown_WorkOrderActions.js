@@ -228,11 +228,14 @@ const WorkOrderActions = ({
         isHidden={filterOutByStatus({ id: "editPendingOrder", data })}
         op="canEdit"
       >
-        <Button type="text" icon={<EditOutlined />} onClick={() => {
-          onEditPending()
-          setCloseToggle((p) => !p);
-
-        }}>
+        <Button
+          type="text"
+          icon={<EditOutlined />}
+          onClick={() => {
+            onEditPending();
+            setCloseToggle((p) => !p);
+          }}
+        >
           Edit Pending Order
         </Button>
       </PermissionBlock>
@@ -372,15 +375,17 @@ const WorkOrderActions = ({
       <PermissionBlock
         featureCode={constants.FEATURE_CODES["om.prod.woHardDelete"]}
         op="canDelete"
-      >
-        <Button
-          type="text"
-          icon={<DeleteOutlined />}
-          onClick={handleHardDelete}
-        >
-          Permenantly Delete Order
-        </Button>
-      </PermissionBlock>
+        render={(isAllow) => (
+          <Button
+            type="text"
+            icon={<DeleteOutlined />}
+            onClick={handleHardDelete}
+            disabled = {!isAllow}
+          >
+            Permenantly Delete Order
+          </Button>
+        )}
+      ></PermissionBlock>
     </div>
   );
 
