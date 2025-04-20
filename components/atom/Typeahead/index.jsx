@@ -142,7 +142,7 @@ export default React.memo(
             placeholder={placeholder}
             renderMenuItemChildren={renderMenuItemChildren}
             inputProps={{ ...inputProps, style: input_style }}
-            className={cn(className, size)}
+            className={cn(className, size, 'root')}
             filterBy={filterBy}
             disabled={disabled}
             onBlur={handleBlur}

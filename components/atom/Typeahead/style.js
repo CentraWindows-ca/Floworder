@@ -8,6 +8,12 @@ const scom = (com) => styled(com)`
       font-size: 0.85rem;
     }
   }
+
+  &.root {
+    .rbt-input-main {
+      padding-right: 30px !important;
+    }
+  }
 `;
 
 export default scom;
