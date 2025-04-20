@@ -51,14 +51,13 @@ export const displayFilter = (itemList, { kind, uiOrderType }) => {
 };
 
 export const SaveButton = memo(({ group }) => {
-  const { checkEditableForSave, data, isSaving, onSave } =
+  const { checkEditableForSave, data, isSaving, onSave, editedGroup } =
     useContext(LocalDataContext);
 
+  return null;
   if (!checkEditableForSave({ group })) {
     return false;
   }
-
-  return null
 
   return (
     <div
@@ -71,7 +70,7 @@ export const SaveButton = memo(({ group }) => {
     >
       <button
         className="btn btn-primary align-items-center flex gap-2 px-3"
-        disabled={!data?.m_WorkOrderNo || isSaving}
+        disabled={!data?.m_WorkOrderNo || isSaving || !editedGroup[group]}
         onClick={() => onSave(group)}
       >
         {!isSaving ? (

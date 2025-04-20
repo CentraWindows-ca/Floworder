@@ -50,9 +50,10 @@ export const LocalDataProvider = ({
   const [data, setData] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false); // hide the entire modal
-  const [isSaving, setIsSaving] = useState(false) // still show modal, but disable save button
+  const [isSaving, setIsSaving] = useState(false); // still show modal, but disable save button
 
   const [isEditable, setIsEditable] = useState(false);
+  const [editedGroup, setEditedGroup] = useState({});
 
   // only display. upload/delete will directly call function
   const [existingAttachments, setExistingAttachments] = useState(null);
@@ -88,6 +89,16 @@ export const LocalDataProvider = ({
       _.set(_newV, k, v);
       return _newV;
     });
+
+    const _groups = {};
+    _.keys(uiWoFieldEditGroupMapping)?.map((group) => {
+      if (uiWoFieldEditGroupMapping[group][k]) _groups[group] = true;
+    });
+
+    setEditedGroup((prev) => ({
+      ...prev,
+      ..._groups,
+    }));
   };
 
   const handleAnchor = (id, closeOthers) => {
@@ -127,11 +138,13 @@ export const LocalDataProvider = ({
     setGlassItems(null);
     setInitData(null);
     setInitDataItems(null);
+    setEditedGroup({});
   };
 
   const doInit = async (initMasterId) => {
     setIsLoading(true);
     setData(null);
+    setEditedGroup({});
     setIsEditable(initIsEditable);
 
     const mergedData = await doInitWo(initMasterId);
@@ -185,36 +198,48 @@ export const LocalDataProvider = ({
     setIsLoading(false);
   };
 
-  const doInitWo = useLoadingBar(async (initMasterId, stillEditingData = {}) => {
-    const [res] = await Wrapper_OrdersApi.getWorkOrder(
-      initMasterId,
-      isDeleted ? 0 : 1,
-    );
-    let mergedData = {};
-    if (typeof res === "object") {
-      // re-assemble data to easier to edit
+  const doInitWo = useLoadingBar(
+    async (initMasterId, stillEditingData = {}) => {
+      setEditedGroup({})
+      const [res] = await Wrapper_OrdersApi.getWorkOrder(
+        initMasterId,
+        isDeleted ? 0 : 1,
+      );
+      let mergedData = {};
+      if (typeof res === "object") {
+        // re-assemble data to easier to edit
 
-      const { value } = res;
+        const { value } = res;
 
-      mergedData = { ...value?.d, ...value?.m, ...value?.w };
+        mergedData = { ...value?.d, ...value?.m, ...value?.w };
 
-      // set init fields from newest wo
-      setInitData(JSON.parse(JSON.stringify(mergedData)));
+        // set init fields from newest wo
+        setInitData(JSON.parse(JSON.stringify(mergedData)));
 
-      // if use has pending edits
-      setData({...mergedData, ...stillEditingData});
+        // if use has pending edits
+        setData({ ...mergedData, ...stillEditingData });
 
-      // save button for groups
-      
-      setUiOrderType({
-        m: !!value?.m,
-        d: !!value?.d,
-        w: !!value?.w,
-      });
-    }
+        // if we need to keep saveButton available for groups
+        const _editingGroup = {}
+        _.keys(uiWoFieldEditGroupMapping)?.map(group => {
+          _.keys(stillEditingData)?.map(k => {
+            if (uiWoFieldEditGroupMapping[group]?.[k]) {
+              _editingGroup[group] = true
+            }
+          })
+        })
+        setEditedGroup(_editingGroup)
 
-    return mergedData;
-  });
+        setUiOrderType({
+          m: !!value?.m,
+          d: !!value?.d,
+          w: !!value?.w,
+        });
+      }
+
+      return mergedData;
+    },
+  );
 
   const initItems = useLoadingBar(async (initMasterId) => {
     const doorItems = await Wrapper_OrdersApi.getDoorItems(initMasterId);
@@ -426,37 +451,39 @@ export const LocalDataProvider = ({
     await initImageList(data?.m_MasterId);
   });
 
-  const doSave = useLoadingBar(async (group) => {
-    setIsSaving(true)
-    // identify changed data:
-    const changedData = utils.findChanges(initData, data);
+  const doSave = useLoadingBar(
+    async (group) => {
+      setIsSaving(true);
+      // identify changed data:
+      const changedData = utils.findChanges(initData, data);
 
-    // process customized
-    if (changedData.w_ProductionStartDate) {
-      changedData.w_ProductionEndDate = changedData.w_ProductionStartDate;
-    }
+      // process customized
+      if (changedData.w_ProductionStartDate) {
+        changedData.w_ProductionEndDate = changedData.w_ProductionStartDate;
+      }
 
-    if (changedData.d_ProductionStartDate) {
-      changedData.d_ProductionEndDate = changedData.d_ProductionStartDate;
-    }
+      if (changedData.d_ProductionStartDate) {
+        changedData.d_ProductionEndDate = changedData.d_ProductionStartDate;
+      }
 
-    let stillEditingData = {}
-    if (group && uiWoFieldEditGroupMapping?.[group]) {
-      // only save group fields
-      const allFieldsFromGroup = uiWoFieldEditGroupMapping[group]
-      _.keys(changedData)?.map(k => {
-        if(!allFieldsFromGroup[k]) {
-          stillEditingData[k] = changedData[k]
-        }
-      })      
-    }
+      let stillEditingData = {};
+      if (group && uiWoFieldEditGroupMapping?.[group]) {
+        // only save group fields
+        const allFieldsFromGroup = uiWoFieldEditGroupMapping[group];
+        _.keys(changedData)?.map((k) => {
+          if (!allFieldsFromGroup[k]) {
+            stillEditingData[k] = changedData[k];
+          }
+        });
+      }
 
-    await Wrapper_OrdersApi.updateWorkOrder(data, changedData, initData);
-    toast("Work order saved", { type: "success" });
-    await doInitWo(initMasterId, stillEditingData);
-    onSave();
-    setIsSaving(false)
-  });
+      await Wrapper_OrdersApi.updateWorkOrder(data, changedData, initData);
+      toast("Work order saved", { type: "success" });
+      await doInitWo(initMasterId, stillEditingData);
+      onSave();
+    },
+    () => setIsSaving(false),
+  );
 
   const doBatchUpdateItems = useLoadingBar(async (updateList, kind) => {
     if (_.isEmpty(updateList)) return null;
@@ -497,11 +524,11 @@ export const LocalDataProvider = ({
     },
     [isEditable, initMasterId, data?.m_Status, permissions],
   );
-  
+
   const checkEditableForSave = useCallback(
     (params = {}) => {
       const { group } = params;
-      return isEditable && checkEditableByGroup({group, data, permissions})
+      return isEditable && checkEditableByGroup({ group, data, permissions });
     },
     [isEditable, initMasterId, data?.m_Status, permissions],
   );
@@ -537,6 +564,8 @@ export const LocalDataProvider = ({
     onSave: doSave,
     onRestore: doRestore,
     onGetWindowMaker: doGetWindowMaker,
+    editedGroup,
+    setEditedGroup,
 
     windowItems,
     doorItems,

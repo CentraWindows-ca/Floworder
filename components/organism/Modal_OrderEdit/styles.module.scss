@@ -265,7 +265,9 @@
 }
 .buttonContainer {
     background-color: $color_background_lightBlue;
-    border: 1px solid $color_border_table
+    border: 1px solid $color_border_table;
+    box-shadow: 5px 0 10px -5px rgba(0, 0, 0, 0.15);
+
 }
 
 .showmore {
