@@ -387,7 +387,7 @@ export const EF_Rack = React.memo(
           return <span>{o.State}</span>;
         }}
         onChange={(v, o) => {
-          onChange(v, id, o?.[0]);
+          onChange(v || '', id, o?.[0] || '');
         }}
         value={value}
         placeholder={placeholder}
@@ -427,7 +427,7 @@ export const EF_SelectEmployee = React.memo(
         size={size}
         id={id}
         onChange={(v, o) => {
-          onChange(v, id, o?.[0]);
+          onChange(v || '', id, o?.[0] || '');
         }}
         value={value}
         placeholder={placeholder}
