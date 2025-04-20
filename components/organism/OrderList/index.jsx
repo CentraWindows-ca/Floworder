@@ -366,7 +366,7 @@ const Com = (props) => {
     if (isPending && !_.isEmpty(_data)) {
       resInstallStatusMapping =
         await OrdersApi.getWorkOrdersInstallationStatusAsync(null, {
-          workOrderNos: _data?.map((data) => data?.value?.m?.m_WorkOrderNo),
+          workOrderNoList: _data?.map((data) => data?.value?.m?.m_WorkOrderNo),
         });
     }
 
@@ -415,7 +415,7 @@ const Com = (props) => {
       merged.d_CustomerDate_display = d_CustomerDate;
 
       merged.m_InstallStatus =
-        resInstallStatusMapping[merged.m_WorkOrderNo] || null;
+        resInstallStatusMapping?.[merged.m_WorkOrderNo] || null;
 
       return merged;
     });
