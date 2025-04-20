@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { parseISO, formatISO, format, addMinutes, subMinutes } from "date-fns";
 import _ from "lodash";
 import cn from "classnames";
@@ -372,6 +372,7 @@ export const EF_Rack = React.memo(
     isDisplayAvilible = true,
     ...props
   }) => {
+
     const { dictionary } = useContext(GeneralContext);
 
     return (

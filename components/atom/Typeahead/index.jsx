@@ -1,9 +1,11 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useRef } from "react";
+import _ from 'lodash'
 import cn from "classnames";
 import { Typeahead, Highlighter } from "react-bootstrap-typeahead";
-
+import { SearchOutlined  } from "@ant-design/icons";
 // styles
 import style from "./style";
+
 
 const SIZES = {
   md: {
@@ -63,6 +65,7 @@ export default React.memo(
         },
         ref,
       ) => {
+        const typeaheadRef = useRef(ref)
         const filterBy = (option, state) => {
           if (state.selected.length) {
             return true;
@@ -86,6 +89,13 @@ export default React.memo(
             ? selected?.[0]?.[valueKey]
             : selected?.[0];
           onChange(selectedKey, selected);
+        };
+
+        const handleBlur = () => {
+          const instance = typeaheadRef?.current;
+          if (_.isEmpty(selectedValue) && instance) {
+            instance.clear(); 
+          }
         };
 
         const renderMenuItemChildren = (option, props, index) => {
@@ -123,7 +133,7 @@ export default React.memo(
             onFocus={(e) => {
               e.target.select();
             }}
-            ref={ref}
+            ref={typeaheadRef}
             selected={selectedValue ? [selectedValue] : []}
             onChange={handleOnChange}
             options={options}
@@ -135,6 +145,7 @@ export default React.memo(
             className={cn(className, size)}
             filterBy={filterBy}
             disabled={disabled}
+            onBlur={handleBlur}
             {...rest}
           >
             {({ onClear, selected }) => (
@@ -142,7 +153,7 @@ export default React.memo(
                 className="rbt-aux"
                 style={{ width: SIZES[size]?.width || 'auto' }}
               >
-                {!!selected.length && (
+                {!!selected.length ? (
                   <button
                     onClick={onClear}
                     aria-label="Clear"
@@ -153,7 +164,9 @@ export default React.memo(
                   >
                     <span className="visually-hidden sr-only">Clear</span>
                   </button>
-                )}
+                ) : <span className="text-gray-400">
+                  <SearchOutlined/>
+                  </span>}
               </div>
             )}
           </Typeahead>
