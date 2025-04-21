@@ -277,7 +277,7 @@ export const LocalDataProvider = ({
     _returnTrips = _.orderBy(_returnTrips, ["returnTripDate"], ["ASC"]);
 
     setReturnTrips(_returnTrips);
-    setInitDataReturnTrips(_returnTrips);
+    setInitDataReturnTrips( JSON.parse(JSON.stringify(_returnTrips)));
   });
 
   const initAttachmentList = useLoadingBar(async (masterId) => {

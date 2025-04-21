@@ -51,6 +51,9 @@ const codeToTitleMap = {
   UpdateWorkOrder: "Update Work Order",
   UpdateWindowMakerData: "Update Window Maker Data",
   BacktoDraft: "Back to Draft",
+  DeleteReturnTrip: "Delete Return Trip",
+  UpdateReturnTrip: "Update Return Trip",
+  CreateReturnTrip: "Create Return Trip"
 };
 
 

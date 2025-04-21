@@ -30,7 +30,7 @@ const Com = ({ data, layer, onHide }) => {
 
   const doInit = (data) => {
     let ChangedData = JSON.parse(data.ChangedData);
-    
+
     const ChangedData_Order = ChangedData?.OrderLevelChanges?.reduce(
       (prev, curr) => {
         return { ...prev, [curr.Field]: curr };
@@ -55,12 +55,15 @@ const Com = ({ data, layer, onHide }) => {
       (a) => a.Type === "image",
     );
 
+    const ChangedData_ReturnTripList = ChangedData?.ReturnTrips;
+
     const _data = {
       ...data,
       ChangedData_Order,
       ChangedData_ItemList,
       ChangedData_AttachmentList,
       ChangedData_ImageList,
+      ChangedData_ReturnTripList,
     };
 
     setHistoryData(_data);
@@ -84,8 +87,9 @@ const Com = ({ data, layer, onHide }) => {
       >
         <LoadingBlock isLoading={false}>
           <div className="mb-2">
-            Record has been modified by <b>{historyData?.LastModifiedBy || "--"}</b>{" "}
-            at <b>{historyData?.CreatedAt}</b>
+            Record has been modified by{" "}
+            <b>{historyData?.ChangedBy || "--"}</b> at{" "}
+            <b>{historyData?.CreatedAt}</b>
             <br />
             Source : {historyData?.Source}
           </div>
@@ -113,7 +117,6 @@ const Com = ({ data, layer, onHide }) => {
 };
 
 const prefixOrder = { m: 0, w: 1, d: 2, wi: 3, di: 4 };
-
 
 const ChangesOnly = ({ historyData }) => {
   return (
@@ -147,6 +150,12 @@ const ChangesOnly = ({ historyData }) => {
           list: historyData?.ChangedData_ItemList,
           type: "di",
           label: "Doors Items",
+        }}
+      />
+      <ReturnTrips
+        {...{
+          list: historyData?.ChangedData_ReturnTripList,
+          label: "Return Trips",
         }}
       />
       {/* <Files
@@ -207,8 +216,48 @@ const Items = ({ list, type, label }) => {
   );
 };
 
+const ReturnTrips = ({ list, label }) => {
+  const displayList = list;
+  if (_.isEmpty(displayList)) return null;
+
+  return (
+    <div className={cn(styles.changesRow)}>
+      <div className={cn(styles.changesField)}>{label}</div>
+      <div className={cn(styles.changesCurrent)}>
+        <div className={cn(styles.changedItemList)}>
+          {displayList?.map((a) => {
+            const { Id, DateChange, NotesChange } = a;
+            const Changes = [DateChange, NotesChange]?.filter((a) => a);
+            return (
+              <div key={Id} className={cn(styles.itemInfoRow)}>
+                {Changes?.length > 0 ? Changes.map((b) => {
+                  const { Field, OldValue, NewValue } = b;
+                  const displayField = Field;
+                  return (
+                    <div
+                      key={`returntrip_changed_${Field}`}
+                      className={cn(styles.changesRow)}
+                    >
+                      <div className={cn(styles.changesField)} title={Field}>
+                        {constants.constants_labelMapping[displayField]
+                          ?.title || displayField}
+                      </div>
+                      <div className={cn(styles.changesOld)}>{OldValue}</div>
+                      <div className={cn(styles.changesNew)}>{NewValue}</div>
+                    </div>
+                  );
+                }) : <div>Deleted</div>}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Files = ({ list, label }) => {
-  const displayList = list
+  const displayList = list;
   if (_.isEmpty(displayList)) return null;
 
   return (
@@ -221,9 +270,7 @@ const Files = ({ list, label }) => {
             return (
               <div key={`item_files_${Id}`} className={cn(styles.itemInfoRow)}>
                 <div className={cn(styles.changedItemRow)}>Id: [{Id}]</div>
-                <div
-                  className={cn(styles.changesRow)}
-                >
+                <div className={cn(styles.changesRow)}>
                   <div className={cn(styles.changesOld)}>{Notes}</div>
                 </div>
               </div>
