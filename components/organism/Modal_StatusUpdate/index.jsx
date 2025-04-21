@@ -16,8 +16,8 @@ const Com = ({ missingFields, onSubmit, onCancel, isPaused, data }) => {
       const _values = {};
       const mapping = {
         transferredLocation: data["m_TransferredLocation"],
-        transferredDate: data["m_TransferredDate"] || new Date().toISOString(),
-        shippedDate: data["m_ShippedDate"] || new Date().toISOString(),
+        transferredDate: data["m_TransferredDate"],
+        shippedDate: data["m_ShippedDate"],
       };
 
       // get init values

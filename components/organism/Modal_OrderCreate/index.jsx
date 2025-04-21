@@ -130,8 +130,20 @@ const Screen1 = ({
         workOrderNo,
         existingRecord.dbSource,
       );
-
-      setWindowMakerData(res?.data);
+      if (res?.data) {
+        setWindowMakerData(res?.data);
+      } else {
+        toast(
+          <div>
+            Failed to search existing work order <br/>
+            <b>[{existingRecord.dbSource}] {workOrderNo}</b> <br/>
+            from Windowmaker
+          </div>,
+          {
+            type: "error",
+          },
+        );  
+      }
     } else {
       // NOTE: its possible exist in our db, but duplicate from WM
       _resList = [
