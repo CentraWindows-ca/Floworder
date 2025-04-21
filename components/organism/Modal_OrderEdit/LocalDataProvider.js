@@ -274,7 +274,7 @@ export const LocalDataProvider = ({
       returnTripDate: utils.formatDateForMorganLegacy(a.returnTripDate),
     }));
 
-    _returnTrips = _.sortBy(_returnTrips, ["returnTripDate"], ["DESC"]);
+    _returnTrips = _.orderBy(_returnTrips, ["returnTripDate"], ["ASC"]);
 
     setReturnTrips(_returnTrips);
     setInitDataReturnTrips(_returnTrips);
