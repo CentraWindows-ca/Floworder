@@ -22,7 +22,7 @@ import { uiWoFieldEditGroupMapping } from "lib/constants/constants_labelMapping"
 import { getOrderKind } from "lib/utils";
 
 import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
-import { checkEditableById, checkEditableByGroup } from "./Com";
+import { checkEditableById, checkEditableByGroup, treateGlassItems } from "./Com";
 
 export const LocalDataContext = createContext(null);
 
@@ -173,30 +173,34 @@ export const LocalDataProvider = ({
       );
 
       if (resGlassItems) {
-        const getStatus = (glassItem) => {
-          let result = "Not Ordered";
+        setGlassItems(treateGlassItems(resGlassItems))
+        
 
-          if (glassItem?.qty === glassItem?.glassQty) {
-            result = "Received";
-          } else if (glassItem?.orderDate) {
-            result = "Ordered";
-          }
 
-          return result;
-        };
+        // const getStatus = (glassItem) => {
+        //   let result = "Not Ordered";
 
-        setGlassItems((x) => {
-          let _glassItems = [...resGlassItems];
+        //   if (glassItem?.qty === glassItem?.glassQty) {
+        //     result = "Received";
+        //   } else if (glassItem?.orderDate) {
+        //     result = "Ordered";
+        //   }
 
-          _glassItems?.forEach((g) => {
-            g.status = getStatus(g);
-            g.receivedExpected = `${g.qty} / ${g.glassQty}`;
-            g.shipDate = g.shipDate;
-            g.orderDate = g.orderDate;
-          });
+        //   return result;
+        // };
 
-          return _glassItems;
-        });
+        // setGlassItems((x) => {
+        //   let _glassItems = [...resGlassItems];
+
+        //   _glassItems?.forEach((g) => {
+        //     g.status = getStatus(g);
+        //     g.receivedExpected = `${g.qty} / ${g.glassQty}`;
+        //     g.shipDate = g.shipDate;
+        //     g.orderDate = g.orderDate;
+        //   });
+
+        //   return _glassItems;
+        // });
       }
     }
 

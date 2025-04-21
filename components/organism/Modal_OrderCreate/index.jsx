@@ -300,27 +300,25 @@ const Screen2 = ({
 
     let res = null;
 
+    const _updatingBody = {
+      workOrderNo,
+      resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
+      manufacturingFacility,
+      isReservationWorkOrder: isReservation,
+      ...updateValues,
+    }
+
     // fetch from WM
     if (dbSource === "WM_AB") {
       res = await WM2CWProdApi.sync_AB_WindowMakerByWorkOrderAsync(
         null,
-        {
-          workOrderNo,
-          resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
-          manufacturingFacility,
-          ...updateValues,
-        },
+        _updatingBody,
         existingWorkOrder,
       );
     } else {
       res = await WM2CWProdApi.sync_BC_WindowMakerByWorkOrderAsync(
         null,
-        {
-          workOrderNo,
-          resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
-          manufacturingFacility,
-          ...updateValues,
-        },
+        _updatingBody,
         existingWorkOrder,
       );
     }

@@ -14,23 +14,37 @@ import stylesCurrent from "./styles.module.scss";
 
 const styles = { ...stylesRoot, ...stylesCurrent };
 
-
-const STATUS_DISPLAY = (status, woRef) => {
+const STATUS_DISPLAY = (data, woRef) => {
   // NOTE: 20250419 hardcode requirement from Meng
-  if (woRef.w_GlassSupplier === 'GlassFab') {
-    return "N/A"
+  if (woRef.w_GlassSupplier === "GlassFab") {
+    return "N/A";
   }
 
-  return status  
-}
+  if (data.statusObj) {
+    return (
+      <div className="flex align-items-center gap-2">
+        <div
+          style={{
+            border: '1px solid rgb(160, 160, 160)',
+            height: "15px",
+            width: "15px",
+            backgroundColor: data.statusObj.color,
+            display: 'block'
+          }}
+        />
+        {data.statusObj.label}
+      </div>
+    );
+  }
 
+  return data.status;
+};
 
 const Com = ({}) => {
   const { glassTotal, glassItems, data: woRef } = useContext(LocalDataContext);
 
   const [sort, setSort] = useState(null);
   const [filters, setFilters] = useState(null);
-
 
   const jsxTitle = (
     <div className="flex gap-2">
@@ -121,7 +135,10 @@ const Com = ({}) => {
             <label>Windows</label>
           </div>
           <table
-            className={cn("table-xs table-hover mb-0 table border table-clean", styles.itemTableBorder)}
+            className={cn(
+              "table-xs table-hover table-clean mb-0 table border",
+              styles.itemTableBorder,
+            )}
           >
             <TableHeader
               {...{
@@ -143,7 +160,7 @@ const Com = ({}) => {
                     <SingleRow
                       data={a}
                       key={`glass_${workOrderNumber}_${item}_${i}`}
-                      woRef = {woRef}
+                      woRef={woRef}
                     />
                   );
 
@@ -151,7 +168,7 @@ const Com = ({}) => {
                   <MultiRow
                     data={a}
                     key={`glass_${workOrderNumber}_${item}_${i}`}
-                    woRef = {woRef}
+                    woRef={woRef}
                   />
                 );
               })}
@@ -159,7 +176,7 @@ const Com = ({}) => {
           </table>
         </div>
       ) : (
-        <NoData/>
+        <NoData />
       )}
     </ToggleBlock>
   );
@@ -197,7 +214,7 @@ const SingleRow = ({ data, woRef }) => {
       <td>{shipDate}</td>
       <td>{size}</td>
       <td>{position}</td>
-      <td>{STATUS_DISPLAY(status, woRef)}</td>
+      <td>{STATUS_DISPLAY(data, woRef)}</td>
     </tr>
   );
 };
@@ -230,7 +247,9 @@ const MultiRow = ({ data, woRef }) => {
 
         <td>{rackID}</td>
         <td>{rackType}</td>
-        <td className="text-right">{rackQty}</td>
+        <td className={cn("text-right", styles.multileRowBorderFix)}>
+          {rackQty}
+        </td>
         {j === 0 && (
           <>
             <td rowSpan={rowSpan}>{item}</td>
@@ -239,7 +258,7 @@ const MultiRow = ({ data, woRef }) => {
             <td rowSpan={rowSpan}>{shipDate}</td>
             <td rowSpan={rowSpan}>{size}</td>
             <td rowSpan={rowSpan}>{position}</td>
-            <td rowSpan={rowSpan}>{STATUS_DISPLAY(status, woRef)}</td>
+            <td rowSpan={rowSpan}>{STATUS_DISPLAY(data, woRef)}</td>
           </>
         )}
       </tr>

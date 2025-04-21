@@ -97,7 +97,7 @@ const WorkOrderActions = ({
     return payload;
   };
 
-  const handleMoveTo = async (newStatus, _kind) => {
+  const handleMoveTo = async (newStatus, _kind, isReservation) => {
     const payload = await getStatusPayload(data, newStatus, _kind);
     if (payload === null) return null;
     if (
@@ -108,7 +108,9 @@ const WorkOrderActions = ({
       return null;
     }
 
-    await doMove(payload);
+    // TODO: if reservation
+
+    await doMove(payload, isReservation);
 
     toast("Status updated", { type: "success" });
     setCloseToggle((p) => !p);
@@ -187,7 +189,7 @@ const WorkOrderActions = ({
     onUpdate();
   });
 
-  const doMove = useLoadingBar(async (payload) => {
+  const doMove = useLoadingBar(async (payload, isReservation) => {
     await OrdersApi.updateWorkOrderStatus(null, payload, data);
   });
 
@@ -244,7 +246,7 @@ const WorkOrderActions = ({
         featureCode={constants.FEATURE_CODES["om.prod.wo.status.window"]}
       >
         {allowedStatusWindow?.map((stepName) => {
-          const { label, color, key } = WORKORDER_MAPPING[stepName];
+          const { label, color, key, isReservation } = WORKORDER_MAPPING[stepName];
           return (
             <PermissionBlock
               key={key}
@@ -256,7 +258,7 @@ const WorkOrderActions = ({
               <Button
                 type="text"
                 icon={<ArrowRightOutlined />}
-                onClick={() => handleMoveTo(key, "w")}
+                onClick={() => handleMoveTo(key, "w", isReservation)}
               >
                 Move Windows To:{" "}
                 <span
@@ -278,7 +280,7 @@ const WorkOrderActions = ({
         featureCode={constants.FEATURE_CODES["om.prod.wo.status.door"]}
       >
         {allowedStatusDoor?.map((stepName) => {
-          const { label, color, key } = WORKORDER_MAPPING[stepName];
+          const { label, color, key, isReservation } = WORKORDER_MAPPING[stepName];
           return (
             <PermissionBlock
               key={key}
@@ -287,7 +289,7 @@ const WorkOrderActions = ({
               <Button
                 type="text"
                 icon={<ArrowRightOutlined />}
-                onClick={() => handleMoveTo(key, "d")}
+                onClick={() => handleMoveTo(key, "d", isReservation)}
                 key={key}
               >
                 Move Doors To:{" "}

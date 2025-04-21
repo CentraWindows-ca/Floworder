@@ -2,10 +2,11 @@ import { useState, useContext, memo } from "react";
 import cn from "classnames";
 import { Spin } from "antd";
 import { LoadingOutlined, SaveOutlined } from "@ant-design/icons";
-import constants, { WORKORDER_MAPPING } from "lib/constants";
+import constants, { WORKORDER_MAPPING, GlassRowStates } from "lib/constants";
 // styles
 import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
+import utils from "lib/utils";
 
 const _ifDisplay = ({ kind, uiOrderType, id, displayAs }, data) => {
   let currentKind = "m";
@@ -214,6 +215,72 @@ export const NoData = ({ title = "No Data", className }) => {
     </div>
   );
 };
+
+// ========== copied from calendar project: ==========
+export const treateGlassItems = (list) => {
+  const getStatus = (glassItem) => {
+    let result = "Not Ordered";
+
+    if (glassItem?.qty === glassItem?.glassQty) {
+      result = "Received";
+    } else if (glassItem?.orderDate) {
+      result = "Ordered";
+    }
+
+    return result;
+  };
+
+  let _glassItems = [...list];
+  const _newItems = [];
+  _glassItems?.forEach((g, i) => {
+    g.status = getStatus(g);
+    g.statusObj = _.values(GlassRowStates).find(_grs => _grs.label === g.status) || {}
+    g.receivedExpected = `${g.qty} / ${g.glassQty}`;
+    g.shipDate = utils.formatDateForMorganLegacy(g.shipDate);
+    g.orderDate = utils.formatDateForMorganLegacy(g.orderDate);
+
+  })
+  const statusPriority = {
+    "Not Ordered": 1,
+    "Ordered": 2,
+    "Received": 3
+  };
+
+  _glassItems = _glassItems.sort((a, b) => {
+    // Compare status priority
+    const statusComparison = statusPriority[a.status] - statusPriority[b.status];
+    if (statusComparison !== 0) {
+      return statusComparison;
+    }
+    // If status is the same, compare item strings
+    return a.item.localeCompare(b.item);
+  });
+
+  _glassItems?.forEach((g, i) => {
+    const { rackInfo = [], workOrderNumber, item } = g;
+    g.isFirstRow = true;
+    // expand extra rows by rack info (if any)
+    if (_.isEmpty(rackInfo)) {
+      _newItems.push({ ...g, key: `${workOrderNumber}_${item}_${i}`});
+    } else {
+      g.rowSpan = rackInfo.length;
+      
+      rackInfo.map((ri, j) => {
+        const { rackID, rackType, qty } = ri;
+        _newItems.push({
+          ...g,
+          isFirstRow: j > 0 ? false : true,
+          rackID,
+          rackType,
+          rackQty: qty,
+          key: `${workOrderNumber}_${item}_${rackID}_${i}_${j}`
+        });
+      });
+    }
+  });
+
+  return _newItems;
+}
 
 export const checkEditableById = ({ id, group, permissions, data }) => {
   if (!id && !group) return true;
