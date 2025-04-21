@@ -480,8 +480,6 @@ export const LocalDataProvider = ({
     await initReturnTrips(data?.m_MasterId);
   });
   const doEditReturnTrip = useLoadingBar(async (_rt) => {
-
-    console.log(_rt, initDataReturnTrips)
     await OrdersApi.updateProductionsReturnTrip({}, _rt, initData, initDataReturnTrips?.find(a => a.id === _rt?.id));
     await initReturnTrips(data?.m_MasterId);
   });
