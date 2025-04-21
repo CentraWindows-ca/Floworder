@@ -40,6 +40,7 @@ const Com = ({ title, id }) => {
     doorItems,
     onBatchUpdateItems,
     checkEditable,
+    uiOrderType,
   } = useContext(LocalDataContext);
 
   const [stats, setStats] = useState({});
@@ -80,19 +81,22 @@ const Com = ({ title, id }) => {
     });
 
     setStats(_stats);
-  }, [windowItems, doorItems]);
+  }, [windowItems, doorItems, uiOrderType]);
 
   const handleShowItem = (item, kind) => {
     setEditingItem({ ...item, kind });
   };
 
   const handleSaveItem = async (Id, item, kind) => {
-    await onBatchUpdateItems([
-      {
-        keyValue: Id,
-        fields: item,
-      }
-    ], kind)
+    await onBatchUpdateItems(
+      [
+        {
+          keyValue: Id,
+          fields: item,
+        },
+      ],
+      kind,
+    );
   };
 
   const handleCloseItem = () => {
@@ -103,8 +107,11 @@ const Com = ({ title, id }) => {
     <div className="flex gap-2">
       {title}
       <div className="text-primary font-normal">
-        W: {stats.W} | PD: {stats.PD} | SD: {stats.SD} | ED: {stats.ED} | GL:{" "}
-        {stats.GL}
+        {_.keys(stats)
+          .map((k) => {
+            return `${k}: ${stats[k]}`;
+          })
+          .join(" | ")}
       </div>
     </div>
   );
@@ -303,7 +310,7 @@ const TableWindow = ({ handleShowItem, list: data, itemType }) => {
                 handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
               disabled: !checkEditable({ group: "windowitems" }),
               size: "sm",
-              placeholder: '--'
+              placeholder: "--",
             }}
           />
         );
@@ -556,7 +563,7 @@ const TableDoor = ({ handleShowItem, list: data, itemType }) => {
                 handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
               disabled: !checkEditable({ group: "windowitems" }),
               size: "sm",
-              placeholder: '--'
+              placeholder: "--",
             }}
           />
         );
