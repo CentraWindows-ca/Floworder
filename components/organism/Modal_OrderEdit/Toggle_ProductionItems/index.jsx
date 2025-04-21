@@ -46,6 +46,8 @@ const Com = ({ title, id }) => {
   const [stats, setStats] = useState({});
   const [editingItem, setEditingItem] = useState(null);
 
+  const [grouppedItems, setGrouppedItems] = useState({});
+
   useEffect(() => {
     const _stats = {
       W: 0,
@@ -54,6 +56,8 @@ const Com = ({ title, id }) => {
       ED: 0,
       GL: 0,
     };
+
+    const _grouppedItems = {};
 
     windowItems?.map((a) => {
       const { System } = a;
@@ -72,13 +76,25 @@ const Com = ({ title, id }) => {
           break;
       }
       _stats[a.itemType] = _stats[a.itemType] + 1;
+
+      if (!_grouppedItems[a.itemType]) {
+        _grouppedItems[a.itemType] = [];
+      }
+      _grouppedItems[a.itemType].push(a);
     });
 
     doorItems?.map((a) => {
       const { System } = a;
       a.itemType = "ED";
       _stats[a.itemType] = _stats[a.itemType] + 1;
+
+      if (!_grouppedItems[a.itemType]) {
+        _grouppedItems[a.itemType] = [];
+      }
+      _grouppedItems[a.itemType].push(a);
     });
+
+    setGrouppedItems(_grouppedItems)
 
     setStats(_stats);
   }, [windowItems, doorItems, uiOrderType]);
@@ -123,35 +139,35 @@ const Com = ({ title, id }) => {
           {...{
             handleShowItem,
             itemType: "W",
-            list: windowItems?.filter((a) => a.itemType === "W"),
+            list: grouppedItems['W']
           }}
         />
         <TableWindow
           {...{
             handleShowItem,
             itemType: "PD",
-            list: windowItems?.filter((a) => a.itemType === "PD"),
+            list:  grouppedItems['PD']
           }}
         />
         <TableWindow
           {...{
             handleShowItem,
             itemType: "SD",
-            list: windowItems?.filter((a) => a.itemType === "SD"),
+            list: grouppedItems['SD']
           }}
         />
         <TableDoor
           {...{
             handleShowItem,
             itemType: "ED",
-            list: doorItems?.filter((a) => a.itemType === "ED"),
+            list: grouppedItems['ED']
           }}
         />
         <TableWindow
           {...{
             handleShowItem,
             itemType: "GL",
-            list: windowItems?.filter((a) => a.itemType === "GL"),
+            list: grouppedItems['GL']
           }}
         />
       </ToggleBlock>

@@ -18,6 +18,7 @@ import useLoadingBar from "lib/hooks/useLoadingBar";
 import Editable from "components/molecule/Editable";
 import { GeneralContext } from "lib/provider/GeneralProvider";
 import constants, { WORKORDER_MAPPING } from "lib/constants";
+import PermissionBlock from "components/atom/PermissionBlock";
 
 const Com = (props) => {
   const { show, onHide, onCreate } = props;
@@ -135,14 +136,17 @@ const Screen1 = ({
       } else {
         toast(
           <div>
-            Failed to search existing work order <br/>
-            <b>[{existingRecord.dbSource}] {workOrderNo}</b> <br/>
+            Failed to search existing work order <br />
+            <b>
+              [{existingRecord.dbSource}] {workOrderNo}
+            </b>{" "}
+            <br />
             from Windowmaker
           </div>,
           {
             type: "error",
           },
-        );  
+        );
       }
     } else {
       // NOTE: its possible exist in our db, but duplicate from WM
@@ -285,7 +289,8 @@ const Screen2 = ({
     if (newStatus) {
       updateValues.status = newStatus;
     } else {
-      updateValues.status = existingWorkOrder?.m_Status || WORKORDER_MAPPING.Scheduled.key;
+      updateValues.status =
+        existingWorkOrder?.m_Status || WORKORDER_MAPPING.Scheduled.key;
     }
 
     if (selectedOverrideOption === "ResetWorkOrder") {
@@ -306,7 +311,7 @@ const Screen2 = ({
       manufacturingFacility,
       isReservationWorkOrder: isReservation,
       ...updateValues,
-    }
+    };
 
     // fetch from WM
     if (dbSource === "WM_AB") {
@@ -378,7 +383,7 @@ const Screen2 = ({
               value: k,
               key: k,
             }))}
-            style={{ width: 100 }}
+            style={{ width: 140 }}
           />
         </div>
       </div>
@@ -503,31 +508,36 @@ const Screen2 = ({
       <div className="justify-content-center flex gap-2">
         {!existingWorkOrder || selectedOverrideOption === "ResetWorkOrder" ? (
           <>
-            <button
-              className="btn btn-outline-secondary align-items-center flex gap-2"
-              onClick={() => doFetch(WORKORDER_MAPPING.DraftReservation.key)}
-              disabled={disabled || isLoading}
+            <PermissionBlock
+              featureCodeGroup={constants.FEATURE_CODES["om.prod.reservation"]}
+              op="canAdd"
             >
-              <Spin
-                size="small"
-                indicator={<LoadingOutlined />}
-                spinning={isLoading}
-                style={{ color: "blue" }}
-              />
-              <div
-                style={{
-                  display: "inline-block",
-                  height: "15px",
-                  width: "15px",
-                  background: WORKORDER_MAPPING.DraftReservation.color,
-                  border: "1px solid, white",
-                }}
-              ></div>
-              <span>Save as Draft Reservation</span>
-            </button>
+              <button
+                className="btn btn-outline-secondary align-items-center flex gap-2"
+                onClick={() => doFetch(WORKORDER_MAPPING.DraftReservation.key)}
+                disabled={disabled || isLoading}
+              >
+                <Spin
+                  size="small"
+                  indicator={<LoadingOutlined />}
+                  spinning={isLoading}
+                  style={{ color: "blue" }}
+                />
+                <div
+                  style={{
+                    display: "inline-block",
+                    height: "15px",
+                    width: "15px",
+                    background: WORKORDER_MAPPING.DraftReservation.color,
+                    border: "1px solid, white",
+                  }}
+                ></div>
+                <span>Save Reservation</span>
+              </button>
+            </PermissionBlock>
             <button
               className="btn btn-outline-secondary align-items-center flex gap-2"
-              onClick={() => doFetch(WORKORDER_MAPPING.Scheduled.key)}
+              onClick={() => doFetch(WORKORDER_MAPPING.Draft.key)}
               disabled={disabled || isLoading}
             >
               <Spin
@@ -541,11 +551,11 @@ const Screen2 = ({
                   display: "inline-block",
                   height: "15px",
                   width: "15px",
-                  background: WORKORDER_MAPPING.Scheduled.color,
+                  background: WORKORDER_MAPPING.Draft.color,
                   border: "1px solid, white",
                 }}
               ></div>
-              <span>Save as Scheduled</span>
+              <span>Save Work Order</span>
             </button>
           </>
         ) : (
