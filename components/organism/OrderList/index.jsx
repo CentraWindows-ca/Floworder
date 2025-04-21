@@ -54,6 +54,7 @@ const Com = (props) => {
 
   const isWindow = kind === "w" || (kind === "m" && uiIsShowWindow);
   const isDoor = kind === "d" || (kind === "m" && uiIsShowDoor);
+  const isMasterOnly = uiIsShowWindow && uiIsShowDoor
 
   const [treatedData, setTreatedData] = useState(null);
   const [copied, setCopied] = useState(false);
@@ -81,6 +82,8 @@ const Com = (props) => {
 
   const isPending = status === WORKORDER_MAPPING.Pending.key;
   const isScheduled = status === WORKORDER_MAPPING.Scheduled.key;
+  const isShipped = status === WORKORDER_MAPPING.Shipped.key;
+
   const columns = constants.applyField(
     [
       {
@@ -138,6 +141,8 @@ const Com = (props) => {
         key: "m_LastModifiedBy",
         display: isPending,
       },
+
+      // ========= status ========
       {
         key: "m_InstallStatus",
         initKey: "m_InstallStatus",
@@ -230,6 +235,11 @@ const Com = (props) => {
         key: "m_FormStatus",
         display: isPending && !isDeleted,
       },
+      // ========= status ========     
+      {
+        key: "m_ShippedDate",
+        display: isShipped,
+      },
       {
         key: "m_Branch",
         width: 80,
@@ -244,7 +254,6 @@ const Com = (props) => {
       },
       {
         key: "d_ProductionStartDate",
-
         display: isDoor && isScheduled,
       },
       {
@@ -262,15 +271,15 @@ const Com = (props) => {
         width: 115,
       },
       {
-        title: "Exterior Doors",
-        key: "m_NumberOfDoors",
-        display: isDoor,
+        title: "Swing Doors",
+        key: "m_NumberOfSwingDoors",
+        display: isWindow,
         className: "text-right",
         width: 135,
       },
       {
-        title: "Swing Doors",
-        key: "m_NumberOfSwingDoors",
+        title: "Exterior Doors",
+        key: "m_NumberOfDoors",
         display: isDoor,
         className: "text-right",
         width: 135,
@@ -279,6 +288,7 @@ const Com = (props) => {
         title: "Others",
         key: "m_NumberOfOthers",
         className: "text-right",
+        display: isMasterOnly,
         width: 80,
       },
       {

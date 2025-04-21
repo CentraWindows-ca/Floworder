@@ -64,6 +64,7 @@ export const LocalDataProvider = ({
 
   const [windowItems, setWindowItems] = useState(null);
   const [doorItems, setDoorItems] = useState(null);
+  const [returnTrips, setReturnTrips] = useState(null);
   const [glassItems, setGlassItems] = useState(null);
 
   const [uiOrderType, setUiOrderType] = useState({});
@@ -71,6 +72,7 @@ export const LocalDataProvider = ({
 
   const [initData, setInitData] = useState(null);
   const [initDataItems, setInitDataItems] = useState(null);
+  const [initDataReturnTrips, setInitDataReturnTrips] = useState(null);
 
   const [kind, setKind] = useState(initKind || "m");
 
@@ -131,6 +133,7 @@ export const LocalDataProvider = ({
     setData(null);
     setDoorItems(null);
     setWindowItems(null);
+    setReturnTrips(null);
     setExistingAttachments(null);
     setNewAttachments(null);
     setExistingImages(null);
@@ -138,6 +141,7 @@ export const LocalDataProvider = ({
     setGlassItems(null);
     setInitData(null);
     setInitDataItems(null);
+    setInitDataReturnTrips(null);
     setEditedGroup({});
   };
 
@@ -161,6 +165,7 @@ export const LocalDataProvider = ({
       await initItems(initMasterId);
       initAttachmentList(mergedData?.m_MasterId);
       initImageList(mergedData?.m_MasterId);
+      await initReturnTrips(mergedData?.m_MasterId);
 
       const resGlassItems = await GlassApi.getGlassItems(
         mergedData.m_WorkOrderNo,
@@ -200,7 +205,7 @@ export const LocalDataProvider = ({
 
   const doInitWo = useLoadingBar(
     async (initMasterId, stillEditingData = {}) => {
-      setEditedGroup({})
+      setEditedGroup({});
       const [res] = await Wrapper_OrdersApi.getWorkOrder(
         initMasterId,
         isDeleted ? 0 : 1,
@@ -220,15 +225,15 @@ export const LocalDataProvider = ({
         setData({ ...mergedData, ...stillEditingData });
 
         // if we need to keep saveButton available for groups
-        const _editingGroup = {}
-        _.keys(uiWoFieldEditGroupMapping)?.map(group => {
-          _.keys(stillEditingData)?.map(k => {
+        const _editingGroup = {};
+        _.keys(uiWoFieldEditGroupMapping)?.map((group) => {
+          _.keys(stillEditingData)?.map((k) => {
             if (uiWoFieldEditGroupMapping[group]?.[k]) {
-              _editingGroup[group] = true
+              _editingGroup[group] = true;
             }
-          })
-        })
-        setEditedGroup(_editingGroup)
+          });
+        });
+        setEditedGroup(_editingGroup);
 
         setUiOrderType({
           m: !!value?.m,
@@ -258,6 +263,21 @@ export const LocalDataProvider = ({
         itemType: "wi",
       })),
     ]);
+  });
+
+  const initReturnTrips = useLoadingBar(async (initMasterId) => {
+    let _returnTrips = await OrdersApi.getProductionsReturnTripByID({
+      MasterId: initMasterId,
+    });
+    _returnTrips = _returnTrips?.map((a) => ({
+      ...a,
+      returnTripDate: utils.formatDateForMorganLegacy(a.returnTripDate),
+    }));
+
+    _returnTrips = _.sortBy(_returnTrips, ["returnTripDate"], ["DESC"]);
+
+    setReturnTrips(_returnTrips);
+    setInitDataReturnTrips(_returnTrips);
   });
 
   const initAttachmentList = useLoadingBar(async (masterId) => {
@@ -451,6 +471,21 @@ export const LocalDataProvider = ({
     await initImageList(data?.m_MasterId);
   });
 
+  const doDeleteReturnTrip = useLoadingBar(async (_rt) => {
+    await OrdersApi.hardDeleteProductionsReturnTrip({}, _rt, initData);
+    await initReturnTrips(data?.m_MasterId);
+  });
+  const doAddReturnTrip = useLoadingBar(async (_rt) => {
+    await OrdersApi.addProductionsReturnTrip({}, _rt, initData);
+    await initReturnTrips(data?.m_MasterId);
+  });
+  const doEditReturnTrip = useLoadingBar(async (_rt) => {
+
+    console.log(_rt, initDataReturnTrips)
+    await OrdersApi.updateProductionsReturnTrip({}, _rt, initData, initDataReturnTrips?.find(a => a.id === _rt?.id));
+    await initReturnTrips(data?.m_MasterId);
+  });
+
   const doSave = useLoadingBar(
     async (group) => {
       setIsSaving(true);
@@ -551,6 +586,7 @@ export const LocalDataProvider = ({
     setNewImages,
     existingImages,
     setExistingImages,
+    setReturnTrips,
     onChange: handleChange,
     onUpdateStatus: doUpdateStatus,
     onUpdateTransferredLocation: doUpdateTransferredLocation,
@@ -559,6 +595,9 @@ export const LocalDataProvider = ({
     onDeleteAttachment: doDeleteAttachment,
     onUploadImage: doUploadImage,
     onDeleteImage: doDeleteImage,
+    onDeleteReturnTrip: doDeleteReturnTrip,
+    onAddReturnTrip: doAddReturnTrip,
+    onEditReturnTrip: doEditReturnTrip,
     onBatchUpdateItems: doBatchUpdateItems,
     onHide: handleHide,
     onSave: doSave,
@@ -569,6 +608,7 @@ export const LocalDataProvider = ({
 
     windowItems,
     doorItems,
+    returnTrips,
     glassItems,
     expands,
     setExpands,

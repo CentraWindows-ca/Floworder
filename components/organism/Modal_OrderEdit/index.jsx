@@ -18,6 +18,8 @@ import Toggle_ProductionItems from "./Toggle_ProductionItems";
 import Toggle_GlassItems from "./Toggle_GlassItems";
 import Toggle_Images from "./Toggle_Images";
 import Toggle_Files from "./Toggle_Files";
+import Toggle_ReturnTrips from "./Toggle_ReturnTrips";
+
 import { DisplayBlock } from "./Com";
 import constants, { WORKORDER_MAPPING } from "lib/constants";
 
@@ -50,6 +52,7 @@ const Com = ({}) => {
     existingImages,
     windowItems,
     doorItems,
+    returnTrips,
     glassTotal,
     uIstatusObj,
     isDeleted = false,
@@ -140,12 +143,16 @@ const Com = ({}) => {
           <div className={cn(styles.anchors)}>
             <span onClick={() => onAnchor("basic", true)}>Basic</span> |
             <span onClick={() => onAnchor("notes", true)}>Notes</span> |
+            <span onClick={() => onAnchor("returnTrips", true)}>
+              Return Trips ({returnTrips?.length || 0})
+            </span>{" "}
+            |
             <span onClick={() => onAnchor("images", true)}>
               Images ({existingImages?.length || 0})
             </span>
             |
             <span onClick={() => onAnchor("files", true)}>
-              Attachment Files ({existingAttachments?.length || 0})
+              Attachments ({existingAttachments?.length || 0})
             </span>
             |
             <span onClick={() => onAnchor("productionItems", true)}>
@@ -232,13 +239,21 @@ const Com = ({}) => {
           >
             <Toggle_Notes />
           </div>
+
+          <div
+            className="flex-column flex"
+            style={{ marginTop: "10px", marginBottom: "10px" }}
+          >
+            <Toggle_ReturnTrips title={"Return Trips"} id={"returnTrips"} />
+          </div>
+
           {checkEditable() && (
             <div
               className={cn(
                 "justify-content-center flex p-2",
                 styles.buttonContainer,
               )}
-              style={{ margin: "10px 0px", position: 'sticky', bottom: '0px' }}
+              style={{ margin: "10px 0px", position: "sticky", bottom: "0px" }}
             >
               <button
                 className="btn btn-primary align-items-center flex gap-2 px-3"
@@ -264,7 +279,7 @@ const Com = ({}) => {
 
           <div className="flex-column flex" style={{ gap: "10px" }}>
             <Toggle_Images title={"Images"} id={"images"} />
-            <Toggle_Files title={"Attachment Files"} id={"files"} />
+            <Toggle_Files title={"Attachments"} id={"files"} />
             <Toggle_ProductionItems
               title={"Production Items"}
               id={"productionItems"}

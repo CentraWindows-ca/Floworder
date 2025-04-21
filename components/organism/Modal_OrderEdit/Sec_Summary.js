@@ -136,6 +136,11 @@ const Com = ({ className, ...props }) => {
           number: data["m_NumberOfPatioDoors"],
           displayNumber: utils.formatNumber(data["m_NumberOfPatioDoors"]),
         },
+        {
+          label: "Swing Doors",
+          number: data["m_NumberOfSwingDoors"],
+          displayNumber: utils.formatNumber(data["m_NumberOfSwingDoors"]),
+        },
       ],
     },
     d: {
@@ -150,11 +155,6 @@ const Com = ({ className, ...props }) => {
           label: "Exterior Doors",
           number: data["m_NumberOfDoors"],
           displayNumber: utils.formatNumber(data["m_NumberOfDoors"]),
-        },
-        {
-          label: "Swing Doors",
-          number: data["m_NumberOfSwingDoors"],
-          displayNumber: utils.formatNumber(data["m_NumberOfSwingDoors"]),
         },
       ],
     },

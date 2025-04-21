@@ -24,7 +24,7 @@ const Com = ({ title, id }) => {
     const files = Array.from(e.target.files); // Convert FileList to Array
 
     if (_.isEmpty(files)) {
-      setNewAttachments(null)
+      setNewAttachments(null);
     } else {
       setNewAttachments(
         files?.map((a) => ({
@@ -33,7 +33,7 @@ const Com = ({ title, id }) => {
       );
     }
 
-    e.target.value = '';
+    e.target.value = "";
   };
 
   const handleSave = async () => {
@@ -94,7 +94,9 @@ const Com = ({ title, id }) => {
                 const size = utils.formatNumber(
                   utils.calculateFileSize(fileRawData) / 1024 || 0,
                 );
-                const submittedAt_display = submittedAt
+                const submittedAt_display = utils.formatDate(
+                  utils.formatDatetimeForMorganLegacy(submittedAt),
+                );
                 return (
                   <tr key={`${title}_${id}`}>
                     <td className="text-left">
