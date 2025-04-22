@@ -325,9 +325,7 @@ const TableWindow = ({ handleShowItem, list: data, itemType }) => {
                   : record[updatingKey],
               onChange: (v) =>
                 {
-                  console.log("hello", v)
                   handleUpdate(record?.Id, v, updatingKey, record[updatingKey])
-
                 },
               disabled: !checkEditable({ group: "windowitems" }),
               size: "sm",

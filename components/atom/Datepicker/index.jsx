@@ -71,7 +71,7 @@ const DFDatePicker = ({
         "input-group",
         size === "sm" ? styles.containersm : styles.container,
         disabled ? styles.disabled : "",
-        className,
+       
       )}
       style={style}
     >
@@ -79,6 +79,7 @@ const DFDatePicker = ({
         className={cn(
           "form-control",
           value ? styles.dateInput : styles.dateInputBlank,
+          className,
         )}
         onClick={onClick}
         ref={ref}

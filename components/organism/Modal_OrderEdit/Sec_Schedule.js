@@ -130,7 +130,12 @@ const DisplayDate = ({ id, title }) => {
           id={id}
           value={data?.[id]}
           initValue = {initData?.[id]}
-          onChange={(v) => onChange(v, id)}
+          isHighlightDiff
+          onChange={(v) => {
+            console.log("edit", typeof v)
+            onChange(v, id)
+
+          }}
           disabled={!checkEditable({id, group})}
         />
       </div>

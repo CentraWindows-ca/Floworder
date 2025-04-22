@@ -1,8 +1,6 @@
-@use "styles/theme"as *;
+@use "styles/theme" as *;
 
-.root {
-
-}
+.root {}
 
 .multiSelect {
 
@@ -11,13 +9,34 @@
         padding: 1px .375rem;
         border-radius: 0px;
     }
+
     button {
         // font-size: .6rem;
     }
 
 }
-.community{
+
+.community {
     table {
         width: 100%;
     }
 }
+
+.diff {
+    // outline-offset: 1px;
+    // outline: 1px solid $color_centraBlue;
+    // background-color: $color_background_edited;
+    border-color: $color_orange;
+
+    :global(.rbt-input-main) {
+        // background-color: $color_background_edited;
+        border-color: $color_orange;
+    }
+
+    &:global(.form-check-input) {
+        outline-offset: 1px;
+        outline: 1px solid $color_orange;
+        // border-color: $color_background_edited;
+    }
+}
+

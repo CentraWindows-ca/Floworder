@@ -14,12 +14,14 @@ import utils from "lib/utils";
 
 // styles
 import styles from "./styles.module.scss";
+import { id } from "date-fns/locale";
 
 const preventUpdate = (prev, nex) => {
   return (
     prev.value === nex.value &&
     prev.disabled === nex.disabled &&
-    prev.options === nex.options
+    prev.options === nex.options &&
+    prev.initValue === nex.initValue
   );
 };
 
@@ -50,16 +52,33 @@ const preventUpdate = (prev, nex) => {
 // );
 
 export const EF_DateOnly = React.memo(
-  ({ id, value, onChange, onSelect, ...rest }) => {
+  ({
+    id,
+    value = null,
+    initValue = null,
+    isHighlightDiff,
+    onChange,
+    onSelect,
+    className,
+    ...rest
+  }) => {
     const handleSelect = (d, str) => {
-      if (!str) return;
-      onChange(str);
+      if (!str) return null;
+      onChange(str? str : null);
     };
+
+    const handleChange = (d, str) => {
+      onChange(str? str : null);
+    }
 
     return (
       <Datepicker
         id={id}
-        onChange={onChange}
+        className={cn(
+          className,
+          isHighlightDiff && initValue !== value && styles.diff,
+        )}
+        onChange={handleChange}
         onSelect={handleSelect}
         value={value}
         {...rest}
@@ -73,6 +92,9 @@ export const EF_SelectWithLabel = React.memo(
   ({
     id,
     value = "",
+    initValue = "",
+    isHighlightDiff,
+    className,
     onChange,
     options,
     children,
@@ -92,7 +114,11 @@ export const EF_SelectWithLabel = React.memo(
     return (
       <select
         id={id}
-        className={cn("form-select w-full")}
+        className={cn(
+          "form-select w-full",
+          className,
+          isHighlightDiff && initValue !== value && styles.diff,
+        )}
         value={value || ""}
         onChange={(e) => {
           const o = renderOptions?.find((op) => op.key === e.target.value);
@@ -125,7 +151,10 @@ export const EF_SelectWithLabel = React.memo(
 export const EF_Select = React.memo(
   ({
     id,
-    value,
+    value = null,
+    initValue = null,
+    isHighlightDiff,
+    className,
     onChange,
     options,
     children,
@@ -158,7 +187,11 @@ export const EF_Select = React.memo(
     return (
       <select
         id={id}
-        className="form-select w-full"
+        className={cn(
+          "form-select w-full",
+          className,
+          isHighlightDiff && initValue !== value && styles.diff,
+        )}
         value={value || ""}
         onChange={(e) => {
           onChange(e.target.value, id);
@@ -206,6 +239,8 @@ export const EF_MultiSelect = React.memo(
   ({
     id,
     value = null,
+    initValue = null,
+    isHighlightDiff,
     onChange,
     options,
     placeholder,
@@ -215,7 +250,12 @@ export const EF_MultiSelect = React.memo(
   }) => {
     return (
       <TypeaheadMultiSelect
-        className={cn("form-select", styles.multiSelect, className)}
+        className={cn(
+          "form-select",
+          styles.multiSelect,
+          className,
+          isHighlightDiff && initValue !== value && styles.diff,
+        )}
         labelKey="label"
         valueKey="value"
         size={size}
@@ -240,8 +280,11 @@ export const EF_MultiSelect = React.memo(
 
 export const EF_Input = React.memo(
   ({
+    id, 
     onChange,
-    value,
+    value = "",
+    initValue = "",
+    isHighlightDiff,
     className,
     onPressEnter,
     onKeyDown,
@@ -266,13 +309,19 @@ export const EF_Input = React.memo(
     };
 
     const classSize = {
-      "md": "form-control",
-      "sm": "form-control-sm"
-    }
+      md: "form-control",
+      sm: "form-control-sm",
+    };
 
     return (
       <input
-        className={cn("form-control", classSize[size],  className)}
+        id = {id}
+        className={cn(
+          "form-control",
+          classSize[size],
+          className,
+          isHighlightDiff && initValue !== value && styles.diff,
+        )}
         onChange={handleChange}
         value={value || ""}
         onKeyDown={handleKeyDown}
@@ -284,19 +333,14 @@ export const EF_Input = React.memo(
 );
 
 export const EF_Input_Uncontrolled = React.memo(
-  ({
-    className,
-    size = "md",
-    ...props
-  }) => {
-
+  ({ className, size = "md", ...props }) => {
     const classSize = {
-      "md": "form-control",
-      "sm": "form-control-sm"
-    }
+      md: "form-control",
+      sm: "form-control-sm",
+    };
     return (
       <input
-        className={cn("form-control", classSize[size],  className)}
+        className={cn("form-control", classSize[size], className)}
         {...props}
       />
     );
@@ -305,14 +349,27 @@ export const EF_Input_Uncontrolled = React.memo(
 );
 
 export const EF_InputDebounce = React.memo(
-  ({ onChange, value, className, disabled, ...props }) => {
+  ({
+    onChange,
+    value = "",
+    initValue = "",
+    isHighlightDiff,
+    className,
+    disabled,
+    ...props
+  }) => {
     const handleChange = (e) => {
       onChange(e.target.value);
     };
 
     return (
       <DebouncedInput
-        className={cn("", className, value && !disabled ? "bg-blue-100" : null)}
+        className={cn(
+          "",
+          className,
+          value && !disabled ? "bg-blue-100" : null,
+          isHighlightDiff && initValue !== value && styles.diff,
+        )}
         onChange={handleChange}
         value={value || ""}
         disabled={disabled}
@@ -323,22 +380,35 @@ export const EF_InputDebounce = React.memo(
   preventUpdate,
 );
 
-export const EF_Text = React.memo(({ onChange, value, ...props }) => {
-  const handleChange = (e) => {
-    onChange(e.target.value);
-  };
-  return (
-    <textarea
-      className="form-control"
-      onChange={handleChange}
-      value={value || ""}
-      {...props}
-    />
-  );
-}, preventUpdate);
+export const EF_Text = React.memo(
+  ({
+    onChange,
+    value = "",
+    initValue = "",
+    className,
+    isHighlightDiff,
+    ...props
+  }) => {
+    const handleChange = (e) => {
+      onChange(e.target.value);
+    };
+    return (
+      <textarea
+        className={cn(
+          "form-control",
+          isHighlightDiff && initValue !== value && styles.diff,
+        )}
+        onChange={handleChange}
+        value={value || ""}
+        {...props}
+      />
+    );
+  },
+  preventUpdate,
+);
 
 export const EF_Checkbox = React.memo(
-  ({ onChange, value, className, ...props }) => {
+  ({ onChange, value = false, initValue = false, isHighlightDiff, className, ...props }) => {
     const handleChange = (e) => {
       onChange(e.target.checked);
     };
@@ -347,7 +417,11 @@ export const EF_Checkbox = React.memo(
 
     return (
       <input
-        className={cn("form-check-input cursor-pointer", className)}
+        className={cn(
+          "form-check-input cursor-pointer",
+          className,
+          isHighlightDiff && initValue !== value && styles.diff,
+        )}
         type="checkbox"
         checked={checked}
         onChange={handleChange}
@@ -358,24 +432,31 @@ export const EF_Checkbox = React.memo(
   preventUpdate,
 );
 
-export const EF_Checkbox_Yesno = React.memo(({ onChange, value, ...props }) => {
-  // 20250306: decide the whole database use 1/0 as boolean
-  const handleChange = (e) => {
-    onChange(e.target.checked ? "1" : "0");
-  };
+export const EF_Checkbox_Yesno = React.memo(
+  ({ onChange, value = "0", initValue = "0", isHighlightDiff, className, ...props }) => {
+    // 20250306: decide the whole database use 1/0 as boolean
+    const handleChange = (e) => {
+      onChange(e.target.checked ? "1" : "0");
+    };
 
-  const checked = value === "1"; // can be true or "true"
+    const checked = value === "1"; // can be true or "true"
 
-  return (
-    <input
-      className="form-check-input cursor-pointer"
-      type="checkbox"
-      checked={checked}
-      onChange={handleChange}
-      {...props}
-    />
-  );
-}, preventUpdate);
+    return (
+      <input
+        className={cn(
+          "form-check-input cursor-pointer",
+          className,
+          isHighlightDiff && initValue !== value && styles.diff,
+        )}
+        type="checkbox"
+        checked={checked}
+        onChange={handleChange}
+        {...props}
+      />
+    );
+  },
+  preventUpdate,
+);
 
 export const EF_Label = React.memo(({ value, id, ...props }) => {
   return <label>{value}</label>;
@@ -385,6 +466,8 @@ export const EF_Rack = React.memo(
   ({
     id,
     value = null,
+    initValue = null,
+    isHighlightDiff,
     onChange,
     placeholder,
     className,
@@ -393,12 +476,14 @@ export const EF_Rack = React.memo(
     isDisplayAvilible = true,
     ...props
   }) => {
-
     const { dictionary } = useContext(GeneralContext);
 
     return (
       <Typeahead
-        className={cn(className)}
+        className={cn(
+          className,
+          isHighlightDiff && initValue !== value && styles.diff,
+        )}
         labelKey="label"
         valueKey="value"
         size={size}
@@ -408,7 +493,7 @@ export const EF_Rack = React.memo(
           return <span>{o.State}</span>;
         }}
         onChange={(v, o) => {
-          onChange(v || '', id, o?.[0] || '');
+          onChange(v || "", id, o?.[0] || "");
         }}
         value={value}
         placeholder={placeholder}
@@ -430,6 +515,8 @@ export const EF_SelectEmployee = React.memo(
   ({
     id,
     value = null,
+    initValue = null,
+    isHighlightDiff,
     onChange,
     placeholder,
     className,
@@ -442,13 +529,16 @@ export const EF_SelectEmployee = React.memo(
     const { dictionary } = useContext(GeneralContext);
     return (
       <Typeahead
-        className={cn(className)}
+        className={cn(
+          className,
+          isHighlightDiff && initValue !== value && styles.diff,
+        )}
         labelKey="label"
         valueKey="value"
         size={size}
         id={id}
         onChange={(v, o) => {
-          onChange(v || '', id, o?.[0] || '');
+          onChange(v || "", id, o?.[0] || "");
         }}
         value={value}
         placeholder={placeholder}
@@ -470,6 +560,8 @@ export const EF_Community = React.memo(
   ({
     id,
     value = null,
+    initValue = null,
+    isHighlightDiff,
     onChange,
     placeholder,
     className,
@@ -483,10 +575,18 @@ export const EF_Community = React.memo(
 
     return (
       <>
-        <div className="input-group w-full" title={value}>
-          <input className="form-control" value={value || ""} disabled={true} />
+        <div className={cn("input-group w-full")} title={value}>
+          <input
+            className={cn(
+              "form-control",
+              isHighlightDiff &&
+                initValue !== value && [styles.diff, styles.diffText],
+            )}
+            value={value || ""}
+            disabled={true}
+          />
           <button
-            className="btn btn-secondary"
+            className={cn("btn btn-secondary")}
             onClick={() => setShow(true)}
             disabled={disabled}
           >

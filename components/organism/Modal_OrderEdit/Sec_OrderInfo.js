@@ -196,6 +196,7 @@ const Block = ({ inputData }) => {
           id={id}
           value={data?.[id]}
           initValue={initData?.[id]}
+          isHighlightDiff
           onChange={(v, ...o) => {
             if (typeof overrideOnChange === "function") {
               overrideOnChange(onChange, [v, ...o]);

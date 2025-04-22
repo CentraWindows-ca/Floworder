@@ -92,6 +92,7 @@ const Com = ({}) => {
             k={id}
             value={data?.[id]}
             initValue = {initData?.[id]}
+            isHighlightDiff
             onChange={(v) => onChange(v, id)}
             disabled={!checkEditable({ group })}
             rows={3}

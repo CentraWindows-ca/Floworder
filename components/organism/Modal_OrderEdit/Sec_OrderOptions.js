@@ -203,6 +203,7 @@ const Block = ({ inputData }) => {
           id={id}
           value={data?.[id]}
           initValue = {initData?.[id]}
+          isHighlightDiff
           onChange={(v) => onChange(v, id)}
           disabled={!checkEditable({id, group})}
         />

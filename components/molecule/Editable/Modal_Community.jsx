@@ -54,6 +54,13 @@ const Com = (props) => {
     doInit();
   }, []);
 
+  useEffect(() => {
+    // setFilters({
+    //   name: value
+    // })
+  }, [value])
+  
+
   const doInit = async () => {
     const res = await External_FromApi.getAllCWBPCommunityAsync();
     // data will be only SO + AB. set from Modal_OrderEdit/Com
