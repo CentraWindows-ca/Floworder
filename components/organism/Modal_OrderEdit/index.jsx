@@ -48,6 +48,7 @@ const Com = ({}) => {
     kind,
     checkEditable,
     setIsEditable,
+    editedGroup,
     existingAttachments,
     existingImages,
     windowItems,
@@ -257,7 +258,7 @@ const Com = ({}) => {
             >
               <button
                 className="btn btn-primary align-items-center flex gap-2 px-3"
-                disabled={!data?.m_WorkOrderNo || isSaving}
+                disabled={!data?.m_WorkOrderNo || isSaving || _.isEmpty(editedGroup)}
                 onClick={onSave}
               >
                 {!isSaving ? (

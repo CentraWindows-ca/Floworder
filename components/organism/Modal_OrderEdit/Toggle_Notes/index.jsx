@@ -12,7 +12,7 @@ import { ToggleFull, NoData, DisplayBlock, displayFilter, SaveButton } from "../
 const group = "notes";
 
 const Com = ({}) => {
-  const { data, kind, uiOrderType, onChange, checkEditable, onHide } =
+  const { data, initData, kind, uiOrderType, onChange, checkEditable, onHide } =
     useContext(LocalDataContext);
 
   const COMMON_FIELDS = constants.applyField([
@@ -91,6 +91,7 @@ const Com = ({}) => {
           <Editable.EF_Text
             k={id}
             value={data?.[id]}
+            initValue = {initData?.[id]}
             onChange={(v) => onChange(v, id)}
             disabled={!checkEditable({ group })}
             rows={3}

@@ -79,7 +79,7 @@ const COMMON_FIELDS = constants.applyField([
 ]);
 
 const Com = ({}) => {
-  const { data, onChange, checkEditable} = useContext(LocalDataContext);
+  const { data, initData, onChange, checkEditable} = useContext(LocalDataContext);
 
   return (
     <div className={cn(styles.columnInputsContainer)}>
@@ -93,6 +93,7 @@ const Com = ({}) => {
               <Component
                 id={id}
                 value={data?.[id] || ""}
+                initValue = {initData?.[id] || ""}
                 onChange={(v, ...o) => {
                   if (typeof overrideOnChange === "function") {
                     overrideOnChange(onChange, [v, ...o]);

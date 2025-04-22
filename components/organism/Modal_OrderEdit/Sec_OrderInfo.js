@@ -181,7 +181,7 @@ const Com = ({}) => {
 };
 
 const Block = ({ inputData }) => {
-  const { data, onChange, checkEditable, dictionary } =
+  const { data, initData, onChange, checkEditable, dictionary } =
     useContext(LocalDataContext);
   let { Component, title, id, options, overrideOnChange, ...rest } = inputData;
   if (typeof options === "function") {
@@ -195,6 +195,7 @@ const Block = ({ inputData }) => {
         <Component
           id={id}
           value={data?.[id]}
+          initValue={initData?.[id]}
           onChange={(v, ...o) => {
             if (typeof overrideOnChange === "function") {
               overrideOnChange(onChange, [v, ...o]);

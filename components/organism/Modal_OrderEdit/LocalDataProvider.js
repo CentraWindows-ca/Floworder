@@ -124,6 +124,11 @@ export const LocalDataProvider = ({
   };
 
   const handleHide = () => {
+    if (!_.isEmpty(editedGroup)) {
+      if (!window.confirm('You have unsaved changes. Are you sure to close this window?')) {
+        return null
+      }
+    }
     clear();
     onHide();
   };
@@ -174,33 +179,6 @@ export const LocalDataProvider = ({
 
       if (resGlassItems) {
         setGlassItems(treateGlassItems(resGlassItems))
-        
-
-
-        // const getStatus = (glassItem) => {
-        //   let result = "Not Ordered";
-
-        //   if (glassItem?.qty === glassItem?.glassQty) {
-        //     result = "Received";
-        //   } else if (glassItem?.orderDate) {
-        //     result = "Ordered";
-        //   }
-
-        //   return result;
-        // };
-
-        // setGlassItems((x) => {
-        //   let _glassItems = [...resGlassItems];
-
-        //   _glassItems?.forEach((g) => {
-        //     g.status = getStatus(g);
-        //     g.receivedExpected = `${g.qty} / ${g.glassQty}`;
-        //     g.shipDate = g.shipDate;
-        //     g.orderDate = g.orderDate;
-        //   });
-
-        //   return _glassItems;
-        // });
       }
     }
 

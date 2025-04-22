@@ -193,7 +193,7 @@ const Com = ({}) => {
 };
 
 const Block = ({ inputData }) => {
-  const { data, onChange, checkEditable, dictionary } =
+  const { data, initData, onChange, checkEditable, dictionary } =
     useContext(LocalDataContext);
   let { title, icon, id, renderSubItem } = inputData;
   return (
@@ -202,6 +202,7 @@ const Block = ({ inputData }) => {
         <Editable.EF_Checkbox_Yesno
           id={id}
           value={data?.[id]}
+          initValue = {initData?.[id]}
           onChange={(v) => onChange(v, id)}
           disabled={!checkEditable({id, group})}
         />

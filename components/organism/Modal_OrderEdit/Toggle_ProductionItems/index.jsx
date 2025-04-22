@@ -315,15 +315,20 @@ const TableWindow = ({ handleShowItem, list: data, itemType }) => {
         const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
 
         return (
-          <Editable.EF_Input
+          <Editable.EF_InputDebounce
             {...{
+              className: 'form-control form-control-sm',
               id: `wi_${updatingKey}_${record?.Id}`,
               value:
                 overrideValue !== undefined
                   ? overrideValue
                   : record[updatingKey],
               onChange: (v) =>
-                handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
+                {
+                  console.log("hello", v)
+                  handleUpdate(record?.Id, v, updatingKey, record[updatingKey])
+
+                },
               disabled: !checkEditable({ group: "windowitems" }),
               size: "sm",
               placeholder: "--",
