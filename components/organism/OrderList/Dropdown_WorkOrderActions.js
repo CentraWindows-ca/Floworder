@@ -246,7 +246,8 @@ const WorkOrderActions = ({
         featureCode={constants.FEATURE_CODES["om.prod.wo.status.window"]}
       >
         {allowedStatusWindow?.map((stepName) => {
-          const { label, color, key, isReservation } = WORKORDER_MAPPING[stepName];
+          const { label, color, key, isReservation } =
+            WORKORDER_MAPPING[stepName];
           return (
             <PermissionBlock
               key={key}
@@ -280,7 +281,8 @@ const WorkOrderActions = ({
         featureCode={constants.FEATURE_CODES["om.prod.wo.status.door"]}
       >
         {allowedStatusDoor?.map((stepName) => {
-          const { label, color, key, isReservation } = WORKORDER_MAPPING[stepName];
+          const { label, color, key, isReservation } =
+            WORKORDER_MAPPING[stepName];
           return (
             <PermissionBlock
               key={key}
@@ -382,7 +384,7 @@ const WorkOrderActions = ({
             type="text"
             icon={<DeleteOutlined />}
             onClick={handleHardDelete}
-            disabled = {!isAllow}
+            disabled={!isAllow}
           >
             Permenantly Delete Order
           </Button>
@@ -434,27 +436,33 @@ const useFilterControl = (permissions) => {
         return true;
     }
 
-    if (
-      id === `doorStatus_${WORKORDER_MAPPING.DraftReservation.key}` ||
-      id === `windowStatus_${WORKORDER_MAPPING.DraftReservation.key}`
-    ) {
+    // ========== temporary solution: @250423_handle_reservation: allow between regular and reservation ===========
+    const temporaryReserv = [
+      data?.d_Status === WORKORDER_MAPPING.Draft.key &&
+        id === `doorStatus_${WORKORDER_MAPPING.DraftReservation.key}`,
+      data?.w_Status === WORKORDER_MAPPING.Draft.key &&
+        id === `windowStatus_${WORKORDER_MAPPING.DraftReservation.key}`,
+      data?.d_Status === WORKORDER_MAPPING.Scheduled.key &&
+        id === `doorStatus_${WORKORDER_MAPPING.ConfirmedReservation.key}`,
+      data?.w_Status === WORKORDER_MAPPING.Scheduled.key &&
+        id === `windowStatus_${WORKORDER_MAPPING.ConfirmedReservation.key}`,
+      data?.d_Status === WORKORDER_MAPPING.DraftReservation.key &&
+        id === `doorStatus_${WORKORDER_MAPPING.Draft.key}`,
+      data?.w_Status === WORKORDER_MAPPING.DraftReservation.key &&
+        id === `windowStatus_${WORKORDER_MAPPING.Draft.key}`,
+      data?.d_Status === WORKORDER_MAPPING.ConfirmedReservation.key &&
+        id === `doorStatus_${WORKORDER_MAPPING.Scheduled.key}`,
+      data?.d_Status === WORKORDER_MAPPING.ConfirmedReservation.key &&
+        id === `windowStatus_${WORKORDER_MAPPING.Scheduled.key}`,
+    ];
+    if (_.some(temporaryReserv)) {
       if (permissions?.["om.prod.wo.statusReservation"]?.["canEdit"]) {
         return false;
       } else {
         return true;
       }
     }
-
-    if (
-      id === `doorStatus_${WORKORDER_MAPPING.ConfirmedReservation.key}` ||
-      id === `windowStatus_${WORKORDER_MAPPING.ConfirmedReservation.key}`
-    ) {
-      if (permissions?.["om.prod.wo.statusReservation"]?.["canEdit"]) {
-        return false;
-      } else {
-        return true;
-      }
-    }
+    // ========== temporary solution: @250423_handle_reservation: allow between regular and reservation ===========
 
     return false;
   };
