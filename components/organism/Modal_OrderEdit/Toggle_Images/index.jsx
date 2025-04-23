@@ -150,8 +150,7 @@ const Com = ({ title, id }) => {
                   <th>Note/Alias</th>
                 </tr>
               </thead>
-              <tbody>
-                {newImages?.map((a, i) => {
+              <tbody>{newImages?.map((a, i) => {
                   const { file, notes } = a;
                   const { name, size } = file;
                   return (
@@ -169,8 +168,7 @@ const Com = ({ title, id }) => {
                       </td>
                     </tr>
                   );
-                })}
-              </tbody>
+                })}</tbody>
             </table>
           </div>
           <div className="justify-content-end flex gap-2">

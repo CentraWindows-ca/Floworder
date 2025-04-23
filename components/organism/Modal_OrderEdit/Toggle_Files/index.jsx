@@ -80,8 +80,7 @@ const Com = ({ title, id }) => {
         )}
         {!_.isEmpty(existingAttachments) ? (
           <table className="table-xs table-bordered table-hover mb-0 table border">
-            <tbody>
-              {existingAttachments?.map((a) => {
+            <tbody>{existingAttachments?.map((a) => {
                 const {
                   submittedBy,
                   submittedAt,
@@ -134,8 +133,7 @@ const Com = ({ title, id }) => {
                     </td>
                   </tr>
                 );
-              })}
-            </tbody>
+              })}</tbody>
           </table>
         ) : (
           <NoData />
@@ -157,8 +155,7 @@ const Com = ({ title, id }) => {
                   <th>Note/Alias</th>
                 </tr>
               </thead>
-              <tbody>
-                {newAttachments?.map((a, i) => {
+              <tbody>{newAttachments?.map((a, i) => {
                   const { file, notes } = a;
                   const { name, size } = file;
                   return (
@@ -176,8 +173,7 @@ const Com = ({ title, id }) => {
                       </td>
                     </tr>
                   );
-                })}
-              </tbody>
+                })}</tbody>
             </table>
           </div>
           <div className="justify-content-end flex gap-2">

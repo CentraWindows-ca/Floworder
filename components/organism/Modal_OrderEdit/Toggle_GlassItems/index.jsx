@@ -151,8 +151,7 @@ const Com = ({}) => {
               }}
             />
 
-            <tbody>
-              {sortedList?.map((a, i) => {
+            <tbody>{sortedList?.map((a, i) => {
                 const { workOrderNumber, item, rackInfo } = a;
 
                 if (_.isEmpty(rackInfo))
@@ -172,8 +171,7 @@ const Com = ({}) => {
                   />
                 );
               })}
-            </tbody>
-          </table>
+            </tbody></table>
         </div>
       ) : (
         <NoData />

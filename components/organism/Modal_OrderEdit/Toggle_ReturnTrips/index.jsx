@@ -79,8 +79,7 @@ const Com = ({ title, id }) => {
                 <th style={{ width: "140px" }}></th>
               </tr>
             </thead>
-            <tbody>
-              {returnTrips?.map((a) => {
+            <tbody>{returnTrips?.map((a) => {
                 const {
                   returnTripDate,
                   returnTripNotes,
@@ -122,8 +121,7 @@ const Com = ({ title, id }) => {
                     </td>
                   </tr>
                 );
-              })}
-            </tbody>
+              })}</tbody>
           </table>
         ) : (
           <NoData />

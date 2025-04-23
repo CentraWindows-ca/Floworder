@@ -40,8 +40,7 @@ const Com = ({}) => {
     >
       {collapsedList?.length > 0 ? (
         <table className="bordered table-hover table">
-          <tbody>
-            {collapsedList?.map((a) => {
+          <tbody>{collapsedList?.map((a) => {
               const { id, title } = a;
               return (
                 <DisplayBlock id={id} key={id}>
@@ -66,8 +65,7 @@ const Com = ({}) => {
                   </tr>
                 </DisplayBlock>
               );
-            })}{" "}
-          </tbody>
+            })}</tbody>
         </table>
       ) : (
         <NoData title={<>No Data <b>[Click To Add Notes]</b></>} className="hover:text-blue-600" />
