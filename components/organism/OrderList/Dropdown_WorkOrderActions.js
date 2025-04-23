@@ -445,6 +445,17 @@ const useFilterControl = (permissions) => {
       }
     }
 
+    if (
+      id === `doorStatus_${WORKORDER_MAPPING.ConfirmedReservation.key}` ||
+      id === `windowStatus_${WORKORDER_MAPPING.ConfirmedReservation.key}`
+    ) {
+      if (permissions?.["om.prod.wo.statusReservation"]?.["canEdit"]) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+
     return false;
   };
 

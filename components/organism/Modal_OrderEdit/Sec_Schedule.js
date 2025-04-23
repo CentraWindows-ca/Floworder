@@ -12,7 +12,7 @@ import { LocalDataContext } from "./LocalDataProvider";
 
 import { DisplayBlock, displayFilter } from "./Com";
 
-const group = "schedule"
+const group = "schedule";
 
 const COMMON_FIELDS = constants.applyField([
   {
@@ -28,6 +28,8 @@ const WINDOW_FIELDS = constants.applyField([
   },
   {
     id: "w_ProductionStartDate",
+    disabledCloseButton: true,
+    required: true,
   },
   {
     id: "w_PaintStartDate",
@@ -45,6 +47,8 @@ const DOOR_FIELDS = constants.applyField([
   },
   {
     id: "d_ProductionStartDate",
+    disabledCloseButton: true,
+    required: true,
   },
   {
     id: "d_PaintStartDate",
@@ -81,7 +85,7 @@ const Com = ({}) => {
       <div className={cn(styles.columnInputsContainer)}>
         {COMMON_FIELDS?.map((a) => {
           const { title, id } = a;
-          return <DisplayDate key={id} id={id} title={title} />;
+          return <DisplayDate key={id} {...a} />;
         })}
       </div>
 
@@ -93,7 +97,7 @@ const Com = ({}) => {
           <div className={cn(styles.columnInputsContainer)}>
             {windowInputs?.map((a) => {
               const { title, id } = a;
-              return <DisplayDate key={id} id={id} title={title} />;
+              return <DisplayDate key={id} {...a} />;
             })}
           </div>
         </>
@@ -107,7 +111,7 @@ const Com = ({}) => {
           <div className={cn(styles.columnInputsContainer)}>
             {doorInputs?.map((a) => {
               const { title, id } = a;
-              return <DisplayDate key={id} id={id} title={title} />;
+              return <DisplayDate key={id} {...a} />;
             })}
           </div>
         </>
@@ -116,12 +120,13 @@ const Com = ({}) => {
   );
 };
 
-const DisplayDate = ({ id, title }) => {
-  const { data, initData, onChange, validationResult, checkEditable } = useContext(LocalDataContext);
+const DisplayDate = ({ id, title, required, ...rest }) => {
+  const { data, initData, onChange, validationResult, checkEditable } =
+    useContext(LocalDataContext);
 
   return (
     <DisplayBlock id={id}>
-      <label className="justify-content-start align-items-center flex">
+      <label className={cn("justify-content-start align-items-center flex", required && "required")}>
         {title}
       </label>
       <div className="justify-content-end align-items-center flex">
@@ -129,15 +134,15 @@ const DisplayDate = ({ id, title }) => {
           k={id}
           id={id}
           value={data?.[id]}
-          initValue = {initData?.[id]}
+          initValue={initData?.[id]}
           isHighlightDiff
           onChange={(v) => {
-            console.log("edit", typeof v)
-            onChange(v, id)
-
+            console.log("edit", typeof v);
+            onChange(v, id);
           }}
-          disabled={!checkEditable({id, group})}
-          errorMessage = {validationResult?.[id]}
+          disabled={!checkEditable({ id, group })}
+          errorMessage={validationResult?.[id]}
+          {...rest}
         />
       </div>
     </DisplayBlock>

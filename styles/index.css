@@ -102,6 +102,11 @@ button:hover {
   border-color: #005db9;
 }
 
+.required::before {
+  content: '*';
+  color: red;
+  margin-right: 4px;
+}
 
 /* antd style overrides */
 .ant-table table {

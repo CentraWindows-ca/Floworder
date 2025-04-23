@@ -18,7 +18,6 @@ const hook = ({ validationResult, setValidationResult, checkEditable }) => {
     _.keys(uiWoFieldEditGroupMapping)?.map((groupName) => {
       const _fieldsFromGroup = uiWoFieldEditGroupMapping[groupName];
       _.keys(_fieldsFromGroup)?.map((fieldName) => {
-
         // ===== if product type doesnt have this field. skip
         const isAvailabe = getIfFieldDisplayAsProductType(
           {
@@ -28,7 +27,7 @@ const hook = ({ validationResult, setValidationResult, checkEditable }) => {
           },
           data,
         );
-        if (!isAvailabe) return
+        if (!isAvailabe) return;
 
         // ===== group level checking (error message still on field)
         switch (groupName) {
@@ -57,7 +56,12 @@ const hook = ({ validationResult, setValidationResult, checkEditable }) => {
 
   const c_required = ({ errorMessages, initData, data, fieldName }) => {
     const fieldLabel = labelMapping[fieldName]?.title || fieldName;
-    if (!data[fieldName]) {
+    if (
+      !data[fieldName] ||
+      // legacy key from FF
+      data[fieldName] === "Select One" ||
+      data[fieldName] === "selectOne"
+    ) {
       errorMessages[fieldName] = `[${fieldLabel}] Required`;
     }
   };

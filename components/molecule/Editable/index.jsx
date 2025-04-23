@@ -21,7 +21,8 @@ const preventUpdate = (prev, nex) => {
     prev.value === nex.value &&
     prev.disabled === nex.disabled &&
     prev.options === nex.options &&
-    prev.initValue === nex.initValue
+    prev.initValue === nex.initValue &&
+    prev.errorMessage === nex.errorMessage    
   );
 };
 
@@ -138,11 +139,11 @@ export const EF_SelectWithLabel = React.memo(
 
         {renderOptions?.map((a, i) => {
           const isExcluded = exclude[a.key];
-          let { key, value: displayValue, label } = a;
+          let { key, label } = a;
 
           return (
             <option key={`${key}_${i}`} value={key} disabled={isExcluded}>
-              {label || displayValue}
+              {label}
             </option>
           );
         })}

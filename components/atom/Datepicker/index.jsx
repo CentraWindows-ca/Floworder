@@ -15,6 +15,7 @@ const DFDatePicker = ({
   size,
   viewType = "",
   disabled,
+  disabledCloseButton,
   ...props
 }) => {
   let otherProps = {};
@@ -53,7 +54,7 @@ const DFDatePicker = ({
   const handleClear = () => {
     onSelect("", null);
     onChange("", null);
-  }
+  };
 
   // const handleChange = (v) => {
   //   const formattedDate = v ? format(v, "yyyy-MM-dd") : null;
@@ -71,7 +72,6 @@ const DFDatePicker = ({
         "input-group",
         size === "sm" ? styles.containersm : styles.container,
         disabled ? styles.disabled : "",
-       
       )}
       style={style}
     >
@@ -86,8 +86,11 @@ const DFDatePicker = ({
       >
         {value || "Select Date..."}
       </div>
-      {value && (
-        <button className="btn btn-secondary" onClick={handleClear}>
+      {value && !disabled && !disabledCloseButton && (
+        <button
+          className="btn btn-outline-secondary"
+          onClick={handleClear}
+        >
           <i className="fa-solid fa-xmark" />
         </button>
       )}

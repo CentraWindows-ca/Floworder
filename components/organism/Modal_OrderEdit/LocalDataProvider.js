@@ -107,6 +107,17 @@ export const LocalDataProvider = ({
       ...prev,
       ..._groups,
     }));
+
+    // remove validation of key
+    setValidationResult(prev => {
+      try {
+        const _v = JSON.parse(JSON.stringify(prev))
+        _.unset(_v, k)
+        return _v
+      } catch (error) {
+        return prev
+      }
+    })
   };
 
   const handleAnchor = (id, closeOthers) => {
@@ -133,7 +144,7 @@ export const LocalDataProvider = ({
     if (!_.isEmpty(editedGroup)) {
       if (
         !window.confirm(
-          "You have unsaved changes. Are you sure to close this window?",
+          "You have unsaved changes. Are you sure you want to exit without saving?",
         )
       ) {
         return null;
@@ -185,7 +196,7 @@ export const LocalDataProvider = ({
       await initReturnTrips(mergedData?.m_MasterId);
 
       // skip if error out
-      initGlassItems(mergedData)
+      initGlassItems(mergedData);
     }
 
     setIsLoading(false);
@@ -253,7 +264,7 @@ export const LocalDataProvider = ({
     ]);
   });
 
-  const initGlassItems = async(mergedData) => {
+  const initGlassItems = async (mergedData) => {
     const resGlassItems = await GlassApi.getGlassItems(
       mergedData.m_WorkOrderNo,
       mergedData.m_ManufacturingFacility,
@@ -262,7 +273,7 @@ export const LocalDataProvider = ({
     if (resGlassItems) {
       setGlassItems(treateGlassItems(resGlassItems));
     }
-  }
+  };
 
   const initReturnTrips = useLoadingBar(async (initMasterId) => {
     let _returnTrips = await OrdersApi.getProductionsReturnTripByID({
@@ -490,10 +501,21 @@ export const LocalDataProvider = ({
 
   const doSave = useLoadingBar(
     async (group) => {
-      const validateResult = onValidate({initData, data, kind, uiOrderType})
+      const validateResult = onValidate({ initData, data, kind, uiOrderType });
       if (!_.isEmpty(validateResult)) {
-        return
-      }      
+        const _errorMessages = _.uniq(_.values(validateResult))
+        toast(
+          <div>
+            {_errorMessages?.map((msg) => (
+              <div key={`error_${msg}`} className="text-red-500">
+                {msg}
+              </div>
+            ))}
+          </div>,
+          { type: "warning" },
+        );
+        return;
+      }
 
       setIsSaving(true);
       // identify changed data:
@@ -581,6 +603,8 @@ export const LocalDataProvider = ({
     checkEditable,
   });
 
+  console.log(validationResult);
+
   const context = {
     ...generalContext,
     ...props,
@@ -636,7 +660,7 @@ export const LocalDataProvider = ({
     uIstatusObj,
     initData,
     isDeleted: initData?.m_IsActive === false,
-    validationResult
+    validationResult,
   };
   return (
     <LocalDataContext.Provider value={context}>

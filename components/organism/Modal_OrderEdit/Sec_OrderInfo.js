@@ -190,7 +190,7 @@ const Block = ({ inputData }) => {
 
   return (
     <DisplayBlock id={id}>
-      <label>{title}</label>
+      <label className="required">{title}</label>
       <div>
         <Component
           id={id}
