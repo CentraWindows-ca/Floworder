@@ -50,8 +50,7 @@ const Com = (props) => {
             className: headerClassName,
           }}
         />
-        <tbody>
-          {data?.map((a, i) => {
+        <tbody>{data?.map((a, i) => {
             const _trParams = trParams(a);
             
             return (
@@ -86,8 +85,7 @@ const Com = (props) => {
                 })}
               </tr>
             );
-          })}
-        </tbody>
+          })}</tbody>
       </TableWrapper>
     </>
   );

@@ -195,8 +195,7 @@ const Com = ({ data, dataProfile, onRefresh }) => {
                   className: styles.thead,
                 }}
               />
-              <tbody>
-                {treatedData?.length > 0 ? (
+              <tbody>{treatedData?.length > 0 ? (
                   treatedData?.map((a, i) => {
                     const {
                       m_WorkOrderNo,
@@ -278,8 +277,7 @@ const Com = ({ data, dataProfile, onRefresh }) => {
                   <tr>
                     <td colSpan={6} className="text-center">-- No Data --</td>
                   </tr>
-                )}
-              </tbody>
+                )}</tbody>
             </table>
           )}
         </div>

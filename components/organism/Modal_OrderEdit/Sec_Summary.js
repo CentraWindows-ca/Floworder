@@ -174,8 +174,7 @@ const Com = ({ className, ...props }) => {
               <th>LBR Min.</th>
             </tr>
           </thead>
-          <tbody>
-            {shouldShowTotal && (
+          <tbody>{shouldShowTotal ? (
               <tr>
                 <th>Total</th>
                 <td>{utils.formatCurrency2Decimal(data["m_TotalPrice"], "$")}</td>
@@ -184,8 +183,7 @@ const Com = ({ className, ...props }) => {
                 <td>{utils.formatNumber(totalBoxQty)}</td>
                 <td>{utils.formatNumber(data["m_TotalLBRMin"])}</td>
               </tr>
-            )}
-
+            ):null}
             {_.keys(groupByWindowDoor)?.map((k) => {
               const prd = groupByWindowDoor[k];
               const numbers = groupByWindowDoor[k].numbers?.filter(
@@ -194,8 +192,7 @@ const Com = ({ className, ...props }) => {
               const colSpan = numbers.length;
 
               return (
-                <React.Fragment key={k}>
-                  {numbers?.map((num, j) => {
+                <React.Fragment key={k}>{numbers?.map((num, j) => {
                     const { label, displayNumber } = num;
                     return (
                       <tr key={label}>
@@ -226,11 +223,9 @@ const Com = ({ className, ...props }) => {
                         )}
                       </tr>
                     );
-                  })}
-                </React.Fragment>
+                  })}</React.Fragment>
               );
             })}
-
             {data["m_NumberOfOthers"] ? (
               <tr>
                 <th>Others</th>
@@ -240,8 +235,7 @@ const Com = ({ className, ...props }) => {
                 <td>--</td>
                 <td>--</td>
               </tr>
-            ) : null}
-          </tbody>
+            ) : null}</tbody>
         </table>
 
         <div>
