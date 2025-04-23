@@ -193,7 +193,7 @@ const Com = ({}) => {
 };
 
 const Block = ({ inputData }) => {
-  const { data, initData, onChange, checkEditable, dictionary } =
+  const { data, initData, onChange, checkEditable, validationResult, dictionary } =
     useContext(LocalDataContext);
   let { title, icon, id, renderSubItem } = inputData;
   return (
@@ -206,6 +206,7 @@ const Block = ({ inputData }) => {
           isHighlightDiff
           onChange={(v) => onChange(v, id)}
           disabled={!checkEditable({id, group})}
+          errorMessage = {validationResult?.[id]}
         />
       </div>
       <div>

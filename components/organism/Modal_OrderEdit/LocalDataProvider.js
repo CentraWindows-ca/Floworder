@@ -22,7 +22,12 @@ import { uiWoFieldEditGroupMapping } from "lib/constants/constants_labelMapping"
 import { getOrderKind } from "lib/utils";
 
 import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
-import { checkEditableById, checkEditableByGroup, treateGlassItems } from "./Com";
+import {
+  checkEditableById,
+  checkEditableByGroup,
+  treateGlassItems,
+} from "./Com";
+import useLocalValidation from "./hooks/useLocalValidation";
 
 export const LocalDataContext = createContext(null);
 
@@ -69,6 +74,7 @@ export const LocalDataProvider = ({
 
   const [uiOrderType, setUiOrderType] = useState({});
   const [uiShowMore, setUiShowMore] = useState(true);
+  const [validationResult, setValidationResult] = useState(null);
 
   const [initData, setInitData] = useState(null);
   const [initDataItems, setInitDataItems] = useState(null);
@@ -125,8 +131,12 @@ export const LocalDataProvider = ({
 
   const handleHide = () => {
     if (!_.isEmpty(editedGroup)) {
-      if (!window.confirm('You have unsaved changes. Are you sure to close this window?')) {
-        return null
+      if (
+        !window.confirm(
+          "You have unsaved changes. Are you sure to close this window?",
+        )
+      ) {
+        return null;
       }
     }
     clear();
@@ -148,6 +158,7 @@ export const LocalDataProvider = ({
     setInitDataItems(null);
     setInitDataReturnTrips(null);
     setEditedGroup({});
+    setValidationResult(null);
   };
 
   const doInit = async (initMasterId) => {
@@ -155,6 +166,7 @@ export const LocalDataProvider = ({
     setData(null);
     setEditedGroup({});
     setIsEditable(initIsEditable);
+    setValidationResult(null);
 
     const mergedData = await doInitWo(initMasterId);
 
@@ -172,14 +184,8 @@ export const LocalDataProvider = ({
       initImageList(mergedData?.m_MasterId);
       await initReturnTrips(mergedData?.m_MasterId);
 
-      const resGlassItems = await GlassApi.getGlassItems(
-        mergedData.m_WorkOrderNo,
-        mergedData.m_ManufacturingFacility,
-      );
-
-      if (resGlassItems) {
-        setGlassItems(treateGlassItems(resGlassItems))
-      }
+      // skip if error out
+      initGlassItems(mergedData)
     }
 
     setIsLoading(false);
@@ -247,6 +253,17 @@ export const LocalDataProvider = ({
     ]);
   });
 
+  const initGlassItems = async(mergedData) => {
+    const resGlassItems = await GlassApi.getGlassItems(
+      mergedData.m_WorkOrderNo,
+      mergedData.m_ManufacturingFacility,
+    );
+
+    if (resGlassItems) {
+      setGlassItems(treateGlassItems(resGlassItems));
+    }
+  }
+
   const initReturnTrips = useLoadingBar(async (initMasterId) => {
     let _returnTrips = await OrdersApi.getProductionsReturnTripByID({
       MasterId: initMasterId,
@@ -259,7 +276,7 @@ export const LocalDataProvider = ({
     _returnTrips = _.orderBy(_returnTrips, ["returnTripDate"], ["ASC"]);
 
     setReturnTrips(_returnTrips);
-    setInitDataReturnTrips( JSON.parse(JSON.stringify(_returnTrips)));
+    setInitDataReturnTrips(JSON.parse(JSON.stringify(_returnTrips)));
   });
 
   const initAttachmentList = useLoadingBar(async (masterId) => {
@@ -462,12 +479,22 @@ export const LocalDataProvider = ({
     await initReturnTrips(data?.m_MasterId);
   });
   const doEditReturnTrip = useLoadingBar(async (_rt) => {
-    await OrdersApi.updateProductionsReturnTrip({}, _rt, initData, initDataReturnTrips?.find(a => a.id === _rt?.id));
+    await OrdersApi.updateProductionsReturnTrip(
+      {},
+      _rt,
+      initData,
+      initDataReturnTrips?.find((a) => a.id === _rt?.id),
+    );
     await initReturnTrips(data?.m_MasterId);
   });
 
   const doSave = useLoadingBar(
     async (group) => {
+      const validateResult = onValidate({initData, data, kind, uiOrderType})
+      if (!_.isEmpty(validateResult)) {
+        return
+      }      
+
       setIsSaving(true);
       // identify changed data:
       const changedData = utils.findChanges(initData, data);
@@ -540,13 +567,19 @@ export const LocalDataProvider = ({
     [isEditable, initMasterId, data?.m_Status, permissions],
   );
 
-  const checkEditableForSave = useCallback(
+  const checkEditableForSectionSaveButton = useCallback(
     (params = {}) => {
       const { group } = params;
       return isEditable && checkEditableByGroup({ group, data, permissions });
     },
     [isEditable, initMasterId, data?.m_Status, permissions],
   );
+
+  const { onValidate } = useLocalValidation({
+    validationResult,
+    setValidationResult,
+    checkEditable,
+  });
 
   const context = {
     ...generalContext,
@@ -595,7 +628,7 @@ export const LocalDataProvider = ({
     isEditable,
     setIsEditable,
     checkEditable,
-    checkEditableForSave,
+    checkEditableForSectionSaveButton,
     uiOrderType,
     uiShowMore,
     setUiShowMore,
@@ -603,6 +636,7 @@ export const LocalDataProvider = ({
     uIstatusObj,
     initData,
     isDeleted: initData?.m_IsActive === false,
+    validationResult
   };
   return (
     <LocalDataContext.Provider value={context}>

@@ -26,17 +26,34 @@
     // outline-offset: 1px;
     // outline: 1px solid $color_centraBlue;
     // background-color: $color_background_edited;
-    border-color: $color_orange;
+    border-color: $color_centraBlue_hover;
 
     :global(.rbt-input-main) {
         // background-color: $color_background_edited;
-        border-color: $color_orange;
+        border-color: $color_centraBlue_hover;
     }
 
     &:global(.form-check-input) {
         outline-offset: 1px;
-        outline: 1px solid $color_orange;
+        outline: 1px solid $color_centraBlue_hover;
         // border-color: $color_background_edited;
     }
 }
+
+.error {
+    // outline-offset: 1px;
+    // outline: 1px solid $color_centraBlue;
+    background-color: $color_background_error;
+
+    :global(.rbt-input-main) {
+        background-color: $color_background_error;
+    }
+
+    &:global(.form-check-input) {
+        outline-offset: 1px;
+        outline: 1px solid $color_background_error;
+        // border-color: $color_background_edited;
+    }
+}
+
 

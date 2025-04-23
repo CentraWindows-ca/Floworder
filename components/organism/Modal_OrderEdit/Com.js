@@ -8,7 +8,7 @@ import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
 import utils from "lib/utils";
 
-const _ifDisplay = ({ kind, uiOrderType, id, displayAs }, data) => {
+export const getIfFieldDisplayAsProductType = ({ kind, uiOrderType, id, displayAs }, data) => {
   let currentKind = "m";
   if (id?.startsWith("m_")) currentKind = "m";
   else if (id?.startsWith("w_")) currentKind = "w";
@@ -39,7 +39,7 @@ export const displayFilter = (itemList, { kind, uiOrderType }) => {
   return itemList?.filter((a) => {
     const { id = "m", displayAs } = a;
     // currentKind is data kind
-    return _ifDisplay(
+    return getIfFieldDisplayAsProductType(
       {
         kind,
         uiOrderType,
@@ -52,11 +52,11 @@ export const displayFilter = (itemList, { kind, uiOrderType }) => {
 };
 
 export const SaveButton = memo(({ group }) => {
-  const { checkEditableForSave, data, isSaving, onSave, editedGroup } =
+  const { checkEditableForSectionSaveButton, data, isSaving, onSave, editedGroup } =
     useContext(LocalDataContext);
 
   return null;
-  if (!checkEditableForSave({ group })) {
+  if (!checkEditableForSectionSaveButton({ group })) {
     return false;
   }
 
@@ -94,7 +94,7 @@ export const DisplayBlock = ({ children, id = "m", displayAs, ...props }) => {
   // kind is UI selected kind
   const { uiOrderType, kind, data } = useContext(LocalDataContext);
 
-  const display = _ifDisplay(
+  const display = getIfFieldDisplayAsProductType(
     {
       kind,
       uiOrderType,

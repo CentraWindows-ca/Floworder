@@ -117,7 +117,7 @@ const Com = ({}) => {
 };
 
 const DisplayDate = ({ id, title }) => {
-  const { data, initData, onChange, checkEditable } = useContext(LocalDataContext);
+  const { data, initData, onChange, validationResult, checkEditable } = useContext(LocalDataContext);
 
   return (
     <DisplayBlock id={id}>
@@ -137,6 +137,7 @@ const DisplayDate = ({ id, title }) => {
 
           }}
           disabled={!checkEditable({id, group})}
+          errorMessage = {validationResult?.[id]}
         />
       </div>
     </DisplayBlock>

@@ -181,7 +181,7 @@ const Com = ({}) => {
 };
 
 const Block = ({ inputData }) => {
-  const { data, initData, onChange, checkEditable, dictionary } =
+  const { data, initData, onChange, checkEditable, validationResult, dictionary } =
     useContext(LocalDataContext);
   let { Component, title, id, options, overrideOnChange, ...rest } = inputData;
   if (typeof options === "function") {
@@ -206,6 +206,7 @@ const Block = ({ inputData }) => {
           }}
           disabled={!checkEditable({ id, group })}
           options={options}
+          errorMessage = {validationResult?.[id]}
           {...rest}
         />
       </div>

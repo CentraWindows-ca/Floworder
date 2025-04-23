@@ -79,7 +79,7 @@ const COMMON_FIELDS = constants.applyField([
 ]);
 
 const Com = ({}) => {
-  const { data, initData, onChange, checkEditable} = useContext(LocalDataContext);
+  const { data, initData, onChange, checkEditable, validationResult} = useContext(LocalDataContext);
 
   return (
     <div className={cn(styles.columnInputsContainer)}>
@@ -102,7 +102,8 @@ const Com = ({}) => {
                     onChange(v, id);
                   }
                 }}
-                disabled={!checkEditable({group })}
+                errorMessage = {validationResult?.[id]}
+                disabled={!checkEditable({group})}
                 {...rest}
               />
             </div>

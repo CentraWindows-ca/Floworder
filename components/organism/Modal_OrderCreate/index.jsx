@@ -25,7 +25,6 @@ const Com = (props) => {
   const [workOrderNo, setWorkOrderNo] = useState("");
   const [windowMakerData, setWindowMakerData] = useState(null);
   const [dbSource, setDbSource] = useState("");
-  const [isReservation, setIsReservation] = useState(false);
   const [existingWorkOrder, setExistingWorkOrder] = useState(null);
 
   const handleCreate = (...params) => {
@@ -43,7 +42,6 @@ const Com = (props) => {
     setWorkOrderNo("");
     setWindowMakerData(null);
     setDbSource("");
-    setIsReservation(false);
     setExistingWorkOrder(null);
   };
 
@@ -77,8 +75,6 @@ const Com = (props) => {
             windowMakerData,
             setWindowMakerData,
             onCreate: handleCreate,
-            isReservation,
-            setIsReservation,
             existingWorkOrder,
             setExistingWorkOrder,
           }}
@@ -234,8 +230,6 @@ const Screen2 = ({
   windowMakerData,
   setWindowMakerData,
   onCreate,
-  isReservation,
-  setIsReservation,
   existingWorkOrder,
 }) => {
   const [initValues, setInitValues] = useState({});
@@ -279,7 +273,7 @@ const Screen2 = ({
     (isWindow && !initValues?.winStartDate) ||
     (isDoor && !initValues?.doorStartDate);
 
-  const doFetch = async (newStatus = "") => {
+  const doFetch = async (newStatus = "", isReservationWorkOrder = false) => {
     setIsLoading(true);
     const updateValues = {
       ...initValues,
@@ -309,7 +303,7 @@ const Screen2 = ({
       workOrderNo,
       resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
       manufacturingFacility,
-      isReservationWorkOrder: isReservation,
+      isReservationWorkOrder,
       ...updateValues,
     };
 
@@ -514,7 +508,7 @@ const Screen2 = ({
             >
               <button
                 className="btn btn-outline-secondary align-items-center flex gap-2"
-                onClick={() => doFetch(WORKORDER_MAPPING.DraftReservation.key)}
+                onClick={() => doFetch(WORKORDER_MAPPING.DraftReservation.key, true)}
                 disabled={disabled || isLoading}
               >
                 <Spin

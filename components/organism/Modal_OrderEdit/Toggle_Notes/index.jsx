@@ -12,7 +12,7 @@ import { ToggleFull, NoData, DisplayBlock, displayFilter, SaveButton } from "../
 const group = "notes";
 
 const Com = ({}) => {
-  const { data, initData, kind, uiOrderType, onChange, checkEditable, onHide } =
+  const { data, initData, validationResult, kind, uiOrderType, onChange, checkEditable, onHide } =
     useContext(LocalDataContext);
 
   const COMMON_FIELDS = constants.applyField([
@@ -95,6 +95,7 @@ const Com = ({}) => {
             isHighlightDiff
             onChange={(v) => onChange(v, id)}
             disabled={!checkEditable({ group })}
+            errorMessage = {validationResult?.[id]}
             rows={3}
           />
         </div>

@@ -315,7 +315,7 @@ const TableWindow = ({ handleShowItem, list: data, itemType }) => {
         const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
 
         return (
-          <Editable.EF_InputDebounce
+          <Editable.EF_Input
             {...{
               className: 'form-control form-control-sm',
               id: `wi_${updatingKey}_${record?.Id}`,
