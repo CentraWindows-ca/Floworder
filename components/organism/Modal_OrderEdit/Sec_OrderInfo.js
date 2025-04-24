@@ -191,7 +191,7 @@ const Block = ({ inputData }) => {
   const className_required = getIsRequired(initData, id) && 'required'
   return (
     <DisplayBlock id={id}>
-      <label className={cn(className_required)}>ojioj{title}</label>
+      <label className={cn(className_required)}>{title}</label>
       <div>
         <Component
           id={id}
