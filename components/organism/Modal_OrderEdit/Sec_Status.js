@@ -45,7 +45,7 @@ const Com = ({}) => {
           style={{
             color: textColor,
             backgroundColor: color,
-            opacity: checkEditable({ group }) ? 1 : 0.6, // to follow the style of dropdowns
+            opacity: checkEditable({ id: 'm_Status' }) ? 1 : 0.6, // to follow the style of dropdowns
           }}
         >
           <span>{label}</span>
@@ -70,7 +70,7 @@ const Com = ({}) => {
               onChange={(v) => onChange(v, "m_TransferredLocation")}
               placeholder={"Transferred Location"}
               options={constants.WorkOrderSelectOptions.branches}
-              disabled={!checkEditable({ id: "m_TransferredLocation", group })}
+              disabled={!checkEditable({ id: "m_TransferredLocation" })}
             />
 
             <button
@@ -78,7 +78,7 @@ const Com = ({}) => {
               disabled={
                 initData?.m_TransferredLocation ===
                   data?.m_TransferredLocation ||
-                !checkEditable({ id: "m_TransferredLocation", group })
+                !checkEditable({ id: "m_TransferredLocation" })
               }
               onClick={onUpdateTransferredLocation}
             >
@@ -104,19 +104,19 @@ const StatusUpdate = ({ statusLabel, currentKind }) => {
     <>
       <div className={cn("align-items-center flex flex-row gap-2 font-normal")}>
         <OverlayWrapper
-          isLock={!checkEditable({ id, group })}
+          isLock={!checkEditable({ id })}
           renderTrigger={(onTrigger) => (
             <div
               className={cn(
                 styles.statesContainer,
-                checkEditable({ id, group }) && styles.statesContainerEditable,
+                checkEditable({ id }) && styles.statesContainerEditable,
               )}
               style={{ color: textColor, backgroundColor: color }}
             >
               <span>
                 {statusLabel}: {label}
               </span>
-              {checkEditable({ id, group }) && (
+              {checkEditable({ id }) && (
                 <div>
                   <i className="fa-solid fa-angle-down" />
                 </div>

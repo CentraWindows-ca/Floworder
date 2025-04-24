@@ -205,7 +205,7 @@ const Block = ({ inputData }) => {
               onChange(v, id);
             }
           }}
-          disabled={!checkEditable({ id, group })}
+          disabled={!checkEditable({ id })}
           options={options}
           errorMessage = {validationResult?.[id]}
           {...rest}

@@ -2,13 +2,21 @@ import { useState, useContext, memo } from "react";
 import cn from "classnames";
 import { Spin } from "antd";
 import { LoadingOutlined, SaveOutlined } from "@ant-design/icons";
-import constants, { WORKORDER_MAPPING, GlassRowStates } from "lib/constants";
+import constants, {
+  WORKORDER_MAPPING,
+  GlassRowStates,
+  FEATURE_CODES,
+} from "lib/constants";
 // styles
 import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
 import utils from "lib/utils";
+import { uiWoFieldEditGroupMapping as gmp } from "lib/constants/constants_labelMapping";
 
-export const getIfFieldDisplayAsProductType = ({ kind, uiOrderType, id, displayAs }, data) => {
+export const getIfFieldDisplayAsProductType = (
+  { kind, uiOrderType, id, displayAs },
+  data,
+) => {
   let currentKind = "m";
   if (id?.startsWith("m_")) currentKind = "m";
   else if (id?.startsWith("w_")) currentKind = "w";
@@ -52,8 +60,13 @@ export const displayFilter = (itemList, { kind, uiOrderType }) => {
 };
 
 export const SaveButton = memo(({ group }) => {
-  const { checkEditableForSectionSaveButton, data, isSaving, onSave, editedGroup } =
-    useContext(LocalDataContext);
+  const {
+    checkEditableForSectionSaveButton,
+    data,
+    isSaving,
+    onSave,
+    editedGroup,
+  } = useContext(LocalDataContext);
 
   return null;
   if (!checkEditableForSectionSaveButton({ group })) {
@@ -234,21 +247,22 @@ export const treateGlassItems = (list) => {
   const _newItems = [];
   _glassItems?.forEach((g, i) => {
     g.status = getStatus(g);
-    g.statusObj = _.values(GlassRowStates).find(_grs => _grs.label === g.status) || {}
+    g.statusObj =
+      _.values(GlassRowStates).find((_grs) => _grs.label === g.status) || {};
     g.receivedExpected = `${g.qty} / ${g.glassQty}`;
     g.shipDate = utils.formatDateForMorganLegacy(g.shipDate);
     g.orderDate = utils.formatDateForMorganLegacy(g.orderDate);
-
-  })
+  });
   const statusPriority = {
     "Not Ordered": 1,
-    "Ordered": 2,
-    "Received": 3
+    Ordered: 2,
+    Received: 3,
   };
 
   _glassItems = _glassItems.sort((a, b) => {
     // Compare status priority
-    const statusComparison = statusPriority[a.status] - statusPriority[b.status];
+    const statusComparison =
+      statusPriority[a.status] - statusPriority[b.status];
     if (statusComparison !== 0) {
       return statusComparison;
     }
@@ -261,10 +275,10 @@ export const treateGlassItems = (list) => {
     g.isFirstRow = true;
     // expand extra rows by rack info (if any)
     if (_.isEmpty(rackInfo)) {
-      _newItems.push({ ...g, key: `${workOrderNumber}_${item}_${i}`});
+      _newItems.push({ ...g, key: `${workOrderNumber}_${item}_${i}` });
     } else {
       g.rowSpan = rackInfo.length;
-      
+
       rackInfo.map((ri, j) => {
         const { rackID, rackType, qty } = ri;
         _newItems.push({
@@ -273,82 +287,90 @@ export const treateGlassItems = (list) => {
           rackID,
           rackType,
           rackQty: qty,
-          key: `${workOrderNumber}_${item}_${rackID}_${i}_${j}`
+          key: `${workOrderNumber}_${item}_${rackID}_${i}_${j}`,
         });
       });
     }
   });
 
   return _newItems;
-}
+};
 
-export const checkEditableById = ({ id, group, permissions, data }) => {
-  if (!id && !group) return true;
+export const checkEditableById = ({ id, permissions, data }) => {
+  let isEnable = false;
 
-  // for pending, only allow to edit schedueld
+  // ============ permission checking: "enable" rules ============
+  const isWindowField = id?.startsWith("w_") || id?.startsWith("m_");
+  const isDoorField = id?.startsWith("d_") || id?.startsWith("m_");
+  const checkPermission = (pc, op = "canEdit") => {
+    return _.get(permissions, [pc, op], false);
+  };
+  const checkGroup = (group) => {
+    return gmp[group][id];
+  };
+  if (checkPermission(FEATURE_CODES["om.prod.wo.basic"])) {
+    isEnable = isEnable || checkGroup("basic");
+  }
+  if (checkPermission(FEATURE_CODES["om.prod.wo.information.window"])) {
+    isEnable = isEnable || (checkGroup("information") && isWindowField);
+  }
+  if (checkPermission(FEATURE_CODES["om.prod.wo.information.door"])) {
+    isEnable = isEnable || (checkGroup("information") && isDoorField);
+  }
+  if (checkPermission(FEATURE_CODES["om.prod.wo.options.window"])) {
+    isEnable = isEnable || (checkGroup("options") && isWindowField);
+  }
+  if (checkPermission(FEATURE_CODES["om.prod.wo.options.door"])) {
+    isEnable = isEnable || (checkGroup("options") && isDoorField);
+  }
+
+  // ============ [VK]NOTE 250424: "Shipping guys can change shipping schedule... but not production schedule"
+  if (
+    checkPermission(
+      FEATURE_CODES["om.prod.wo.scheduleWithoutProduction.window"],
+    )
+  ) {
+    // schedule fileds in window type but not start date
+    isEnable =
+      isEnable ||
+      (checkGroup("schedule") &&
+        id !== "w_ProductionStartDate" &&
+        isWindowField);
+  }
+  if (
+    checkPermission(FEATURE_CODES["om.prod.wo.scheduleWithoutProduction.door"])
+  ) {
+    isEnable =
+      isEnable ||
+      (checkGroup("schedule") && id !== "d_ProductionStartDate" && isDoorField);
+  }
+  if (
+    checkPermission(FEATURE_CODES["om.prod.wo.scheduleWithProduction.window"])
+  ) {
+    isEnable = isEnable || id === "w_ProductionStartDate";
+  }
+  if (
+    checkPermission(FEATURE_CODES["om.prod.wo.scheduleWithProduction.door"])
+  ) {
+    isEnable = isEnable || id === "d_ProductionStartDate";
+  }
+
+  if (checkPermission(FEATURE_CODES["om.prod.wo.notes"])) {
+    isEnable = isEnable || checkGroup("notes");
+  }
+
+  // ============ functional checking: "disable" rules ============
   if (data?.m_Status === WORKORDER_MAPPING.Pending.key) {
-    if (
-      [
-        "m_ShippingStartDate",
-        "m_RevisedDeliveryDate",
-        "w_CustomerDate",
-        "w_ProductionStartDate",
-        "w_PaintStartDate",
-        "w_GlassOrderDate",
-        "w_GlassRecDate",
-        "d_CustomerDate",
-        "d_ProductionStartDate",
-        "d_PaintStartDate",
-        "d_GlassOrderDate",
-      ].includes(id)
-    ) {
-      return true;
-    } else {
-      return false;
+    // check from group 'schedule', but still from field level (in case we dont pass group)
+    if (!checkGroup("schedule")) {
+      isEnable = false;
     }
   }
 
-  // permissions checking
-  if (group) {
-    const isAllowWindow = _.get(
-      permissions,
-      [`om.prod.wo.${group}.window`, `canEdit`],
-      false,
-    );
-    const isAllowDoor = _.get(
-      permissions,
-      [`om.prod.wo.${group}.door`, `canEdit`],
-      false,
-    );
-    const isAllowBoth = _.get(
-      permissions,
-      [`om.prod.wo.${group}`, `canEdit`],
-      false,
-    );
-    const isAllowAny = isAllowWindow || isAllowDoor || isAllowBoth;
-
-    if (id) {
-      if (id?.startsWith("w_")) {
-        return isAllowWindow;
-      }
-      if (id?.startsWith("d_")) {
-        return isAllowDoor;
-      }
-      if (id?.startsWith("m_")) {
-        return isAllowAny;
-      }
-      return false;
-    } else {
-      return isAllowBoth;
-    }
-  }
-
-  return true;
+  return isEnable;
 };
 
 export const checkEditableByGroup = ({ group, permissions, data }) => {
-  if (!group) return true;
-
   const isAllowWindow = _.get(
     permissions,
     [`om.prod.wo.${group}.window`, `canEdit`],

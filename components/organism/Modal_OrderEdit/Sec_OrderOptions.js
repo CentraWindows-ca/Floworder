@@ -205,7 +205,7 @@ const Block = ({ inputData }) => {
           initValue = {initData?.[id]}
           isHighlightDiff
           onChange={(v) => onChange(v, id)}
-          disabled={!checkEditable({id, group})}
+          disabled={!checkEditable({id})}
           errorMessage = {validationResult?.[id]}
         />
       </div>
@@ -214,14 +214,14 @@ const Block = ({ inputData }) => {
           htmlFor={id}
           className="align-items-center flex gap-1"
           style={{
-            cursor: checkEditable({id, group}) ? "pointer" : "default",
+            cursor: checkEditable({id}) ? "pointer" : "default",
           }}
         >
           <div className="w-6">{icon()}</div>
           {title}
         </label>
         {typeof renderSubItem === "function"
-          ? renderSubItem(data, onChange, checkEditable({id, group}))
+          ? renderSubItem(data, onChange, checkEditable({id}))
           : null}
       </div>
     </DisplayBlock>

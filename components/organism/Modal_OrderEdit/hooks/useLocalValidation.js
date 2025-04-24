@@ -32,6 +32,11 @@ const hook = ({ setValidationResult, checkEditable }) => {
       );
       if (!isAvailabe) return;
 
+      // ===== if field visually disabled, skip
+      const isDisabled = !checkEditable({id: fieldName })
+
+      if (isDisabled) return
+
       // ===== if product type doesnt have this field. skip
       const _payload = {
         errorMessages,

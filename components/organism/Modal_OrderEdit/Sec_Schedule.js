@@ -146,7 +146,7 @@ const DisplayDate = ({ id, title, ...rest }) => {
             console.log("edit", typeof v);
             onChange(v, id);
           }}
-          disabled={!checkEditable({ id, group })}
+          disabled={!checkEditable({ id })}
           errorMessage={validationResult?.[id]}
           {...rest}
         />

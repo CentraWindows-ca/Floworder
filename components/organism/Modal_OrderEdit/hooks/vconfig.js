@@ -21,7 +21,19 @@ export const config_regular = {
 };
 
 export const config_reservation = {
+  [f.information.m_BranchId]: { required: true },
+  [f.information.m_ManufacturingFacility]: { required: true },
+  [f.information.m_ShippingType]: { required: true },
+  [f.information.m_ResidentialType]: { required: true },
+  [f.information.m_JobType]: { required: true },
+  [f.information.m_CustomerType]: { required: true },
+  [f.information.m_SalesRepKeyAccount]: { required: true },
+  [f.information.w_BlockNo]: { required: true },
+  [f.information.w_BatchNo]: { required: true },
   [f.information.w_GlassSupplier]: { required: true },
+  [f.information.w_GlassOptions]: { required: true },
+  [f.information.d_BlockNo]: { required: true },
+  [f.information.d_BatchNo]: { required: true },
   [f.information.d_GlassSupplier]: { required: true },
 
   [f.schedule.w_ProductionStartDate]: { required: true },

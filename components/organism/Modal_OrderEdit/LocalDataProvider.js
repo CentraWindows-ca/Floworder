@@ -109,15 +109,15 @@ export const LocalDataProvider = ({
     }));
 
     // remove validation of key
-    setValidationResult(prev => {
+    setValidationResult((prev) => {
       try {
-        const _v = JSON.parse(JSON.stringify(prev))
-        _.unset(_v, k)
-        return _v
+        const _v = JSON.parse(JSON.stringify(prev));
+        _.unset(_v, k);
+        return _v;
       } catch (error) {
-        return prev
+        return prev;
       }
-    })
+    });
   };
 
   const handleAnchor = (id, closeOthers) => {
@@ -503,7 +503,7 @@ export const LocalDataProvider = ({
     async (group) => {
       const validateResult = onValidate({ initData, data, kind, uiOrderType });
       if (!_.isEmpty(validateResult)) {
-        const _errorMessages = _.uniq(_.values(validateResult))
+        const _errorMessages = _.uniq(_.values(validateResult));
         toast(
           <div>
             {_errorMessages?.map((msg) => (
@@ -584,7 +584,10 @@ export const LocalDataProvider = ({
   const checkEditable = useCallback(
     (params = {}) => {
       const { id, group } = params;
-      return isEditable && checkEditableById({ id, group, data, permissions });
+      let _pass = isEditable
+      if (id) { _pass = _pass && checkEditableById({ id, data, permissions })}
+      if (group) { _pass = _pass && checkEditableByGroup({ group, data, permissions }) }
+      return _pass;
     },
     [isEditable, initMasterId, data?.m_Status, permissions],
   );

@@ -103,7 +103,7 @@ const Com = ({}) => {
                   }
                 }}
                 errorMessage = {validationResult?.[id]}
-                disabled={!checkEditable({group})}
+                disabled={!checkEditable({id})}
                 {...rest}
               />
             </div>

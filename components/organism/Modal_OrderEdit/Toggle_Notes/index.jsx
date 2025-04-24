@@ -92,7 +92,7 @@ const Com = ({}) => {
             initValue = {initData?.[id]}
             isHighlightDiff
             onChange={(v) => onChange(v, id)}
-            disabled={!checkEditable({ group })}
+            disabled={!checkEditable({ id })}
             errorMessage = {validationResult?.[id]}
             rows={3}
           />
