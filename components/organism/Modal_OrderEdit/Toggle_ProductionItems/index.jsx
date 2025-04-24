@@ -313,7 +313,6 @@ const TableWindow = ({ handleShowItem, list: data, itemType }) => {
       render: (t, record) => {
         const updatingKey = "Notes";
         const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
-
         return (
           <Editable.EF_Input
             {...{

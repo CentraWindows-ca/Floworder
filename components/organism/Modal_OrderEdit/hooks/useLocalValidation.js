@@ -5,7 +5,11 @@ import {
 } from "lib/constants/constants_labelMapping";
 import { getIfFieldDisplayAsProductType } from "../Com";
 
-const hook = ({ validationResult, setValidationResult, checkEditable }) => {
+import { getVConfig } from "./vconfig";
+
+// ===
+
+const hook = ({ setValidationResult, checkEditable }) => {
   /**
    * data is current value;
    * initData to search extra conditions (if window, if door, ...)
@@ -14,43 +18,33 @@ const hook = ({ validationResult, setValidationResult, checkEditable }) => {
     // initData condition
 
     const errorMessages = {};
+    let checkingConfig = getVConfig(initData);
 
-    _.keys(uiWoFieldEditGroupMapping)?.map((groupName) => {
-      const _fieldsFromGroup = uiWoFieldEditGroupMapping[groupName];
-      _.keys(_fieldsFromGroup)?.map((fieldName) => {
-        // ===== if product type doesnt have this field. skip
-        const isAvailabe = getIfFieldDisplayAsProductType(
-          {
-            id: fieldName,
-            uiOrderType,
-            kind,
-          },
-          data,
-        );
-        if (!isAvailabe) return;
+    _.keys(checkingConfig).map((fieldName) => {
+      // ===== if product type doesnt have this field. skip
+      const isAvailabe = getIfFieldDisplayAsProductType(
+        {
+          id: fieldName,
+          uiOrderType,
+          kind,
+        },
+        data,
+      );
+      if (!isAvailabe) return;
 
-        // ===== group level checking (error message still on field)
-        switch (groupName) {
-          case "information":
-            c_required({ errorMessages, initData, data, fieldName, groupName });
-            break;
-        }
-
-        // ===== field level checking
-        switch (fieldName) {
-          case "":
-            //
-
-            break;
-
-          default:
-            break;
-        }
-      });
+      // ===== if product type doesnt have this field. skip
+      const _payload = {
+        errorMessages,
+        initData,
+        data,
+        fieldName,
+      };
+      if (checkingConfig[fieldName]?.required) {
+        c_required(_payload);
+      }
     });
 
     setValidationResult(errorMessages);
-
     return errorMessages;
   };
 
@@ -65,7 +59,6 @@ const hook = ({ validationResult, setValidationResult, checkEditable }) => {
       errorMessages[fieldName] = `[${fieldLabel}] Required`;
     }
   };
-
   return {
     onValidate,
   };

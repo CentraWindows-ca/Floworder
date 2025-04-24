@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
+import { getIsRequired } from "./hooks/vconfig";
 
 import Editable from "components/molecule/Editable";
 
@@ -29,7 +30,6 @@ const WINDOW_FIELDS = constants.applyField([
   {
     id: "w_ProductionStartDate",
     disabledCloseButton: true,
-    required: true,
   },
   {
     id: "w_PaintStartDate",
@@ -48,7 +48,6 @@ const DOOR_FIELDS = constants.applyField([
   {
     id: "d_ProductionStartDate",
     disabledCloseButton: true,
-    required: true,
   },
   {
     id: "d_PaintStartDate",
@@ -120,13 +119,20 @@ const Com = ({}) => {
   );
 };
 
-const DisplayDate = ({ id, title, required, ...rest }) => {
+const DisplayDate = ({ id, title, ...rest }) => {
   const { data, initData, onChange, validationResult, checkEditable } =
     useContext(LocalDataContext);
 
+  const className_required = getIsRequired(initData, id) && "required";
+
   return (
     <DisplayBlock id={id}>
-      <label className={cn("justify-content-start align-items-center flex", required && "required")}>
+      <label
+        className={cn(
+          "justify-content-start align-items-center flex",
+          className_required,
+        )}
+      >
         {title}
       </label>
       <div className="justify-content-end align-items-center flex">

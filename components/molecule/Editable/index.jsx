@@ -343,22 +343,6 @@ export const EF_Input = React.memo(
   preventUpdate,
 );
 
-export const EF_Input_Uncontrolled = React.memo(
-  ({ className, size = "md", ...props }) => {
-    const classSize = {
-      md: "form-control",
-      sm: "form-control-sm",
-    };
-    return (
-      <input
-        className={cn("form-control", classSize[size], className)}
-        {...props}
-      />
-    );
-  },
-  preventUpdate,
-);
-
 export const EF_InputDebounce = React.memo(
   ({
     onChange,
@@ -640,7 +624,6 @@ export const Editable = {
   EF_SelectEmployee,
   EF_MultiSelect,
   EF_Input,
-  EF_Input_Uncontrolled,
   EF_InputDebounce,
   EF_Text,
   EF_Checkbox,

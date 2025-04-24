@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
+import { getIsRequired } from "./hooks/vconfig";
 
 import Editable from "components/molecule/Editable";
 
@@ -187,10 +188,10 @@ const Block = ({ inputData }) => {
   if (typeof options === "function") {
     options = options(dictionary);
   }
-
+  const className_required = getIsRequired(initData, id) && 'required'
   return (
     <DisplayBlock id={id}>
-      <label className="required">{title}</label>
+      <label className={cn(className_required)}>ojioj{title}</label>
       <div>
         <Component
           id={id}
