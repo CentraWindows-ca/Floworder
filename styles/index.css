@@ -102,10 +102,10 @@ button:hover {
   border-color: #005db9;
 }
 
-.required::before {
+.required::after {
   content: '*';
-  color: red;
-  margin-right: 4px;
+  color: #d2042d;
+  padding-left: 8px;
 }
 
 /* antd style overrides */

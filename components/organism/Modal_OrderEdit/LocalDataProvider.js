@@ -589,7 +589,7 @@ export const LocalDataProvider = ({
       if (group) { _pass = _pass && checkEditableByGroup({ group, data, permissions }) }
       return _pass;
     },
-    [isEditable, initMasterId, data?.m_Status, permissions],
+    [isEditable, initMasterId, data?.m_Status, data?.w_Status, data?.d_Status, permissions],
   );
 
   const checkEditableForSectionSaveButton = useCallback(

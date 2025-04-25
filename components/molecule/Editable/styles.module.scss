@@ -26,16 +26,20 @@
     // outline-offset: 1px;
     // outline: 1px solid $color_centraBlue;
     // background-color: $color_background_edited;
-    border-color: $color_centraBlue_hover;
+    border-color: $color_background_edited;
+    outline-offset: 1px;
+    outline: 1px solid #F0F0F0;
 
     :global(.rbt-input-main) {
         // background-color: $color_background_edited;
-        border-color: $color_centraBlue_hover;
+        border-color: $color_background_edited;
+        outline-offset: 1px;
+        outline: 1px solid #F0F0F0;
     }
 
     &:global(.form-check-input) {
         outline-offset: 1px;
-        outline: 1px solid $color_centraBlue_hover;
+        outline: 1px solid $color_background_edited;
         // border-color: $color_background_edited;
     }
 }

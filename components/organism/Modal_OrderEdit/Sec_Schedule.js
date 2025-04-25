@@ -143,7 +143,6 @@ const DisplayDate = ({ id, title, ...rest }) => {
           initValue={initData?.[id]}
           isHighlightDiff
           onChange={(v) => {
-            console.log("edit", typeof v);
             onChange(v, id);
           }}
           disabled={!checkEditable({ id })}

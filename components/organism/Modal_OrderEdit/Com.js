@@ -299,6 +299,7 @@ export const treateGlassItems = (list) => {
 export const checkEditableById = ({ id, permissions, data }) => {
   let isEnable = false;
 
+
   // ============ permission checking: "enable" rules ============
   const isWindowField = id?.startsWith("w_") || id?.startsWith("m_");
   const isDoorField = id?.startsWith("d_") || id?.startsWith("m_");
@@ -322,6 +323,13 @@ export const checkEditableById = ({ id, permissions, data }) => {
   }
   if (checkPermission(FEATURE_CODES["om.prod.wo.options.door"])) {
     isEnable = isEnable || (checkGroup("options") && isDoorField);
+  }
+
+  if (checkPermission(FEATURE_CODES["om.prod.wo.status.window"])) {
+    isEnable = isEnable || (checkGroup("status") && isWindowField);
+  }
+  if (checkPermission(FEATURE_CODES["om.prod.wo.status.door"])) {
+    isEnable = isEnable || (checkGroup("status") && isDoorField);
   }
 
   // ============ [VK]NOTE 250424: "Shipping guys can change shipping schedule... but not production schedule"
@@ -366,6 +374,7 @@ export const checkEditableById = ({ id, permissions, data }) => {
       isEnable = false;
     }
   }
+
 
   return isEnable;
 };

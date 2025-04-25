@@ -206,7 +206,6 @@ const Com = ({ data, dataProfile, onRefresh }) => {
                       totalNeeded,
                       totalWasted,
                     } = a;
-                    // console.log(a);
 
                     return !_.isEmpty(profileList) ? (
                       <React.Fragment key={m_MasterId}>

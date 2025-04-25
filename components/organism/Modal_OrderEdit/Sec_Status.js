@@ -45,7 +45,7 @@ const Com = ({}) => {
           style={{
             color: textColor,
             backgroundColor: color,
-            opacity: checkEditable({ id: 'm_Status' }) ? 1 : 0.6, // to follow the style of dropdowns
+            opacity: 0.6, // to follow the style of dropdowns
           }}
         >
           <span>{label}</span>
