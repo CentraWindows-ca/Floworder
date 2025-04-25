@@ -159,7 +159,7 @@ export const TableHeader = ({
     setFilters((prev) => {
       const _v = {
         ...prev,
-        [k]: v,
+        [k]: {value: v},
       };
       if (!v) {
         delete _v[k];
@@ -211,7 +211,7 @@ export const TableHeader = ({
                 <div style={{ padding: 2 }}>
                   {(!isNotTitle && !isNotFilter) ? (
                     <Editable.EF_InputDebounce
-                      value={filters?.[initKey || key]}
+                      value={filters?.[initKey || key]?.value}
                       onChange={(v) => handleFilterChange(v, initKey || key)}
                       style={{ width: "100%" }}
                       placeholder={filterPlaceHolder}

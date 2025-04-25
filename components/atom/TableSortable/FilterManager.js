@@ -17,7 +17,7 @@ const FiltersManager = ({
     setFilters((prev) => {
       const _v = {
         ...prev,
-        [k]: v,
+        [k]: { value: v },
       };
       if (!v) {
         delete _v[k];
@@ -68,7 +68,7 @@ const FiltersManager = ({
               disabled={!applyFilter}
             >
               <span>
-                <b>{title} :</b> {filters[k]}
+                <b>{title} :</b> {filters[k]?.value}
               </span>
               <span>
                 <i className="fa-regular fa-square-minus" />

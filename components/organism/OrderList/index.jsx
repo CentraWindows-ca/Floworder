@@ -39,6 +39,7 @@ const Com = (props) => {
     kind,
     uiIsShowWindow,
     uiIsShowDoor,
+    uiIsShowBreakdown,
     filters,
     setFilters,
     applyFilter,
@@ -54,7 +55,7 @@ const Com = (props) => {
 
   const isWindow = kind === "w" || (kind === "m" && uiIsShowWindow);
   const isDoor = kind === "d" || (kind === "m" && uiIsShowDoor);
-  const isMasterOnly = uiIsShowWindow && uiIsShowDoor
+  const isMasterOnly = uiIsShowWindow && uiIsShowDoor;
 
   const [treatedData, setTreatedData] = useState(null);
   const [copied, setCopied] = useState(false);
@@ -83,6 +84,140 @@ const Com = (props) => {
   const isPending = status === WORKORDER_MAPPING.Pending.key;
   const isScheduled = status === WORKORDER_MAPPING.Scheduled.key;
   const isShipped = status === WORKORDER_MAPPING.Shipped.key;
+
+  const COLUMN_PRODUCT_NUMBERS = !uiIsShowBreakdown ? [
+    {
+      title: "Windows",
+      key: "m_NumberOfWindows",
+      display: isWindow,
+      className: "text-right",
+      width: 95,
+    },
+    {
+      title: "Patio Doors",
+      key: "m_NumberOfPatioDoors",
+      display: isWindow,
+      className: "text-right",
+      width: 115,
+    },
+    {
+      title: "Swing Doors",
+      key: "m_NumberOfSwingDoors",
+      display: isWindow,
+      className: "text-right",
+      width: 135,
+    },
+    {
+      title: "Exterior Doors",
+      key: "m_NumberOfDoors",
+      display: isDoor,
+      className: "text-right",
+      width: 135,
+    },
+    {
+      title: "Others",
+      key: "m_NumberOfOthers",
+      className: "text-right",
+      display: isMasterOnly,
+      width: 80,
+    },
+  ] : [];
+
+  const _breakdownbackground = () => ({
+    style: {backgroundColor: '#F0F0F0'}
+  })
+  const COLUMN_PRODUCT_NUMBERS_BREAKDOWN = uiIsShowBreakdown ? [
+    {
+      key: "w__26CA",
+      display: isWindow,        
+      onCell:_breakdownbackground,
+      width: 80
+    },
+    {
+      key: "w__26HY",
+      display: isWindow,
+      onCell:_breakdownbackground,
+      width: 80
+    },
+    {
+      key: "w__27DS",
+      display: isWindow,
+      onCell:_breakdownbackground,
+      width: 80
+    },
+    {
+      key: "w__29CA",
+      display: isWindow,
+      onCell:_breakdownbackground,
+      width: 80
+    },
+    {
+      key: "w__29CM",
+      display: isWindow,
+      onCell:_breakdownbackground,
+      width: 80
+    },
+    {
+      key: "w__52PD",
+      display: isWindow,
+      onCell:_breakdownbackground,
+      width: 80
+    },
+    {
+      key: "w__61DR",
+      display: isWindow,
+      onCell:_breakdownbackground,
+      width: 80
+    },
+    {
+      key: "w__68CA",
+      display: isWindow,
+      onCell:_breakdownbackground,
+      width: 80
+    },
+    {
+      key: "w__68SL",
+      display: isWindow,
+      onCell:_breakdownbackground,
+      width: 80
+    },
+    {
+      key: "w__68VS",
+      display: isWindow,
+      onCell:_breakdownbackground,
+      width: 80
+    },
+    {
+      key: "w__88SL",
+      display: isWindow,
+      onCell:_breakdownbackground,
+      width: 80
+    },
+    {
+      key: "w__88VS",
+      display: isWindow,
+      onCell:_breakdownbackground,
+      width: 80
+    },
+    {
+      key: "d__REDR",
+      display: isDoor,
+      onCell:_breakdownbackground,
+      width: 80
+    },
+    {
+      key: "d__CDLD",
+      display: isDoor,
+      onCell:_breakdownbackground,
+      width: 80
+    },
+    {
+      key: "d__RESD",
+      display: isDoor,
+      onCell:_breakdownbackground,
+      width: 80
+    }, 
+  ]: [];
 
   const columns = constants.applyField(
     [
@@ -235,7 +370,7 @@ const Com = (props) => {
         key: "m_FormStatus",
         display: isPending && !isDeleted,
       },
-      // ========= status ========     
+      // ========= status ========
       {
         key: "m_ShippedDate",
         display: isShipped,
@@ -256,41 +391,8 @@ const Com = (props) => {
         key: "d_ProductionStartDate",
         display: isDoor && isScheduled,
       },
-      {
-        title: "Windows",
-        key: "m_NumberOfWindows",
-        display: isWindow,
-        className: "text-right",
-        width: 95,
-      },
-      {
-        title: "Patio Doors",
-        key: "m_NumberOfPatioDoors",
-        display: isWindow,
-        className: "text-right",
-        width: 115,
-      },
-      {
-        title: "Swing Doors",
-        key: "m_NumberOfSwingDoors",
-        display: isWindow,
-        className: "text-right",
-        width: 135,
-      },
-      {
-        title: "Exterior Doors",
-        key: "m_NumberOfDoors",
-        display: isDoor,
-        className: "text-right",
-        width: 135,
-      },
-      {
-        title: "Others",
-        key: "m_NumberOfOthers",
-        className: "text-right",
-        display: isMasterOnly,
-        width: 80,
-      },
+      ...COLUMN_PRODUCT_NUMBERS,
+      ...COLUMN_PRODUCT_NUMBERS_BREAKDOWN,
       {
         key: "w_BatchNo",
         display: isWindow,
@@ -439,7 +541,7 @@ const Com = (props) => {
         </div>
       ) : isLoading ? (
         <div className={cn(styles.tableLoading)}>
-          <Spin spinning={true} size="large"/>
+          <Spin spinning={true} size="large" />
         </div>
       ) : null}
 

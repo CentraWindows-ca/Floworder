@@ -50,6 +50,7 @@ const Com = ({
 
   const [uiIsShowWindow, setUiIsShowWindow] = useState(true);
   const [uiIsShowDoor, setUiIsShowDoor] = useState(true);
+  const [uiIsShowBreakdown, setUiIsShowBreakdown] = useState(false);
 
   useEffect(() => {
     switch (modalType) {
@@ -304,6 +305,21 @@ const Com = ({
               </div>
             </>
           )}
+          <div className="align-items-center flex gap-2">
+            <div>
+              <Editable.EF_Checkbox
+                id={"ui_breakdown"}
+                value={uiIsShowBreakdown}
+                onChange={(v) => setUiIsShowBreakdown(v)}
+              />
+            </div>
+            <label
+              htmlFor={"ui_breakdown"}
+              className="align-items-center flex gap-1"
+            >
+              Breakdown Numbers
+            </label>
+          </div>
         </div>
         <div>
           <Pagination count={treatedData?.total} basepath={"/"} />
@@ -324,6 +340,7 @@ const Com = ({
           {...{
             uiIsShowWindow,
             uiIsShowDoor,
+            uiIsShowBreakdown,
             data: treatedData?.data,
             applyFilter,
             filters,
@@ -338,7 +355,7 @@ const Com = ({
           }}
         />
       </div>
-      
+
       <Modal_OrderEdit
         onHide={() => handleEdit()}
         onSave={handleSaveDone}

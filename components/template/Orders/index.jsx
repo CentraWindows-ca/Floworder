@@ -42,6 +42,7 @@ const Com = ({}) => {
 
   // ====== search
   const [filters, setFilters] = useState({});
+  const [advancedFilters, setAdvancedFilters] = useState({})
   const [applyFilter, setApplyFilter] = useState(true);
 
   const {
@@ -64,6 +65,7 @@ const Com = ({}) => {
     };
   }
 
+ 
   if (status) {
     filtersObj[tab + "_Status"] = {
       operator: constants.FILTER_OPERATOR.Equals,
@@ -83,6 +85,9 @@ const Com = ({}) => {
     }));
   }
 
+  /* 
+    NOTE: filtersObj is from big buttons; filters is from table header
+  */
   const conditions = [
     ..._.keys(filtersObj)?.map((k) => {
       return {
@@ -93,7 +98,7 @@ const Com = ({}) => {
     ..._.keys(applyFilter ? filters : {})?.map((k) => {
       return {
         operator: constants.FILTER_OPERATOR.Contains,
-        value: filters[k],
+        value: filters[k]?.value,
         field: k,
       };
     }),
