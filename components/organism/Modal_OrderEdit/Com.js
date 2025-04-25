@@ -386,7 +386,16 @@ export const checkEditableByGroup = ({ group, permissions, data }) => {
     [`om.prod.wo.${group}`, `canEdit`],
     false,
   );
-  const isAllowAny = isAllowWindow || isAllowDoor || isAllowBoth;
+
+  let isAllowAny = isAllowWindow || isAllowDoor || isAllowBoth;
+
+  // ============ functional checking: "disable" rules ============
+  if (data?.m_Status === WORKORDER_MAPPING.Pending.key) {
+    // check from group 'schedule', but still from field level (in case we dont pass group)
+    if (group !== "schedule") {
+      return false
+    }
+  }
 
   return isAllowAny;
 };

@@ -22,14 +22,14 @@ const STATUS_DISPLAY = (data, woRef) => {
 
   if (data.statusObj) {
     return (
-      <div className="flex align-items-center gap-2">
+      <div className="align-items-center flex gap-2">
         <div
           style={{
-            border: '1px solid rgb(160, 160, 160)',
+            border: "1px solid rgb(160, 160, 160)",
             height: "15px",
             width: "15px",
             backgroundColor: data.statusObj.color,
-            display: 'block'
+            display: "block",
           }}
         />
         {data.statusObj.label}
@@ -129,53 +129,57 @@ const Com = ({}) => {
 
   return (
     <ToggleBlock title={jsxTitle} id={"glassItems"}>
-      {!_.isEmpty(glassItems) ? (
-        <div className={styles.togglePadding}>
-          <div className={cn(styles.itemSubTitle, styles.subTitle)}>
-            <label>Windows</label>
-          </div>
-          <table
-            className={cn(
-              "table-xs table-hover table-clean mb-0 table border",
-              styles.itemTableBorder,
-            )}
-          >
-            <TableHeader
-              {...{
-                columns,
-                sort,
-                setSort,
-                filters,
-                setFilters,
-                className: styles.thead,
-              }}
-            />
+      <div className={styles.togglePadding}>
+        {!_.isEmpty(glassItems) ? (
+          <>
+            <div className={cn(styles.itemSubTitle, styles.subTitle)}>
+              <label>Glass</label>
+            </div>
+            <table
+              className={cn(
+                "table-xs table-hover table-clean mb-0 table border",
+                styles.itemTableBorder,
+              )}
+            >
+              <TableHeader
+                {...{
+                  columns,
+                  sort,
+                  setSort,
+                  filters,
+                  setFilters,
+                  className: styles.thead,
+                }}
+              />
 
-            <tbody>{sortedList?.map((a, i) => {
-                const { workOrderNumber, item, rackInfo } = a;
+              <tbody>
+                {sortedList?.map((a, i) => {
+                  const { workOrderNumber, item, rackInfo } = a;
 
-                if (_.isEmpty(rackInfo))
+                  if (_.isEmpty(rackInfo))
+                    return (
+                      <SingleRow
+                        data={a}
+                        key={`glass_${workOrderNumber}_${item}_${i}`}
+                        woRef={woRef}
+                      />
+                    );
+
                   return (
-                    <SingleRow
+                    <MultiRow
                       data={a}
                       key={`glass_${workOrderNumber}_${item}_${i}`}
                       woRef={woRef}
                     />
                   );
-
-                return (
-                  <MultiRow
-                    data={a}
-                    key={`glass_${workOrderNumber}_${item}_${i}`}
-                    woRef={woRef}
-                  />
-                );
-              })}
-            </tbody></table>
-        </div>
-      ) : (
-        <NoData />
-      )}
+                })}
+              </tbody>
+            </table>
+          </>
+        ) : (
+          <NoData />
+        )}
+      </div>
     </ToggleBlock>
   );
 };
