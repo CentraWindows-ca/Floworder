@@ -418,7 +418,7 @@ const TableWindow = ({ handleShowItem, list: data, itemType }) => {
     (a) => {
       return _.every(
         _.keys(filters)?.map((filterBy) => {
-          const filterValue = filters[filterBy];
+          const filterValue = filters[filterBy]?.value;
           if (!filterValue) {
             return true;
           }
@@ -671,7 +671,7 @@ const TableDoor = ({ handleShowItem, list: data, itemType }) => {
     (a) => {
       return _.every(
         _.keys(filters)?.map((filterBy) => {
-          const filterValue = filters[filterBy];
+          const filterValue = filters[filterBy]?.value;
           if (!filterValue) {
             return true;
           }

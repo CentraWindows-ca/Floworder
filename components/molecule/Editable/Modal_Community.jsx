@@ -73,9 +73,9 @@ const Com = (props) => {
 
   const filteredData = data?.filter((a) => {
     const checkList = _.keys(filters)?.map((k) => {
-      if (!filters[k]) return true;
+      if (!filters[k]?.value) return true;
       const lowerValue = a?.[k]?.toLowerCase();
-      const lowerFilter = filters[k]?.toLowerCase();
+      const lowerFilter = filters[k]?.value?.toLowerCase();
       return lowerValue?.includes(lowerFilter);
     });
 
