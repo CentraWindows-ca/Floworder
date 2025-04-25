@@ -57,6 +57,8 @@ const Com = ({ data, layer, onHide }) => {
 
     const ChangedData_ReturnTripList = ChangedData?.ReturnTrips;
 
+    const changedData_ShippingCallLogList = ChangedData?.ShippingCallLogs;
+
     const _data = {
       ...data,
       ChangedData_Order,
@@ -64,6 +66,7 @@ const Com = ({ data, layer, onHide }) => {
       ChangedData_AttachmentList,
       ChangedData_ImageList,
       ChangedData_ReturnTripList,
+      changedData_ShippingCallLogList,
     };
 
     setHistoryData(_data);
@@ -87,11 +90,10 @@ const Com = ({ data, layer, onHide }) => {
       >
         <LoadingBlock isLoading={false}>
           <div className="mb-2">
-            Record has been modified by{" "}
-            <b>{historyData?.ChangedBy || "--"}</b> at{" "}
-            <b>{historyData?.CreatedAt}</b>
+            Record has been modified by <b>{historyData?.ChangedBy || "--"}</b>{" "}
+            at <b>{historyData?.CreatedAt}</b>
             <br />
-            Source : {historyData?.Source}
+            Source App. : {historyData?.Source}
           </div>
           <Tabs
             activeKey={tab}
@@ -158,6 +160,14 @@ const ChangesOnly = ({ historyData }) => {
           label: "Return Trips",
         }}
       />
+
+      <MultiLines
+        {...{
+          list: historyData?.changedData_ShippingCallLogList,
+          label: "Shipping Calllogs",
+        }}
+      />
+
       {/* <Files
         {...{
           list: historyData?.ChangedData_ImageList,
@@ -230,23 +240,27 @@ const ReturnTrips = ({ list, label }) => {
             const Changes = [DateChange, NotesChange]?.filter((a) => a);
             return (
               <div key={Id} className={cn(styles.itemInfoRow)}>
-                {Changes?.length > 0 ? Changes.map((b) => {
-                  const { Field, OldValue, NewValue } = b;
-                  const displayField = Field;
-                  return (
-                    <div
-                      key={`returntrip_changed_${Field}`}
-                      className={cn(styles.changesRow)}
-                    >
-                      <div className={cn(styles.changesField)} title={Field}>
-                        {constants.constants_labelMapping[displayField]
-                          ?.title || displayField}
+                {Changes?.length > 0 ? (
+                  Changes.map((b) => {
+                    const { Field, OldValue, NewValue } = b;
+                    const displayField = Field;
+                    return (
+                      <div
+                        key={`returntrip_changed_${Field}`}
+                        className={cn(styles.changesRow)}
+                      >
+                        <div className={cn(styles.changesField)} title={Field}>
+                          {constants.constants_labelMapping[displayField]
+                            ?.title || displayField}
+                        </div>
+                        <div className={cn(styles.changesOld)}>{OldValue}</div>
+                        <div className={cn(styles.changesNew)}>{NewValue}</div>
                       </div>
-                      <div className={cn(styles.changesOld)}>{OldValue}</div>
-                      <div className={cn(styles.changesNew)}>{NewValue}</div>
-                    </div>
-                  );
-                }) : <div>Deleted</div>}
+                    );
+                  })
+                ) : (
+                  <div>Deleted</div>
+                )}
               </div>
             );
           })}
@@ -256,6 +270,49 @@ const ReturnTrips = ({ list, label }) => {
   );
 };
 
+const MultiLines = ({ list, label }) => {
+  const displayList = list;
+  if (_.isEmpty(displayList)) return null;
+
+  return (
+    <div className={cn(styles.changesRow)}>
+      <div className={cn(styles.changesField)}>{label}</div>
+      <div className={cn(styles.changesCurrent)}>
+        <div className={cn(styles.changedItemList)}>
+          {displayList?.map((a) => {
+            const { Id, ...Changes } = a;
+            return (
+              <div key={Id} className={cn(styles.itemInfoRow)}>
+                {!_.isEmpty(Changes) ? (
+                  _.values(Changes)?.map((b) => {
+                    const { Field, OldValue, NewValue } = b;
+                    const displayField = Field;
+                    if (OldValue === NewValue) return null;
+                    return (
+                      <div
+                        key={`${label}_changed_${Field}`}
+                        className={cn(styles.changesRow)}
+                      >
+                        <div className={cn(styles.changesField)} title={Field}>
+                          {constants.constants_labelMapping[displayField]
+                            ?.title || displayField}
+                        </div>
+                        <div className={cn(styles.changesOld)}>{OldValue}</div>
+                        <div className={cn(styles.changesNew)}>{NewValue}</div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div>Deleted</div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
 const Files = ({ list, label }) => {
   const displayList = list;
   if (_.isEmpty(displayList)) return null;

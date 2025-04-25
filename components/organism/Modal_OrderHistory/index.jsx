@@ -53,9 +53,10 @@ const codeToTitleMap = {
   BacktoDraft: "Back to Draft",
   DeleteReturnTrip: "Delete Return Trip",
   UpdateReturnTrip: "Update Return Trip",
-  CreateReturnTrip: "Create Return Trip"
+  CreateReturnTrip: "Create Return Trip",
+  CreateShippingCallLog: "Create Shipping CallLog",
+  UpdateShippingCallLog: "Update Shipping CallLog",
 };
-
 
 const Com = ({ layer = 1 }) => {
   const { isLoading, initMasterId, onHide, data } =
@@ -67,11 +68,15 @@ const Com = ({ layer = 1 }) => {
 
   const columns = [
     {
+      title: "Source App.",
+      key: "Source",
+    },
+    {
       title: "Operation",
       key: "Operation",
       render: (v, record) => {
-        return `${codeToTitleMap[record?.Operation] || record?.Operation}`
-      }
+        return `${codeToTitleMap[record?.Operation] || record?.Operation}`;
+      },
     },
     {
       title: "Operation time",
