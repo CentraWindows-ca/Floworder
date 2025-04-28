@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import cn from "classnames";
 import _ from "lodash";
 
-import constants, {WORKORDER_MAPPING} from "lib/constants";
+import constants, { WORKORDER_MAPPING } from "lib/constants";
 
 import OrdersApi from "lib/api/OrdersApi";
 // components
@@ -15,6 +15,7 @@ import Panel_OrderManagement from "components/organism/Panel_OrderManagement";
 
 // hooks
 import useDataInit from "lib/hooks/useDataInit";
+import useOrderListPermission from "lib/permissions/useOrderListPermission";
 
 // styles
 import styles from "./styles.module.scss";
@@ -26,7 +27,7 @@ const DEFAULT_SORT = (status) => {
         field: "m_LastModifiedAt",
         isDescending: true,
       },
-    ]; 
+    ];
   }
 
   return [
@@ -40,9 +41,11 @@ const DEFAULT_SORT = (status) => {
 const Com = ({}) => {
   const router = useRouter();
 
+  const { applyPermissionsToExcludeStatuses } = useOrderListPermission();
+
   // ====== search
   const [filters, setFilters] = useState({});
-  const [advancedFilters, setAdvancedFilters] = useState({})
+  const [advancedFilters, setAdvancedFilters] = useState({});
   const [applyFilter, setApplyFilter] = useState(true);
 
   const {
@@ -65,7 +68,6 @@ const Com = ({}) => {
     };
   }
 
- 
   if (status) {
     filtersObj[tab + "_Status"] = {
       operator: constants.FILTER_OPERATOR.Equals,
@@ -88,7 +90,7 @@ const Com = ({}) => {
   /* 
     NOTE: filtersObj is from big buttons; filters is from table header
   */
-  const conditions = [
+  const _conditions = [
     ..._.keys(filtersObj)?.map((k) => {
       return {
         ...filtersObj[k],
@@ -104,6 +106,8 @@ const Com = ({}) => {
     }),
   ];
 
+  const {excludeStatuses, conditions} = applyPermissionsToExcludeStatuses(_conditions);
+
   const endPoint = OrdersApi.initQueryWorkOrderHeaderWithPrefixAsync(null, {
     page: (parseInt(p) || 0) + 1,
     pageSize: 50,
@@ -116,6 +120,7 @@ const Com = ({}) => {
     orderByItems: _.isEmpty(sortArr) ? DEFAULT_SORT(status) : sortArr,
     kind: tab,
     isActive: isDeleted ? 0 : 1,
+    excludeStatuses
   });
 
   // use swr
