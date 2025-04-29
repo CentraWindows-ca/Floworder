@@ -85,139 +85,143 @@ const Com = (props) => {
   const isScheduled = status === WORKORDER_MAPPING.Scheduled.key;
   const isShipped = status === WORKORDER_MAPPING.Shipped.key;
 
-  const COLUMN_PRODUCT_NUMBERS = !uiIsShowBreakdown ? [
-    {
-      title: "Windows",
-      key: "m_NumberOfWindows",
-      display: isWindow,
-      className: "text-right",
-      width: 95,
-    },
-    {
-      title: "Patio Doors",
-      key: "m_NumberOfPatioDoors",
-      display: isWindow,
-      className: "text-right",
-      width: 115,
-    },
-    {
-      title: "Swing Doors",
-      key: "m_NumberOfSwingDoors",
-      display: isWindow,
-      className: "text-right",
-      width: 135,
-    },
-    {
-      title: "Exterior Doors",
-      key: "m_NumberOfDoors",
-      display: isDoor,
-      className: "text-right",
-      width: 135,
-    },
-    {
-      title: "Others",
-      key: "m_NumberOfOthers",
-      className: "text-right",
-      display: isMasterOnly,
-      width: 80,
-    },
-  ] : [];
+  const COLUMN_PRODUCT_NUMBERS = !uiIsShowBreakdown
+    ? [
+        {
+          title: "Windows",
+          key: "m_NumberOfWindows",
+          display: isWindow,
+          className: "text-right",
+          width: 95,
+        },
+        {
+          title: "Patio Doors",
+          key: "m_NumberOfPatioDoors",
+          display: isWindow,
+          className: "text-right",
+          width: 115,
+        },
+        {
+          title: "Swing Doors",
+          key: "m_NumberOfSwingDoors",
+          display: isWindow,
+          className: "text-right",
+          width: 135,
+        },
+        {
+          title: "Exterior Doors",
+          key: "m_NumberOfDoors",
+          display: isDoor,
+          className: "text-right",
+          width: 135,
+        },
+        {
+          title: "Others",
+          key: "m_NumberOfOthers",
+          className: "text-right",
+          display: isMasterOnly,
+          width: 80,
+        },
+      ]
+    : [];
 
   const _breakdownbackground = () => ({
-    style: {backgroundColor: '#F0F0F0'}
-  })
-  const COLUMN_PRODUCT_NUMBERS_BREAKDOWN = uiIsShowBreakdown ? [
-    {
-      key: "w__26CA",
-      display: isWindow,        
-      onCell:_breakdownbackground,
-      width: 80
-    },
-    {
-      key: "w__26HY",
-      display: isWindow,
-      onCell:_breakdownbackground,
-      width: 80
-    },
-    {
-      key: "w__27DS",
-      display: isWindow,
-      onCell:_breakdownbackground,
-      width: 80
-    },
-    {
-      key: "w__29CA",
-      display: isWindow,
-      onCell:_breakdownbackground,
-      width: 80
-    },
-    {
-      key: "w__29CM",
-      display: isWindow,
-      onCell:_breakdownbackground,
-      width: 80
-    },
-    {
-      key: "w__52PD",
-      display: isWindow,
-      onCell:_breakdownbackground,
-      width: 80
-    },
-    {
-      key: "w__61DR",
-      display: isWindow,
-      onCell:_breakdownbackground,
-      width: 80
-    },
-    {
-      key: "w__68CA",
-      display: isWindow,
-      onCell:_breakdownbackground,
-      width: 80
-    },
-    {
-      key: "w__68SL",
-      display: isWindow,
-      onCell:_breakdownbackground,
-      width: 80
-    },
-    {
-      key: "w__68VS",
-      display: isWindow,
-      onCell:_breakdownbackground,
-      width: 80
-    },
-    {
-      key: "w__88SL",
-      display: isWindow,
-      onCell:_breakdownbackground,
-      width: 80
-    },
-    {
-      key: "w__88VS",
-      display: isWindow,
-      onCell:_breakdownbackground,
-      width: 80
-    },
-    {
-      key: "d__REDR",
-      display: isDoor,
-      onCell:_breakdownbackground,
-      width: 80
-    },
-    {
-      key: "d__CDLD",
-      display: isDoor,
-      onCell:_breakdownbackground,
-      width: 80
-    },
-    {
-      key: "d__RESD",
-      display: isDoor,
-      onCell:_breakdownbackground,
-      width: 80
-    }, 
-  ]: [];
+    style: { backgroundColor: "#F0F0F0" },
+  });
+  const COLUMN_PRODUCT_NUMBERS_BREAKDOWN = uiIsShowBreakdown
+    ? [
+        {
+          key: "w__26CA",
+          display: isWindow,
+          onCell: _breakdownbackground,
+          width: 80,
+        },
+        {
+          key: "w__26HY",
+          display: isWindow,
+          onCell: _breakdownbackground,
+          width: 80,
+        },
+        {
+          key: "w__27DS",
+          display: isWindow,
+          onCell: _breakdownbackground,
+          width: 80,
+        },
+        {
+          key: "w__29CA",
+          display: isWindow,
+          onCell: _breakdownbackground,
+          width: 80,
+        },
+        {
+          key: "w__29CM",
+          display: isWindow,
+          onCell: _breakdownbackground,
+          width: 80,
+        },
+        {
+          key: "w__52PD",
+          display: isWindow,
+          onCell: _breakdownbackground,
+          width: 80,
+        },
+        {
+          key: "w__61DR",
+          display: isWindow,
+          onCell: _breakdownbackground,
+          width: 80,
+        },
+        {
+          key: "w__68CA",
+          display: isWindow,
+          onCell: _breakdownbackground,
+          width: 80,
+        },
+        {
+          key: "w__68SL",
+          display: isWindow,
+          onCell: _breakdownbackground,
+          width: 80,
+        },
+        {
+          key: "w__68VS",
+          display: isWindow,
+          onCell: _breakdownbackground,
+          width: 80,
+        },
+        {
+          key: "w__88SL",
+          display: isWindow,
+          onCell: _breakdownbackground,
+          width: 80,
+        },
+        {
+          key: "w__88VS",
+          display: isWindow,
+          onCell: _breakdownbackground,
+          width: 80,
+        },
+        {
+          key: "d__REDR",
+          display: isDoor,
+          onCell: _breakdownbackground,
+          width: 80,
+        },
+        {
+          key: "d__CDLD",
+          display: isDoor,
+          onCell: _breakdownbackground,
+          width: 80,
+        },
+        {
+          key: "d__RESD",
+          display: isDoor,
+          onCell: _breakdownbackground,
+          width: 80,
+        },
+      ]
+    : [];
 
   const columns = constants.applyField(
     [
@@ -474,10 +478,16 @@ const Com = (props) => {
     let resInstallStatusMapping = {};
     // if its pending, get install status
     if (isPending && !_.isEmpty(_data)) {
-      resInstallStatusMapping =
-        await OrdersApi.getWorkOrdersInstallationStatusAsync(null, {
-          workOrderNoList: _data?.map((data) => data?.value?.m?.m_WorkOrderNo),
-        });
+      try {
+        resInstallStatusMapping =
+          await OrdersApi.getWorkOrdersInstallationStatusAsync(null, {
+            workOrderNoList: _data?.map(
+              (data) => data?.value?.m?.m_WorkOrderNo,
+            ),
+          });
+      } catch (error) {
+        console.log("error when catching intallation status", error);
+      }
     }
 
     _data = _data?.map((a) => {
