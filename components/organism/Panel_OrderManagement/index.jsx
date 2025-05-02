@@ -317,7 +317,7 @@ const Com = ({
               htmlFor={"ui_breakdown"}
               className="align-items-center flex gap-1"
             >
-              Breakdown Numbers
+              Split by System
             </label>
           </div>
         </div>
