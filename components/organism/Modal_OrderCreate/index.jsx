@@ -266,6 +266,8 @@ const Screen2 = ({
       setInitValues({});
 
       setManufacturingFacility(FACILITY_MAPPING[dbSource]);
+      setDoorManufacturingFacility(FACILITY_MAPPING[dbSource]);
+      setWindowManufacturingFacility(FACILITY_MAPPING[dbSource]);
     }
   }, [existingWorkOrder, windowMakerData]);
 
