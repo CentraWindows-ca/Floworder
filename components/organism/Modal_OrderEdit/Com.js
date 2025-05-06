@@ -36,6 +36,12 @@ export const getIfFieldDisplayAsProductType = (
     );
   }
 
+  if (id === "m_ShippedDate") {
+    return [
+      WORKORDER_MAPPING.Shipped.key
+    ].includes(data?.m_Status)
+  }
+
   if (currentKind === kind || currentKind === "m" || kind === "m") {
     return true;
   } else {
@@ -362,7 +368,11 @@ export const checkEditableById = ({ id, permissions, data }) => {
   ) {
     isEnable = isEnable || id === "d_ProductionStartDate";
   }
-
+  if (
+    checkPermission(FEATURE_CODES["om.prod.wo.scheduleShippedDate"])
+  ) {
+    isEnable = isEnable || id === "m_ShippedDate";
+  }
   if (checkPermission(FEATURE_CODES["om.prod.wo.notes"])) {
     isEnable = isEnable || checkGroup("notes");
   }

@@ -20,6 +20,9 @@ const COMMON_FIELDS = constants.applyField([
     id: "m_ShippingStartDate",
   },
   {
+    id: "m_ShippedDate",
+  },
+  {
     id: "m_RevisedDeliveryDate",
   },
 ]);
