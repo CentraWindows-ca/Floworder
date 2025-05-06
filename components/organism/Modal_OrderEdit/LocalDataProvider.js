@@ -376,6 +376,7 @@ export const LocalDataProvider = ({
       await WM2CWProdApi.updateOnly_AB_WMByWorkOrderAsync(
         null,
         {
+          masterId: data?.m_MasterId,
           workOrderNo: data?.m_WorkOrderNo,
         },
         initData,
@@ -384,6 +385,7 @@ export const LocalDataProvider = ({
       await WM2CWProdApi.updateOnly_BC_WMByWorkOrderAsync(
         null,
         {
+          masterId: data?.m_MasterId,
           workOrderNo: data?.m_WorkOrderNo,
         },
         initData,
