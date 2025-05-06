@@ -59,11 +59,10 @@ const codeToTitleMap = {
 };
 
 const Com = ({ layer = 1 }) => {
-  const { isLoading, initMasterId, onHide, data } =
+  const { isLoading, initMasterId, onHide, data, workOrderInfo } =
     useContext(LocalDataContext);
 
   const [idChanges, setIdChanges] = useState(null);
-
   const handleShowOrderChanges = setIdChanges;
 
   const columns = [
@@ -113,7 +112,7 @@ const Com = ({ layer = 1 }) => {
   const jsxTitle = (
     <div className="justify-content-between align-items-center flex-grow-1 flex">
       <div className="align-items-center flex gap-2">
-        Work Order # {data?.m_WorkOrderNo}
+        Work Order # {workOrderInfo?.workOrderNo}
       </div>
     </div>
   );

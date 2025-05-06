@@ -28,6 +28,8 @@ export const LocalDataProvider = ({
   const generalContext = useContext(GeneralContext);
   const [data, setData] = useState(null);
 
+  const [workOrderInfo, setWorkOrderInfo] = useState(null)
+
   const [isLoading, setIsLoading] = useState(false);
 
   // only display. upload/delete will directly call function
@@ -58,6 +60,12 @@ export const LocalDataProvider = ({
       );
     }
 
+    const resWo = await OrdersApi.getWorkOrderNoByMasterIdAsync({
+      masterId: initMasterId
+    })
+
+    console.log(resWo)
+    setWorkOrderInfo(resWo)
     setIsLoading(false);
   };
 
@@ -67,6 +75,7 @@ export const LocalDataProvider = ({
     isLoading,
     initMasterId,
     data,
+    workOrderInfo,
     setData,
     onHide
   };
