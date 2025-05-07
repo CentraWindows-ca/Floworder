@@ -423,7 +423,9 @@ const useFilterControl = (permissions) => {
 
     // NOTE: same rule applies to popup edit button. if pending or cancelled cant edit
     if (data?.m_Status === WORKORDER_MAPPING.Pending.key) {
-      if (id !== "viewOrder" && id !== "editPendingOrder") return true;
+      if (
+        id !== "viewOrder" && id !== "editPendingOrder" && id !== "viewOrderHistory"
+      ) return true;
     } else {
       if (id === "editPendingOrder") {
         return true;
