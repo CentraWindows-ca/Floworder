@@ -103,7 +103,6 @@ const Com = ({ layer = 1 }) => {
           </div>
         );
       },
-      width: 230,
       isNotTitle: true,
     },
   ];
@@ -122,7 +121,7 @@ const Com = ({ layer = 1 }) => {
       <Modal
         show={initMasterId}
         title={jsxTitle}
-        size="lg"
+        size="xl"
         onHide={onHide}
         bodyClassName={styles.modalBody}
         titleClassName={"flex justify-content-between flex-grow-1"}
