@@ -10,17 +10,18 @@ import TableSortable from "components/atom/TableSortable";
 import FiltersManager from "components/atom/TableSortable/FilterManager";
 
 import LabelDisplay from "components/atom/LabelDisplay";
-import constants from "lib/constants";
 
 // styles
 import styles from "./styles.module.scss";
 import Dropdown_WorkOrderActions from "./Dropdown_WorkOrderActions";
-import {
+import constants, {
   WorkOrderSelectOptions,
   ORDER_STATUS,
   WORKORDER_MAPPING,
 } from "lib/constants";
 import utils from "lib/utils";
+
+import {COLUMN_SEQUENCE_FOR_STATUS} from "./_constants"
 
 const getValue = (k, arrName) => {
   const arr = WorkOrderSelectOptions[arrName];
@@ -82,8 +83,6 @@ const Com = (props) => {
   };
 
   const isPending = status === WORKORDER_MAPPING.Pending.key;
-  const isScheduled = status === WORKORDER_MAPPING.Scheduled.key;
-  const isShipped = status === WORKORDER_MAPPING.Shipped.key;
 
   const COLUMN_PRODUCT_NUMBERS = !uiIsShowBreakdown
     ? [
@@ -260,39 +259,19 @@ const Com = (props) => {
         },
         width: 115,
       },
-      {
-        key: "m_CreatedAt_display",
-        display: isPending,
-        initKey: "m_CreatedAt",
-        width: 125,
-      },
-      {
-        key: "m_CreatedBy",
-        display: isPending,
-      },
-      {
-        key: "m_LastModifiedAt_display",
-        display: isPending,
-        initKey: "m_LastModifiedAt",
-        width: 125,
-      },
-      {
-        key: "m_LastModifiedBy",
-        display: isPending,
-      },
 
       // ========= status ========
       {
         key: "m_InstallStatus",
         initKey: "m_InstallStatus",
-        display: isPending && !isDeleted,
+        display: !isDeleted,
         isNotSortable: true,
         isNotFilter: true,
       },
       {
         key: "m_Status_display",
         initKey: "m_Status",
-        display: !isPending && !isDeleted,
+        display: !isDeleted,
         onCell: (record) => ({
           style: {
             position: "relative",
@@ -319,7 +298,7 @@ const Com = (props) => {
       {
         key: "w_Status_display",
         initKey: "w_Status",
-        display: isWindow && !isPending && !isDeleted,
+        display: isWindow && !isDeleted,
         onCell: (record) => ({
           style: {
             position: "relative",
@@ -346,7 +325,7 @@ const Com = (props) => {
       {
         key: "d_Status_display",
         initKey: "d_Status",
-        display: isDoor && !isPending && !isDeleted,
+        display: isDoor && !isDeleted,
         onCell: (record) => ({
           style: {
             position: "relative",
@@ -372,12 +351,17 @@ const Com = (props) => {
       },
       {
         key: "m_FormStatus",
-        display: isPending && !isDeleted,
+        display: !isDeleted,
       },
       // ========= status ========
       {
+        key: "m_ShippingStartDate",
+      },
+      {
+        key: "m_TransferredDate",
+      },
+      {
         key: "m_ShippedDate",
-        display: isShipped,
       },
       {
         key: "m_Branch",
@@ -389,11 +373,11 @@ const Com = (props) => {
       },
       {
         key: "w_ProductionStartDate",
-        display: isWindow && isScheduled,
+        display: isWindow,
       },
       {
         key: "d_ProductionStartDate",
-        display: isDoor && isScheduled,
+        display: isDoor,
       },
       ...COLUMN_PRODUCT_NUMBERS,
       ...COLUMN_PRODUCT_NUMBERS_BREAKDOWN,
@@ -401,51 +385,46 @@ const Com = (props) => {
         key: "w_BatchNo",
         display: isWindow,
         width: 145,
-        display: isWindow && !isPending,
+        display: isWindow,
       },
       {
         key: "w_BlockNo",
         display: isWindow,
         width: 145,
-        display: isWindow && !isPending,
+        display: isWindow,
       },
       {
         key: "d_BatchNo",
         display: isDoor,
         width: 125,
-        display: isDoor && !isPending,
+        display: isDoor,
       },
       {
         key: "d_BlockNo",
         display: isDoor,
         width: 125,
-        display: isDoor && !isPending,
+        display: isDoor,
       },
 
       {
         key: "m_InvStatus",
         width: 105,
-        display: !isPending,
       },
       {
         key: "m_CreatedAt_display",
-        display: !isPending,
         initKey: "m_CreatedAt",
         width: 125,
       },
       {
         key: "m_CreatedBy",
-        display: !isPending,
       },
       {
         key: "m_LastModifiedAt_display",
-        display: !isPending,
         initKey: "m_LastModifiedAt",
         width: 125,
       },
       {
         key: "m_LastModifiedBy",
-        display: !isPending,
       },
       {
         title: "Windows Customer Date",
@@ -561,7 +540,7 @@ const Com = (props) => {
           filters,
           applyFilter,
           setFilters,
-          columns,
+          columns: COLUMN_SEQUENCE_FOR_STATUS(status, columns),
           sort,
           setSort,
           className: styles.table,
@@ -569,7 +548,7 @@ const Com = (props) => {
       />
       <FiltersManager
         {...{
-          columns,
+          columns: COLUMN_SEQUENCE_FOR_STATUS(status, columns),
           filters,
           applyFilter,
           onApplyFilter,
