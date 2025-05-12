@@ -123,7 +123,7 @@
 
 .orderTable {
     width: max-content;
-    table-layout: fixed;
+    // table-layout: fixed; // this causes first row's width overrides the table width
     min-width: 100%;
     // border-left: 1px solid $color_border_table;
     background-color: white;

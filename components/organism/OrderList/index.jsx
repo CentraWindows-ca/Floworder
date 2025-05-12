@@ -267,6 +267,7 @@ const Com = (props) => {
         display: !isDeleted,
         isNotSortable: true,
         isNotFilter: true,
+        width: 180,
       },
       {
         key: "m_Status_display",
@@ -278,6 +279,7 @@ const Com = (props) => {
             padding: 0,
           },
         }),
+        width: 180,
         onWrapper: () => ({
           className: styles.tableStatusBlock,
         }),
@@ -299,6 +301,7 @@ const Com = (props) => {
         key: "w_Status_display",
         initKey: "w_Status",
         display: isWindow && !isDeleted,
+        width: 180,
         onCell: (record) => ({
           style: {
             position: "relative",
@@ -326,6 +329,7 @@ const Com = (props) => {
         key: "d_Status_display",
         initKey: "d_Status",
         display: isDoor && !isDeleted,
+        width: 180,
         onCell: (record) => ({
           style: {
             position: "relative",
