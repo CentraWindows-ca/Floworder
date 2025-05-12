@@ -50,6 +50,30 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         ...COLUMN_PRODUCT_NUMBERS_BREAKDOWN,
       ];
       break;
+    case WORKORDER_MAPPING.Draft.key:
+      sequence = [
+        "m_WorkOrderNo",
+        "m_Status_display",
+        "w_Status_display",
+        "d_Status_display",
+        "m_Branch",
+        "m_JobType",
+        ...COLUMN_PRODUCT_NUMBERS,
+        ...COLUMN_PRODUCT_NUMBERS_BREAKDOWN,
+        "m_TotalLBRMin",
+        "w_BatchNo",
+        "w_BlockNo",
+        "d_BatchNo",
+        "d_BlockNo",
+        "m_InvStatus",
+        "m_CreatedAt_display",
+        "m_CreatedBy",
+        "m_LastModifiedAt_display",
+        "m_LastModifiedBy",
+        "w_CustomerDate_display",
+        "d_CustomerDate_display",
+      ];
+      break;
     case WORKORDER_MAPPING.Scheduled.key:
     case WORKORDER_MAPPING.InProgress.key:
     case WORKORDER_MAPPING.OnHold.key:
@@ -65,6 +89,7 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "m_JobType",
         ...COLUMN_PRODUCT_NUMBERS,
         ...COLUMN_PRODUCT_NUMBERS_BREAKDOWN,
+        "m_TotalLBRMin",
         "w_BatchNo",
         "w_BlockNo",
         "d_BatchNo",
@@ -89,6 +114,7 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "m_JobType",
         ...COLUMN_PRODUCT_NUMBERS,
         ...COLUMN_PRODUCT_NUMBERS_BREAKDOWN,
+        "m_TotalLBRMin",
         "w_BatchNo",
         "w_BlockNo",
         "d_BatchNo",
@@ -138,6 +164,32 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "m_JobType",
         ...COLUMN_PRODUCT_NUMBERS,
         ...COLUMN_PRODUCT_NUMBERS_BREAKDOWN,
+        "w_BatchNo",
+        "w_BlockNo",
+        "d_BatchNo",
+        "d_BlockNo",
+        "m_InvStatus",
+        "m_CreatedAt_display",
+        "m_CreatedBy",
+        "m_LastModifiedAt_display",
+        "m_LastModifiedBy",
+        "w_CustomerDate_display",
+        "d_CustomerDate_display",
+      ];
+      break;
+    case WORKORDER_MAPPING.DraftReservation.key:
+    case WORKORDER_MAPPING.ConfirmedReservation.key:
+    case WORKORDER_MAPPING.CompletedReservation.key:
+      sequence = [
+        "m_WorkOrderNo",
+        "m_Status_display",
+        "w_Status_display",
+        "d_Status_display",
+        "m_Branch",
+        "m_JobType",
+        ...COLUMN_PRODUCT_NUMBERS,
+        ...COLUMN_PRODUCT_NUMBERS_BREAKDOWN,
+        "m_TotalLBRMin",
         "w_BatchNo",
         "w_BlockNo",
         "d_BatchNo",

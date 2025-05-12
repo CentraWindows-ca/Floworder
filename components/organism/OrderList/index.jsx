@@ -382,6 +382,11 @@ const Com = (props) => {
       ...COLUMN_PRODUCT_NUMBERS,
       ...COLUMN_PRODUCT_NUMBERS_BREAKDOWN,
       {
+        key: "m_TotalLBRMin",
+        className: "text-right",
+        width: 100,   
+      },
+      {
         key: "w_BatchNo",
         display: isWindow,
         width: 145,
