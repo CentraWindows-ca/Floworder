@@ -78,6 +78,7 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
     case WORKORDER_MAPPING.InProgress.key:
     case WORKORDER_MAPPING.OnHold.key:
       sequence = [
+        "m_WorkOrderNo",
         "m_Status_display",
         "w_Status_display",
         "d_Status_display",
