@@ -56,6 +56,7 @@ const codeToTitleMap = {
   CreateReturnTrip: "Create Return Trip",
   CreateShippingCallLog: "Create Shipping CallLog",
   UpdateShippingCallLog: "Update Shipping CallLog",
+  GetWindowMaker: "Get WindowMaker"
 };
 
 const Com = ({ layer = 1 }) => {
