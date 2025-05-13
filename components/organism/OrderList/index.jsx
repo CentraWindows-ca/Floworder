@@ -449,6 +449,17 @@ const Com = (props) => {
         width: 195,
         display: isDoor,
       },
+      {
+        key: "m_CustomerName",
+      },
+      {
+        key: "m_ProjectName",
+        width: 200
+      },
+      {
+        key: "m_ProjectManagerName",
+      },
+
       // NOTE: it should generated data and it should be multiple lines
       // {
       //   title: "Glass Ordered Date",

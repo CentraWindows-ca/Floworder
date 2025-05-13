@@ -55,7 +55,7 @@ const Com = (props) => {
             
             return (
               <tr key={`table_${keyFieldPrefix}_${a[keyField]}_${i}`} {..._trParams}>
-                {columns?.map((b) => {
+                {columns?.filter(a => a)?.map((b) => {
                   const { key, render, onCell, onWrapper, className } = b;
                   let cell = onCell ? onCell(a) : null;
                   let wrapper = onWrapper ? onWrapper(a) : null;
@@ -171,7 +171,7 @@ export const TableHeader = ({
   return (
     <thead className={cn(styles.thead, className)}>
       <tr>
-        {columns?.map((a, i) => {
+        {columns?.filter(a => a)?.map((a, i) => {
           const { title, key, width, initKey, isNotTitle, isNotSortable } = a;
           const sortKey = initKey || key;
           return (
@@ -204,7 +204,7 @@ export const TableHeader = ({
       </tr>
       {setFilters ? (
         <tr>
-          {columns?.map((a) => {
+          {columns?.filter(a => a)?.map((a) => {
             const { key, initKey, isNotTitle, isNotFilter, filterPlaceHolder = "--" } = a;
             return (
               <td key={`filter_${a.key}`}>
