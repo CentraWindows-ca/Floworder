@@ -197,6 +197,8 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "m_Status_display",
         "w_Status_display",
         "d_Status_display",
+        "w_CustomerDate_display",
+        "d_CustomerDate_display",
         "m_Branch",
         "m_JobType",
         ...COLUMN_PRODUCT_NUMBERS,
@@ -211,8 +213,6 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "m_CreatedBy",
         "m_LastModifiedAt_display",
         "m_LastModifiedBy",
-        "w_CustomerDate_display",
-        "d_CustomerDate_display",
         ...COLUMN_PROJECT
       ];
       break;
