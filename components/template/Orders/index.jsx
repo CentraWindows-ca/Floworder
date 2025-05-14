@@ -49,9 +49,9 @@ const Com = ({}) => {
   const [applyFilter, setApplyFilter] = useState(true);
 
   const {
-    status,
+    status: statusFromParam,
     p = 0,
-    facility,
+    facility: facilityFromParam,
     tab = "m",
     sort,
     isDeleted,
@@ -60,6 +60,9 @@ const Com = ({}) => {
   const filtersObj = {};
   const sortObj = {};
   let sortArr = [];
+
+  const status = statusFromParam === "All" ? "" : statusFromParam
+  const facility = facilityFromParam === "All" ? "" : facilityFromParam
 
   if (facility) {
     filtersObj[tab + "_ManufacturingFacility"] = {

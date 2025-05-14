@@ -85,9 +85,9 @@ const Com = (props) => {
             textColor:  "#005db9",
             icon: <i className="fa-solid fa-file-lines" style={{fontSize: '16px'}} />,
           }}
-          isActive={activeKey === "/" && !status && !isDeleted?.toString()}
+          isActive={activeKey === "/" && (!status || status === 'All') && !isDeleted?.toString()}
           onClick={() => {
-            handleClick('');
+            handleClick('All');
           }}
         />
       </div>

@@ -13,7 +13,7 @@ import styles from "./styles.module.scss";
 
 const Com = (props) => {
   const router = useRouter();
-  const defaultTab = "";
+  const defaultTab = "All";
   const facility = router?.query?.facility || defaultTab;
 
   const tabs = [
@@ -26,7 +26,7 @@ const Com = (props) => {
       title: "Calgary",
     },
     {
-      eventKey: "",
+      eventKey: "All",
       title: "All",
     },
   ];
