@@ -91,7 +91,7 @@ const DOOR_LBR_FIELDS = [
 ];
 
 const Com = ({ className, ...props }) => {
-  const { data, onChange, onHide } = useContext(LocalDataContext);
+  const { data, LbrBreakDowns, onChange, onHide } = useContext(LocalDataContext);
 
   if (!data) return null;
 
@@ -140,6 +140,11 @@ const Com = ({ className, ...props }) => {
           label: "Swing Doors",
           number: data["m_NumberOfSwingDoors"],
           displayNumber: utils.formatNumber(data["m_NumberOfSwingDoors"]),
+        },
+        {
+          label: "Others",
+          number: data["m_NumberOfOthers"],
+          displayNumber: utils.formatNumber(data["m_NumberOfOthers"]),
         },
       ],
     },
@@ -226,24 +231,15 @@ const Com = ({ className, ...props }) => {
                   })}</React.Fragment>
               );
             })}
-            {data["m_NumberOfOthers"] ? (
-              <tr>
-                <th>Others</th>
-                <td>--</td>
-                <td>{utils.formatNumber(data["m_NumberOfOthers"])}</td>
-                <td>--</td>
-                <td>--</td>
-                <td>--</td>
-              </tr>
-            ) : null}</tbody>
+            </tbody>
         </table>
 
         <div>
           <div className={styles.summaryLaborsTitle}>LBR Breakdown:</div>
           <div className={styles.summaryLaborsContainer}>
-            {[...WINDOW_LBR_FIELDS, ...DOOR_LBR_FIELDS]?.map((a) => {
+            {LbrBreakDowns?.map((a) => {
               const { title, qty, lbr } = a;
-              if (!data[qty] && !data[lbr]) {
+              if (!qty && !lbr) {
                 return null;
               }
               return (
@@ -257,19 +253,19 @@ const Com = ({ className, ...props }) => {
                     <div
                       className="justify-content-between align-items-center flex gap-3 pb-1"
                       style={{ borderBottom: "1px solid #D0D0D0" }}
-                      title={`Quantity: ${utils.formatNumber(data[qty])}`}
+                      title={`Quantity: ${utils.formatNumber(qty)}`}
                     >
                       <div className="">
                         <i className="fas fa-box me-2"></i>
                         <span>Qty</span>
                       </div>
                       <span className={cn(styles.summaryLaborNumberSpan)}>
-                        {utils.formatNumber(data[qty])}
+                        {utils.formatNumber(qty)}
                       </span>
                     </div>
                     <div
                       className="justify-content-between align-items-center flex gap-3"
-                      title={`Labor hours: ${utils.formatNumber(data[lbr])}`}
+                      title={`Labor hours: ${utils.formatNumber(lbr)}`}
                     >
                       <div className="">
                         <i className="far fa-clock me-2"></i>
@@ -277,7 +273,7 @@ const Com = ({ className, ...props }) => {
                       </div>
 
                       <span className={cn(styles.summaryLaborNumberSpan)}>
-                        {utils.formatNumber(data[lbr])}
+                        {utils.formatNumber(lbr)}
                       </span>
                     </div>
                   </div>

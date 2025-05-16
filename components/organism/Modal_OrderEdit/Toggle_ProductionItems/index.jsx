@@ -15,24 +15,45 @@ import stylesRoot from "../styles.module.scss";
 import stylesCurrent from "./styles.module.scss";
 
 const styles = { ...stylesRoot, ...stylesCurrent };
-
 const ITEM_CATEGORIES = {
-  W: {
+  windows_Windows: {
     label: "Windows",
+    dict_key: "windows_Windows",
+    display_key: "W",
   },
-  PD: {
+  windows_PatioDoor: {
     label: "Patio Doors",
+    dict_key: "windows_PatioDoor",
+    display_key: "PD",
   },
-  SD: {
+  windows_SwingDoor: {
     label: "Swing Doors",
+    dict_key: "windows_SwingDoor",
+    display_key: "SD",
   },
-  ED: {
+  doors_Doors: {
     label: "Exterior Doors",
+    dict_key: "doors_Doors",
+    display_key: "ED",
   },
-  GL: {
+  windows_Glass: {
     label: "Glass",
+    dict_key: "windows_Glass",
+    display_key: "WGL",
+  },
+  doors_Glass: {
+    label: "Glass",
+    dict_key: "doors_Glass",
+    display_key: "DGL",
+  },
+  others_Others: {
+    label: "Others",
+    dict_key: "others_Others",
+    display_key: "Others",
   },
 };
+
+const getCategoryBySystem = (system) => {};
 
 const Com = ({ title, id }) => {
   const {
@@ -41,6 +62,7 @@ const Com = ({ title, id }) => {
     onBatchUpdateItems,
     checkEditable,
     uiOrderType,
+    dictionary,
   } = useContext(LocalDataContext);
 
   const [stats, setStats] = useState({});
@@ -49,52 +71,34 @@ const Com = ({ title, id }) => {
   const [grouppedItems, setGrouppedItems] = useState({});
 
   useEffect(() => {
-    const _stats = {
-      W: 0,
-      PD: 0,
-      SD: 0,
-      ED: 0,
-      GL: 0,
-    };
+    const _stats = {};
+
+    _.keys(ITEM_CATEGORIES)?.map((k) => {
+      _stats[k] = 0;
+    });
 
     const _grouppedItems = {};
 
-    windowItems?.map((a) => {
+    // get item type by system code (default windows_Windows)
+    const _assign_system_to_item_type = (a) => {
       const { System } = a;
-      switch (System) {
-        case "52PD":
-          a.itemType = "PD";
-          break;
-        case "61DR":
-          a.itemType = "SD";
-          break;
-        case "GL01":
-          a.itemType = "GL";
-          break;
-        default:
-          a.itemType = "W";
-          break;
-      }
+      const _cat = _.keys(dictionary.systemCategoryList)?.find((k) => {
+        return dictionary.systemCategoryList[k]?.includes(System);
+      });
+      a.itemType = _cat || "windows_Windows";
+
       _stats[a.itemType] = _stats[a.itemType] + 1;
 
       if (!_grouppedItems[a.itemType]) {
         _grouppedItems[a.itemType] = [];
       }
       _grouppedItems[a.itemType].push(a);
-    });
+    };
 
-    doorItems?.map((a) => {
-      const { System } = a;
-      a.itemType = "ED";
-      _stats[a.itemType] = _stats[a.itemType] + 1;
+    windowItems?.map(_assign_system_to_item_type);
+    doorItems?.map(_assign_system_to_item_type);
 
-      if (!_grouppedItems[a.itemType]) {
-        _grouppedItems[a.itemType] = [];
-      }
-      _grouppedItems[a.itemType].push(a);
-    });
-
-    setGrouppedItems(_grouppedItems)
+    setGrouppedItems(_grouppedItems);
 
     setStats(_stats);
   }, [windowItems, doorItems, uiOrderType]);
@@ -125,7 +129,8 @@ const Com = ({ title, id }) => {
       <div className="text-primary font-normal">
         {_.keys(stats)
           .map((k) => {
-            return `${k}: ${stats[k]}`;
+            const {display_key} = ITEM_CATEGORIES[k]
+            return `${display_key}: ${stats[k]}`;
           })
           .join(" | ")}
       </div>
@@ -138,36 +143,50 @@ const Com = ({ title, id }) => {
         <TableWindow
           {...{
             handleShowItem,
-            itemType: "W",
-            list: grouppedItems['W']
+            itemType: "windows_Windows",
+            list: grouppedItems
           }}
         />
         <TableWindow
           {...{
             handleShowItem,
-            itemType: "PD",
-            list:  grouppedItems['PD']
+            itemType: "windows_PatioDoor",
+            list: grouppedItems
           }}
         />
         <TableWindow
           {...{
             handleShowItem,
-            itemType: "SD",
-            list: grouppedItems['SD']
+            itemType: "windows_SwingDoor",
+            list: grouppedItems
           }}
         />
         <TableDoor
           {...{
             handleShowItem,
-            itemType: "ED",
-            list: grouppedItems['ED']
+            itemType: "doors_Doors",
+            list: grouppedItems,
           }}
         />
         <TableWindow
           {...{
             handleShowItem,
-            itemType: "GL",
-            list: grouppedItems['GL']
+            itemType: "windows_Glass",
+            list: grouppedItems,
+          }}
+        />
+        <TableWindow
+          {...{
+            handleShowItem,
+            itemType: "doors_Glass",
+            list: grouppedItems,
+          }}
+        />
+        <TableWindow
+          {...{
+            handleShowItem,
+            itemType: "others_Others",
+            list: grouppedItems,
           }}
         />
       </ToggleBlock>
@@ -181,8 +200,9 @@ const Com = ({ title, id }) => {
   );
 };
 
-const TableWindow = ({ handleShowItem, list: data, itemType }) => {
+const TableWindow = ({ handleShowItem, list, itemType }) => {
   const { onBatchUpdateItems, checkEditable } = useContext(LocalDataContext);
+  const data = list?.[itemType]
 
   const [updatingValues, setUpdatingValues] = useState({});
   const handleUpdate = (id, v, k, initV) => {
@@ -316,16 +336,15 @@ const TableWindow = ({ handleShowItem, list: data, itemType }) => {
         return (
           <Editable.EF_Input
             {...{
-              className: 'form-control form-control-sm',
+              className: "form-control form-control-sm",
               id: `wi_${updatingKey}_${record?.Id}`,
               value:
                 overrideValue !== undefined
                   ? overrideValue
                   : record[updatingKey],
-              onChange: (v) =>
-                {
-                  handleUpdate(record?.Id, v, updatingKey, record[updatingKey])
-                },
+              onChange: (v) => {
+                handleUpdate(record?.Id, v, updatingKey, record[updatingKey]);
+              },
               disabled: !checkEditable({ group: "windowitems" }),
               size: "sm",
               placeholder: "--",
@@ -479,8 +498,9 @@ const TableWindow = ({ handleShowItem, list: data, itemType }) => {
   );
 };
 
-const TableDoor = ({ handleShowItem, list: data, itemType }) => {
+const TableDoor = ({ handleShowItem, list, itemType }) => {
   const { onBatchUpdateItems, checkEditable } = useContext(LocalDataContext);
+  const data = list?.[itemType]
 
   const [updatingValues, setUpdatingValues] = useState({});
   const handleUpdate = (id, v, k, initV) => {

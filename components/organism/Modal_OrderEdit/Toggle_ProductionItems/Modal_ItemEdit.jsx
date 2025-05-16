@@ -65,8 +65,11 @@ const WINDOW_FIELDS = constants.applyField([
   },
   {
     Component: Editable.EF_Input,
-    title: "LBRMin",
     id: "LBRMin",
+  },
+  {
+    Component: Editable.EF_Label,
+    id: "Nett",
   },
   {
     Component: Editable.EF_Rack,
@@ -196,6 +199,10 @@ const DOOR_FIELDS = constants.applyField([
   {
     Component: Editable.EF_Input,
     id: "LBRMin",
+  },
+  {
+    Component: Editable.EF_Label,
+    id: "Nett",
   },
   {
     Component: Editable.EF_Rack,

@@ -60,6 +60,8 @@ export const LocalDataProvider = ({
   const [isEditable, setIsEditable] = useState(false);
   const [editedGroup, setEditedGroup] = useState({});
 
+  const [LbrBreakDowns, setLbrBreakDowns] = useState([])
+
   // only display. upload/delete will directly call function
   const [existingAttachments, setExistingAttachments] = useState(null);
   const [existingImages, setExistingImages] = useState(null);
@@ -239,6 +241,24 @@ export const LocalDataProvider = ({
           d: !!value?.d,
           w: !!value?.w,
         });
+
+        // search lbr breakdowns
+        const _lbrs = []
+        _.keys(mergedData)?.map(k => {
+          // matches "<n>__"
+          if (/^[a-zA-Z]__.*$/.test(k) && k?.endsWith("Min")) {
+            const lbr_title = k.split("__")?.[1]?.replace("Min", "")
+            const lbr_qty = mergedData[k?.replace("Min", "")]
+            const lbr_min = mergedData[k]
+
+            _lbrs.push({
+              title: lbr_title,
+              qty: lbr_qty,
+              lbr: lbr_min
+            })
+          }
+        })
+        setLbrBreakDowns(_lbrs)
       }
 
       return mergedData;
@@ -646,6 +666,7 @@ export const LocalDataProvider = ({
     editedGroup,
     setEditedGroup,
 
+    LbrBreakDowns,
     windowItems,
     doorItems,
     returnTrips,

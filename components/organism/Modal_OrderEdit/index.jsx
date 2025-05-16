@@ -129,7 +129,11 @@ const Com = ({}) => {
                 <label className="text-base font-normal">
                   Transferred to:{" "}
                 </label>
-                <div className="text-base">{data?.m_TransferredLocation}</div>
+                <div className="text-base">
+                  {constants.WorkOrderSelectOptions.branches?.find(
+                    (a) => a.key === data?.m_TransferredLocation,
+                  )?.label || "--"}
+                </div>
               </DisplayBlock>
             )}
         </div>
@@ -258,7 +262,9 @@ const Com = ({}) => {
             >
               <button
                 className="btn btn-primary align-items-center flex gap-2 px-3"
-                disabled={!data?.m_WorkOrderNo || isSaving || _.isEmpty(editedGroup)}
+                disabled={
+                  !data?.m_WorkOrderNo || isSaving || _.isEmpty(editedGroup)
+                }
                 onClick={onSave}
               >
                 {!isSaving ? (
