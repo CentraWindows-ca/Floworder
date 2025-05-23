@@ -302,7 +302,7 @@ export const treateGlassItems = (list) => {
   return _newItems;
 };
 
-export const checkEditableById = ({ id, permissions, data }) => {
+export const checkEditableById = ({ id, permissions, data, initKind }) => {
   let isEnable = false;
 
 
@@ -378,13 +378,18 @@ export const checkEditableById = ({ id, permissions, data }) => {
   }
 
   // ============ functional checking: "disable" rules ============
-  if (data?.m_Status === WORKORDER_MAPPING.Pending.key) {
+  /* 
+  [VK]NOTE 20250523
+  pending rule is rely on "where they open the modal". not on "what modal" they open
+  here "where" means which tab (master, window, door) they search the order from
+  */
+  let status_ForPendingRule = data?.[`${initKind}_Status`]
+  if (status_ForPendingRule === WORKORDER_MAPPING.Pending.key) {
     // check from group 'schedule', but still from field level (in case we dont pass group)
     if (!checkGroup("schedule")) {
       isEnable = false;
     }
   }
-
 
   return isEnable;
 };
@@ -409,12 +414,12 @@ export const checkEditableByGroup = ({ group, permissions, data }) => {
   let isAllowAny = isAllowWindow || isAllowDoor || isAllowBoth;
 
   // ============ functional checking: "disable" rules ============
-  if (data?.m_Status === WORKORDER_MAPPING.Pending.key) {
-    // check from group 'schedule', but still from field level (in case we dont pass group)
-    if (group !== "schedule") {
-      return false
-    }
-  }
+  // if (data?.m_Status === WORKORDER_MAPPING.Pending.key) {
+  //   // check from group 'schedule', but still from field level (in case we dont pass group)
+  //   if (group !== "schedule") {
+  //     return false
+  //   }
+  // }
 
   return isAllowAny;
 };

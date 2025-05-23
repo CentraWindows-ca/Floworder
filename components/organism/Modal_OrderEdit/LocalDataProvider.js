@@ -40,7 +40,9 @@ const STATUS = {
 export const LocalDataProvider = ({
   children,
   initMasterId,
-  kind: initKind,
+
+  // the tab we are open from. we need some logic rely on the path they open the modal
+  kind: initKind, 
   facility,
   onSave,
   onHide,
@@ -607,8 +609,8 @@ export const LocalDataProvider = ({
     (params = {}) => {
       const { id, group } = params;
       let _pass = isEditable
-      if (id) { _pass = _pass && checkEditableById({ id, data, permissions })}
-      if (group) { _pass = _pass && checkEditableByGroup({ group, data, permissions }) }
+      if (id) { _pass = _pass && checkEditableById({ id, data, permissions, initKind })}
+      if (group) { _pass = _pass && checkEditableByGroup({ group, data, permissions, initKind }) }
       return _pass;
     },
     [isEditable, initMasterId, data?.m_Status, data?.w_Status, data?.d_Status, permissions],
@@ -617,7 +619,7 @@ export const LocalDataProvider = ({
   const checkEditableForSectionSaveButton = useCallback(
     (params = {}) => {
       const { group } = params;
-      return isEditable && checkEditableByGroup({ group, data, permissions });
+      return isEditable && checkEditableByGroup({ group, data, permissions, initKind });
     },
     [isEditable, initMasterId, data?.m_Status, permissions],
   );
