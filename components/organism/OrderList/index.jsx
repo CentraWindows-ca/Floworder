@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
+import { format } from "date-fns";
 import { GeneralContext } from "lib/provider/GeneralProvider";
 import { Spin } from "antd";
 
@@ -21,12 +22,14 @@ import constants, {
 } from "lib/constants";
 import utils from "lib/utils";
 
-import {COLUMN_SEQUENCE_FOR_STATUS} from "./_constants"
+import { COLUMN_SEQUENCE_FOR_STATUS } from "./_constants";
 
 const getValue = (k, arrName) => {
   const arr = WorkOrderSelectOptions[arrName];
   return arr.find((a) => a.key === k);
 };
+
+const today = format(new Date(), "yyyy-MM-dd");
 
 const Com = (props) => {
   const {
@@ -383,12 +386,42 @@ const Com = (props) => {
         key: "d_ProductionStartDate",
         display: isDoor,
       },
+      {
+        title: "Window Production Date",
+        key: "w_ProductionStartDate_colored",
+        width: 210,
+        display: isWindow,
+        onCell: (record) => {
+          if (record?.w_ProductionStartDate < today) {
+            return {
+              style: {
+                color: "red",
+              },
+            };
+          }
+        },
+      },
+      {
+        title: "Door Production Date",
+        key: "d_ProductionStartDate_colored",
+        width: 210,
+        display: isDoor,
+        onCell: (record) => {
+          if (record?.d_ProductionStartDate < today) {
+            return {
+              style: {
+                color: "red",
+              },
+            };
+          }
+        },
+      },
       ...COLUMN_PRODUCT_NUMBERS,
       ...COLUMN_PRODUCT_NUMBERS_BREAKDOWN,
       {
         key: "m_TotalLBRMin",
         className: "text-right",
-        width: 100,   
+        width: 100,
       },
       {
         key: "w_BatchNo",
@@ -445,7 +478,7 @@ const Com = (props) => {
       {
         title: "Doors Customer Date",
         key: "d_CustomerDate_display",
-        initKey: "w_CustomerDate",
+        initKey: "d_CustomerDate",
         width: 195,
         display: isDoor,
       },
@@ -454,7 +487,7 @@ const Com = (props) => {
       },
       {
         key: "m_ProjectName",
-        width: 200
+        width: 200,
       },
       {
         key: "m_ProjectManagerName",
@@ -506,6 +539,8 @@ const Com = (props) => {
         w_GlassOrderDate,
         w_CustomerDate,
         d_CustomerDate,
+        w_ProductionStartDate,
+        d_ProductionStartDate
       } = merged;
 
       merged.m_Status_display = m_Status
@@ -532,6 +567,9 @@ const Com = (props) => {
 
       merged.w_CustomerDate_display = w_CustomerDate;
       merged.d_CustomerDate_display = d_CustomerDate;
+
+      merged.w_ProductionStartDate_colored = w_ProductionStartDate;
+      merged.d_ProductionStartDate_colored = d_ProductionStartDate;
 
       merged.m_InstallStatus =
         resInstallStatusMapping?.[merged.m_WorkOrderNo] || null;

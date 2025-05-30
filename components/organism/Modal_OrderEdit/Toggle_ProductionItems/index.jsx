@@ -15,6 +15,7 @@ import stylesRoot from "../styles.module.scss";
 import stylesCurrent from "./styles.module.scss";
 
 const styles = { ...stylesRoot, ...stylesCurrent };
+
 const ITEM_CATEGORIES = {
   windows_Windows: {
     label: "Windows",

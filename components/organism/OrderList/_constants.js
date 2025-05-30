@@ -48,6 +48,8 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "m_InstallStatus",
         "m_FormStatus",
         "m_Branch",
+        "w_ProductionStartDate_colored",
+        "d_ProductionStartDate_colored",
         "w_CustomerDate_display",
         "d_CustomerDate_display",
         "m_JobType",
@@ -221,6 +223,7 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
     default: // all
       sequence = [
         "m_WorkOrderNo",
+        "m_FormStatus",
         "m_Status_display",
         "w_Status_display",
         "d_Status_display",
@@ -259,3 +262,12 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
 
   return orderedColumns;
 };
+
+export const TEMPORARY_DISPLAY_FILTER = {
+  // NOND: true,
+  // CHIP: true,
+  // MANP: true,
+  // COPD: true,
+  // SYGW: true,
+  // SYMA: true,
+}

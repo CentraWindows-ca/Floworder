@@ -28,6 +28,7 @@ import {
   treateGlassItems,
 } from "./Com";
 import useLocalValidation from "./hooks/useLocalValidation";
+import { TEMPORARY_DISPLAY_FILTER } from "../OrderList/_constants";
 
 export const LocalDataContext = createContext(null);
 
@@ -268,9 +269,12 @@ export const LocalDataProvider = ({
   );
 
   const initItems = useLoadingBar(async (initMasterId) => {
-    const doorItems = await Wrapper_OrdersApi.getDoorItems(initMasterId);
-    const windowItems = await Wrapper_OrdersApi.getWindowItems(initMasterId);
+    let doorItems = await Wrapper_OrdersApi.getDoorItems(initMasterId);
+    let windowItems = await Wrapper_OrdersApi.getWindowItems(initMasterId);
 
+    doorItems = doorItems.filter(a => !TEMPORARY_DISPLAY_FILTER[a.System])
+    windowItems = windowItems.filter(a => !TEMPORARY_DISPLAY_FILTER[a.System])
+    
     setDoorItems(_.orderBy(doorItems, ["Item"]));
     setWindowItems(_.orderBy(windowItems, ["Item"]));
 
