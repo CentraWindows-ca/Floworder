@@ -43,7 +43,7 @@ export const LocalDataProvider = ({
   initMasterId,
 
   // the tab we are open from. we need some logic rely on the path they open the modal
-  kind: initKind, 
+  kind: initKind,
   facility,
   onSave,
   onHide,
@@ -63,7 +63,7 @@ export const LocalDataProvider = ({
   const [isEditable, setIsEditable] = useState(false);
   const [editedGroup, setEditedGroup] = useState({});
 
-  const [LbrBreakDowns, setLbrBreakDowns] = useState([])
+  const [LbrBreakDowns, setLbrBreakDowns] = useState([]);
 
   // only display. upload/delete will directly call function
   const [existingAttachments, setExistingAttachments] = useState(null);
@@ -246,22 +246,22 @@ export const LocalDataProvider = ({
         });
 
         // search lbr breakdowns
-        const _lbrs = []
-        _.keys(mergedData)?.map(k => {
+        const _lbrs = [];
+        _.keys(mergedData)?.map((k) => {
           // matches "<n>__"
           if (/^[a-zA-Z]__.*$/.test(k) && k?.endsWith("Min")) {
-            const lbr_title = k.split("__")?.[1]?.replace("Min", "")
-            const lbr_qty = mergedData[k?.replace("Min", "")]
-            const lbr_min = mergedData[k]
+            const lbr_title = k.split("__")?.[1]?.replace("Min", "");
+            const lbr_qty = mergedData[k?.replace("Min", "")];
+            const lbr_min = mergedData[k];
 
             _lbrs.push({
               title: lbr_title,
               qty: lbr_qty,
-              lbr: lbr_min
-            })
+              lbr: lbr_min,
+            });
           }
-        })
-        setLbrBreakDowns(_lbrs)
+        });
+        setLbrBreakDowns(_lbrs);
       }
 
       return mergedData;
@@ -269,14 +269,20 @@ export const LocalDataProvider = ({
   );
 
   const initItems = useLoadingBar(async (initMasterId) => {
-    let doorItems = await Wrapper_OrdersApi.getDoorItems(initMasterId);
-    let windowItems = await Wrapper_OrdersApi.getWindowItems(initMasterId);
+    // NOTE: if user open from window tab, eventhough its door order, we dont show doors
+    let windowItems = [];
 
-    doorItems = doorItems.filter(a => !TEMPORARY_DISPLAY_FILTER[a.System])
-    windowItems = windowItems.filter(a => !TEMPORARY_DISPLAY_FILTER[a.System])
-    
-    setDoorItems(_.orderBy(doorItems, ["Item"]));
+    windowItems = await Wrapper_OrdersApi.getWindowItems(initMasterId);
+    windowItems = windowItems.filter(
+      (a) => !TEMPORARY_DISPLAY_FILTER[a.System],
+    );
     setWindowItems(_.orderBy(windowItems, ["Item"]));
+
+    let doorItems = [];
+
+    doorItems = await Wrapper_OrdersApi.getDoorItems(initMasterId);
+    doorItems = doorItems.filter((a) => !TEMPORARY_DISPLAY_FILTER[a.System]);
+    setDoorItems(_.orderBy(doorItems, ["Item"]));
 
     setInitDataItems([
       ...doorItems?.map((a) => ({
@@ -612,18 +618,33 @@ export const LocalDataProvider = ({
   const checkEditable = useCallback(
     (params = {}) => {
       const { id, group } = params;
-      let _pass = isEditable
-      if (id) { _pass = _pass && checkEditableById({ id, data, permissions, initKind })}
-      if (group) { _pass = _pass && checkEditableByGroup({ group, data, permissions, initKind }) }
+      let _pass = isEditable;
+      if (id) {
+        _pass = _pass && checkEditableById({ id, data, permissions, initKind });
+      }
+      if (group) {
+        _pass =
+          _pass && checkEditableByGroup({ group, data, permissions, initKind });
+      }
       return _pass;
     },
-    [isEditable, initMasterId, data?.m_Status, data?.w_Status, data?.d_Status, permissions],
+    [
+      isEditable,
+      initMasterId,
+      data?.m_Status,
+      data?.w_Status,
+      data?.d_Status,
+      permissions,
+    ],
   );
 
   const checkEditableForSectionSaveButton = useCallback(
     (params = {}) => {
       const { group } = params;
-      return isEditable && checkEditableByGroup({ group, data, permissions, initKind });
+      return (
+        isEditable &&
+        checkEditableByGroup({ group, data, permissions, initKind })
+      );
     },
     [isEditable, initMasterId, data?.m_Status, permissions],
   );
@@ -642,6 +663,7 @@ export const LocalDataProvider = ({
     initMasterId,
     data,
     kind,
+    initKind,
     facility,
     setData,
     newAttachments,

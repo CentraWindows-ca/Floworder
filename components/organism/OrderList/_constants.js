@@ -32,8 +32,8 @@ const COLUMN_PRODUCT_NUMBERS_BREAKDOWN = [
 const COLUMN_PROJECT = [
   "m_CustomerName",
   "m_ProjectName",
-  "m_ProjectManagerName"
-]
+  "m_ProjectManagerName",
+];
 
 export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
   let sequence = [];
@@ -53,9 +53,9 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "w_CustomerDate_display",
         "d_CustomerDate_display",
         "m_JobType",
-        ...COLUMN_PRODUCT_NUMBERS,
         ...COLUMN_PRODUCT_NUMBERS_BREAKDOWN,
-        ...COLUMN_PROJECT
+        ...COLUMN_PRODUCT_NUMBERS,
+        ...COLUMN_PROJECT,
       ];
       break;
     case WORKORDER_MAPPING.Draft.key:
@@ -66,8 +66,8 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "d_Status_display",
         "m_Branch",
         "m_JobType",
-        ...COLUMN_PRODUCT_NUMBERS,
         ...COLUMN_PRODUCT_NUMBERS_BREAKDOWN,
+        ...COLUMN_PRODUCT_NUMBERS,
         "m_TotalLBRMin",
         "w_BatchNo",
         "w_BlockNo",
@@ -80,7 +80,7 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "m_LastModifiedBy",
         "w_CustomerDate_display",
         "d_CustomerDate_display",
-        ...COLUMN_PROJECT
+        ...COLUMN_PROJECT,
       ];
       break;
     case WORKORDER_MAPPING.Scheduled.key:
@@ -97,8 +97,8 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "d_CustomerDate_display",
         "m_Branch",
         "m_JobType",
-        ...COLUMN_PRODUCT_NUMBERS,
         ...COLUMN_PRODUCT_NUMBERS_BREAKDOWN,
+        ...COLUMN_PRODUCT_NUMBERS,
         "m_TotalLBRMin",
         "w_BatchNo",
         "w_BlockNo",
@@ -109,7 +109,7 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "m_CreatedBy",
         "m_LastModifiedAt_display",
         "m_LastModifiedBy",
-        ...COLUMN_PROJECT
+        ...COLUMN_PROJECT,
       ];
       break;
     case WORKORDER_MAPPING.ReadyToShip.key:
@@ -123,8 +123,8 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "d_CustomerDate_display",
         "m_Branch",
         "m_JobType",
-        ...COLUMN_PRODUCT_NUMBERS,
         ...COLUMN_PRODUCT_NUMBERS_BREAKDOWN,
+        ...COLUMN_PRODUCT_NUMBERS,
         "m_TotalLBRMin",
         "w_BatchNo",
         "w_BlockNo",
@@ -135,7 +135,7 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "m_CreatedBy",
         "m_LastModifiedAt_display",
         "m_LastModifiedBy",
-        ...COLUMN_PROJECT
+        ...COLUMN_PROJECT,
       ];
       break;
     case WORKORDER_MAPPING.Transferred.key:
@@ -150,8 +150,8 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "d_CustomerDate_display",
         "m_Branch",
         "m_JobType",
-        ...COLUMN_PRODUCT_NUMBERS,
         ...COLUMN_PRODUCT_NUMBERS_BREAKDOWN,
+        ...COLUMN_PRODUCT_NUMBERS,
         "w_BatchNo",
         "w_BlockNo",
         "d_BatchNo",
@@ -163,7 +163,7 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "m_LastModifiedBy",
         "w_CustomerDate_display",
         "d_CustomerDate_display",
-        ...COLUMN_PROJECT
+        ...COLUMN_PROJECT,
       ];
       break;
     case WORKORDER_MAPPING.Shipped.key:
@@ -175,8 +175,8 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "m_ShippedDate",
         "m_Branch",
         "m_JobType",
-        ...COLUMN_PRODUCT_NUMBERS,
         ...COLUMN_PRODUCT_NUMBERS_BREAKDOWN,
+        ...COLUMN_PRODUCT_NUMBERS,
         "w_BatchNo",
         "w_BlockNo",
         "d_BatchNo",
@@ -188,7 +188,7 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "m_LastModifiedBy",
         "w_CustomerDate_display",
         "d_CustomerDate_display",
-        ...COLUMN_PROJECT
+        ...COLUMN_PROJECT,
       ];
       break;
     case WORKORDER_MAPPING.DraftReservation.key:
@@ -205,8 +205,8 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "d_CustomerDate_display",
         "m_Branch",
         "m_JobType",
-        ...COLUMN_PRODUCT_NUMBERS,
         ...COLUMN_PRODUCT_NUMBERS_BREAKDOWN,
+        ...COLUMN_PRODUCT_NUMBERS,
         "m_TotalLBRMin",
         "w_BatchNo",
         "w_BlockNo",
@@ -217,7 +217,7 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "m_CreatedBy",
         "m_LastModifiedAt_display",
         "m_LastModifiedBy",
-        ...COLUMN_PROJECT
+        ...COLUMN_PROJECT,
       ];
       break;
     default: // all
@@ -231,8 +231,8 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "d_CustomerDate_display",
         "m_Branch",
         "m_JobType",
-        ...COLUMN_PRODUCT_NUMBERS,
         ...COLUMN_PRODUCT_NUMBERS_BREAKDOWN,
+        ...COLUMN_PRODUCT_NUMBERS,
         "w_BatchNo",
         "w_BlockNo",
         "d_BatchNo",
@@ -242,7 +242,7 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "m_CreatedBy",
         "m_LastModifiedAt_display",
         "m_LastModifiedBy",
-        ...COLUMN_PROJECT
+        ...COLUMN_PROJECT,
       ];
       break;
   }
@@ -270,4 +270,4 @@ export const TEMPORARY_DISPLAY_FILTER = {
   // COPD: true,
   // SYGW: true,
   // SYMA: true,
-}
+};

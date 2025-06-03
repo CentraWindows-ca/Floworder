@@ -14,3 +14,18 @@
     justify-content: space-between;
     height: 50px;
 }
+
+.itemTabs {
+    display: flex;
+    align-items: center;
+    span:not(:last-child)::after {
+        content: '|';
+        margin-left: 6px;
+        margin-right: 6px;
+        font-size: small;
+    }
+
+    span.zero{
+        color: $color_border_table
+    }
+}

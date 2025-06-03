@@ -21,36 +21,43 @@ const ITEM_CATEGORIES = {
     label: "Windows",
     dict_key: "windows_Windows",
     display_key: "W",
+    productType: "w"
   },
   windows_PatioDoor: {
     label: "Patio Doors",
     dict_key: "windows_PatioDoor",
     display_key: "PD",
+    productType: "w"
   },
   windows_SwingDoor: {
     label: "Swing Doors",
     dict_key: "windows_SwingDoor",
     display_key: "SD",
+    productType: "w"
   },
   doors_Doors: {
     label: "Exterior Doors",
     dict_key: "doors_Doors",
     display_key: "ED",
+    productType: "d"
   },
   windows_Glass: {
-    label: "Glass",
+    label: "Window Glass",
     dict_key: "windows_Glass",
     display_key: "WGL",
+    productType: "m"
   },
   doors_Glass: {
-    label: "Glass",
+    label: "Door Glass",
     dict_key: "doors_Glass",
     display_key: "DGL",
+    productType: "m"
   },
   others_Others: {
     label: "Others",
     dict_key: "others_Others",
     display_key: "Others",
+    productType: "m"
   },
 };
 
@@ -64,6 +71,7 @@ const Com = ({ title, id }) => {
     checkEditable,
     uiOrderType,
     dictionary,
+    initKind
   } = useContext(LocalDataContext);
 
   const [stats, setStats] = useState({});
@@ -127,13 +135,13 @@ const Com = ({ title, id }) => {
   const jsxTitle = (
     <div className="flex gap-2">
       {title}
-      <div className="text-primary font-normal">
+      <div className={cn("text-primary font-normal", styles.itemTabs)}>
         {_.keys(stats)
           .map((k) => {
             const {display_key} = ITEM_CATEGORIES[k]
-            return `${display_key}: ${stats[k]}`;
+            return <span>{display_key}: {stats[k]}</span>
           })
-          .join(" | ")}
+        }
       </div>
     </div>
   );
@@ -183,9 +191,8 @@ const Com = ({ title, id }) => {
             list: grouppedItems,
           }}
         />
-        <TableWindow
+        <TableOther
           {...{
-            handleShowItem,
             itemType: "others_Others",
             list: grouppedItems,
           }}
@@ -684,6 +691,155 @@ const TableDoor = ({ handleShowItem, list, itemType }) => {
       },
       width: 70,
       isNotTitle: true,
+    },
+  ]);
+
+  // apply filter
+  const sortedList = _.orderBy(data, [sort?.sortBy], [sort?.dir])?.filter(
+    (a) => {
+      return _.every(
+        _.keys(filters)?.map((filterBy) => {
+          const filterValue = filters[filterBy]?.value;
+          if (!filterValue) {
+            return true;
+          }
+          return a[filterBy]
+            ?.toLowerCase()
+            ?.includes(filterValue?.toLowerCase());
+        }),
+      );
+    },
+  );
+
+  return (
+    !_.isEmpty(data) && (
+      <DisplayBlock id="DOOR.doorItems">
+        <div className={styles.togglePadding}>
+          <div className={cn(styles.itemSubTitle, styles.subTitle)}>
+            <label>{ITEM_CATEGORIES[itemType]?.label}</label>
+            <div>
+              <button
+                className="btn btn-primary btn-sm me-2"
+                disabled={
+                  _.isEmpty(updatingValues) ||
+                  !checkEditable({ group: "dooritems" })
+                }
+                onClick={handleSave}
+              >
+                Save
+              </button>
+              <button
+                className="btn btn-secondary btn-sm"
+                disabled={
+                  _.isEmpty(updatingValues) ||
+                  !checkEditable({ group: "dooritems" })
+                }
+                onClick={() => setUpdatingValues({})}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+          <TableSortable
+            {...{
+              data: sortedList,
+              columns,
+              sort,
+              setSort,
+              filters,
+              setFilters,
+              keyField: "Id",
+              className: "text-left",
+              headerClassName: cn(styles.thead),
+              isLockFirstColumn: false,
+            }}
+          />
+        </div>
+      </DisplayBlock>
+    )
+  );
+};
+
+const TableOther = ({ list, itemType }) => {
+  const { onBatchUpdateItems, checkEditable } = useContext(LocalDataContext);
+  const data = list?.[itemType]
+
+  const [updatingValues, setUpdatingValues] = useState({});
+  const handleUpdate = (id, v, k, initV) => {
+    setUpdatingValues((prev) => {
+      const _v = JSON.parse(JSON.stringify(prev));
+      if (v !== initV) {
+        _.set(_v, [id, k], v);
+      } else {
+        _.unset(_v, [id, k]);
+        if (_.isEmpty(_v[id])) {
+          _.unset(_v, [id]);
+        }
+      }
+
+      return _v;
+    });
+  };
+  const handleSave = async () => {
+    // treat updating items
+    const updates = _.keys(updatingValues)?.map((k) => ({
+      keyValue: k,
+      fields: updatingValues[k],
+    }));
+    await onBatchUpdateItems(updates, "d");
+    setUpdatingValues({});
+  };
+
+  const [filters, setFilters] = useState({});
+  const [sort, setSort] = useState({});
+  const columns = constants.applyField([
+    {
+      key: "Item",
+      width: 80,
+    },
+    {
+      key: "Size",
+      width: 160,
+    },
+    {
+      title: "Qty",
+      key: "Quantity",
+      width: 60,
+    },
+    {
+      key: "SubQty",
+      width: 70,
+    },
+    {
+      key: "System",
+      width: 70,
+    },
+    {
+      key: "Description",
+    },
+    {
+      key: "Notes",
+      render: (t, record) => {
+        const updatingKey = "Notes";
+        const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
+
+        return (
+          <Editable.EF_Input
+            {...{
+              id: `wi_${updatingKey}_${record?.Id}`,
+              value:
+                overrideValue !== undefined
+                  ? overrideValue
+                  : record[updatingKey],
+              onChange: (v) =>
+                handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
+              disabled: !checkEditable({ group: "windowitems" }),
+              size: "sm",
+              placeholder: "--",
+            }}
+          />
+        );
+      },
     },
   ]);
 
