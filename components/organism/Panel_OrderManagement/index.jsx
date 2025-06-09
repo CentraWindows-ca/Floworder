@@ -25,8 +25,8 @@ const Com = ({
   mutate,
   filters,
   setFilters,
-  applyFilter,
-  setApplyFilter,
+  isEnableFilter,
+  setIsEnableFilter,
 }) => {
   const router = useRouter();
   const {
@@ -342,14 +342,14 @@ const Com = ({
             uiIsShowDoor,
             uiIsShowBreakdown,
             data: treatedData?.data,
-            applyFilter,
+            isEnableFilter,
             filters,
             setFilters,
             sort: {
               sortBy,
               dir,
             },
-            onApplyFilter: (v) => setApplyFilter(v),
+            onEnableFilter: (v) => setIsEnableFilter(v),
             setSort: handleSortChange,
             isDeleted: isDeleted == 1,
           }}

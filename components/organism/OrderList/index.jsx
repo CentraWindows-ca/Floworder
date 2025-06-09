@@ -46,8 +46,8 @@ const Com = (props) => {
     uiIsShowBreakdown,
     filters,
     setFilters,
-    applyFilter,
-    onApplyFilter,
+    isEnableFilter,
+    onEnableFilter,
     sort,
     setSort,
     isLoading,
@@ -596,7 +596,7 @@ const Com = (props) => {
         {...{
           data: treatedData,
           filters,
-          applyFilter,
+          isEnableFilter,
           setFilters,
           columns: COLUMN_SEQUENCE_FOR_STATUS(status, columns),
           sort,
@@ -608,8 +608,8 @@ const Com = (props) => {
         {...{
           columns: COLUMN_SEQUENCE_FOR_STATUS(status, columns),
           filters,
-          applyFilter,
-          onApplyFilter,
+          isEnableFilter,
+          onEnableFilter,
           setFilters,
         }}
       />

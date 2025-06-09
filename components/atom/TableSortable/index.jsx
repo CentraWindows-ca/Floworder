@@ -17,7 +17,7 @@ const Com = (props) => {
     data,
     filters,
     setFilters,
-    applyFilter = true,
+    isEnableFilter = true,
     columns,
     sort,
     setSort,
@@ -46,7 +46,7 @@ const Com = (props) => {
             setSort,
             filters,
             setFilters,
-            applyFilter,
+            isEnableFilter,
             className: headerClassName,
           }}
         />
@@ -118,7 +118,7 @@ export const TableWrapper = ({
 
 export const TableHeader = ({
   columns,
-  applyFilter = true,
+  isEnableFilter = true,
   sort,
   setSort,
   filters,
@@ -215,7 +215,7 @@ export const TableHeader = ({
                       onChange={(v) => handleFilterChange(v, initKey || key)}
                       style={{ width: "100%" }}
                       placeholder={filterPlaceHolder}
-                      disabled={!applyFilter}
+                      disabled={!isEnableFilter}
                     />
                   ) : (
                     <br />

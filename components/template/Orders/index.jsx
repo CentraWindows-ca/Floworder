@@ -46,7 +46,7 @@ const Com = ({}) => {
   // ====== search
   const [filters, setFilters] = useState({});
   const [advancedFilters, setAdvancedFilters] = useState({});
-  const [applyFilter, setApplyFilter] = useState(true);
+  const [isEnableFilter, setIsEnableFilter] = useState(true);
 
   const {
     status: statusFromParam,
@@ -100,7 +100,7 @@ const Com = ({}) => {
         field: k,
       };
     }),
-    ..._.keys(applyFilter ? filters : {})?.map((k) => {
+    ..._.keys(isEnableFilter ? filters : {})?.map((k) => {
       return {
         operator: constants.FILTER_OPERATOR.Contains,
         value: filters[k]?.value,
@@ -140,8 +140,8 @@ const Com = ({}) => {
         {...{
           filters,
           setFilters,
-          applyFilter,
-          setApplyFilter,
+          isEnableFilter,
+          setIsEnableFilter,
           data,
           error,
           mutate,
