@@ -243,10 +243,10 @@ const Screen2 = ({
   );
 
   const [doorManufacturingFacility, setDoorManufacturingFacility] = useState(
-    constants.ManufacturingFacilities.Langley,
+    constants.ManufacturingFacilities.Calgary,
   );
   const [windowManufacturingFacility, setWindowManufacturingFacility] =
-    useState(constants.ManufacturingFacilities.Calgary);
+    useState(constants.ManufacturingFacilities.Langley);
 
   const isWindow = !!(
     windowMakerData?.wmWindows || windowMakerData?.wmPatioDoors
@@ -305,6 +305,8 @@ const Screen2 = ({
       workOrderNo,
       resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
       manufacturingFacility,
+      winManufacturingFacility: windowManufacturingFacility,
+      doorManufacturingFacility: doorManufacturingFacility,
       isReservationWorkOrder,
       ...updateValues,
     };
@@ -367,22 +369,45 @@ const Screen2 = ({
           </div>
         </div>
       )}
-      <div className="form-group row">
-        <label className="col-lg-3">Manufacturing Facility</label>
-        <div className="col-lg-3 justify-content-center flex">
-          <Editable.EF_SelectWithLabel
-            id="manufacturingFacility"
-            value={manufacturingFacility}
-            onChange={(v) => setManufacturingFacility((prev) => v)}
-            options={_.keys(constants.ManufacturingFacilities)?.map((k) => ({
-              label: k,
-              value: k,
-              key: k,
-            }))}
-            style={{ width: 140 }}
-          />
+
+      {isWindow && (
+        <div className="form-group row">
+          <label className="col-lg-3">Window Manufacturing Facility</label>
+          <div className="col-lg-3 justify-content-center flex">
+            <Editable.EF_SelectWithLabel
+              id="windowManufacturingFacility"
+              value={windowManufacturingFacility}
+              onChange={(v) => setWindowManufacturingFacility((prev) => v)}
+              options={_.keys(constants.ManufacturingFacilities)?.map((k) => ({
+                label: k,
+                value: k,
+                key: k,
+              }))}
+              style={{ width: 140 }}
+            />
+          </div>
         </div>
-      </div>
+      )}
+
+      {isDoor && (
+        <div className="form-group row">
+          <label className="col-lg-3">Door Manufacturing Facility</label>
+          <div className="col-lg-3 justify-content-center flex">
+            <Editable.EF_SelectWithLabel
+              id="doorManufacturingFacility"
+              value={doorManufacturingFacility}
+              onChange={(v) => setDoorManufacturingFacility((prev) => v)}
+              options={_.keys(constants.ManufacturingFacilities)?.map((k) => ({
+                label: k,
+                value: k,
+                key: k,
+              }))}
+              style={{ width: 140 }}
+            />
+          </div>
+        </div>
+      )}
+
       <hr />
       <div className="form-group row">
         <label className="col-lg-4 font-bold">Work Order Number</label>
@@ -510,7 +535,9 @@ const Screen2 = ({
             >
               <button
                 className="btn btn-outline-secondary align-items-center flex gap-2"
-                onClick={() => doFetch(WORKORDER_MAPPING.DraftReservation.key, true)}
+                onClick={() =>
+                  doFetch(WORKORDER_MAPPING.DraftReservation.key, true)
+                }
                 disabled={disabled || isLoading}
               >
                 <Spin

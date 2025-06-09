@@ -2,11 +2,8 @@ import React, { useState, useEffect, useContext, useMemo } from "react";
 import Editable from "components/molecule/Editable";
 import cn from "classnames";
 import _ from "lodash";
-import { GeneralContext } from "lib/provider/GeneralProvider";
 
 import OrderByIcon from "components/atom/OrderByIcon";
-
-import LoadingBlock from "components/atom/LoadingBlock";
 import LabelDisplay from "components/atom/LabelDisplay";
 
 // styles
