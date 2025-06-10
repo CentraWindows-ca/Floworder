@@ -2,7 +2,8 @@ import { uiWoFieldEditGroupMapping as f } from "lib/constants/constants_labelMap
 
 export const config_regular = {
   [f.information.m_BranchId]: { required: true },
-  [f.information.m_ManufacturingFacility]: { required: true },
+  [f.information.w_ManufacturingFacility]: { required: true },
+  [f.information.d_ManufacturingFacility]: { required: true },
   [f.information.m_ShippingType]: { required: true },
   [f.information.m_ResidentialType]: { required: true },
   [f.information.m_JobType]: { required: true },
@@ -22,7 +23,8 @@ export const config_regular = {
 
 export const config_reservation = {
   [f.information.m_BranchId]: { required: true },
-  [f.information.m_ManufacturingFacility]: { required: true },
+  [f.information.w_ManufacturingFacility]: { required: true },
+  [f.information.d_ManufacturingFacility]: { required: true },
   [f.information.m_ShippingType]: { required: true },
   [f.information.m_ResidentialType]: { required: true },
   [f.information.m_JobType]: { required: true },

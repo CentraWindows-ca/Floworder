@@ -293,7 +293,7 @@ export const LocalDataProvider = ({
   const initGlassItems = async (mergedData) => {
     const resGlassItems = await GlassApi.getGlassItems(
       mergedData.m_WorkOrderNo,
-      mergedData.m_ManufacturingFacility,
+      mergedData.m_DBSource,
     );
 
     if (resGlassItems) {

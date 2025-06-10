@@ -27,6 +27,7 @@ export default ({
   tabName = "tab",
   children,
   renderTool = () => {},
+  resetParam,
   ...rest
 }) => {
   // const [tab, setTab] = useState(defaultTab);
@@ -40,10 +41,17 @@ export default ({
   const pathname = router?.asPath?.split("?")?.[0];
 
   const setTab = (v, e) => {
+    const newQuery = {...router.query}
+    newQuery[tabName] = v
+
+    resetParam?.forEach(k => {
+      delete newQuery[k]
+    })
+
     router.replace(
       {
         pathname,
-        query: { ...router.query, [tabName]: v },
+        query: newQuery,
       },
       undefined,
       { shallow: true },

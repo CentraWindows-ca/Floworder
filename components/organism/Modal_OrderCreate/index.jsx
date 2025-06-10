@@ -20,6 +20,9 @@ import { GeneralContext } from "lib/provider/GeneralProvider";
 import constants, { WORKORDER_MAPPING } from "lib/constants";
 import PermissionBlock from "components/atom/PermissionBlock";
 
+const DEFAULT_WINDOW_FACILITY = 'Langley'
+const DEFAULT_DOOR_FACILITY = 'Calgary'
+
 const Com = (props) => {
   const { show, onHide, onCreate } = props;
   const [workOrderNo, setWorkOrderNo] = useState("");
@@ -264,10 +267,9 @@ const Screen2 = ({
       setWindowManufacturingFacility(existingWorkOrder.w_ManufacturingFacility);
     } else {
       setInitValues({});
-
       setManufacturingFacility(FACILITY_MAPPING[dbSource]);
-      setDoorManufacturingFacility(FACILITY_MAPPING[dbSource]);
-      setWindowManufacturingFacility(FACILITY_MAPPING[dbSource]);
+      setDoorManufacturingFacility(DEFAULT_DOOR_FACILITY);
+      setWindowManufacturingFacility(DEFAULT_WINDOW_FACILITY);
     }
   }, [existingWorkOrder, windowMakerData]);
 

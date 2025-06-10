@@ -37,10 +37,15 @@ const Com = ({ data, dataProfile, onRefresh }) => {
       isNotSortable: true,
     },
     {
-      key: "m_ManufacturingFacility",
+      key: "w_ManufacturingFacility",
       width: 180,
       isNotSortable: true,
     },
+    {
+      key: "d_ManufacturingFacility",
+      width: 180,
+      isNotSortable: true,
+    },  
     {
       key: "m_Branch",
       width: 125,
@@ -199,7 +204,8 @@ const Com = ({ data, dataProfile, onRefresh }) => {
                   treatedData?.map((a, i) => {
                     const {
                       m_WorkOrderNo,
-                      m_ManufacturingFacility,
+                      w_ManufacturingFacility,
+                      d_ManufacturingFacility,
                       m_MasterId,
                       m_Branch,
                       profileList,
@@ -211,7 +217,8 @@ const Com = ({ data, dataProfile, onRefresh }) => {
                       <React.Fragment key={m_MasterId}>
                         <tr>
                           <td>{m_WorkOrderNo}</td>
-                          <td>{m_ManufacturingFacility}</td>
+                          <td>{w_ManufacturingFacility}</td>
+                          <td>{d_ManufacturingFacility}</td>
                           <td>{m_Branch}</td>
                           <td className="text-right">
                             (profiles) <b>{profileList?.length}</b>
@@ -249,7 +256,8 @@ const Com = ({ data, dataProfile, onRefresh }) => {
                     ) : (
                       <tr className={cn(styles.subRowLast)}>
                         <td>{m_WorkOrderNo}</td>
-                        <td>{m_ManufacturingFacility}</td>
+                        <td>{w_ManufacturingFacility}</td>
+                        <td>{d_ManufacturingFacility}</td>
                         <td>{m_Branch}</td>
                         <td
                           colSpan={3}
