@@ -10,8 +10,8 @@ const FiltersManager = ({
   columns,
   filters,
   setFilters,
-  applyFilter,
-  onApplyFilter,
+  isEnableFilter,
+  onEnableFilter,
 }) => {
   const handleFilterChange = (v, k) => {
     setFilters((prev) => {
@@ -43,8 +43,8 @@ const FiltersManager = ({
         <span>
           <Editable.EF_Checkbox
             id="applyFilterCheckbox"
-            value={applyFilter}
-            onChange={onApplyFilter}
+            value={isEnableFilter}
+            onChange={onEnableFilter}
           />
 
           <label htmlFor="applyFilterCheckbox" className="ms-2 cursor-pointer">
@@ -61,11 +61,11 @@ const FiltersManager = ({
               key={`filter_manage_${k}`}
               className={cn(
                 "badge fw-normal align-items-center flex gap-2",
-                applyFilter ? "text-gray-800" : "text-gray-300",
+                isEnableFilter ? "text-gray-800" : "text-gray-300",
                 styles.filterBadge,
               )}
               onClick={() => handleFilterChange(null, k)}
-              disabled={!applyFilter}
+              disabled={!isEnableFilter}
             >
               <span>
                 <b>{title} :</b> {filters[k]?.value}

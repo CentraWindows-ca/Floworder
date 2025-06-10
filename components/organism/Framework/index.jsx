@@ -22,8 +22,9 @@ import SideMenu from "components/organism/SideMenu";
 // styles
 import styles from "./styles.module.scss";
 
-const Com = ({children, onRefresh}) => {
-
+const Com = ({ children, onRefresh }) => {
+  const router = useRouter();
+  const tab = router?.query?.["tab"] || "m";
   // ====== search
   const [drawerOpen, handleToggleDrawer] = useState(true);
   const defaultTab = "m";
@@ -42,6 +43,10 @@ const Com = ({children, onRefresh}) => {
     },
   ];
 
+  const handleUpdateTab = () => {
+
+  }
+
   // ======
   const renderTool = () => {
     return (
@@ -49,7 +54,7 @@ const Com = ({children, onRefresh}) => {
         <div></div>
         <div className={cn(styles.manufacturingFacilityContainer)}>
           <RedoOutlined onClick={onRefresh} />
-          <Tabs_ManufacturingFacility />
+          <Tabs_ManufacturingFacility disabled={tab === "m"} />
         </div>
         <div></div>
       </div>
@@ -65,7 +70,7 @@ const Com = ({children, onRefresh}) => {
         {/* layout of panels */}
         <div className={styles.mainContainer}>
           <div className={styles.tabContainer}>
-            <TabLinksFull {...{ defaultTab, tabs, renderTool }} />
+            <TabLinksFull {...{ defaultTab, tabs, renderTool, resetParam: ['facility'] }} />
           </div>
           <div className={styles.twoColumns}>
             <div
@@ -87,10 +92,7 @@ const Com = ({children, onRefresh}) => {
                 </div>
               </div>
             </div>
-            <div className={styles.columnOfDetailPanel}>
-              {children}
-
-            </div>
+            <div className={styles.columnOfDetailPanel}>{children}</div>
           </div>
         </div>
       </PageContainer>

@@ -13,7 +13,7 @@ import { LocalDataContext } from "./LocalDataProvider";
 
 import { DisplayBlock, displayFilter } from "./Com";
 
-const group = 'information'
+const group = "information";
 
 const COMMON_FIELDS = constants.applyField([
   {
@@ -26,15 +26,15 @@ const COMMON_FIELDS = constants.applyField([
       onChange(o?.label, "m_Branch");
     },
   },
-  {
-    Component: Editable.EF_SelectWithLabel,
-    id: "m_ManufacturingFacility",
-    options: _.keys(constants.ManufacturingFacilities)?.map((k) => ({
-      label: k,
-      value: k,
-      key: k,
-    })),
-  },
+  // {
+  //   Component: Editable.EF_SelectWithLabel,
+  //   id: "m_ManufacturingFacility",
+  //   options: _.keys(constants.ManufacturingFacilities)?.map((k) => ({
+  //     label: k,
+  //     value: k,
+  //     key: k,
+  //   })),
+  // },
   {
     Component: Editable.EF_SelectWithLabel,
     id: "m_ShippingType",
@@ -74,6 +74,15 @@ const COMMON_FIELDS = constants.applyField([
 
 const WINDOW_FIELDS = constants.applyField([
   {
+    Component: Editable.EF_SelectWithLabel,
+    id: "w_ManufacturingFacility",
+    options: _.keys(constants.ManufacturingFacilities)?.map((k) => ({
+      label: k,
+      value: k,
+      key: k,
+    })),
+  },
+  {
     Component: Editable.EF_Input,
     id: "w_BlockNo",
   },
@@ -104,6 +113,15 @@ const WINDOW_FIELDS = constants.applyField([
 ]);
 
 const DOOR_FIELDS = constants.applyField([
+  {
+    Component: Editable.EF_SelectWithLabel,
+    id: "d_ManufacturingFacility",
+    options: _.keys(constants.ManufacturingFacilities)?.map((k) => ({
+      label: k,
+      value: k,
+      key: k,
+    })),
+  },
   {
     Component: Editable.EF_Input,
     id: "d_BlockNo",
@@ -182,13 +200,19 @@ const Com = ({}) => {
 };
 
 const Block = ({ inputData }) => {
-  const { data, initData, onChange, checkEditable, validationResult, dictionary } =
-    useContext(LocalDataContext);
+  const {
+    data,
+    initData,
+    onChange,
+    checkEditable,
+    validationResult,
+    dictionary,
+  } = useContext(LocalDataContext);
   let { Component, title, id, options, overrideOnChange, ...rest } = inputData;
   if (typeof options === "function") {
     options = options(dictionary);
   }
-  const className_required = getIsRequired(initData, id) && 'required'
+  const className_required = getIsRequired(initData, id) && "required";
   return (
     <DisplayBlock id={id}>
       <label className={cn(className_required)}>{title}</label>
@@ -207,7 +231,7 @@ const Block = ({ inputData }) => {
           }}
           disabled={!checkEditable({ id })}
           options={options}
-          errorMessage = {validationResult?.[id]}
+          errorMessage={validationResult?.[id]}
           {...rest}
         />
       </div>
