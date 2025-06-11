@@ -414,6 +414,9 @@ const WorkOrderActions = ({
 
 const useFilterControl = (permissions) => {
   const filterOutByStatus = ({ id, data }) => {
+    const _isStatusUpdate =
+      id?.startsWith("doorStatus_") || id?.startsWith("windowStatus_");
+
     // admin is able to delete
     if (permissions?.["om.prod.woAdmin"]?.["canDelete"]) {
       if (id === "deleteOrder") {
@@ -424,8 +427,12 @@ const useFilterControl = (permissions) => {
     // NOTE: same rule applies to popup edit button. if pending or cancelled cant edit
     if (data?.m_Status === WORKORDER_MAPPING.Pending.key) {
       if (
-        id !== "viewOrder" && id !== "editPendingOrder" && id !== "viewOrderHistory"
-      ) return true;
+        id !== "viewOrder" &&
+        id !== "editPendingOrder" &&
+        id !== "viewOrderHistory" &&
+        !_isStatusUpdate
+      )
+        return true;
     } else {
       if (id === "editPendingOrder") {
         return true;
@@ -435,9 +442,11 @@ const useFilterControl = (permissions) => {
       if (
         id !== "viewOrder" &&
         id !== "deleteOrder" &&
-        id !== "viewOrderHistory"
-      )
+        id !== "viewOrderHistory" &&
+        !_isStatusUpdate
+      ) {
         return true;
+      }
     }
 
     // ========== temporary solution: @250423_handle_reservation: allow between regular and reservation ===========
