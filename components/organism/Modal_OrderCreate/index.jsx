@@ -20,7 +20,7 @@ import { GeneralContext } from "lib/provider/GeneralProvider";
 import constants, { WORKORDER_MAPPING } from "lib/constants";
 import PermissionBlock from "components/atom/PermissionBlock";
 
-const DEFAULT_WINDOW_FACILITY = 'Langley'
+// const DEFAULT_WINDOW_FACILITY = 'Langley'
 const DEFAULT_DOOR_FACILITY = 'Calgary'
 
 const Com = (props) => {
@@ -268,8 +268,10 @@ const Screen2 = ({
     } else {
       setInitValues({});
       setManufacturingFacility(FACILITY_MAPPING[dbSource]);
+
+      // door always default; window depends on facility
       setDoorManufacturingFacility(DEFAULT_DOOR_FACILITY);
-      setWindowManufacturingFacility(DEFAULT_WINDOW_FACILITY);
+      setWindowManufacturingFacility(FACILITY_MAPPING[dbSource]);
     }
   }, [existingWorkOrder, windowMakerData]);
 
