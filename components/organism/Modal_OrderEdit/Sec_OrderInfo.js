@@ -76,6 +76,7 @@ const WINDOW_FIELDS = constants.applyField([
   {
     Component: Editable.EF_SelectWithLabel,
     id: "w_ManufacturingFacility",
+    placeholder: "-",
     options: _.keys(constants.ManufacturingFacilities)?.map((k) => ({
       label: k,
       value: k,
@@ -116,6 +117,7 @@ const DOOR_FIELDS = constants.applyField([
   {
     Component: Editable.EF_SelectWithLabel,
     id: "d_ManufacturingFacility",
+    placeholder: "-",
     options: _.keys(constants.ManufacturingFacilities)?.map((k) => ({
       label: k,
       value: k,

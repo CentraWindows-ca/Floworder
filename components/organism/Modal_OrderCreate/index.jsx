@@ -277,7 +277,9 @@ const Screen2 = ({
 
   const disabled =
     (isWindow && !initValues?.winStartDate) ||
-    (isDoor && !initValues?.doorStartDate);
+    (isDoor && !initValues?.doorStartDate) || 
+    (isWindow && !windowManufacturingFacility) ||
+    (isDoor && !doorManufacturingFacility)
 
   const doFetch = async (newStatus = "", isReservationWorkOrder = false) => {
     setIsLoading(true);
@@ -381,6 +383,7 @@ const Screen2 = ({
             <Editable.EF_SelectWithLabel
               id="windowManufacturingFacility"
               value={windowManufacturingFacility}
+              // placeholder = {"-"}
               onChange={(v) => setWindowManufacturingFacility((prev) => v)}
               options={_.keys(constants.ManufacturingFacilities)?.map((k) => ({
                 label: k,
@@ -400,6 +403,7 @@ const Screen2 = ({
             <Editable.EF_SelectWithLabel
               id="doorManufacturingFacility"
               value={doorManufacturingFacility}
+              // placeholder = {"-"}
               onChange={(v) => setDoorManufacturingFacility((prev) => v)}
               options={_.keys(constants.ManufacturingFacilities)?.map((k) => ({
                 label: k,
