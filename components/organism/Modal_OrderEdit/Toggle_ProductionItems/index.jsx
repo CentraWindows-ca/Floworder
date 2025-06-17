@@ -35,11 +35,11 @@ const ITEM_CATEGORIES = {
     display_key: "SD",
     productType: "w"
   },
-  doors_Doors: {
-    label: "Exterior Doors",
-    dict_key: "doors_Doors",
-    display_key: "ED",
-    productType: "d"
+  windows_NPD: {
+    label: "Window NPD",
+    dict_key: "windows_NPD",
+    display_key: "NPD",
+    productType: "w"
   },
   windows_Glass: {
     label: "Window Glass",
@@ -47,10 +47,22 @@ const ITEM_CATEGORIES = {
     display_key: "WGL",
     productType: "m"
   },
+  doors_Doors: {
+    label: "Exterior Doors",
+    dict_key: "doors_Doors",
+    display_key: "ED",
+    productType: "d"
+  },
   doors_Glass: {
     label: "Door Glass",
     dict_key: "doors_Glass",
     display_key: "DGL",
+    productType: "m"
+  },
+  doors_Others: {
+    label: "Door Others",
+    dict_key: "doors_Others",
+    display_key: "Door others",
     productType: "m"
   },
   others_Others: {
@@ -138,6 +150,7 @@ const Com = ({ title, id }) => {
       <div className={cn("text-primary font-normal", styles.itemTabs)}>
         {_.keys(stats)
           .map((k) => {
+            console.log(k)
             const {display_key} = ITEM_CATEGORIES[k]
             return <span>{display_key}: {stats[k]}</span>
           })
@@ -170,6 +183,13 @@ const Com = ({ title, id }) => {
             list: grouppedItems
           }}
         />
+        <TableWindow
+          {...{
+            handleShowItem,
+            itemType: "windows_NPD",
+            list: grouppedItems,
+          }}
+        />
         <TableDoor
           {...{
             handleShowItem,
@@ -197,6 +217,13 @@ const Com = ({ title, id }) => {
             list: grouppedItems,
           }}
         />
+        <TableOther
+          {...{
+            itemType: "doors_Others",
+            list: grouppedItems,
+          }}
+        />
+
       </ToggleBlock>
       <Modal_ItemEdit
         onSave={handleSaveItem}
