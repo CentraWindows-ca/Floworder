@@ -93,7 +93,7 @@ const Com = ({ data, layer, onHide }) => {
             Record has been modified by <b>{historyData?.ChangedBy || "--"}</b>{" "}
             at <b>{historyData?.CreatedAt}</b>
             <br />
-            Source App. : {historyData?.Source}
+            Source App. : {historyData?.Source}{historyData?.DBSource ? ` | Window Maker: ${historyData?.DBSource}`:null}
           </div>
           <Tabs
             activeKey={tab}

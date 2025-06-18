@@ -64,7 +64,6 @@ export const LocalDataProvider = ({
       masterId: initMasterId
     })
 
-    console.log(resWo)
     setWorkOrderInfo(resWo)
     setIsLoading(false);
   };
