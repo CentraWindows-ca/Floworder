@@ -11,7 +11,7 @@ import styles from "./styles.module.scss";
 
 import { LocalDataContext } from "./LocalDataProvider";
 
-import { DisplayBlock, displayFilter } from "./Com";
+import { displayFilter, Block } from "./Com";
 
 const group = "information";
 
@@ -198,46 +198,6 @@ const Com = ({}) => {
         </>
       )}
     </>
-  );
-};
-
-const Block = ({ inputData }) => {
-  const {
-    data,
-    initData,
-    onChange,
-    checkEditable,
-    validationResult,
-    dictionary,
-  } = useContext(LocalDataContext);
-  let { Component, title, id, options, overrideOnChange, ...rest } = inputData;
-  if (typeof options === "function") {
-    options = options(dictionary);
-  }
-  const className_required = getIsRequired(initData, id) && "required";
-  return (
-    <DisplayBlock id={id}>
-      <label className={cn(className_required)}>{title}</label>
-      <div>
-        <Component
-          id={id}
-          value={data?.[id]}
-          initValue={initData?.[id]}
-          isHighlightDiff
-          onChange={(v, ...o) => {
-            if (typeof overrideOnChange === "function") {
-              overrideOnChange(onChange, [v, ...o]);
-            } else {
-              onChange(v, id);
-            }
-          }}
-          disabled={!checkEditable({ id })}
-          options={options}
-          errorMessage={validationResult?.[id]}
-          {...rest}
-        />
-      </div>
-    </DisplayBlock>
   );
 };
 

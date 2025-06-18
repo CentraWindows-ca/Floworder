@@ -2,6 +2,7 @@ import { useState, useContext, memo } from "react";
 import cn from "classnames";
 import { Spin } from "antd";
 import { LoadingOutlined, SaveOutlined } from "@ant-design/icons";
+import { getIsRequired } from "./hooks/vconfig";
 import constants, {
   WORKORDER_MAPPING,
   GlassRowStates,
@@ -42,6 +43,13 @@ export const getIfFieldDisplayAsProductType = (
     ].includes(data?.m_Status)
   }
 
+  if (id === "m_TransferredLocation_display" || id === "m_TransferredDate_display") {
+    const _windowShow = data?.w_ManufacturingFacility && data?.m_Branch !== data?.w_ManufacturingFacility
+    const _doorShow = data?.d_ManufacturingFacility && data?.m_Branch !== data?.d_ManufacturingFacility
+    const _hasBranch = data?.m_Branch && data?.m_Branch !== '-'
+    return _hasBranch && (_windowShow || _doorShow)
+  }
+
   if (currentKind === kind || currentKind === "m" || kind === "m") {
     return true;
   } else {
@@ -64,7 +72,45 @@ export const displayFilter = (itemList, { kind, uiOrderType }) => {
     );
   });
 };
-
+export const Block = ({ className_input, inputData }) => {
+  const {
+    data,
+    initData,
+    onChange,
+    checkEditable,
+    validationResult,
+    dictionary,
+  } = useContext(LocalDataContext);
+  let { Component, title, displayId, id, options, overrideOnChange, ...rest } = inputData;
+  if (typeof options === "function") {
+    options = options(dictionary);
+  }
+  const className_required = getIsRequired(initData, id) && "required";
+  return (
+    <DisplayBlock id={displayId || id}>
+      <label className={cn(className_required)}>{title}</label>
+      <div className={cn(className_input)}>
+        <Component
+          id={id}
+          value={data?.[id]}
+          initValue={initData?.[id]}
+          isHighlightDiff
+          onChange={(v, ...o) => {
+            if (typeof overrideOnChange === "function") {
+              overrideOnChange(onChange, [v, ...o]);
+            } else {
+              onChange(v, id);
+            }
+          }}
+          disabled={!checkEditable({ id })}
+          options={options}
+          errorMessage={validationResult?.[id]}
+          {...rest}
+        />
+      </div>
+    </DisplayBlock>
+  );
+};
 export const SaveButton = memo(({ group }) => {
   const {
     checkEditableForSectionSaveButton,

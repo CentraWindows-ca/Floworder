@@ -150,7 +150,6 @@ const Com = ({ title, id }) => {
       <div className={cn("text-primary font-normal", styles.itemTabs)}>
         {_.keys(stats)
           .map((k) => {
-            console.log(k)
             const {display_key} = ITEM_CATEGORIES[k]
             return <span>{display_key}: {stats[k]}</span>
           })

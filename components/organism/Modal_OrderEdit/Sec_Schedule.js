@@ -3,6 +3,7 @@ import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
 import { getIsRequired } from "./hooks/vconfig";
+import { Block } from "./Com";
 
 import Editable from "components/molecule/Editable";
 
@@ -24,6 +25,16 @@ const COMMON_FIELDS = constants.applyField([
   },
   {
     id: "m_RevisedDeliveryDate",
+  },
+  {
+    id: "m_TransferredDate",
+    displayId: "m_TransferredDate_display"
+  },
+  {
+    id: "m_TransferredLocation",
+    displayId: "m_TransferredLocation_display",
+    Component: Editable.EF_SelectWithLabel,
+    options: constants.WorkOrderSelectOptions.branches,
   },
 ]);
 const WINDOW_FIELDS = constants.applyField([
@@ -84,7 +95,7 @@ const Com = ({}) => {
 
   return (
     <>
-      <div className={cn(styles.columnInputsContainer)}>
+      <div className={cn(styles.columnScheduledContainer)}>
         {COMMON_FIELDS?.map((a) => {
           const { title, id } = a;
           return <DisplayDate key={id} {...a} />;
@@ -96,7 +107,7 @@ const Com = ({}) => {
           <div className={styles.subTitle}>
             <label>Windows</label>
           </div>
-          <div className={cn(styles.columnInputsContainer)}>
+          <div className={cn(styles.columnScheduledContainer)}>
             {windowInputs?.map((a) => {
               const { title, id } = a;
               return <DisplayDate key={id} {...a} />;
@@ -110,7 +121,7 @@ const Com = ({}) => {
           <div className={styles.subTitle}>
             <label>Doors</label>
           </div>
-          <div className={cn(styles.columnInputsContainer)}>
+          <div className={cn(styles.columnScheduledContainer)}>
             {doorInputs?.map((a) => {
               const { title, id } = a;
               return <DisplayDate key={id} {...a} />;
@@ -122,14 +133,26 @@ const Com = ({}) => {
   );
 };
 
-const DisplayDate = ({ id, title, ...rest }) => {
+const DisplayDate = (props) => {
+  const { id, displayId, title, Component, ...rest } = props
   const { data, initData, onChange, validationResult, checkEditable } =
     useContext(LocalDataContext);
 
   const className_required = getIsRequired(initData, id) && "required";
-
+  if (Component) {
+    return (
+      <Block
+        className_input={cn(
+          styles.columnScheduledInput,
+          "justify-content-end align-items-center flex",
+          className_required
+        )}
+        inputData={props}
+      />
+    );
+  }
   return (
-    <DisplayBlock id={id}>
+    <DisplayBlock id={displayId || id}>
       <label
         className={cn(
           "justify-content-start align-items-center flex",
