@@ -63,8 +63,10 @@ export const getIfFieldDisplayAsProductType = (
   };
 
   if (id === "m_PriceBeforeTax") {
-    console.log(permissions)
-     _isDisplay &= checkPermission(FEATURE_CODES["om.prod.wo.informationPriceBeforeTax"], "canView");
+    _isDisplay &= checkPermission(
+      FEATURE_CODES["om.prod.wo.informationPriceBeforeTax"],
+      "canView",
+    );
   }
 
   // order kind ======================
@@ -102,19 +104,32 @@ export const Block = ({ className_input, inputData }) => {
     validationResult,
     dictionary,
   } = useContext(LocalDataContext);
-  let { Component, title, displayId, id, options, overrideOnChange, ...rest } =
-    inputData;
+  let {
+    Component,
+    title,
+    displayId,
+    id,
+    options,
+    overrideOnChange,
+    renderValue,
+    ...rest
+  } = inputData;
   if (typeof options === "function") {
     options = options(dictionary);
   }
   const className_required = getIsRequired(initData, id) && "required";
+
+  const _value = renderValue
+    ? renderValue(data?.[id], data)
+    : data?.[id];
+
   return (
     <DisplayBlock id={displayId || id}>
       <label className={cn(className_required)}>{title}</label>
       <div className={cn(className_input)}>
         <Component
           id={id}
-          value={data?.[id]}
+          value={_value}
           initValue={initData?.[id]}
           isHighlightDiff
           onChange={(v, ...o) => {

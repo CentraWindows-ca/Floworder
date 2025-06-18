@@ -22,7 +22,7 @@ const preventUpdate = (prev, nex) => {
     prev.disabled === nex.disabled &&
     prev.options === nex.options &&
     prev.initValue === nex.initValue &&
-    prev.errorMessage === nex.errorMessage    
+    prev.errorMessage === nex.errorMessage
   );
 };
 
@@ -66,12 +66,12 @@ export const EF_DateOnly = React.memo(
   }) => {
     const handleSelect = (d, str) => {
       if (!str) return null;
-      onChange(str? str : null);
+      onChange(str ? str : null);
     };
 
     const handleChange = (d, str) => {
-      onChange(str? str : null);
-    }
+      onChange(str ? str : null);
+    };
 
     return (
       <Datepicker
@@ -79,7 +79,7 @@ export const EF_DateOnly = React.memo(
         className={cn(
           className,
           isHighlightDiff && initValue !== value && styles.diff,
-          errorMessage ? styles.error : ''
+          errorMessage ? styles.error : "",
         )}
         onChange={handleChange}
         onSelect={handleSelect}
@@ -122,7 +122,7 @@ export const EF_SelectWithLabel = React.memo(
           "form-select w-full",
           className,
           isHighlightDiff && initValue !== value && styles.diff,
-          errorMessage ? styles.error : ''
+          errorMessage ? styles.error : "",
         )}
         value={value || ""}
         onChange={(e) => {
@@ -197,7 +197,7 @@ export const EF_Select = React.memo(
           "form-select w-full",
           className,
           isHighlightDiff && initValue !== value && styles.diff,
-          errorMessage ? styles.error : ''
+          errorMessage ? styles.error : "",
         )}
         value={value || ""}
         onChange={(e) => {
@@ -263,7 +263,7 @@ export const EF_MultiSelect = React.memo(
           styles.multiSelect,
           className,
           isHighlightDiff && initValue !== value && styles.diff,
-          errorMessage ? styles.error : ''
+          errorMessage ? styles.error : "",
         )}
         labelKey="label"
         valueKey="value"
@@ -289,7 +289,7 @@ export const EF_MultiSelect = React.memo(
 
 export const EF_Input = React.memo(
   ({
-    id, 
+    id,
     onChange,
     value = "",
     initValue = "",
@@ -325,13 +325,13 @@ export const EF_Input = React.memo(
 
     return (
       <input
-        id = {id}
+        id={id}
         className={cn(
           "form-control",
           classSize[size],
           className,
           isHighlightDiff && initValue !== value && styles.diff,
-          errorMessage ? styles.error : ''
+          errorMessage ? styles.error : "",
         )}
         onChange={handleChange}
         value={value || ""}
@@ -365,7 +365,7 @@ export const EF_InputDebounce = React.memo(
           className,
           value && !disabled ? "bg-blue-100" : null,
           isHighlightDiff && initValue !== value && styles.diff,
-          errorMessage ? styles.error : ''
+          errorMessage ? styles.error : "",
         )}
         onChange={handleChange}
         value={value || ""}
@@ -395,7 +395,7 @@ export const EF_Text = React.memo(
         className={cn(
           "form-control",
           isHighlightDiff && initValue !== value && styles.diff,
-          errorMessage ? styles.error : ''
+          errorMessage ? styles.error : "",
         )}
         onChange={handleChange}
         value={value || ""}
@@ -407,7 +407,15 @@ export const EF_Text = React.memo(
 );
 
 export const EF_Checkbox = React.memo(
-  ({ onChange, value = false, initValue = false, isHighlightDiff, errorMessage, className, ...props }) => {
+  ({
+    onChange,
+    value = false,
+    initValue = false,
+    isHighlightDiff,
+    errorMessage,
+    className,
+    ...props
+  }) => {
     const handleChange = (e) => {
       onChange(e.target.checked);
     };
@@ -420,7 +428,7 @@ export const EF_Checkbox = React.memo(
           "form-check-input cursor-pointer",
           className,
           isHighlightDiff && initValue !== value && styles.diff,
-          errorMessage ? styles.error : ''
+          errorMessage ? styles.error : "",
         )}
         type="checkbox"
         checked={checked}
@@ -433,7 +441,15 @@ export const EF_Checkbox = React.memo(
 );
 
 export const EF_Checkbox_Yesno = React.memo(
-  ({ onChange, value = "0", initValue = "0", isHighlightDiff, errorMessage, className, ...props }) => {
+  ({
+    onChange,
+    value = "0",
+    initValue = "0",
+    isHighlightDiff,
+    errorMessage,
+    className,
+    ...props
+  }) => {
     // 20250306: decide the whole database use 1/0 as boolean
     const handleChange = (e) => {
       onChange(e.target.checked ? "1" : "0");
@@ -447,7 +463,7 @@ export const EF_Checkbox_Yesno = React.memo(
           "form-check-input cursor-pointer",
           className,
           isHighlightDiff && initValue !== value && styles.diff,
-          errorMessage ? styles.error : ''
+          errorMessage ? styles.error : "",
         )}
         type="checkbox"
         checked={checked}
@@ -459,9 +475,16 @@ export const EF_Checkbox_Yesno = React.memo(
   preventUpdate,
 );
 
-export const EF_Label = React.memo(({ value, id, ...props }) => {
-  return <label>{value}</label>;
-}, preventUpdate);
+export const EF_Label = React.memo(
+  ({ value, id, className, style, ...props }) => {
+    return (
+      <label className={className} style={style}>
+        {value}
+      </label>
+    );
+  },
+  preventUpdate,
+);
 
 export const EF_Rack = React.memo(
   ({
@@ -485,7 +508,7 @@ export const EF_Rack = React.memo(
         className={cn(
           className,
           isHighlightDiff && initValue !== value && styles.diff,
-          errorMessage ? styles.error : ''
+          errorMessage ? styles.error : "",
         )}
         labelKey="label"
         valueKey="value"
@@ -536,7 +559,7 @@ export const EF_SelectEmployee = React.memo(
         className={cn(
           className,
           isHighlightDiff && initValue !== value && styles.diff,
-          errorMessage ? styles.error : ''
+          errorMessage ? styles.error : "",
         )}
         labelKey="label"
         valueKey="value"
@@ -587,7 +610,7 @@ export const EF_Community = React.memo(
               "form-control",
               isHighlightDiff &&
                 initValue !== value && [styles.diff, styles.diffText],
-                errorMessage ? styles.error : ''
+              errorMessage ? styles.error : "",
             )}
             value={value || ""}
             disabled={true}

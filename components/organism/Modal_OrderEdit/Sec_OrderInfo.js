@@ -4,6 +4,8 @@ import _ from "lodash";
 import constants from "lib/constants";
 import { getIsRequired } from "./hooks/vconfig";
 
+import {formatCurrency2Decimal} from "lib/utils";
+
 import Editable from "components/molecule/Editable";
 
 // styles
@@ -71,7 +73,12 @@ const COMMON_FIELDS = constants.applyField([
     },
   },
   {
-    Component: Editable.EF_Input,
+    Component: Editable.EF_Label,
+    className: "form-control d-block text-end", 
+    style: {background: "var(--bs-secondary-bg)"},
+    renderValue: (v, data) => {
+      return formatCurrency2Decimal(v)
+    } , 
     id: "m_PriceBeforeTax",
   },
 ]);
