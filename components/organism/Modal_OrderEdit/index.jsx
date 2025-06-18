@@ -30,8 +30,6 @@ import styles from "./styles.module.scss";
 import { LocalDataContext, LocalDataProvider } from "./LocalDataProvider";
 import LoadingBlock from "components/atom/LoadingBlock";
 
-import { SaveButton } from "./Com";
-
 const Com = ({}) => {
   const {
     isSaving,
@@ -206,28 +204,24 @@ const Com = ({}) => {
               <CollapseContainer id="basicInformation">
                 <Sec_OrderBasic />
               </CollapseContainer>
-              <SaveButton group={"basic"} />
             </div>
             <div className={cn(styles.mainItem, styles["mainItem-1"])}>
               <div className={cn(styles.sectionTitle)}>Order Information</div>
               <CollapseContainer id="orderInformation">
                 <Sec_OrderInfo />
               </CollapseContainer>
-              <SaveButton group={"information"} />
             </div>
             <div className={cn(styles.mainItem, styles["grid-2"])}>
               <div className={cn(styles.sectionTitle)}>Order Options</div>
               <CollapseContainer id="orderOptions">
                 <Sec_OrderOptions />
               </CollapseContainer>
-              <SaveButton group={"options"} />
             </div>
             <div className={cn(styles.mainItem, styles["mainItem-2"])}>
               <div className={cn(styles.sectionTitle)}>Schedule</div>
               <CollapseContainer id="schedule">
                 <Sec_Schedule />
               </CollapseContainer>
-              <SaveButton group={"schedule"} />
             </div>
           </div>
           <div>

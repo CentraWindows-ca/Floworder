@@ -12,7 +12,7 @@ import { ToggleFull, NoData, DisplayBlock, displayFilter, SaveButton } from "../
 const group = "notes";
 
 const Com = ({}) => {
-  const { data, initData, validationResult, kind, uiOrderType, onChange, checkEditable, onHide } =
+  const { data, initData, validationResult, kind, uiOrderType, onChange, permissions, checkEditable, onHide } =
     useContext(LocalDataContext);
 
   const COMMON_FIELDS = constants.applyField([
@@ -29,7 +29,7 @@ const Com = ({}) => {
     return data?.[a.id];
   });
 
-  collapsedList = displayFilter(collapsedList, { kind, uiOrderType });
+  collapsedList = displayFilter(collapsedList, { kind, uiOrderType, permissions });
 
   const jsxClose = (
     <div
@@ -118,7 +118,6 @@ const Com = ({}) => {
           {jsxNoteBlock("m_ReturnTripNotes")}
           {jsxNoteBlock("m_ShippingNotes")}
         </div>
-        <SaveButton group={'notes'}/>
       </ToggleFull>
     </>
   );

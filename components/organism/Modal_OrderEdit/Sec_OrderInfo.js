@@ -70,6 +70,10 @@ const COMMON_FIELDS = constants.applyField([
       onChange(o?.name, "m_SalesRep");
     },
   },
+  {
+    Component: Editable.EF_Input,
+    id: "m_PriceBeforeTax",
+  },
 ]);
 
 const WINDOW_FIELDS = constants.applyField([
@@ -145,7 +149,7 @@ const DOOR_FIELDS = constants.applyField([
 ]);
 
 const Com = ({}) => {
-  const { uiOrderType, kind } = useContext(LocalDataContext);
+  const { uiOrderType, kind, permissions } = useContext(LocalDataContext);
 
   const [doorInputs, setDoorInputs] = useState(null);
   const [windowInputs, setWindowInputs] = useState(null);
@@ -155,6 +159,7 @@ const Com = ({}) => {
       displayFilter(DOOR_FIELDS, {
         kind,
         uiOrderType,
+        permissions
       }),
     );
 
@@ -162,6 +167,7 @@ const Com = ({}) => {
       displayFilter(WINDOW_FIELDS, {
         kind,
         uiOrderType,
+        permissions
       }),
     );
   }, [kind, uiOrderType]);

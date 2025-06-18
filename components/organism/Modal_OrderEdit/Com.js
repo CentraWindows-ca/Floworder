@@ -15,7 +15,7 @@ import utils from "lib/utils";
 import { uiWoFieldEditGroupMapping as gmp } from "lib/constants/constants_labelMapping";
 
 export const getIfFieldDisplayAsProductType = (
-  { kind, uiOrderType, id, displayAs },
+  { kind, uiOrderType, id, displayAs, permissions },
   data,
 ) => {
   let currentKind = "m";
@@ -29,35 +29,55 @@ export const getIfFieldDisplayAsProductType = (
   if (!uiOrderType?.w && currentKind === "w") return null;
   if (!uiOrderType?.d && currentKind === "d") return null;
 
+  let _isDisplay = true;
+
+  // data conditions ======================
   if (id === "m_Community") {
     //
-    return (
+    _isDisplay &=
       data?.m_JobType === "SO" &&
-      constants.checkProvince(data?.m_Branch) === "AB"
-    );
+      constants.checkProvince(data?.m_Branch) === "AB";
   }
 
   if (id === "m_ShippedDate") {
-    return [
-      WORKORDER_MAPPING.Shipped.key
-    ].includes(data?.m_Status)
+    _isDisplay &= [WORKORDER_MAPPING.Shipped.key].includes(data?.m_Status);
   }
 
-  if (id === "m_TransferredLocation_display" || id === "m_TransferredDate_display") {
-    const _windowShow = data?.w_ManufacturingFacility && data?.m_Branch !== data?.w_ManufacturingFacility
-    const _doorShow = data?.d_ManufacturingFacility && data?.m_Branch !== data?.d_ManufacturingFacility
-    const _hasBranch = data?.m_Branch && data?.m_Branch !== '-'
-    return _hasBranch && (_windowShow || _doorShow)
+  if (
+    id === "m_TransferredLocation_display" ||
+    id === "m_TransferredDate_display"
+  ) {
+    const _windowShow =
+      data?.w_ManufacturingFacility &&
+      data?.m_Branch !== data?.w_ManufacturingFacility;
+    const _doorShow =
+      data?.d_ManufacturingFacility &&
+      data?.m_Branch !== data?.d_ManufacturingFacility;
+    const _hasBranch = data?.m_Branch && data?.m_Branch !== "-";
+    _isDisplay &= _hasBranch && (_windowShow || _doorShow);
   }
 
+  // user permissions ======================
+  const checkPermission = (pc, op = "canEdit") => {
+    return _.get(permissions, [pc, op], false);
+  };
+
+  if (id === "m_PriceBeforeTax") {
+    console.log(permissions)
+     _isDisplay &= checkPermission(FEATURE_CODES["om.prod.wo.informationPriceBeforeTax"], "canView");
+  }
+
+  // order kind ======================
   if (currentKind === kind || currentKind === "m" || kind === "m") {
-    return true;
+    _isDisplay &= true;
   } else {
-    return false;
+    _isDisplay &= false;
   }
+
+  return _isDisplay;
 };
 
-export const displayFilter = (itemList, { kind, uiOrderType }) => {
+export const displayFilter = (itemList, { kind, uiOrderType, permissions }) => {
   return itemList?.filter((a) => {
     const { id = "m", displayAs } = a;
     // currentKind is data kind
@@ -67,6 +87,7 @@ export const displayFilter = (itemList, { kind, uiOrderType }) => {
         uiOrderType,
         id,
         displayAs,
+        permissions,
       },
       a,
     );
@@ -81,7 +102,8 @@ export const Block = ({ className_input, inputData }) => {
     validationResult,
     dictionary,
   } = useContext(LocalDataContext);
-  let { Component, title, displayId, id, options, overrideOnChange, ...rest } = inputData;
+  let { Component, title, displayId, id, options, overrideOnChange, ...rest } =
+    inputData;
   if (typeof options === "function") {
     options = options(dictionary);
   }
@@ -111,53 +133,10 @@ export const Block = ({ className_input, inputData }) => {
     </DisplayBlock>
   );
 };
-export const SaveButton = memo(({ group }) => {
-  const {
-    checkEditableForSectionSaveButton,
-    data,
-    isSaving,
-    onSave,
-    editedGroup,
-  } = useContext(LocalDataContext);
-
-  return null;
-  if (!checkEditableForSectionSaveButton({ group })) {
-    return false;
-  }
-
-  return (
-    <div
-      className={cn("justify-content-center flex")}
-      style={{
-        margin: " 0px",
-        padding: "10px",
-        borderTop: "1px solid #F0F0F0",
-      }}
-    >
-      <button
-        className="btn btn-primary align-items-center flex gap-2 px-3"
-        disabled={!data?.m_WorkOrderNo || isSaving || !editedGroup[group]}
-        onClick={() => onSave(group)}
-      >
-        {!isSaving ? (
-          <SaveOutlined size="small" />
-        ) : (
-          <Spin
-            size="small"
-            indicator={<LoadingOutlined />}
-            spinning={isSaving}
-            style={{ color: "white" }}
-          />
-        )}
-        Save
-      </button>
-    </div>
-  );
-});
 
 export const DisplayBlock = ({ children, id = "m", displayAs, ...props }) => {
   // kind is UI selected kind
-  const { uiOrderType, kind, data } = useContext(LocalDataContext);
+  const { uiOrderType, kind, data, permissions } = useContext(LocalDataContext);
 
   const display = getIfFieldDisplayAsProductType(
     {
@@ -165,6 +144,7 @@ export const DisplayBlock = ({ children, id = "m", displayAs, ...props }) => {
       uiOrderType,
       id,
       displayAs,
+      permissions,
     },
     data,
   );
@@ -351,7 +331,6 @@ export const treateGlassItems = (list) => {
 export const checkEditableById = ({ id, permissions, data, initKind }) => {
   let isEnable = false;
 
-
   // ============ permission checking: "enable" rules ============
   const isWindowField = id?.startsWith("w_") || id?.startsWith("m_");
   const isDoorField = id?.startsWith("d_") || id?.startsWith("m_");
@@ -414,9 +393,7 @@ export const checkEditableById = ({ id, permissions, data, initKind }) => {
   ) {
     isEnable = isEnable || id === "d_ProductionStartDate";
   }
-  if (
-    checkPermission(FEATURE_CODES["om.prod.wo.scheduleShippedDate"])
-  ) {
+  if (checkPermission(FEATURE_CODES["om.prod.wo.scheduleShippedDate"])) {
     isEnable = isEnable || id === "m_ShippedDate";
   }
   if (checkPermission(FEATURE_CODES["om.prod.wo.notes"])) {
@@ -429,7 +406,7 @@ export const checkEditableById = ({ id, permissions, data, initKind }) => {
   pending rule is rely on "where they open the modal". not on "what modal" they open
   here "where" means which tab (master, window, door) they search the order from
   */
-  let status_ForPendingRule = data?.[`${initKind}_Status`]
+  let status_ForPendingRule = data?.[`${initKind}_Status`];
   if (status_ForPendingRule === WORKORDER_MAPPING.Pending.key) {
     // check from group 'schedule', but still from field level (in case we dont pass group)
     if (!checkGroup("schedule")) {
@@ -470,6 +447,4 @@ export const checkEditableByGroup = ({ group, permissions, data }) => {
   return isAllowAny;
 };
 
-export default {
-  SaveButton,
-};
+export default {};

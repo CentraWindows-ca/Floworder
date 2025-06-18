@@ -72,7 +72,7 @@ const DOOR_FIELDS = constants.applyField([
 ]);
 
 const Com = ({}) => {
-  const { kind, uiOrderType } = useContext(LocalDataContext);
+  const { kind, uiOrderType, permissions } = useContext(LocalDataContext);
 
   const [doorInputs, setDoorInputs] = useState(null);
   const [windowInputs, setWindowInputs] = useState(null);
@@ -82,6 +82,7 @@ const Com = ({}) => {
       displayFilter(DOOR_FIELDS, {
         kind,
         uiOrderType,
+        permissions
       }),
     );
 
@@ -89,6 +90,7 @@ const Com = ({}) => {
       displayFilter(WINDOW_FIELDS, {
         kind,
         uiOrderType,
+        permissions
       }),
     );
   }, [kind, uiOrderType]);
