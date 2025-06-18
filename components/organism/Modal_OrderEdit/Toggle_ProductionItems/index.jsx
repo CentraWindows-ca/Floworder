@@ -16,60 +16,61 @@ import stylesCurrent from "./styles.module.scss";
 
 const styles = { ...stylesRoot, ...stylesCurrent };
 
+// TODO: change to from remote
 const ITEM_CATEGORIES = {
   windows_Windows: {
     label: "Windows",
     dict_key: "windows_Windows",
     display_key: "W",
-    productType: "w"
+    productType: "w",
   },
   windows_PatioDoor: {
     label: "Patio Doors",
     dict_key: "windows_PatioDoor",
     display_key: "PD",
-    productType: "w"
+    productType: "w",
   },
   windows_SwingDoor: {
     label: "Swing Doors",
     dict_key: "windows_SwingDoor",
     display_key: "SD",
-    productType: "w"
+    productType: "w",
   },
   windows_NPD: {
     label: "Window NPD",
     dict_key: "windows_NPD",
     display_key: "NPD",
-    productType: "w"
+    productType: "w",
   },
   windows_Glass: {
     label: "Window Glass",
     dict_key: "windows_Glass",
     display_key: "WGL",
-    productType: "m"
+    productType: "m",
   },
   doors_Doors: {
     label: "Exterior Doors",
     dict_key: "doors_Doors",
     display_key: "ED",
-    productType: "d"
+    productType: "d",
   },
   doors_Glass: {
     label: "Door Glass",
     dict_key: "doors_Glass",
     display_key: "DGL",
-    productType: "m"
+    productType: "m",
   },
   doors_Others: {
     label: "Door Others",
     dict_key: "doors_Others",
     display_key: "Door others",
-    productType: "m"
+    productType: "m",
   },
   others_Others: {
     label: "Others",
     dict_key: "others_Others",
     display_key: "Others",
-    productType: "m"
+    productType: "m",
   },
 };
 
@@ -83,7 +84,7 @@ const Com = ({ title, id }) => {
     checkEditable,
     uiOrderType,
     dictionary,
-    initKind
+    initKind,
   } = useContext(LocalDataContext);
 
   const [stats, setStats] = useState({});
@@ -148,12 +149,14 @@ const Com = ({ title, id }) => {
     <div className="flex gap-2">
       {title}
       <div className={cn("text-primary font-normal", styles.itemTabs)}>
-        {_.keys(stats)
-          .map((k) => {
-            const {display_key} = ITEM_CATEGORIES[k]
-            return <span>{display_key}: {stats[k]}</span>
-          })
-        }
+        {_.keys(stats).map((k) => {
+          const { display_key } = ITEM_CATEGORIES[k];
+          return (
+            <span>
+              {display_key}: {stats[k]}
+            </span>
+          );
+        })}
       </div>
     </div>
   );
@@ -161,68 +164,45 @@ const Com = ({ title, id }) => {
   return (
     <>
       <ToggleBlock title={jsxTitle} id={id}>
-        <TableWindow
-          {...{
-            handleShowItem,
-            itemType: "windows_Windows",
-            list: grouppedItems
-          }}
-        />
-        <TableWindow
-          {...{
-            handleShowItem,
-            itemType: "windows_PatioDoor",
-            list: grouppedItems
-          }}
-        />
-        <TableWindow
-          {...{
-            handleShowItem,
-            itemType: "windows_SwingDoor",
-            list: grouppedItems
-          }}
-        />
-        <TableWindow
-          {...{
-            handleShowItem,
-            itemType: "windows_NPD",
-            list: grouppedItems,
-          }}
-        />
-        <TableDoor
-          {...{
-            handleShowItem,
-            itemType: "doors_Doors",
-            list: grouppedItems,
-          }}
-        />
-        <TableWindow
-          {...{
-            handleShowItem,
-            itemType: "windows_Glass",
-            list: grouppedItems,
-          }}
-        />
-        <TableWindow
-          {...{
-            handleShowItem,
-            itemType: "doors_Glass",
-            list: grouppedItems,
-          }}
-        />
-        <TableOther
-          {...{
-            itemType: "others_Others",
-            list: grouppedItems,
-          }}
-        />
-        <TableOther
-          {...{
-            itemType: "doors_Others",
-            list: grouppedItems,
-          }}
-        />
+        {_.keys(ITEM_CATEGORIES)?.map((ick) => {
+          const { label, dict_key, display_key, productType } =
+            ITEM_CATEGORIES[ick];
 
+          switch (productType) {
+            case "w":
+              return (
+                <TableWindow
+                  {...{
+                    handleShowItem,
+                    itemType: dict_key,
+                    list: grouppedItems,
+                  }}
+                />
+              );
+            case "d":
+              return (
+                <TableDoor
+                  {...{
+                    handleShowItem,
+                    itemType: dict_key,
+                    list: grouppedItems,
+                  }}
+                />
+              );
+            case "m":
+              return (
+                <TableOther
+                  {...{
+                    handleShowItem,
+                    itemType: dict_key,
+                    list: grouppedItems,
+                  }}
+                />
+              );
+            default:
+              break;
+          }
+        })}
       </ToggleBlock>
       <Modal_ItemEdit
         onSave={handleSaveItem}
@@ -236,7 +216,7 @@ const Com = ({ title, id }) => {
 
 const TableWindow = ({ handleShowItem, list, itemType }) => {
   const { onBatchUpdateItems, checkEditable } = useContext(LocalDataContext);
-  const data = list?.[itemType]
+  const data = list?.[itemType];
 
   const [updatingValues, setUpdatingValues] = useState({});
   const handleUpdate = (id, v, k, initV) => {
@@ -534,7 +514,7 @@ const TableWindow = ({ handleShowItem, list, itemType }) => {
 
 const TableDoor = ({ handleShowItem, list, itemType }) => {
   const { onBatchUpdateItems, checkEditable } = useContext(LocalDataContext);
-  const data = list?.[itemType]
+  const data = list?.[itemType];
 
   const [updatingValues, setUpdatingValues] = useState({});
   const handleUpdate = (id, v, k, initV) => {
@@ -788,7 +768,7 @@ const TableDoor = ({ handleShowItem, list, itemType }) => {
 
 const TableOther = ({ list, itemType }) => {
   const { onBatchUpdateItems, checkEditable } = useContext(LocalDataContext);
-  const data = list?.[itemType]
+  const data = list?.[itemType];
 
   const [updatingValues, setUpdatingValues] = useState({});
   const handleUpdate = (id, v, k, initV) => {
