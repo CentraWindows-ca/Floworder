@@ -15,6 +15,7 @@ import utils from "lib/utils";
 import OrdersApi from "lib/api/OrdersApi";
 import WM2CWProdApi from "lib/api/WM2CWProdApi";
 import GlassApi from "lib/api/GlassApi";
+import External_WebCalApi from "lib/api/External_WebCalApi";
 
 import useLoadingBar from "lib/hooks/useLoadingBar";
 import constants, { ORDER_STATUS, ORDER_TRANSFER_FIELDS } from "lib/constants";
@@ -592,6 +593,13 @@ export const LocalDataProvider = ({
       initData,
       initDataItems,
     );
+
+    await External_WebCalApi.bulkUpdateItemTrackingList(
+      updateList,
+      initData,
+      initDataItems,
+    );
+
     toast("Items saved", { type: "success" });
     await initItems(initMasterId);
     return;
