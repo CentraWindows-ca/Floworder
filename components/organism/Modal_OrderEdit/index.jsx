@@ -252,7 +252,7 @@ const Com = ({}) => {
                 "justify-content-center flex p-2",
                 styles.buttonContainer,
               )}
-              style={{ margin: "10px 0px", position: "sticky", bottom: "0px" }}
+              style={{ margin: "10px 0px", position: "sticky", bottom: "0px", zIndex: 5 }}
             >
               <button
                 className="btn btn-primary align-items-center flex gap-2 px-3"

@@ -5,6 +5,7 @@ import constants from "lib/constants";
 import { ITEM_STATUS, ITEM_LITES, ITEM_DOOR_TYPES } from "lib/constants";
 import Editable from "components/molecule/Editable";
 import TableSortable from "components/atom/TableSortable";
+import Tooltip from "components/atom/Tooltip";
 // styles
 
 import { LocalDataContext } from "../LocalDataProvider";
@@ -17,62 +18,71 @@ import stylesCurrent from "./styles.module.scss";
 const styles = { ...stylesRoot, ...stylesCurrent };
 
 // TODO: change to from remote
-const ITEM_CATEGORIES = {
-  windows_Windows: {
+const ITEM_CATEGORIES = [
+  {
     label: "Windows",
-    dict_key: "windows_Windows",
-    display_key: "W",
-    productType: "w",
+    dictKey: "windows_Windows",
+    labelCode: "W",
+    category: "Windows",
+    sortOrder: 10,
   },
-  windows_PatioDoor: {
+  {
     label: "Patio Doors",
-    dict_key: "windows_PatioDoor",
-    display_key: "PD",
-    productType: "w",
+    dictKey: "windows_PatioDoor",
+    labelCode: "PD",
+    category: "Windows",
+    sortOrder: 20,
   },
-  windows_SwingDoor: {
+  {
     label: "Swing Doors",
-    dict_key: "windows_SwingDoor",
-    display_key: "SD",
-    productType: "w",
+    dictKey: "windows_SwingDoor",
+    labelCode: "SD",
+    category: "Windows",
+    sortOrder: 30,
   },
-  windows_NPD: {
+  {
     label: "Window NPD",
-    dict_key: "windows_NPD",
-    display_key: "NPD",
-    productType: "w",
+    dictKey: "windows_NPD",
+    labelCode: "NPD",
+    category: "Windows",
+    sortOrder: 40,
   },
-  windows_Glass: {
-    label: "Window Glass",
-    dict_key: "windows_Glass",
-    display_key: "WGL",
-    productType: "m",
-  },
-  doors_Doors: {
+  {
     label: "Exterior Doors",
-    dict_key: "doors_Doors",
-    display_key: "ED",
-    productType: "d",
+    dictKey: "doors_Doors",
+    labelCode: "ED",
+    category: "Doors",
+    sortOrder: 50,
   },
-  doors_Glass: {
+  {
+    label: "Window Glass",
+    dictKey: "windows_Glass",
+    labelCode: "WGL",
+    category: "Others",
+    sortOrder: 60,
+  },
+  {
     label: "Door Glass",
-    dict_key: "doors_Glass",
-    display_key: "DGL",
-    productType: "m",
+    dictKey: "doors_Glass",
+    labelCode: "DGL",
+    category: "Others",
+    sortOrder: 70,
   },
-  doors_Others: {
+  {
     label: "Door Others",
-    dict_key: "doors_Others",
-    display_key: "Door others",
-    productType: "m",
+    dictKey: "doors_Others",
+    labelCode: "Door others",
+    category: "Others",
+    sortOrder: 80,
   },
-  others_Others: {
+  {
     label: "Others",
-    dict_key: "others_Others",
-    display_key: "Others",
-    productType: "m",
+    dictKey: "others_Others",
+    labelCode: "Others",
+    category: "Others",
+    sortOrder: 90,
   },
-};
+];
 
 const getCategoryBySystem = (system) => {};
 
@@ -85,8 +95,12 @@ const Com = ({ title, id }) => {
     uiOrderType,
     dictionary,
     initKind,
+    onAnchor,
+    setExpands,
   } = useContext(LocalDataContext);
 
+  // const ITEM_CATEGORIES = dictionary.uiItemLabels || [];
+  // console.log(_.values(ITEM_CATEGORIES))
   const [stats, setStats] = useState({});
   const [editingItem, setEditingItem] = useState(null);
 
@@ -94,27 +108,26 @@ const Com = ({ title, id }) => {
 
   useEffect(() => {
     const _stats = {};
-
-    _.keys(ITEM_CATEGORIES)?.map((k) => {
-      _stats[k] = 0;
+    ITEM_CATEGORIES?.map((o) => {
+      _stats[o.dictKey] = 0;
     });
 
     const _grouppedItems = {};
 
     // get item type by system code (default windows_Windows)
     const _assign_system_to_item_type = (a) => {
-      const { System } = a;
+      const { System, Quantity } = a;
       const _cat = _.keys(dictionary.systemCategoryList)?.find((k) => {
         return dictionary.systemCategoryList[k]?.includes(System);
       });
-      a.itemType = _cat || "windows_Windows";
+      a.dictKey = _cat || "windows_Windows";
 
-      _stats[a.itemType] = _stats[a.itemType] + 1;
+      _stats[a.dictKey] = _stats[a.dictKey] + Quantity;
 
-      if (!_grouppedItems[a.itemType]) {
-        _grouppedItems[a.itemType] = [];
+      if (!_grouppedItems[a.dictKey]) {
+        _grouppedItems[a.dictKey] = [];
       }
-      _grouppedItems[a.itemType].push(a);
+      _grouppedItems[a.dictKey].push(a);
     };
 
     windowItems?.map(_assign_system_to_item_type);
@@ -145,15 +158,45 @@ const Com = ({ title, id }) => {
     setEditingItem(null);
   };
 
+  const handleTabClick = (e, dictKey) => {
+    // Prevent the action passing to the parent component
+    e.stopPropagation();
+    setExpands((prev) => ({
+      ...prev,
+      [id]: true,
+    }));
+
+    setTimeout(() => {
+      const target = document.getElementById(dictKey);
+
+      // NOTE: its a hack. we have sticky title, so we need to scroll 24px less
+      const scrollContainer = target?.closest(".modal-body");
+      if (target && scrollContainer) {
+        const y = target.offsetTop - 24;
+        scrollContainer.scrollTo({ top: y, behavior: "smooth" });
+      }
+    }, 200);
+  };
+
   const jsxTitle = (
     <div className="flex gap-2">
       {title}
       <div className={cn("text-primary font-normal", styles.itemTabs)}>
-        {_.keys(stats).map((k) => {
-          const { display_key } = ITEM_CATEGORIES[k];
+        {ITEM_CATEGORIES?.map((o, i) => {
+          const { labelCode, label, dictKey } = o;
           return (
-            <span>
-              {display_key}: {stats[k]}
+            <span
+              key={`${labelCode}_${i}`}
+              title={label}
+              className={cn(
+                styles.labelCode,
+                stats[dictKey] ? styles.toolButton : styles.zero,
+              )}
+              onClick={
+                stats[dictKey] ? (e) => handleTabClick(e, dictKey) : null
+              }
+            >
+              {labelCode}: {stats[dictKey]}
             </span>
           );
         })}
@@ -164,38 +207,45 @@ const Com = ({ title, id }) => {
   return (
     <>
       <ToggleBlock title={jsxTitle} id={id}>
-        {_.keys(ITEM_CATEGORIES)?.map((ick) => {
-          const { label, dict_key, display_key, productType } =
-            ITEM_CATEGORIES[ick];
+        {ITEM_CATEGORIES?.sort((a, b) => {
+          a.sortOrder > b.sortOrder ? 1 : -1;
+        })?.map((o) => {
+          const { dictKey, category } = o;
 
-          switch (productType) {
-            case "w":
+          switch (category) {
+            case "Windows":
               return (
                 <TableWindow
                   {...{
+                    key: dictKey,
+                    ...o,
                     handleShowItem,
-                    itemType: dict_key,
                     list: grouppedItems,
+                    stats,
                   }}
                 />
               );
-            case "d":
+            case "Doors":
               return (
                 <TableDoor
                   {...{
+                    key: dictKey,
+                    ...o,
                     handleShowItem,
-                    itemType: dict_key,
                     list: grouppedItems,
+                    stats,
                   }}
                 />
               );
-            case "m":
+            case "Others":
               return (
                 <TableOther
                   {...{
+                    key: dictKey,
+                    ...o,
                     handleShowItem,
-                    itemType: dict_key,
                     list: grouppedItems,
+                    stats,
                   }}
                 />
               );
@@ -214,9 +264,9 @@ const Com = ({ title, id }) => {
   );
 };
 
-const TableWindow = ({ handleShowItem, list, itemType }) => {
+const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
   const { onBatchUpdateItems, checkEditable } = useContext(LocalDataContext);
-  const data = list?.[itemType];
+  const data = list?.[dictKey];
 
   const [updatingValues, setUpdatingValues] = useState({});
   const handleUpdate = (id, v, k, initV) => {
@@ -466,9 +516,11 @@ const TableWindow = ({ handleShowItem, list, itemType }) => {
   return (
     !_.isEmpty(data) && (
       <DisplayBlock id="WIN.windowItems">
-        <div className={styles.togglePadding}>
+        <div className={styles.togglePadding} id={dictKey}>
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
-            <label>{ITEM_CATEGORIES[itemType]?.label}</label>
+            <label>
+              {label} <small className="fw-normal">( {stats[dictKey]} )</small>
+            </label>
             <div>
               <button
                 className="btn btn-primary btn-sm me-2"
@@ -512,9 +564,9 @@ const TableWindow = ({ handleShowItem, list, itemType }) => {
   );
 };
 
-const TableDoor = ({ handleShowItem, list, itemType }) => {
+const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
   const { onBatchUpdateItems, checkEditable } = useContext(LocalDataContext);
-  const data = list?.[itemType];
+  const data = list?.[dictKey];
 
   const [updatingValues, setUpdatingValues] = useState({});
   const handleUpdate = (id, v, k, initV) => {
@@ -720,9 +772,11 @@ const TableDoor = ({ handleShowItem, list, itemType }) => {
   return (
     !_.isEmpty(data) && (
       <DisplayBlock id="DOOR.doorItems">
-        <div className={styles.togglePadding}>
+        <div className={styles.togglePadding} id={dictKey}>
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
-            <label>{ITEM_CATEGORIES[itemType]?.label}</label>
+            <label>
+              {label} <small className="fw-normal">( {stats[dictKey]} )</small>
+            </label>
             <div>
               <button
                 className="btn btn-primary btn-sm me-2"
@@ -766,9 +820,9 @@ const TableDoor = ({ handleShowItem, list, itemType }) => {
   );
 };
 
-const TableOther = ({ list, itemType }) => {
+const TableOther = ({ stats, list, label, dictKey }) => {
   const { onBatchUpdateItems, checkEditable } = useContext(LocalDataContext);
-  const data = list?.[itemType];
+  const data = list?.[dictKey];
 
   const [updatingValues, setUpdatingValues] = useState({});
   const handleUpdate = (id, v, k, initV) => {
@@ -869,9 +923,11 @@ const TableOther = ({ list, itemType }) => {
   return (
     !_.isEmpty(data) && (
       <DisplayBlock id="DOOR.doorItems">
-        <div className={styles.togglePadding}>
+        <div className={styles.togglePadding} id={dictKey}>
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
-            <label>{ITEM_CATEGORIES[itemType]?.label}</label>
+            <label>
+              {label} <small className="fw-normal">( {stats[dictKey]} )</small>
+            </label>
             <div>
               <button
                 className="btn btn-primary btn-sm me-2"

@@ -58,7 +58,6 @@
     background-color: $color_white;
     display: flex;
     flex-direction: column;
-
     .togglePadding {
         padding: 10px;
     }
@@ -114,6 +113,18 @@
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+
+    &:hover:not(:has(.toolButton:hover)) {
+        // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        background-color: $color_background_yellow;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    z-index: 4;
+    position: sticky;
+    top: 0px;
+
 }
 
 .columnInputsContainer {

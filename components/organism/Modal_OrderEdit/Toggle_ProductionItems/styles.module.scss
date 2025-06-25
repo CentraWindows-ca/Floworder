@@ -1,14 +1,14 @@
 @use "styles/theme" as *;
 
 .thead {
-    top: 49px;
+    top: 85px;
 }
 
 .subTitle {
     background-color: $color_white;
-    top: -1px;
+    top: 35px;
     position: sticky;
-    z-index: 2;
+    z-index: 3;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -18,14 +18,22 @@
 .itemTabs {
     display: flex;
     align-items: center;
-    span:not(:last-child)::after {
+
+    .labelCode:not(.zero) {
+        &:hover {
+            color: $color_background_edited;
+            text-decoration: underline;
+        }
+    }
+
+    .labelCode:not(:last-child)::after {
         content: '|';
         margin-left: 6px;
         margin-right: 6px;
         font-size: small;
     }
 
-    span.zero{
+    .labelCode.zero {
         color: $color_border_table
     }
 }
