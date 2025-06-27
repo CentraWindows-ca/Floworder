@@ -184,7 +184,7 @@ const Com = ({ title, id }) => {
       <div className={cn("text-primary font-normal", styles.itemTabs)}>
         {ITEM_CATEGORIES?.map((o, i) => {
           const { labelCode, label, dictKey } = o;
-          let itemCount = grouppedItems[dictKey]?.length
+          let itemCount = grouppedItems[dictKey]?.length || 0
           let actualQty = stats[dictKey];
           return (
             <span
@@ -198,7 +198,7 @@ const Com = ({ title, id }) => {
                 stats[dictKey] ? (e) => handleTabClick(e, dictKey) : null
               }
             >
-              {labelCode}: {itemCount}{itemCount !== actualQty ? <span className="text-gray-400"> (qty {actualQty})</span> : null}
+              {labelCode}: {itemCount}{(itemCount !== actualQty) ? <span className="text-gray-400"> (qty {actualQty})</span> : null}
             </span>
           );
         })}
