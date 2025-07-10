@@ -543,7 +543,7 @@ const Com = (props) => {
     if (isPending && !_.isEmpty(_data)) {
       try {
         resInstallStatusMapping =
-          await OrdersApi.getWorkOrdersInstallationStatusAsync(null, {
+          await OrdersApi.getWorkOrdersInstallationInfoAsync(null, {
             workOrderNoList: _data?.map(
               (data) => data?.value?.m?.m_WorkOrderNo,
             ),
