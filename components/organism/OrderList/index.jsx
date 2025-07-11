@@ -304,6 +304,30 @@ const Com = (props) => {
         width: 80,  
       },
       {
+        key: "m_TypeofGrant",
+        initKey: "m_TypeofGrant",
+        display: !isDeleted,
+        isNotSortable: true,
+        isNotFilter: true,
+        width: 100,  
+      },
+      {
+        key: "m_GrantStatus",
+        initKey: "m_GrantStatus",
+        display: !isDeleted,
+        isNotSortable: true,
+        isNotFilter: true,
+        width: 120,  
+      },
+      {
+        key: "m_GovGrantExpiryDate_display",
+        initKey: "m_GovGrantExpiryDate_display",
+        display: !isDeleted,
+        isNotSortable: true,
+        isNotFilter: true,
+        width: 195,  
+      },
+      {
         key: "m_Status_display",
         initKey: "m_Status",
         display: !isDeleted,
@@ -607,6 +631,17 @@ const Com = (props) => {
       
       merged.m_RebateIcon =
         resInstallStatusMapping?.[merged.m_WorkOrderNo]?.RebateIcon || null;
+
+      merged.m_TypeofGrant =
+        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.TypeofGrant || null;
+
+      merged.m_GrantStatus =
+        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.GrantStatus || null;
+
+      merged.m_GovGrantExpiryDate =
+        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.GovGrantExpiryDate || null;
+
+      merged.m_GovGrantExpiryDate_display = utils.formatDate(merged.m_GovGrantExpiryDate)
 
       return merged;
     });
