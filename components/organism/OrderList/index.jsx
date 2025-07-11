@@ -309,7 +309,7 @@ const Com = (props) => {
         display: !isDeleted,
         isNotSortable: true,
         isNotFilter: true,
-        width: 100,  
+        width: 130,  
       },
       {
         key: "m_GrantStatus",
