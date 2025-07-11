@@ -9,6 +9,7 @@ import utils from "lib/utils";
 
 import { LocalDataContext } from "../LocalDataProvider";
 import { ToggleBlock, NoData } from "../Com";
+import OrdersApi from "lib/api/OrdersApi";
 
 const Com = ({ title, id }) => {
   const {
@@ -80,34 +81,31 @@ const Com = ({ title, id }) => {
         )}
         {!_.isEmpty(existingAttachments) ? (
           <table className="table-xs table-bordered table-hover mb-0 table border">
-            <tbody>{existingAttachments?.map((a) => {
+            <tbody>
+              {existingAttachments?.map((a) => {
                 const {
                   submittedBy,
                   submittedAt,
                   fileName,
                   fileType,
-                  fileRawData,
+                  fileSize,
                   notes,
                   id,
                 } = a;
-                const size = utils.formatNumber(
-                  utils.calculateFileSize(fileRawData) / 1024 || 0,
-                );
+                const size = utils.formatNumber(fileSize / 1024 || 0);
                 const submittedAt_display = utils.formatDate(
                   utils.formatDatetimeForMorganLegacy(submittedAt),
                 );
                 return (
                   <tr key={`${title}_${id}`}>
                     <td className="text-left">
-                      <span
+                      <a
                         className="text-blue-500 hover:text-blue-400"
-                        style={{ cursor: "pointer" }}
-                        onClick={() =>
-                          utils.downloadFile(fileRawData, fileName, fileType)
-                        }
+                        href={`${OrdersApi.urlGetFile({ id })}`}
+                        target="_blank"
                       >
                         {fileName}
-                      </span>
+                      </a>
                     </td>
                     <td className="text-right" style={{ width: 120 }}>
                       {size} KB
@@ -133,7 +131,8 @@ const Com = ({ title, id }) => {
                     </td>
                   </tr>
                 );
-              })}</tbody>
+              })}
+            </tbody>
           </table>
         ) : (
           <NoData />
@@ -155,7 +154,8 @@ const Com = ({ title, id }) => {
                   <th>Note/Alias</th>
                 </tr>
               </thead>
-              <tbody>{newAttachments?.map((a, i) => {
+              <tbody>
+                {newAttachments?.map((a, i) => {
                   const { file, notes } = a;
                   const { name, size } = file;
                   return (
@@ -173,7 +173,8 @@ const Com = ({ title, id }) => {
                       </td>
                     </tr>
                   );
-                })}</tbody>
+                })}
+              </tbody>
             </table>
           </div>
           <div className="justify-content-end flex gap-2">
