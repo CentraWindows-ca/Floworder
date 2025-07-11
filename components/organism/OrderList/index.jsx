@@ -296,6 +296,14 @@ const Com = (props) => {
         width: 180,
       },
       {
+        key: "m_RebateIcon",
+        initKey: "m_RebateIcon",
+        display: !isDeleted,
+        isNotSortable: true,
+        isNotFilter: true,
+        width: 80,  
+      },
+      {
         key: "m_Status_display",
         initKey: "m_Status",
         display: !isDeleted,
@@ -535,7 +543,7 @@ const Com = (props) => {
     if (isPending && !_.isEmpty(_data)) {
       try {
         resInstallStatusMapping =
-          await OrdersApi.getWorkOrdersInstallationStatusAsync(null, {
+          await OrdersApi.getWorkOrdersInstallationInfoAsync(null, {
             workOrderNoList: _data?.map(
               (data) => data?.value?.m?.m_WorkOrderNo,
             ),
@@ -595,7 +603,10 @@ const Com = (props) => {
       merged.d_ProductionStartDate_colored = d_ProductionStartDate;
 
       merged.m_InstallStatus =
-        resInstallStatusMapping?.[merged.m_WorkOrderNo] || null;
+        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.CurrentStateName || null;
+      
+      merged.m_RebateIcon =
+        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.RebateIcon || null;
 
       return merged;
     });

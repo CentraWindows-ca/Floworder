@@ -46,6 +46,7 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "m_LastModifiedAt_display",
         "m_LastModifiedBy",
         "m_InstallStatus",
+        "m_RebateIcon",
         "m_FormStatus",
         "m_Branch",
         "w_ProductionStartDate_colored",
