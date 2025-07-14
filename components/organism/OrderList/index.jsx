@@ -296,6 +296,38 @@ const Com = (props) => {
         width: 180,
       },
       {
+        key: "m_RebateIcon",
+        initKey: "m_RebateIcon",
+        display: !isDeleted,
+        isNotSortable: true,
+        isNotFilter: true,
+        width: 80,  
+      },
+      {
+        key: "m_TypeofGrant",
+        initKey: "m_TypeofGrant",
+        display: !isDeleted,
+        isNotSortable: true,
+        isNotFilter: true,
+        width: 130,  
+      },
+      {
+        key: "m_GrantStatus",
+        initKey: "m_GrantStatus",
+        display: !isDeleted,
+        isNotSortable: true,
+        isNotFilter: true,
+        width: 120,  
+      },
+      {
+        key: "m_GovGrantExpiryDate_display",
+        initKey: "m_GovGrantExpiryDate_display",
+        display: !isDeleted,
+        isNotSortable: true,
+        isNotFilter: true,
+        width: 195,  
+      },
+      {
         key: "m_Status_display",
         initKey: "m_Status",
         display: !isDeleted,
@@ -535,7 +567,7 @@ const Com = (props) => {
     if (isPending && !_.isEmpty(_data)) {
       try {
         resInstallStatusMapping =
-          await OrdersApi.getWorkOrdersInstallationStatusAsync(null, {
+          await OrdersApi.getWorkOrdersInstallationInfoAsync(null, {
             workOrderNoList: _data?.map(
               (data) => data?.value?.m?.m_WorkOrderNo,
             ),
@@ -595,7 +627,21 @@ const Com = (props) => {
       merged.d_ProductionStartDate_colored = d_ProductionStartDate;
 
       merged.m_InstallStatus =
-        resInstallStatusMapping?.[merged.m_WorkOrderNo] || null;
+        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.CurrentStateName || null;
+      
+      merged.m_RebateIcon =
+        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.RebateIcon || null;
+
+      merged.m_TypeofGrant =
+        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.TypeofGrant || null;
+
+      merged.m_GrantStatus =
+        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.GrantStatus || null;
+
+      merged.m_GovGrantExpiryDate =
+        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.GovGrantExpiryDate || null;
+
+      merged.m_GovGrantExpiryDate_display = utils.formatDate(merged.m_GovGrantExpiryDate)
 
       return merged;
     });
