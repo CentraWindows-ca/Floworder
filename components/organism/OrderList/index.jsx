@@ -627,21 +627,21 @@ const Com = (props) => {
       merged.d_ProductionStartDate_colored = d_ProductionStartDate;
 
       merged.m_InstallStatus =
-        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.CurrentStateName || null;
+        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.currentStateName || null;
       
       merged.m_RebateIcon =
-        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.RebateIcon || null;
+        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.rebateIcon || null;
 
       merged.m_TypeofGrant =
-        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.TypeofGrant || null;
+        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.typeofGrant || null;
 
       merged.m_GrantStatus =
-        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.GrantStatus || null;
+        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.grantStatus || null;
 
       merged.m_GovGrantExpiryDate =
-        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.GovGrantExpiryDate || null;
+        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.govGrantExpiryDate || null;
 
-      merged.m_GovGrantExpiryDate_display = utils.formatDate(merged.m_GovGrantExpiryDate)
+      merged.m_GovGrantExpiryDate_display = merged.m_GovGrantExpiryDate;
 
       return merged;
     });
