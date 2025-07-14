@@ -848,7 +848,8 @@ const TableOther = ({ stats, list, label, dictKey }) => {
       keyValue: k,
       fields: updatingValues[k],
     }));
-    await onBatchUpdateItems(updates, "d");
+    const kind = dictKey?.includes("window") ? "w" : "d";
+    await onBatchUpdateItems(updates, kind);
     setUpdatingValues({});
   };
 
