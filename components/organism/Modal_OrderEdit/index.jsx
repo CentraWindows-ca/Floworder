@@ -198,7 +198,7 @@ const Com = ({}) => {
       headerClassName={styles.modalHeader}
       titleClassName={"flex justify-content-between flex-grow-1"}
     >
-      <AddonSelector />
+      {/* <AddonSelector /> */}
       <span id="basic" />
       <LoadingBlock isLoading={isLoading}>
         <div className={cn(styles.modalContentContainer)}>
