@@ -14,8 +14,6 @@ import Editable from "components/molecule/Editable";
 import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
 
-const group = "status";
-
 const Com = ({}) => {
   const {
     initData,

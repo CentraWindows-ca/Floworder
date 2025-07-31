@@ -6,6 +6,9 @@ import { LoadingOutlined, SaveOutlined } from "@ant-design/icons";
 import Modal from "components/molecule/Modal";
 import PermissionBlock from "components/atom/PermissionBlock";
 import Sec_Status from "./Sec_Status";
+import { GeneralContext } from "lib/provider/GeneralProvider";
+import Tabs from "react-bootstrap/Tabs";
+import Tab from "react-bootstrap/Tab";
 
 import Sec_OrderInfo from "./Sec_OrderInfo";
 import Sec_OrderBasic from "./Sec_OrderBasic";
@@ -195,6 +198,7 @@ const Com = ({}) => {
       headerClassName={styles.modalHeader}
       titleClassName={"flex justify-content-between flex-grow-1"}
     >
+      <AddonSelector />
       <span id="basic" />
       <LoadingBlock isLoading={isLoading}>
         <div className={cn(styles.modalContentContainer)}>
@@ -252,7 +256,12 @@ const Com = ({}) => {
                 "justify-content-center flex p-2",
                 styles.buttonContainer,
               )}
-              style={{ margin: "10px 0px", position: "sticky", bottom: "0px", zIndex: 5 }}
+              style={{
+                margin: "10px 0px",
+                position: "sticky",
+                bottom: "0px",
+                zIndex: 5,
+              }}
             >
               <button
                 className="btn btn-primary align-items-center flex gap-2 px-3"
@@ -313,6 +322,72 @@ const CollapseContainer = ({ id, children }) => {
         {children}
       </div>
     </>
+  );
+};
+
+const AddonSelector = ({}) => {
+  const { data } = useContext(LocalDataContext);
+  const { onRoute } = useContext(GeneralContext);
+
+  const handleSwitch = (masterId) => {
+    onRoute({ masterId });
+  };
+
+  const addonlist = [
+    {
+      m_MasterId: "d4958dac-01f5-4796-992b-ef2ead37f909",
+      m_WorkOrderNo: "VKTEST5",
+      isParent: true,
+    },
+    {
+      m_MasterId: "e8ee66a5-4c29-4f4c-8aa3-8b43ef96e13d",
+      m_WorkOrderNo: "VKTEST8",
+      isParent: false,
+    },
+    {
+      m_MasterId: "e8ee66a5-4c29-4f4c-8aa3-8b43ef96e13d",
+      m_WorkOrderNo: "VKTEST8",
+      isParent: false,
+    },
+  ];
+
+  return (
+    <div className={cn(styles.addonContainer)}>
+      <span className="me-2">Parent order:</span>
+      {addonlist
+        ?.filter((a) => a.isParent)
+        ?.map((a) => {
+          return (
+            <div
+              className={cn(
+                styles.addonParent,
+                a?.m_MasterId === data?.m_MasterId ? styles.active : "",
+              )}
+              onClick={() => handleSwitch(a?.m_MasterId)}
+            >
+              {a.m_WorkOrderNo}
+            </div>
+          );
+        })}
+      <span className="me-2 ms-3">Addons:</span>
+      <div className={cn(styles.addonListContainer)}>
+        {addonlist
+          ?.filter((a) => !a.isParent)
+          ?.map((a) => {
+            return (
+              <div
+                className={cn(
+                  styles.addonItem,
+                  a?.m_MasterId === data?.m_MasterId ? styles.active : "",
+                )}
+                onClick={() => handleSwitch(a?.m_MasterId)}
+              >
+                {a.m_WorkOrderNo}
+              </div>
+            );
+          })}
+      </div>
+    </div>
   );
 };
 

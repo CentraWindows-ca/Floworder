@@ -108,8 +108,6 @@ const WorkOrderActions = ({
       return null;
     }
 
-    // TODO: if reservation
-
     await doMove(payload, isReservation);
 
     toast("Status updated", { type: "success" });

@@ -187,6 +187,10 @@ export const LocalDataProvider = ({
 
     const mergedData = await doInitWo(initMasterId);
 
+    // TODO: ADDON - get addon parent
+
+    // TODO: ADDON - get list of addons (master id or parent master id)
+
     if (mergedData) {
       if (initKind === "w" || getOrderKind(mergedData) === "w") {
         setKind("w");
