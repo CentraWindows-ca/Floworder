@@ -184,7 +184,7 @@ const Com = ({ title, id }) => {
       <div className={cn("text-primary font-normal", styles.itemTabs)}>
         {ITEM_CATEGORIES?.map((o, i) => {
           const { labelCode, label, dictKey } = o;
-          let itemCount = grouppedItems[dictKey]?.length || 0
+          let itemCount = grouppedItems[dictKey]?.length || 0;
           let actualQty = stats[dictKey];
           return (
             <span
@@ -198,7 +198,10 @@ const Com = ({ title, id }) => {
                 stats[dictKey] ? (e) => handleTabClick(e, dictKey) : null
               }
             >
-              {labelCode}: {itemCount}{(itemCount !== actualQty) ? <span className="text-gray-400"> (qty {actualQty})</span> : null}
+              {labelCode}: {itemCount}
+              {itemCount !== actualQty ? (
+                <span className="text-gray-400"> (qty {actualQty})</span>
+              ) : null}
             </span>
           );
         })}
@@ -248,6 +251,7 @@ const Com = ({ title, id }) => {
                     handleShowItem,
                     list: grouppedItems,
                     stats,
+                    kind: dictKey.startsWith('doors') ? 'd' : 'w'
                   }}
                 />
               );
@@ -822,9 +826,14 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
   );
 };
 
-const TableOther = ({ stats, list, label, dictKey }) => {
+const TableOther = ({ stats, list, label, dictKey, kind = 'w' }) => {
   const { onBatchUpdateItems, checkEditable } = useContext(LocalDataContext);
   const data = list?.[dictKey];
+
+  const blockId = kind === "w" ? "WINDOW.windowItems": "DOOR.doorItems"
+  const group = kind === 'w' ? 'windowitems' : 'dooritems'
+
+  const [isUpdate, setIsUpdate] = useState({});
 
   const [updatingValues, setUpdatingValues] = useState({});
   const handleUpdate = (id, v, k, initV) => {
@@ -848,13 +857,40 @@ const TableOther = ({ stats, list, label, dictKey }) => {
       keyValue: k,
       fields: updatingValues[k],
     }));
-    await onBatchUpdateItems(updates, "d");
+
+    await onBatchUpdateItems(updates, kind);
     setUpdatingValues({});
+    setIsUpdate({});
   };
+
+  console.log(isUpdate);
 
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState({});
   const columns = constants.applyField([
+    {
+      // NOTE 20250730: update/not update of others
+      key: "isUpdate",
+      title: "Update",
+      width: 40,
+      render: (t, record) => {
+        const updatingKey = "isUpdate";
+        return (
+          <Editable.EF_Checkbox
+            {...{
+              id: `di_${updatingKey}_${record?.Id}`,
+              value: isUpdate?.[record?.Id],
+              onChange: (v) =>
+                setIsUpdate((prev) => ({
+                  ...prev,
+                  [record?.Id]: !prev?.[record?.Id],
+                })),
+              disabled: !checkEditable({ group }),
+            }}
+          />
+        );
+      },
+    },
     {
       key: "Item",
       width: 80,
@@ -895,9 +931,80 @@ const TableOther = ({ stats, list, label, dictKey }) => {
                   : record[updatingKey],
               onChange: (v) =>
                 handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
-              disabled: !checkEditable({ group: "windowitems" }),
+              disabled: !checkEditable({ group }),
               size: "sm",
               placeholder: "--",
+            }}
+          />
+        );
+      },
+    },
+    {
+      title: "Location",
+      key: "RackLocationId",
+      width: 120,
+      render: (t, record) => {
+        const updatingKey = "RackLocationId";
+        const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
+
+        const value =
+          overrideValue !== undefined ? overrideValue : record[updatingKey];
+
+        return (
+          <Editable.EF_Rack
+            {...{
+              value,
+              onChange: (v, rid, o) => {
+                handleUpdate(
+                  record?.Id,
+                  o.RackNumber || null,
+                  "RackLocation",
+                  record["RackLocation"],
+                );
+                handleUpdate(
+                  record?.Id,
+                  o.RecordID || null,
+                  updatingKey,
+                  record[updatingKey],
+                );
+              },
+              id: `${record?.Id}_RackLocation`,
+              isDisplayAvilible: false,
+              size: "sm",
+              placeholder: "--",
+              disabled:
+                // NOTE 20250730: update/not update of others
+                !isUpdate?.[record?.Id] ||
+                !checkEditable({ group }),
+            }}
+          />
+        );
+      },
+    },
+    {
+      key: "Status",
+      width: 150,
+      render: (t, record) => {
+        const updatingKey = "Status";
+        const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
+        const value =
+          overrideValue !== undefined ? overrideValue : record[updatingKey];
+
+        // NOTE 20250730: update/not update of others
+        if (!isUpdate?.[record?.Id]) {
+          return !value || value === 'Not Started' ? '--': value;
+        }
+
+        return (
+          <Editable.EF_SelectWithLabel
+            {...{
+              value,
+              onChange: (v) =>
+                handleUpdate(record?.Id, v || null, "Status", record["Status"]),
+              id: `Status_${record?.Id}`,
+              options: ITEM_STATUS,
+              className: "form-select form-select-sm",
+              disabled: !checkEditable({ group }),
             }}
           />
         );
@@ -924,7 +1031,7 @@ const TableOther = ({ stats, list, label, dictKey }) => {
 
   return (
     !_.isEmpty(data) && (
-      <DisplayBlock id="DOOR.doorItems">
+      <DisplayBlock id={blockId}>
         <div className={styles.togglePadding} id={dictKey}>
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
             <label>
@@ -935,7 +1042,7 @@ const TableOther = ({ stats, list, label, dictKey }) => {
                 className="btn btn-primary btn-sm me-2"
                 disabled={
                   _.isEmpty(updatingValues) ||
-                  !checkEditable({ group: "dooritems" })
+                  !checkEditable({ group})
                 }
                 onClick={handleSave}
               >
@@ -945,7 +1052,7 @@ const TableOther = ({ stats, list, label, dictKey }) => {
                 className="btn btn-secondary btn-sm"
                 disabled={
                   _.isEmpty(updatingValues) ||
-                  !checkEditable({ group: "dooritems" })
+                  !checkEditable({ group })
                 }
                 onClick={() => setUpdatingValues({})}
               >

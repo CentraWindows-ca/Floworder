@@ -14,8 +14,6 @@ import { LocalDataContext } from "./LocalDataProvider";
 
 import { DisplayBlock, displayFilter } from "./Com";
 
-const group = "schedule";
-
 const COMMON_FIELDS = constants.applyField([
   {
     id: "m_ShippingStartDate",

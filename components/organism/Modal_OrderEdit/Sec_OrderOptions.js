@@ -26,8 +26,6 @@ import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
 import { DisplayBlock, displayFilter } from "./Com";
 
-const group = "options"
-
 const COMMON_FIELDS = constants.applyField([
   {
     icon: () => <CustomerPickupIcon />,

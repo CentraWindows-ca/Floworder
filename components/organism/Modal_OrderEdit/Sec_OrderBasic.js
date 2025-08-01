@@ -11,8 +11,6 @@ import { LocalDataContext } from "./LocalDataProvider";
 
 import { DisplayBlock } from "./Com";
 
-const group = 'basic'
-
 const COMMON_FIELDS = constants.applyField([
   {
     Component: Editable.EF_Text,

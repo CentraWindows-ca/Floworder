@@ -3,7 +3,6 @@ import cn from "classnames";
 // styles
 import styles from "./styles.module.scss";
 
-// TODO: add title if we have more pages
 const Com = ({ orderBy, col, ...props }) => {
   const {sortBy, dir} = orderBy || {};
 

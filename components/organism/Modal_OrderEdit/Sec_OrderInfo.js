@@ -15,8 +15,6 @@ import { LocalDataContext } from "./LocalDataProvider";
 
 import { displayFilter, Block } from "./Com";
 
-const group = "information";
-
 const COMMON_FIELDS = constants.applyField([
   {
     Component: Editable.EF_SelectWithLabel,

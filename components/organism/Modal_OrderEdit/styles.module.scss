@@ -58,6 +58,7 @@
     background-color: $color_white;
     display: flex;
     flex-direction: column;
+
     .togglePadding {
         padding: 10px;
     }
@@ -277,6 +278,35 @@
         padding: 0px 10px;
         margin: 10px 0px;
     }
+}
+
+.addonContainer {
+    padding: 10px;
+    border-bottom: 1px solid $color_border_table;
+    background-color: $color_white;
+    display: flex;
+
+    .addonListContainer {
+        display: flex;
+        gap: 10px;
+    }
+
+    .addonParent,
+    .addonItem {
+        color: $color_centraBlue;
+        text-decoration: underline;
+        cursor: pointer;
+
+        &:hover {
+            color: $color_centraBlue_hover;
+            font-weight: 600;
+        }
+
+        &.active {
+            font-weight: 900;
+        }
+    }
+
 }
 
 .collapseContainer {}

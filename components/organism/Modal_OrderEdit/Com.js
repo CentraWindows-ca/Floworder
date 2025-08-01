@@ -429,6 +429,24 @@ export const checkEditableById = ({ id, permissions, data, initKind }) => {
     }
   }
 
+  /*
+  NOTE 20250729
+  Addon inheritates from parent fields doesnt allow to edit
+  */
+  if (data?.m_isAddon) {
+    if (checkGroup("basic")) {
+      isEnable = false;
+    }
+
+    if (checkGroup("information") && id?.startsWith("m_")) {
+      isEnable = false;
+    }
+
+    if (['m_ShippingStartDate', 'm_RevisedDeliveryDate', 'w_CustomerDate', 'd_CustomerDate'].includes(id)) {
+      isEnable = false;
+    }
+  }
+
   return isEnable;
 };
 
