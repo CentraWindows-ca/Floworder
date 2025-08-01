@@ -862,9 +862,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = 'w' }) => {
     setUpdatingValues({});
     setIsUpdate({});
   };
-
-  console.log(isUpdate);
-
+  
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState({});
   const columns = constants.applyField([
