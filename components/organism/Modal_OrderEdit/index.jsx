@@ -198,7 +198,7 @@ const Com = ({}) => {
       headerClassName={styles.modalHeader}
       titleClassName={"flex justify-content-between flex-grow-1"}
     >
-      {/* <AddonSelector /> */}
+      <AddonSelector />
       <span id="basic" />
       <LoadingBlock isLoading={isLoading}>
         <div className={cn(styles.modalContentContainer)}>
@@ -335,17 +335,17 @@ const AddonSelector = ({}) => {
 
   const addonlist = [
     {
-      m_MasterId: "d4958dac-01f5-4796-992b-ef2ead37f909",
+      m_MasterId: "358fe297-2e0b-44f2-84be-e15962521cab",
       m_WorkOrderNo: "VKTEST5",
       isParent: true,
     },
     {
-      m_MasterId: "e8ee66a5-4c29-4f4c-8aa3-8b43ef96e13d",
+      m_MasterId: "c2b74d04-01b1-4047-8b11-4bf0d66003c1",
       m_WorkOrderNo: "VKTEST8",
       isParent: false,
     },
     {
-      m_MasterId: "e8ee66a5-4c29-4f4c-8aa3-8b43ef96e13d",
+      m_MasterId: "c2b74d04-01b1-4047-8b11-4bf0d66003c1",
       m_WorkOrderNo: "VKTEST8",
       isParent: false,
     },
