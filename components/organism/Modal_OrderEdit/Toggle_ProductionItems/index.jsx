@@ -91,11 +91,8 @@ const Com = ({ title, id }) => {
     windowItems,
     doorItems,
     onBatchUpdateItems,
-    checkEditable,
     uiOrderType,
     dictionary,
-    initKind,
-    onAnchor,
     setExpands,
   } = useContext(LocalDataContext);
 
@@ -251,7 +248,7 @@ const Com = ({ title, id }) => {
                     handleShowItem,
                     list: grouppedItems,
                     stats,
-                    kind: dictKey.startsWith('doors') ? 'd' : 'w'
+                    kind: dictKey.startsWith("doors") ? "d" : "w",
                   }}
                 />
               );
@@ -264,7 +261,6 @@ const Com = ({ title, id }) => {
         onSave={handleSaveItem}
         onHide={handleCloseItem}
         initItem={editingItem}
-        checkEditable={checkEditable}
       />
     </>
   );
@@ -273,6 +269,10 @@ const Com = ({ title, id }) => {
 const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
   const { onBatchUpdateItems, checkEditable } = useContext(LocalDataContext);
   const data = list?.[dictKey];
+
+  const blockId = "WINDOW.windowItems";
+  const group = "windowitems";
+  const _isGroupEditable = checkEditable({ group })
 
   const [updatingValues, setUpdatingValues] = useState({});
   const handleUpdate = (id, v, k, initV) => {
@@ -346,7 +346,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
                   : record[updatingKey],
               onChange: (v) =>
                 handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
-              disabled: !checkEditable({ group: "windowitems" }),
+              disabled: !_isGroupEditable,
             }}
           />
         );
@@ -369,7 +369,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
                   : record[updatingKey],
               onChange: (v) =>
                 handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
-              disabled: !checkEditable({ group: "windowitems" }),
+              disabled: !_isGroupEditable,
             }}
           />
         );
@@ -392,7 +392,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
                   : record[updatingKey],
               onChange: (v) =>
                 handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
-              disabled: !checkEditable({ group: "windowitems" }),
+              disabled: !_isGroupEditable,
             }}
           />
         );
@@ -415,7 +415,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
               onChange: (v) => {
                 handleUpdate(record?.Id, v, updatingKey, record[updatingKey]);
               },
-              disabled: !checkEditable({ group: "windowitems" }),
+              disabled: !_isGroupEditable,
               size: "sm",
               placeholder: "--",
             }}
@@ -454,7 +454,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
               id: `${record?.Id}_RackLocation`,
               isDisplayAvilible: false,
               size: "sm",
-              disabled: !checkEditable({ group: "windowitems" }),
+              disabled: !_isGroupEditable,
             }}
           />
         );
@@ -478,7 +478,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
               id: `Status_${record?.Id}`,
               options: ITEM_STATUS,
               className: "form-select form-select-sm",
-              disabled: !checkEditable({ group: "windowitems" }),
+              disabled: !_isGroupEditable,
             }}
           />
         );
@@ -521,7 +521,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
 
   return (
     !_.isEmpty(data) && (
-      <DisplayBlock id="WIN.windowItems">
+      <DisplayBlock id={blockId}>
         <div className={styles.togglePadding} id={dictKey}>
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
             <label>
@@ -532,7 +532,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
                 className="btn btn-primary btn-sm me-2"
                 disabled={
                   _.isEmpty(updatingValues) ||
-                  !checkEditable({ group: "windowitems" })
+                  !_isGroupEditable
                 }
                 onClick={handleSave}
               >
@@ -542,7 +542,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
                 className="btn btn-secondary btn-sm"
                 disabled={
                   _.isEmpty(updatingValues) ||
-                  !checkEditable({ group: "windowitems" })
+                  !_isGroupEditable
                 }
                 onClick={() => setUpdatingValues({})}
               >
@@ -573,6 +573,10 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
 const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
   const { onBatchUpdateItems, checkEditable } = useContext(LocalDataContext);
   const data = list?.[dictKey];
+
+  const blockId = "DOOR.doorItems";
+  const group = "dooritems";
+  const _isGroupEditable = checkEditable({ group })
 
   const [updatingValues, setUpdatingValues] = useState({});
   const handleUpdate = (id, v, k, initV) => {
@@ -649,7 +653,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
                   updatingKey,
                   record[updatingKey],
                 ),
-              disabled: !checkEditable({ group: "dooritems" }),
+              disabled: !_isGroupEditable,
             }}
           />
         );
@@ -664,14 +668,14 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
         return (
           <Editable.EF_Input
             {...{
-              id: `wi_${updatingKey}_${record?.Id}`,
+              id: `di_${updatingKey}_${record?.Id}`,
               value:
                 overrideValue !== undefined
                   ? overrideValue
                   : record[updatingKey],
               onChange: (v) =>
                 handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
-              disabled: !checkEditable({ group: "windowitems" }),
+              disabled: !_isGroupEditable,
               size: "sm",
               placeholder: "--",
             }}
@@ -710,7 +714,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
               id: `${record?.Id}_RackLocation`,
               isDisplayAvilible: false,
               size: "sm",
-              disabled: !checkEditable({ group: "dooritems" }),
+              disabled: !_isGroupEditable,
             }}
           />
         );
@@ -734,7 +738,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
               id: `Status_${record?.Id}`,
               options: ITEM_STATUS,
               className: "form-select form-select-sm",
-              disabled: !checkEditable({ group: "dooritems" }),
+              disabled: !_isGroupEditable,
             }}
           />
         );
@@ -777,7 +781,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
 
   return (
     !_.isEmpty(data) && (
-      <DisplayBlock id="DOOR.doorItems">
+      <DisplayBlock id={blockId}>
         <div className={styles.togglePadding} id={dictKey}>
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
             <label>
@@ -788,7 +792,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
                 className="btn btn-primary btn-sm me-2"
                 disabled={
                   _.isEmpty(updatingValues) ||
-                  !checkEditable({ group: "dooritems" })
+                  !_isGroupEditable
                 }
                 onClick={handleSave}
               >
@@ -798,7 +802,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
                 className="btn btn-secondary btn-sm"
                 disabled={
                   _.isEmpty(updatingValues) ||
-                  !checkEditable({ group: "dooritems" })
+                  !_isGroupEditable
                 }
                 onClick={() => setUpdatingValues({})}
               >
@@ -826,12 +830,13 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
   );
 };
 
-const TableOther = ({ stats, list, label, dictKey, kind = 'w' }) => {
+const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
   const { onBatchUpdateItems, checkEditable } = useContext(LocalDataContext);
   const data = list?.[dictKey];
 
-  const blockId = kind === "w" ? "WINDOW.windowItems": "DOOR.doorItems"
-  const group = kind === 'w' ? 'windowitems' : 'dooritems'
+  const blockId = kind === "w" ? "WINDOW.windowItems" : "DOOR.doorItems";
+  const group = kind === "w" ? "windowitems" : "dooritems";
+ const _isGroupEditable = checkEditable({ group })
 
   const [isUpdate, setIsUpdate] = useState({});
 
@@ -863,34 +868,35 @@ const TableOther = ({ stats, list, label, dictKey, kind = 'w' }) => {
     setIsUpdate({});
   };
 
-  console.log(isUpdate);
-
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState({});
+
+ 
   const columns = constants.applyField([
-    {
-      // NOTE 20250730: update/not update of others
-      key: "isUpdate",
-      title: "Update",
-      width: 40,
-      render: (t, record) => {
-        const updatingKey = "isUpdate";
-        return (
-          <Editable.EF_Checkbox
-            {...{
-              id: `di_${updatingKey}_${record?.Id}`,
-              value: isUpdate?.[record?.Id],
-              onChange: (v) =>
-                setIsUpdate((prev) => ({
-                  ...prev,
-                  [record?.Id]: !prev?.[record?.Id],
-                })),
-              disabled: !checkEditable({ group }),
-            }}
-          />
-        );
-      },
-    },
+    _isGroupEditable
+      ? {
+          // NOTE 20250730: update/not update of others
+          key: "isUpdate",
+          title: "Update",
+          width: 40,
+          render: (t, record) => {
+            const updatingKey = "isUpdate";
+            return (
+              <Editable.EF_Checkbox
+                {...{
+                  id: `di_${updatingKey}_${record?.Id}`,
+                  value: isUpdate?.[record?.Id],
+                  onChange: (v) =>
+                    setIsUpdate((prev) => ({
+                      ...prev,
+                      [record?.Id]: !prev?.[record?.Id],
+                    })),
+                }}
+              />
+            );
+          },
+        }
+      : null,
     {
       key: "Item",
       width: 80,
@@ -931,7 +937,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = 'w' }) => {
                   : record[updatingKey],
               onChange: (v) =>
                 handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
-              disabled: !checkEditable({ group }),
+              disabled: !_isGroupEditable,
               size: "sm",
               placeholder: "--",
             }}
@@ -974,8 +980,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = 'w' }) => {
               placeholder: "--",
               disabled:
                 // NOTE 20250730: update/not update of others
-                !isUpdate?.[record?.Id] ||
-                !checkEditable({ group }),
+                !isUpdate?.[record?.Id] || !_isGroupEditable,
             }}
           />
         );
@@ -992,7 +997,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = 'w' }) => {
 
         // NOTE 20250730: update/not update of others
         if (!isUpdate?.[record?.Id]) {
-          return !value || value === 'Not Started' ? '--': value;
+          return !value || value === "Not Started" ? "--" : value;
         }
 
         return (
@@ -1004,7 +1009,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = 'w' }) => {
               id: `Status_${record?.Id}`,
               options: ITEM_STATUS,
               className: "form-select form-select-sm",
-              disabled: !checkEditable({ group }),
+              disabled: !_isGroupEditable,
             }}
           />
         );
@@ -1041,8 +1046,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = 'w' }) => {
               <button
                 className="btn btn-primary btn-sm me-2"
                 disabled={
-                  _.isEmpty(updatingValues) ||
-                  !checkEditable({ group})
+                  _.isEmpty(updatingValues) || !_isGroupEditable
                 }
                 onClick={handleSave}
               >
@@ -1051,8 +1055,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = 'w' }) => {
               <button
                 className="btn btn-secondary btn-sm"
                 disabled={
-                  _.isEmpty(updatingValues) ||
-                  !checkEditable({ group })
+                  _.isEmpty(updatingValues) || !_isGroupEditable
                 }
                 onClick={() => setUpdatingValues({})}
               >

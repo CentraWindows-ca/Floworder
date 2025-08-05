@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import constants from "lib/constants";
 import cn from "classnames";
 import Modal from "components/molecule/Modal";
 import Editable from "components/molecule/Editable";
 import { ITEM_STATUS, ITEM_LITES, ITEM_DOOR_TYPES } from "lib/constants";
+import { LocalDataContext } from "../LocalDataProvider";
 import utils from "lib/utils";
 
 // styles
@@ -232,7 +233,8 @@ const DOOR_FIELDS = constants.applyField([
 ]);
 
 const Com = (props) => {
-  const { onHide, initItem, onSave, checkEditable } = props;
+  const { checkEditable } = useContext(LocalDataContext);
+  const { onHide, initItem, onSave } = props;
   const [item, setItem] = useState(null);
 
   useEffect(() => {
