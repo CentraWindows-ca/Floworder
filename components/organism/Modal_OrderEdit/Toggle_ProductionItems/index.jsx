@@ -272,7 +272,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
 
   const blockId = "WINDOW.windowItems";
   const group = "windowitems";
-  const _isGroupEditable = checkEditable({ group })
+  const _isGroupEditable = checkEditable({ group });
 
   const [updatingValues, setUpdatingValues] = useState({});
   const handleUpdate = (id, v, k, initV) => {
@@ -530,20 +530,14 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
             <div>
               <button
                 className="btn btn-primary btn-sm me-2"
-                disabled={
-                  _.isEmpty(updatingValues) ||
-                  !_isGroupEditable
-                }
+                disabled={_.isEmpty(updatingValues) || !_isGroupEditable}
                 onClick={handleSave}
               >
                 Save
               </button>
               <button
                 className="btn btn-secondary btn-sm"
-                disabled={
-                  _.isEmpty(updatingValues) ||
-                  !_isGroupEditable
-                }
+                disabled={_.isEmpty(updatingValues) || !_isGroupEditable}
                 onClick={() => setUpdatingValues({})}
               >
                 Cancel
@@ -576,7 +570,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
 
   const blockId = "DOOR.doorItems";
   const group = "dooritems";
-  const _isGroupEditable = checkEditable({ group })
+  const _isGroupEditable = checkEditable({ group });
 
   const [updatingValues, setUpdatingValues] = useState({});
   const handleUpdate = (id, v, k, initV) => {
@@ -790,20 +784,14 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
             <div>
               <button
                 className="btn btn-primary btn-sm me-2"
-                disabled={
-                  _.isEmpty(updatingValues) ||
-                  !_isGroupEditable
-                }
+                disabled={_.isEmpty(updatingValues) || !_isGroupEditable}
                 onClick={handleSave}
               >
                 Save
               </button>
               <button
                 className="btn btn-secondary btn-sm"
-                disabled={
-                  _.isEmpty(updatingValues) ||
-                  !_isGroupEditable
-                }
+                disabled={_.isEmpty(updatingValues) || !_isGroupEditable}
                 onClick={() => setUpdatingValues({})}
               >
                 Cancel
@@ -830,17 +818,46 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
   );
 };
 
+const initialValueOfStatus = ITEM_STATUS?.find((a) => a.sort === 0)?.key;
 const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
   const { onBatchUpdateItems, checkEditable } = useContext(LocalDataContext);
   const data = list?.[dictKey];
 
   const blockId = kind === "w" ? "WINDOW.windowItems" : "DOOR.doorItems";
   const group = kind === "w" ? "windowitems" : "dooritems";
- const _isGroupEditable = checkEditable({ group })
+  const _isGroupEditable = checkEditable({ group });
 
   const [isUpdate, setIsUpdate] = useState({});
-
   const [updatingValues, setUpdatingValues] = useState({});
+
+  useEffect(() => {
+    init(data);
+  }, [data]);
+
+  const init = (data) => {
+    let _isUpdateInit = {};
+    if (data) {
+      // preset isUpdate
+      data?.forEach((a) => {
+        const { RackLocationId, Status, Id } = a;
+
+        let _allowupdate = false;
+
+        // if its already updated
+        if (RackLocationId) _allowupdate = true;
+        if (Status && Status !== initialValueOfStatus) _allowupdate = true;
+
+        if (_allowupdate) {
+          _isUpdateInit[Id] = true;
+        }
+      });
+
+      setIsUpdate(_isUpdateInit);
+    }
+
+    setUpdatingValues({})
+  };
+
   const handleUpdate = (id, v, k, initV) => {
     setUpdatingValues((prev) => {
       const _v = JSON.parse(JSON.stringify(prev));
@@ -871,7 +888,27 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState({});
 
- 
+  // ====== updatable rule
+  const handleIsUpdateChange = (v, record) => {
+    setIsUpdate((prev) => {
+      return {
+        ...prev,
+        [record?.Id]: v,
+      };
+    });
+
+    if (!v) {
+      setUpdatingValues((prev) => {
+        const _v = JSON.parse(JSON.stringify(prev));
+
+        _.set(_v, [record?.Id, 'RackLocationId'], '')
+        _.set(_v, [record?.Id, 'Status'], initialValueOfStatus)
+
+        return _v;
+      });
+    }
+  };
+
   const columns = constants.applyField([
     _isGroupEditable
       ? {
@@ -886,11 +923,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
                 {...{
                   id: `di_${updatingKey}_${record?.Id}`,
                   value: isUpdate?.[record?.Id],
-                  onChange: (v) =>
-                    setIsUpdate((prev) => ({
-                      ...prev,
-                      [record?.Id]: !prev?.[record?.Id],
-                    })),
+                  onChange: (v) => handleIsUpdateChange(v, record),
                 }}
               />
             );
@@ -955,6 +988,11 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
 
         const value =
           overrideValue !== undefined ? overrideValue : record[updatingKey];
+          
+        // NOTE 20250730: update/not update of others
+        if (!isUpdate?.[record?.Id]) {
+          return !value || value === "Not Started" ? "" : value;
+        }
 
         return (
           <Editable.EF_Rack
@@ -997,7 +1035,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
 
         // NOTE 20250730: update/not update of others
         if (!isUpdate?.[record?.Id]) {
-          return !value || value === "Not Started" ? "--" : value;
+          return !value || value === "Not Started" ? "" : value;
         }
 
         return (
@@ -1045,19 +1083,15 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
             <div>
               <button
                 className="btn btn-primary btn-sm me-2"
-                disabled={
-                  _.isEmpty(updatingValues) || !_isGroupEditable
-                }
+                disabled={_.isEmpty(updatingValues) || !_isGroupEditable}
                 onClick={handleSave}
               >
                 Save
               </button>
               <button
                 className="btn btn-secondary btn-sm"
-                disabled={
-                  _.isEmpty(updatingValues) || !_isGroupEditable
-                }
-                onClick={() => setUpdatingValues({})}
+                disabled={_.isEmpty(updatingValues) || !_isGroupEditable}
+                onClick={() => init(data)}
               >
                 Cancel
               </button>
