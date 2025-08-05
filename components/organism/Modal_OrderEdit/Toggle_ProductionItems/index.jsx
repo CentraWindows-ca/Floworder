@@ -827,7 +827,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
   const group = kind === "w" ? "windowitems" : "dooritems";
   const _isGroupEditable = checkEditable({ group });
 
-  const [isUpdate, setIsUpdate] = useState({});
+  const [isUpdatableMapping, setIsUpdatableMapping] = useState({});
   const [updatingValues, setUpdatingValues] = useState({});
 
   useEffect(() => {
@@ -835,24 +835,24 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
   }, [data]);
 
   const init = (data) => {
-    let _isUpdateInit = {};
+    let _isUpdatableMappingInit = {};
     if (data) {
-      // preset isUpdate
+      // preset isUpdatableMapping
       data?.forEach((a) => {
         const { RackLocationId, Status, Id } = a;
 
         let _allowupdate = false;
 
-        // if its already updated
+        // NOTE: rack and status - if its updatable
         if (RackLocationId) _allowupdate = true;
         if (Status && Status !== initialValueOfStatus) _allowupdate = true;
 
         if (_allowupdate) {
-          _isUpdateInit[Id] = true;
+          _isUpdatableMappingInit[Id] = true;
         }
       });
 
-      setIsUpdate(_isUpdateInit);
+      setIsUpdatableMapping(_isUpdatableMappingInit);
     }
 
     setUpdatingValues({})
@@ -882,15 +882,15 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
 
     await onBatchUpdateItems(updates, kind);
     setUpdatingValues({});
-    setIsUpdate({});
+    setIsUpdatableMapping({});
   };
 
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState({});
 
   // ====== updatable rule
-  const handleIsUpdateChange = (v, record) => {
-    setIsUpdate((prev) => {
+  const handleChangeIsUpdatable = (v, record) => {
+    setIsUpdatableMapping((prev) => {
       return {
         ...prev,
         [record?.Id]: v,
@@ -900,7 +900,8 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
     if (!v) {
       setUpdatingValues((prev) => {
         const _v = JSON.parse(JSON.stringify(prev));
-
+        
+        // NOTE: rack and status - if its updatable
         _.set(_v, [record?.Id, 'RackLocationId'], '')
         _.set(_v, [record?.Id, 'Status'], initialValueOfStatus)
 
@@ -913,17 +914,17 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
     _isGroupEditable
       ? {
           // NOTE 20250730: update/not update of others
-          key: "isUpdate",
+          key: "isUpdatableMapping",
           title: "Update",
           width: 40,
           render: (t, record) => {
-            const updatingKey = "isUpdate";
+            const updatingKey = "isUpdatableMapping";
             return (
               <Editable.EF_Checkbox
                 {...{
                   id: `di_${updatingKey}_${record?.Id}`,
-                  value: isUpdate?.[record?.Id],
-                  onChange: (v) => handleIsUpdateChange(v, record),
+                  value: isUpdatableMapping?.[record?.Id],
+                  onChange: (v) => handleChangeIsUpdatable(v, record),
                 }}
               />
             );
@@ -990,7 +991,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
           overrideValue !== undefined ? overrideValue : record[updatingKey];
           
         // NOTE 20250730: update/not update of others
-        if (!isUpdate?.[record?.Id]) {
+        if (!isUpdatableMapping?.[record?.Id]) {
           return !value || value === "Not Started" ? "" : value;
         }
 
@@ -1018,7 +1019,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
               placeholder: "--",
               disabled:
                 // NOTE 20250730: update/not update of others
-                !isUpdate?.[record?.Id] || !_isGroupEditable,
+                !isUpdatableMapping?.[record?.Id] || !_isGroupEditable,
             }}
           />
         );
@@ -1034,7 +1035,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
           overrideValue !== undefined ? overrideValue : record[updatingKey];
 
         // NOTE 20250730: update/not update of others
-        if (!isUpdate?.[record?.Id]) {
+        if (!isUpdatableMapping?.[record?.Id]) {
           return !value || value === "Not Started" ? "" : value;
         }
 
