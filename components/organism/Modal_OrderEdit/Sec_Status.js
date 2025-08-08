@@ -90,17 +90,24 @@ const Com = ({}) => {
 };
 
 const StatusUpdate = ({ statusLabel, currentKind }) => {
-  const { data, onUpdateStatus, checkEditable } = useContext(LocalDataContext);
+  const { data, onUpdateStatus, checkEditable, checkAddonField } =
+    useContext(LocalDataContext);
 
   const id = `${currentKind}_Status`;
 
   const uIstatusObj = ORDER_STATUS?.find((a) => a.key === data?.[id]) || {};
   const { color, label, textColor } = uIstatusObj;
   const [toggle, setToggle] = useState(false);
+  const addon = checkAddonField({ id });
 
   return (
     <>
-      <div className={cn("align-items-center flex flex-row gap-2 font-normal")}>
+      <div
+        className={cn(
+          "align-items-center flex flex-row gap-2 font-normal",
+          addon?.isSyncParent ? styles.addonSync_status : "",
+        )}
+      >
         <OverlayWrapper
           isLock={!checkEditable({ id })}
           renderTrigger={(onTrigger) => (

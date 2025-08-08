@@ -134,11 +134,15 @@ const Com = ({}) => {
 };
 
 const DisplayDate = (props) => {
-  const { id, displayId, title, Component, ...rest } = props
-  const { data, initData, onChange, validationResult, checkEditable } =
+  const { id, displayId, title, Component, className, ...rest } = props
+  const { data, initData, onChange, validationResult, checkEditable, checkAddonField } =
     useContext(LocalDataContext);
 
   const className_required = getIsRequired(initData, id) && "required";
+  const addon = checkAddonField({ id });
+  const addonClass = addon?.isSyncParent ? styles.addonSync_input : "";
+
+
   if (Component) {
     return (
       <Block
@@ -173,6 +177,7 @@ const DisplayDate = (props) => {
           }}
           disabled={!checkEditable({ id })}
           errorMessage={validationResult?.[id]}
+          className={cn(className, addonClass)}
           {...rest}
         />
       </div>

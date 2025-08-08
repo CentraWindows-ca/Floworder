@@ -9,10 +9,10 @@ import styles from "./styles.module.scss";
 import { LocalDataContext } from "../LocalDataProvider";
 import { ToggleFull, NoData, DisplayBlock, displayFilter, SaveButton } from "../Com";
 
-const group = "notes";
+// const group = "notes";
 
 const Com = ({}) => {
-  const { data, initData, validationResult, kind, uiOrderType, onChange, permissions, checkEditable, onHide } =
+  const { data, initData, validationResult, kind, uiOrderType, onChange, permissions, checkEditable, checkAddonField, onHide } =
     useContext(LocalDataContext);
 
   const COMMON_FIELDS = constants.applyField([
@@ -75,6 +75,9 @@ const Com = ({}) => {
   );
 
   const jsxNoteBlock = (id) => {
+    const addon = checkAddonField({ id });
+    const addonClass = addon?.isSyncParent ? styles.addonSync_input : "";
+
     return (
       <DisplayBlock id={id}>
         <div>
@@ -93,6 +96,7 @@ const Com = ({}) => {
             isHighlightDiff
             onChange={(v) => onChange(v, id)}
             disabled={!checkEditable({ id })}
+            className={cn(addonClass)}
             errorMessage = {validationResult?.[id]}
             rows={3}
           />

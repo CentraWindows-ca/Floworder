@@ -1,5 +1,7 @@
 @use "styles/theme" as *;
 
+
+
 .root {
     overflow: auto;
     height: 100%;
@@ -280,35 +282,6 @@
     }
 }
 
-.addonContainer {
-    padding: 10px;
-    border-bottom: 1px solid $color_border_table;
-    background-color: $color_white;
-    display: flex;
-
-    .addonListContainer {
-        display: flex;
-        gap: 10px;
-    }
-
-    .addonParent,
-    .addonItem {
-        color: $color_centraBlue;
-        text-decoration: underline;
-        cursor: pointer;
-
-        &:hover {
-            color: $color_centraBlue_hover;
-            font-weight: 600;
-        }
-
-        &.active {
-            font-weight: 900;
-        }
-    }
-
-}
-
 .collapseContainer {}
 
 .hiddingContainer {
@@ -403,4 +376,89 @@
             }
         }
     }
+}
+
+// ====== Addons
+.addonContainer {
+    padding: 10px;
+    border-bottom: 1px solid $color_border_table;
+    background-color: $color_white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .addonMainContainer {
+        display: flex;
+        align-items: center;
+    }
+
+    .addonListContainer {
+        display: flex;
+        gap: 10px;
+    }
+
+    .addonLabel {
+        color: $color_gray_dark;
+    }
+    .addonParent,
+    .addonItem {
+        color: $color_centraBlue;
+        text-decoration: underline;
+        cursor: pointer;
+
+        &:hover {
+            color: $color_centraBlue_hover;
+            font-weight: 600;
+        }
+
+        &.active {
+            font-weight: 900;
+        }
+    }
+
+
+}
+.addonIconInfo {
+    color: $color_addonsync;
+    cursor: pointer;
+    font-size: .8em;
+}
+.addonIcon {
+    border: 1px solid $color_addonsync;
+    background-color: $color_background_addonsync;
+    display: inline-block;
+    height: 10px;
+    width: 20px;
+    margin: 0px 5px;
+}
+
+.addonSync_option {
+    background-color: $color_background_addonsync;
+}
+
+.addonSync_status {
+    .statesContainer {
+        outline: 2px solid $color_addonsync;
+    }
+}
+
+.addonSync_input {
+    background-color: $color_background_addonsync !important;
+
+    :global(.rbt-input-main) {
+        // background-color: $color_background_edited;
+        background-color: $color_background_addonsync !important;
+    }
+
+    &[type=checkbox]:checked {
+        background-color: $color_addonsync !important;
+    }
+}
+
+.addonParentIcon {
+    color: $color_gray;
+}
+
+.addonChildIcon {
+    color: $color_gray;
 }

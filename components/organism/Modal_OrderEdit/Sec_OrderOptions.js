@@ -75,7 +75,7 @@ const WINDOW_FIELDS = constants.applyField([
   //   id: "w_WaterTestingRequired",
 
   //   // NOTE: specific layout. triggered by w_WaterTestingRequired
-  //   renderSubItem: (data, onChange, isEditable) => {
+  //   renderSubItem: (data, onChange, isEditable, addon) => {
   //     if (data?.["w_WaterTestingRequired"] == 1) {
   //       return (
   //         <div className={styles.columnOptionsSubContainer}>
@@ -92,6 +92,7 @@ const WINDOW_FIELDS = constants.applyField([
   //             value={data?.["w_WaterPenetrationResistance"]}
   //             onChange={(v) => onChange(v, "w_WaterPenetrationResistance")}
   //             disabled={!isEditable}
+  //             addon = {addon}
   //           />
   //         </div>
   //       );
@@ -142,7 +143,7 @@ const Com = ({}) => {
       displayFilter(DOOR_FIELDS, {
         kind,
         uiOrderType,
-        permissions
+        permissions,
       }),
     );
 
@@ -150,7 +151,7 @@ const Com = ({}) => {
       displayFilter(WINDOW_FIELDS, {
         kind,
         uiOrderType,
-        permissions
+        permissions,
       }),
     );
   }, [kind, uiOrderType]);
@@ -193,35 +194,46 @@ const Com = ({}) => {
 };
 
 const Block = ({ inputData }) => {
-  const { data, initData, onChange, checkEditable, validationResult, dictionary } =
-    useContext(LocalDataContext);
+  const {
+    data,
+    initData,
+    onChange,
+    checkEditable,
+    checkAddonField,
+    validationResult,
+    dictionary,
+  } = useContext(LocalDataContext);
   let { title, icon, id, renderSubItem } = inputData;
+
+  const addon = checkAddonField({ id });
+  const addonClass = addon?.isSyncParent ? styles.addonSync_input : "";
   return (
     <DisplayBlock id={id} key={id}>
       <div>
         <Editable.EF_Checkbox_Yesno
           id={id}
           value={data?.[id]}
-          initValue = {initData?.[id]}
+          initValue={initData?.[id]}
           isHighlightDiff
           onChange={(v) => onChange(v, id)}
-          disabled={!checkEditable({id})}
-          errorMessage = {validationResult?.[id]}
+          disabled={!checkEditable({ id })}
+          errorMessage={validationResult?.[id]}
+          className={cn(addonClass)}
         />
       </div>
-      <div>
+      <div className={cn(addon?.isSyncParent ? styles.addonSync_option : "")}>
         <label
           htmlFor={id}
           className="align-items-center flex gap-1"
           style={{
-            cursor: checkEditable({id}) ? "pointer" : "default",
+            cursor: checkEditable({ id }) ? "pointer" : "default",
           }}
         >
           <div className="w-6">{icon()}</div>
           {title}
         </label>
         {typeof renderSubItem === "function"
-          ? renderSubItem(data, onChange, checkEditable({id}))
+          ? renderSubItem(data, onChange, checkEditable({ id }), addon)
           : null}
       </div>
     </DisplayBlock>

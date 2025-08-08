@@ -26,9 +26,11 @@ import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
 import {
   checkEditableById,
   checkEditableByGroup,
+  checkAddonFieldById,
   treateGlassItems,
 } from "./Com";
 import useLocalValidation from "./hooks/useLocalValidation";
+import useAddonFields from "./hooks/useAddonFields";
 import { TEMPORARY_DISPLAY_FILTER } from "../OrderList/_constants";
 
 export const LocalDataContext = createContext(null);
@@ -54,7 +56,7 @@ export const LocalDataProvider = ({
   ...props
 }) => {
   const generalContext = useContext(GeneralContext);
-  const { toast, permissions } = generalContext;
+  const { toast, permissions, dictionary } = generalContext;
   const { requestData } = useInterrupt();
   const [data, setData] = useState(null);
 
@@ -65,6 +67,10 @@ export const LocalDataProvider = ({
   const [editedGroup, setEditedGroup] = useState({});
 
   const [LbrBreakDowns, setLbrBreakDowns] = useState([]);
+
+  // addon
+  const [addonGroup, setAddonGroup] = useState({});
+  const [isInAddonGroup, setIsInAddonGroup] = useState(false);
 
   // only display. upload/delete will directly call function
   const [existingAttachments, setExistingAttachments] = useState(null);
@@ -187,9 +193,9 @@ export const LocalDataProvider = ({
 
     const mergedData = await doInitWo(initMasterId);
 
-    // TODO: ADDON - get addon parent
+    await doInitAddon(initMasterId);
 
-    // TODO: ADDON - get list of addons (master id or parent master id)
+    // TODO: ADDON - get addon parent
 
     if (mergedData) {
       if (initKind === "w" || getOrderKind(mergedData) === "w") {
@@ -272,6 +278,24 @@ export const LocalDataProvider = ({
       return mergedData;
     },
   );
+
+  const doInitAddon = useLoadingBar(async (initMasterId) => {
+    const _addonGroup = await OrdersApi.getAddsOnGroupByMasterId({
+      masterId: initMasterId,
+    });
+
+    const parent = _addonGroup?.find((a) => a.isParent);
+    const addons = _addonGroup?.filter((a) => !a.isParent);
+
+    // if there is only a parent
+    const _isInAddonGroup = !_.isEmpty(addons);
+    setAddonGroup({
+      parent,
+      addons
+    });
+    // setIsInAddonGroup(_isInAddonGroup);
+    setIsInAddonGroup(true);
+  });
 
   const initItems = useLoadingBar(async (initMasterId) => {
     // NOTE: if user open from window tab, eventhough its door order, we dont show doors
@@ -638,6 +662,12 @@ export const LocalDataProvider = ({
         _pass =
           _pass && checkEditableByGroup({ group, data, permissions, initKind });
       }
+
+      // if its addon workorder, check if field is addonField
+      // logic to check if split addon
+      const { isAddonEditable } = checkAddonField(params) || {};
+      _pass = _pass && isAddonEditable;
+
       return _pass;
     },
     [
@@ -647,6 +677,7 @@ export const LocalDataProvider = ({
       data?.w_Status,
       data?.d_Status,
       permissions,
+      dictionary,
     ],
   );
 
@@ -659,6 +690,35 @@ export const LocalDataProvider = ({
       );
     },
     [isEditable, initMasterId, data?.m_Status, permissions],
+  );
+
+  // called by each single input
+  const checkAddonField = useCallback(
+    (params = {}) => {
+      let result = {
+        isAddonEditable: true,
+        isSyncParent: false,
+      };
+      if (!isInAddonGroup) {
+        return result;
+      }
+      // if split(dettached)
+      const { id } = params;
+      if (id) {
+        const { workOrderFields } = dictionary;
+        return checkAddonFieldById({ id, data, workOrderFields, initKind });
+      }
+      return result;
+    },
+    [
+      isEditable,
+      initMasterId,
+      data?.m_Status,
+      data?.w_Status,
+      data?.d_Status,
+      dictionary?.workOrderFields,
+      isInAddonGroup,
+    ],
   );
 
   const { onValidate } = useLocalValidation({
@@ -717,6 +777,7 @@ export const LocalDataProvider = ({
     setIsEditable,
     checkEditable,
     checkEditableForSectionSaveButton,
+    checkAddonField,
     uiOrderType,
     uiShowMore,
     setUiShowMore,
@@ -725,6 +786,8 @@ export const LocalDataProvider = ({
     initData,
     isDeleted: initData?.m_IsActive === false,
     validationResult,
+    addonGroup,
+    isInAddonGroup,
   };
   return (
     <LocalDataContext.Provider value={context}>

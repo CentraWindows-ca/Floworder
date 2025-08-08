@@ -9,7 +9,7 @@ import Sec_Status from "./Sec_Status";
 import { GeneralContext } from "lib/provider/GeneralProvider";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
-
+import OverlayWrapper from "components/atom/OverlayWrapper";
 import Sec_OrderInfo from "./Sec_OrderInfo";
 import Sec_OrderBasic from "./Sec_OrderBasic";
 import Sec_OrderOptions from "./Sec_OrderOptions";
@@ -326,68 +326,90 @@ const CollapseContainer = ({ id, children }) => {
 };
 
 const AddonSelector = ({}) => {
-  const { data } = useContext(LocalDataContext);
+  const { data, addonGroup, isInAddonGroup } = useContext(LocalDataContext);
+
+  const [toggle, setToggle] = useState(false);
+
+  if (!isInAddonGroup) {
+    return null;
+  }
+
   const { onRoute } = useContext(GeneralContext);
 
   const handleSwitch = (masterId) => {
     onRoute({ masterId });
   };
 
-  const addonlist = [
-    {
-      m_MasterId: "358fe297-2e0b-44f2-84be-e15962521cab",
-      m_WorkOrderNo: "VKTEST5",
-      isParent: true,
-    },
-    {
-      m_MasterId: "c2b74d04-01b1-4047-8b11-4bf0d66003c1",
-      m_WorkOrderNo: "VKTEST8",
-      isParent: false,
-    },
-    {
-      m_MasterId: "c2b74d04-01b1-4047-8b11-4bf0d66003c1",
-      m_WorkOrderNo: "VKTEST8",
-      isParent: false,
-    },
-  ];
+  const { parent, addons } = addonGroup || {};
 
   return (
-    <div className={cn(styles.addonContainer)}>
-      <span className="me-2">Parent order:</span>
-      {addonlist
-        ?.filter((a) => a.isParent)
-        ?.map((a) => {
-          return (
-            <div
-              className={cn(
-                styles.addonParent,
-                a?.m_MasterId === data?.m_MasterId ? styles.active : "",
-              )}
-              onClick={() => handleSwitch(a?.m_MasterId)}
-            >
-              {a.m_WorkOrderNo}
-            </div>
-          );
-        })}
-      <span className="me-2 ms-3">Addons:</span>
-      <div className={cn(styles.addonListContainer)}>
-        {addonlist
-          ?.filter((a) => !a.isParent)
-          ?.map((a) => {
-            return (
-              <div
-                className={cn(
-                  styles.addonItem,
-                  a?.m_MasterId === data?.m_MasterId ? styles.active : "",
-                )}
-                onClick={() => handleSwitch(a?.m_MasterId)}
-              >
-                {a.m_WorkOrderNo}
+    <>
+      <div className={cn(styles.addonContainer)}>
+        <div className={cn(styles.addonMainContainer)}>
+          <span className={cn(styles.addonLabel, "me-2")}>
+            {/* <div className={styles.addonParentIcon}></div>  */}
+            <i className={cn("fas fa-box me-1", styles.addonParentIcon)} />
+            Parent order:
+          </span>
+
+          <div
+            className={cn(
+              styles.addonParent,
+              parent?.m_MasterId === data?.m_MasterId ? styles.active : "",
+            )}
+            onClick={() => handleSwitch(parent?.m_MasterId)}
+          >
+            {parent.m_WorkOrderNo}
+          </div>
+
+          {!_.isEmpty(addons) && (
+            <>
+              <span className={cn(styles.addonLabel, "me-2 ms-3")}>
+                <i
+                  className={cn(
+                    "fa-solid fa-file-circle-plus",
+                    styles.addonChildIcon,
+                  )}
+                />{" "}
+                Addons:
+              </span>
+              <div className={cn(styles.addonListContainer)}>
+                {addons?.map((a) => {
+                  return (
+                    <div
+                      className={cn(
+                        styles.addonItem,
+                        a?.m_MasterId === data?.m_MasterId ? styles.active : "",
+                      )}
+                      onClick={() => handleSwitch(a?.m_MasterId)}
+                    >
+                      {a.m_WorkOrderNo}
+                    </div>
+                  );
+                })}
               </div>
-            );
-          })}
+
+              <OverlayWrapper
+                renderTrigger={() => (
+                  <i
+                    className={cn(
+                      styles.addonIconInfo,
+                      "fa-solid fa-circle-info",
+                    )}
+                  />
+                )}
+                toggle={toggle}
+              >
+                <div className="d-flex align-items-center p-2">
+                  background color <div className={cn(styles.addonIcon)}></div>{" "}
+                  means inherited data from {parent.m_WorkOrderNo}
+                </div>
+              </OverlayWrapper>
+            </>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -101,6 +101,7 @@ export const Block = ({ className_input, inputData }) => {
     initData,
     onChange,
     checkEditable,
+    checkAddonField,
     validationResult,
     dictionary,
   } = useContext(LocalDataContext);
@@ -112,6 +113,7 @@ export const Block = ({ className_input, inputData }) => {
     options,
     overrideOnChange,
     renderValue,
+    className,
     ...rest
   } = inputData;
   if (typeof options === "function") {
@@ -119,9 +121,9 @@ export const Block = ({ className_input, inputData }) => {
   }
   const className_required = getIsRequired(initData, id) && "required";
 
-  const _value = renderValue
-    ? renderValue(data?.[id], data)
-    : data?.[id];
+  const _value = renderValue ? renderValue(data?.[id], data) : data?.[id];
+  const addon = checkAddonField({ id });
+  const addonClass = addon?.isSyncParent ? styles.addonSync_input : "";
 
   return (
     <DisplayBlock id={displayId || id}>
@@ -142,6 +144,7 @@ export const Block = ({ className_input, inputData }) => {
           disabled={!checkEditable({ id })}
           options={options}
           errorMessage={validationResult?.[id]}
+          className={cn(className, addonClass)}
           {...rest}
         />
       </div>
@@ -442,7 +445,14 @@ export const checkEditableById = ({ id, permissions, data, initKind }) => {
       isEnable = false;
     }
 
-    if (['m_ShippingStartDate', 'm_RevisedDeliveryDate', 'w_CustomerDate', 'd_CustomerDate'].includes(id)) {
+    if (
+      [
+        "m_ShippingStartDate",
+        "m_RevisedDeliveryDate",
+        "w_CustomerDate",
+        "d_CustomerDate",
+      ].includes(id)
+    ) {
       isEnable = false;
     }
   }
@@ -478,6 +488,30 @@ export const checkEditableByGroup = ({ group, permissions, data }) => {
   // }
 
   return isAllowAny;
+};
+
+export const checkAddonFieldById = ({
+  id,
+  data,
+  workOrderFields,
+  initKind,
+}) => {
+  let result = { isAddonEditable: true, isSyncParent: false };
+
+  // if data?.m_AddonStatus === 'SPLIT', isAddonEditable is true
+
+  if (workOrderFields?.[id]) {
+    const { isReadOnly, isSpliteNotSync, isSyncedFromParent } =
+      workOrderFields[id];
+
+    result = {
+      isAddonEditable: !isReadOnly,
+      isSyncParent: isSyncedFromParent,
+      isSpliteNotSync,
+    };
+  }
+
+  return result;
 };
 
 export default {};
