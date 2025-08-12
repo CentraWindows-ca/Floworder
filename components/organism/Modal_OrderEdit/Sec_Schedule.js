@@ -140,7 +140,7 @@ const DisplayDate = (props) => {
 
   const className_required = getIsRequired(initData, id) && "required";
   const addon = checkAddonField({ id });
-  const addonClass = addon?.isSyncParent ? styles.addonSync_input : "";
+  const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
 
 
   if (Component) {

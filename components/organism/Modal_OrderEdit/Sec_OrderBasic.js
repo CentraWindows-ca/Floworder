@@ -84,7 +84,7 @@ const Com = ({}) => {
       {COMMON_FIELDS?.map((a, i) => {
         const { id, Component, title, overrideOnChange, ...rest } = a;
         const addon = checkAddonField({ id });
-        const addonClass = addon?.isSyncParent ? styles.addonSync_input : "";
+        const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
 
         return (
           <DisplayBlock id={id} key={id}>

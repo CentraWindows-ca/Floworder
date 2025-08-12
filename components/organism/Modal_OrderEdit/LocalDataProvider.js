@@ -182,6 +182,8 @@ export const LocalDataProvider = ({
     setInitDataReturnTrips(null);
     setEditedGroup({});
     setValidationResult(null);
+    setAddonGroup({})
+    setIsInAddonGroup(false)
   };
 
   const doInit = async (initMasterId) => {
@@ -190,12 +192,12 @@ export const LocalDataProvider = ({
     setEditedGroup({});
     setIsEditable(initIsEditable);
     setValidationResult(null);
+    setAddonGroup({})
+    setIsInAddonGroup(false)
 
     const mergedData = await doInitWo(initMasterId);
 
     await doInitAddon(initMasterId);
-
-    // TODO: ADDON - get addon parent
 
     if (mergedData) {
       if (initKind === "w" || getOrderKind(mergedData) === "w") {
@@ -293,8 +295,8 @@ export const LocalDataProvider = ({
       parent,
       addons
     });
-    // setIsInAddonGroup(_isInAddonGroup);
-    setIsInAddonGroup(true);
+    setIsInAddonGroup(_isInAddonGroup);
+    // setIsInAddonGroup(true);
   });
 
   const initItems = useLoadingBar(async (initMasterId) => {
@@ -678,6 +680,8 @@ export const LocalDataProvider = ({
       data?.d_Status,
       permissions,
       dictionary,
+      isInAddonGroup,
+      addonGroup?.parent?.m_MasterId
     ],
   );
 
@@ -697,11 +701,13 @@ export const LocalDataProvider = ({
     (params = {}) => {
       let result = {
         isAddonEditable: true,
-        isSyncParent: false,
+        isSyncedFromParent: false,
       };
-      if (!isInAddonGroup) {
-        return result;
-      }
+
+      // if not addon or its addon parent
+      if (!isInAddonGroup) return result;
+      if (addonGroup?.parent?.m_MasterId === initMasterId) return result
+
       // if split(dettached)
       const { id } = params;
       if (id) {
@@ -718,6 +724,7 @@ export const LocalDataProvider = ({
       data?.d_Status,
       dictionary?.workOrderFields,
       isInAddonGroup,
+      addonGroup?.parent?.m_MasterId
     ],
   );
 

@@ -21,3 +21,10 @@ $primary-hover: #0273e2;
 .btn-sm {
 
 }
+
+.form-select {
+  cursor: pointer;
+}
+.form-select:disabled {
+  cursor: default;
+}

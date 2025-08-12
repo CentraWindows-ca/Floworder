@@ -123,7 +123,7 @@ export const Block = ({ className_input, inputData }) => {
 
   const _value = renderValue ? renderValue(data?.[id], data) : data?.[id];
   const addon = checkAddonField({ id });
-  const addonClass = addon?.isSyncParent ? styles.addonSync_input : "";
+  const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
 
   return (
     <DisplayBlock id={displayId || id}>
@@ -496,18 +496,28 @@ export const checkAddonFieldById = ({
   workOrderFields,
   initKind,
 }) => {
-  let result = { isAddonEditable: true, isSyncParent: false };
+  let result = { isAddonEditable: true, isSyncedFromParent: false };
 
   // if data?.m_AddonStatus === 'SPLIT', isAddonEditable is true
+  const isOrderNotSplited = data?.m_AddOnStatus === "0" || !data?.m_AddOnStatus;
 
   if (workOrderFields?.[id]) {
-    const { isReadOnly, isSpliteNotSync, isSyncedFromParent } =
+    const { 
+      isReadOnly, 
+      isSplitNotSync, 
+      isSyncedFromParent 
+    } =
       workOrderFields[id];
 
+    // disabled: isReadOnly or IsSplitNotSync and not split or isSyncedFromParent
+    let _readonly = isReadOnly;
+    _readonly = isReadOnly || (isOrderNotSplited && isSplitNotSync);
+    _readonly = _readonly || isSyncedFromParent;
+
     result = {
-      isAddonEditable: !isReadOnly,
-      isSyncParent: isSyncedFromParent,
-      isSpliteNotSync,
+      isAddonEditable: !_readonly,
+      isSyncedFromParent, // for visual
+      isSplitNotSync,
     };
   }
 

@@ -206,7 +206,7 @@ const Block = ({ inputData }) => {
   let { title, icon, id, renderSubItem } = inputData;
 
   const addon = checkAddonField({ id });
-  const addonClass = addon?.isSyncParent ? styles.addonSync_input : "";
+  const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
   return (
     <DisplayBlock id={id} key={id}>
       <div>
@@ -221,7 +221,7 @@ const Block = ({ inputData }) => {
           className={cn(addonClass)}
         />
       </div>
-      <div className={cn(addon?.isSyncParent ? styles.addonSync_option : "")}>
+      <div className={cn(addon?.isSyncedFromParent ? styles.addonSync_option : "")}>
         <label
           htmlFor={id}
           className="align-items-center flex gap-1"

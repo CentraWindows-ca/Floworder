@@ -105,7 +105,7 @@ const StatusUpdate = ({ statusLabel, currentKind }) => {
       <div
         className={cn(
           "align-items-center flex flex-row gap-2 font-normal",
-          addon?.isSyncParent ? styles.addonSync_status : "",
+          addon?.isSyncedFromParent ? styles.addonSync_status : "",
         )}
       >
         <OverlayWrapper

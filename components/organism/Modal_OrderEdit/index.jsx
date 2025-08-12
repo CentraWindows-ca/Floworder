@@ -330,7 +330,7 @@ const AddonSelector = ({}) => {
 
   const [toggle, setToggle] = useState(false);
 
-  if (!isInAddonGroup) {
+  if (!isInAddonGroup || !addonGroup.parent) {
     return null;
   }
 
@@ -394,7 +394,7 @@ const AddonSelector = ({}) => {
                   <i
                     className={cn(
                       styles.addonIconInfo,
-                      "fa-solid fa-circle-info",
+                      "fa-solid fa-circle-info ms-2",
                     )}
                   />
                 )}

@@ -76,7 +76,7 @@ const Com = ({}) => {
 
   const jsxNoteBlock = (id) => {
     const addon = checkAddonField({ id });
-    const addonClass = addon?.isSyncParent ? styles.addonSync_input : "";
+    const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
 
     return (
       <DisplayBlock id={id}>
