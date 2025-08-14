@@ -77,13 +77,13 @@ const COMMON_FIELDS = constants.applyField([
 ]);
 
 const Com = ({}) => {
-  const { data, initData, onChange, checkEditable, checkAddonField, validationResult} = useContext(LocalDataContext);
+  const { data, initData, onChange, checkEditable, checkAddOnField, validationResult} = useContext(LocalDataContext);
 
   return (
     <div className={cn(styles.columnInputsContainer)}>
       {COMMON_FIELDS?.map((a, i) => {
         const { id, Component, title, overrideOnChange, ...rest } = a;
-        const addon = checkAddonField({ id });
+        const addon = checkAddOnField({ id });
         const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
 
         return (

@@ -90,7 +90,7 @@ const Com = ({}) => {
 };
 
 const StatusUpdate = ({ statusLabel, currentKind }) => {
-  const { data, onUpdateStatus, checkEditable, checkAddonField } =
+  const { data, onUpdateStatus, checkEditable, checkAddOnField } =
     useContext(LocalDataContext);
 
   const id = `${currentKind}_Status`;
@@ -98,7 +98,7 @@ const StatusUpdate = ({ statusLabel, currentKind }) => {
   const uIstatusObj = ORDER_STATUS?.find((a) => a.key === data?.[id]) || {};
   const { color, label, textColor } = uIstatusObj;
   const [toggle, setToggle] = useState(false);
-  const addon = checkAddonField({ id });
+  const addon = checkAddOnField({ id });
 
   return (
     <>

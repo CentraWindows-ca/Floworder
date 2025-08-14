@@ -24,7 +24,7 @@ import Toggle_Files from "./Toggle_Files";
 import Toggle_ReturnTrips from "./Toggle_ReturnTrips";
 
 import { DisplayBlock } from "./Com";
-import constants, { WORKORDER_MAPPING } from "lib/constants";
+import constants, { ADDON_STATUS, WORKORDER_MAPPING } from "lib/constants";
 
 import Modal_OrderHistory from "components/organism/Modal_OrderHistory";
 // styles
@@ -43,6 +43,7 @@ const Com = ({}) => {
     onAnchor,
     onRestore,
     onGetWindowMaker,
+    onDetachAddOn,
 
     data,
 
@@ -198,7 +199,7 @@ const Com = ({}) => {
       headerClassName={styles.modalHeader}
       titleClassName={"flex justify-content-between flex-grow-1"}
     >
-      <AddonSelector />
+      <AddOnSelector />
       <span id="basic" />
       <LoadingBlock isLoading={isLoading}>
         <div className={cn(styles.modalContentContainer)}>
@@ -253,7 +254,7 @@ const Com = ({}) => {
           {checkEditable() && (
             <div
               className={cn(
-                "justify-content-center flex p-2",
+                "justify-content-center flex gap-2 p-2",
                 styles.buttonContainer,
               )}
               style={{
@@ -263,10 +264,11 @@ const Com = ({}) => {
                 zIndex: 5,
               }}
             >
+              {/* save button */}
               <button
                 className="btn btn-primary align-items-center flex gap-2 px-3"
                 disabled={
-                  !data?.m_WorkOrderNo || isSaving || _.isEmpty(editedGroup)
+                  !data?.m_WorkOrderNo || isSaving || _.isEmpty(editedGroup) // if there is any unsaved update
                 }
                 onClick={onSave}
               >
@@ -282,6 +284,27 @@ const Com = ({}) => {
                 )}
                 Save
               </button>
+
+              {/* detach button */}
+              {/* if it has parent */}
+              <PermissionBlock
+                featureCodeGroup={constants.FEATURE_CODES["om.prod.woDetachAddOn"]}
+                isValidationInactive = {true}
+              >
+                {data?.m_ParentMasterId ? (
+                  <button
+                    className="btn btn-outline-primary align-items-center flex gap-2 px-3"
+                    disabled={
+                      !data?.m_WorkOrderNo ||
+                      isSaving ||
+                      data?.m_AddOnStatus === ADDON_STATUS.detached // if already detached, disable
+                    }
+                    onClick={onDetachAddOn}
+                  >
+                    Detach AddOn
+                  </button>
+                ) : null}
+              </PermissionBlock>
             </div>
           )}
 
@@ -325,12 +348,10 @@ const CollapseContainer = ({ id, children }) => {
   );
 };
 
-const AddonSelector = ({}) => {
-  const { data, addonGroup, isInAddonGroup } = useContext(LocalDataContext);
+const AddOnSelector = ({}) => {
+  const { data, addonGroup, isInAddOnGroup } = useContext(LocalDataContext);
 
-  const [toggle, setToggle] = useState(false);
-
-  if (!isInAddonGroup || !addonGroup.parent) {
+  if (!isInAddOnGroup || !addonGroup.parent) {
     return null;
   }
 
@@ -371,7 +392,7 @@ const AddonSelector = ({}) => {
                     styles.addonChildIcon,
                   )}
                 />{" "}
-                Addons:
+                AddOns:
               </span>
               <div className={cn(styles.addonListContainer)}>
                 {addons?.map((a) => {
@@ -398,7 +419,6 @@ const AddonSelector = ({}) => {
                     )}
                   />
                 )}
-                toggle={toggle}
               >
                 <div className="d-flex align-items-center p-2">
                   background color <div className={cn(styles.addonIcon)}></div>{" "}

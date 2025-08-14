@@ -416,6 +416,13 @@ const Com = (props) => {
         display: !isDeleted,
       },
       // ========= status ========
+
+      // ========= addon ========
+      {
+        key: "m_AddOnsCount",
+      },
+      // ========= addon ========
+
       {
         key: "m_ShippingStartDate",
       },

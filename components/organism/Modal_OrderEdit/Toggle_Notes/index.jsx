@@ -12,7 +12,7 @@ import { ToggleFull, NoData, DisplayBlock, displayFilter, SaveButton } from "../
 // const group = "notes";
 
 const Com = ({}) => {
-  const { data, initData, validationResult, kind, uiOrderType, onChange, permissions, checkEditable, checkAddonField, onHide } =
+  const { data, initData, validationResult, kind, uiOrderType, onChange, permissions, checkEditable, checkAddOnField, onHide } =
     useContext(LocalDataContext);
 
   const COMMON_FIELDS = constants.applyField([
@@ -75,7 +75,7 @@ const Com = ({}) => {
   );
 
   const jsxNoteBlock = (id) => {
-    const addon = checkAddonField({ id });
+    const addon = checkAddOnField({ id });
     const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
 
     return (

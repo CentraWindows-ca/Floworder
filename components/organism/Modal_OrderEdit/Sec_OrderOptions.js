@@ -199,13 +199,13 @@ const Block = ({ inputData }) => {
     initData,
     onChange,
     checkEditable,
-    checkAddonField,
+    checkAddOnField,
     validationResult,
     dictionary,
   } = useContext(LocalDataContext);
   let { title, icon, id, renderSubItem } = inputData;
 
-  const addon = checkAddonField({ id });
+  const addon = checkAddOnField({ id });
   const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
   return (
     <DisplayBlock id={id} key={id}>

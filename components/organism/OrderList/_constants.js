@@ -33,6 +33,7 @@ const COLUMN_PROJECT = [
   "m_CustomerName",
   "m_ProjectName",
   "m_ProjectManagerName",
+  "m_AddOnsCount"
 ];
 
 export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {

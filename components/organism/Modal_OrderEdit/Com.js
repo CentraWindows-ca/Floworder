@@ -7,6 +7,7 @@ import constants, {
   WORKORDER_MAPPING,
   GlassRowStates,
   FEATURE_CODES,
+  ADDON_STATUS,
 } from "lib/constants";
 // styles
 import styles from "./styles.module.scss";
@@ -101,7 +102,7 @@ export const Block = ({ className_input, inputData }) => {
     initData,
     onChange,
     checkEditable,
-    checkAddonField,
+    checkAddOnField,
     validationResult,
     dictionary,
   } = useContext(LocalDataContext);
@@ -122,7 +123,7 @@ export const Block = ({ className_input, inputData }) => {
   const className_required = getIsRequired(initData, id) && "required";
 
   const _value = renderValue ? renderValue(data?.[id], data) : data?.[id];
-  const addon = checkAddonField({ id });
+  const addon = checkAddOnField({ id });
   const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
 
   return (
@@ -434,9 +435,9 @@ export const checkEditableById = ({ id, permissions, data, initKind }) => {
 
   /*
   NOTE 20250729
-  Addon inheritates from parent fields doesnt allow to edit
+  AddOn inheritates from parent fields doesnt allow to edit
   */
-  if (data?.m_isAddon) {
+  if (data?.m_isAddOn) {
     if (checkGroup("basic")) {
       isEnable = false;
     }
@@ -490,34 +491,37 @@ export const checkEditableByGroup = ({ group, permissions, data }) => {
   return isAllowAny;
 };
 
-export const checkAddonFieldById = ({
+export const checkAddOnFieldById = ({
   id,
   data,
   workOrderFields,
   initKind,
 }) => {
-  let result = { isAddonEditable: true, isSyncedFromParent: false };
+  let result = { isAddOnEditable: true, isSyncedFromParent: false };
 
-  // if data?.m_AddonStatus === 'SPLIT', isAddonEditable is true
-  const isOrderNotSplited = data?.m_AddOnStatus === "0" || !data?.m_AddOnStatus;
+  // if data?.m_AddOnStatus === 'SPLIT', isAddOnEditable is true
+  const isOrderDetach = data?.m_AddOnStatus === ADDON_STATUS.detached;
 
   if (workOrderFields?.[id]) {
-    const { 
-      isReadOnly, 
-      isSplitNotSync, 
-      isSyncedFromParent 
+    let { 
+      isReadOnly, // default
+      isSplitNotSync,  // functional purpose
+      isSyncedFromParent // visual color purpose
     } =
       workOrderFields[id];
 
-    // disabled: isReadOnly or IsSplitNotSync and not split or isSyncedFromParent
-    let _readonly = isReadOnly;
-    _readonly = isReadOnly || (isOrderNotSplited && isSplitNotSync);
-    _readonly = _readonly || isSyncedFromParent;
+    let _editable = !isReadOnly;
+    let _syncFromParent = isSyncedFromParent
+
+    // detach has higher priority. if that happens 
+    if (isSplitNotSync) {
+      _editable = isOrderDetach
+      _syncFromParent = !isOrderDetach
+    } 
 
     result = {
-      isAddonEditable: !_readonly,
-      isSyncedFromParent, // for visual
-      isSplitNotSync,
+      isAddOnEditable: _editable,
+      isSyncedFromParent: _syncFromParent, // visual for if sync
     };
   }
 
