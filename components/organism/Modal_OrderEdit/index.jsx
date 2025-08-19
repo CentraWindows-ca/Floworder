@@ -16,6 +16,7 @@ import Sec_OrderOptions from "./Sec_OrderOptions";
 import Sec_Schedule from "./Sec_Schedule";
 import Sec_Summary from "./Sec_Summary";
 import Sec_SiteLockout from "./Sec_SiteLockout";
+import Sec_AddonSelector from "./Sec_AddOnSelector";
 
 import Toggle_Notes from "./Toggle_Notes";
 import Toggle_ProductionItems from "./Toggle_ProductionItems";
@@ -126,7 +127,7 @@ const Com = ({}) => {
             [DELETED]
           </div>
         )}
-        <div className="align-items-center flex gap-2">
+        <div className="align-items-center flex gap-2 ms-2">
           <Sec_Status />
           {["Shipped"].includes(uIstatusObj?.key) &&
             data?.m_TransferredLocation && (
@@ -202,9 +203,11 @@ const Com = ({}) => {
       headerClassName={styles.modalHeader}
       titleClassName={"flex justify-content-between flex-grow-1"}
     >
-      {constants.DEV_HOLDING_FEATURES.v20250815_addon && <AddOnSelector />}
       <span id="basic" />
       <LoadingBlock isLoading={isLoading}>
+        {!constants.DEV_HOLDING_FEATURES.v20250815_addon && (
+          <Sec_AddonSelector />
+        )}
         <div className={cn(styles.modalContentContainer)}>
           <div
             className={cn(styles.gridsOfMainInfo, {
@@ -363,91 +366,6 @@ const CollapseContainer = ({ id, children }) => {
         )}
       >
         {children}
-      </div>
-    </>
-  );
-};
-
-const AddOnSelector = ({}) => {
-  const { data, addonGroup, isInAddOnGroup } = useContext(LocalDataContext);
-
-  if (!isInAddOnGroup || !addonGroup.parent) {
-    return null;
-  }
-
-  const { onRoute } = useContext(GeneralContext);
-
-  const handleSwitch = (masterId) => {
-    onRoute({ masterId });
-  };
-
-  const { parent, addons } = addonGroup || {};
-
-  return (
-    <>
-      <div className={cn(styles.addonContainer)}>
-        <div className={cn(styles.addonMainContainer)}>
-          <span className={cn(styles.addonLabel, "me-2")}>
-            {/* <div className={styles.addonParentIcon}></div>  */}
-            <i className={cn("fas fa-box me-1", styles.addonParentIcon)} />
-            Parent order:
-          </span>
-
-          <div
-            className={cn(
-              styles.addonParent,
-              parent?.m_MasterId === data?.m_MasterId ? styles.active : "",
-            )}
-            onClick={() => handleSwitch(parent?.m_MasterId)}
-          >
-            {parent.m_WorkOrderNo}
-          </div>
-
-          {!_.isEmpty(addons) && (
-            <>
-              <span className={cn(styles.addonLabel, "me-2 ms-3")}>
-                <i
-                  className={cn(
-                    "fa-solid fa-file-circle-plus",
-                    styles.addonChildIcon,
-                  )}
-                />{" "}
-                AddOns:
-              </span>
-              <div className={cn(styles.addonListContainer)}>
-                {addons?.map((a) => {
-                  return (
-                    <div
-                      className={cn(
-                        styles.addonItem,
-                        a?.m_MasterId === data?.m_MasterId ? styles.active : "",
-                      )}
-                      onClick={() => handleSwitch(a?.m_MasterId)}
-                    >
-                      {a.m_WorkOrderNo}
-                    </div>
-                  );
-                })}
-              </div>
-
-              <OverlayWrapper
-                renderTrigger={() => (
-                  <i
-                    className={cn(
-                      styles.addonIconInfo,
-                      "fa-solid fa-circle-info ms-2",
-                    )}
-                  />
-                )}
-              >
-                <div className="d-flex align-items-center p-2">
-                  background color <div className={cn(styles.addonIcon)}></div>{" "}
-                  means inherited data from {parent.m_WorkOrderNo}
-                </div>
-              </OverlayWrapper>
-            </>
-          )}
-        </div>
       </div>
     </>
   );

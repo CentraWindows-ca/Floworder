@@ -19,7 +19,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 5px;
-    min-height: 34px;
+    min-height: 30px;
     font-size: 1rem;
 }
 
@@ -145,6 +145,7 @@
     }
 
     .columnScheduledInput {
+
         & select,
         & input {
             max-width: 140px;
@@ -259,7 +260,7 @@
     padding: 0px;
     display: flex;
     flex-direction: column;
-    background-color: #F4F4F4;
+    background-color: $color_background_modal;
 
     .modalToolBar {
         padding: 5px 15px;
@@ -375,8 +376,52 @@
 }
 
 // ====== AddOns
+// .addonContainer {
+//     padding: 10px;
+//     padding-bottom: 0px;
+//     border-bottom: 1px solid $color_border_table;
+//     background-color: $color_white;
+//     display: flex;
+//     align-items: center;
+//     justify-content: space-between;
+
+//     .addonMainContainer {
+//         width: auto;
+//         border-collapse: collapse;
+//         margin-bottom: -1px;
+//     }
+//     .addonCell {
+//         padding: 4px 15px;
+//         // min-width: 10px;
+//     }
+
+//     .addonLabel {
+//         color: $color_gray_dark;
+//         display: flex;
+//         align-items: center;
+//         gap: 6px;
+//     }
+
+//     .addonParent,
+//     .addonItem {
+//         cursor: pointer;
+//         border: 1px solid $color_border_table;
+//         border-radius: 4px 4px 0px 0px;
+//         // border-bottom: none;
+//         &:hover {
+//             background-color: $color_background;
+//         }
+
+//         &.active {
+//             background-color: $color_background_modal;
+//             border-bottom: 1px solid $color_background_modal;
+//         }
+//     }
+// }
+
 .addonContainer {
     padding: 10px;
+    padding-bottom: 0px;
     border-bottom: 1px solid $color_border_table;
     background-color: $color_white;
     display: flex;
@@ -386,34 +431,53 @@
     .addonMainContainer {
         display: flex;
         align-items: center;
+        margin-bottom: -1px;
     }
 
     .addonListContainer {
         display: flex;
-        gap: 10px;
+        gap: 2px;
     }
 
     .addonLabel {
         color: $color_gray_dark;
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
 
-    .addonParent,
+
     .addonItem {
-        color: $color_centraBlue;
-        text-decoration: underline;
         cursor: pointer;
+        border: 1px solid $color_border_table;
+        border-radius: 4px 4px 0px 0px;
+        border-bottom: none;
+        padding: 8px 14px;
 
         &:hover {
-            color: $color_centraBlue_hover;
-            font-weight: 600;
+            background-color: $color_background_addonsync;
         }
 
         &.active {
-            font-weight: 900;
+            font-weight: bold;
+            background-color: $color_background_modal;
         }
     }
+    .addonParent {
+        display: flex;
+        gap: 2px;
+        // border: 1px solid $color_border_table;
+        border-radius: 4px;
+        padding: 2px 8px;
+        margin-left: 8px;
+        cursor: pointer;
+        align-items: center;
+        align-self: self-start;
 
-
+        &:hover {
+            background-color: $color_background_addonsync;
+        }
+    }
 }
 
 .addonIconInfo {
