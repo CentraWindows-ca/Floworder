@@ -9,12 +9,13 @@ import Sec_Status from "./Sec_Status";
 import { GeneralContext } from "lib/provider/GeneralProvider";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
-
+import OverlayWrapper from "components/atom/OverlayWrapper";
 import Sec_OrderInfo from "./Sec_OrderInfo";
 import Sec_OrderBasic from "./Sec_OrderBasic";
 import Sec_OrderOptions from "./Sec_OrderOptions";
 import Sec_Schedule from "./Sec_Schedule";
 import Sec_Summary from "./Sec_Summary";
+import Sec_SiteLockout from "./Sec_SiteLockout";
 
 import Toggle_Notes from "./Toggle_Notes";
 import Toggle_ProductionItems from "./Toggle_ProductionItems";
@@ -24,7 +25,7 @@ import Toggle_Files from "./Toggle_Files";
 import Toggle_ReturnTrips from "./Toggle_ReturnTrips";
 
 import { DisplayBlock } from "./Com";
-import constants, { WORKORDER_MAPPING } from "lib/constants";
+import constants, { ADDON_STATUS, WORKORDER_MAPPING } from "lib/constants";
 
 import Modal_OrderHistory from "components/organism/Modal_OrderHistory";
 // styles
@@ -43,8 +44,10 @@ const Com = ({}) => {
     onAnchor,
     onRestore,
     onGetWindowMaker,
+    onDetachAddOn,
 
     data,
+    initDataSiteLockout,
 
     kind,
     checkEditable,
@@ -70,6 +73,7 @@ const Com = ({}) => {
   };
 
   const isOnStatusAllowToEdit = true; // ![WORKORDER_MAPPING.Pending.key].includes( data?.["m_Status"]);
+  const uiClass_withLockout = true;
 
   const jsxTitle = (
     <div className="justify-content-between align-items-center flex-grow-1 flex">
@@ -194,38 +198,53 @@ const Com = ({}) => {
       size="xl"
       onHide={onHide}
       fullscreen={true}
-      bodyClassName={styles.modalBody}
+      bodyClassName={cn(styles.modalBody)}
       headerClassName={styles.modalHeader}
       titleClassName={"flex justify-content-between flex-grow-1"}
     >
-      {/* <AddonSelector /> */}
+      {constants.DEV_HOLDING_FEATURES.v20250815_addon && <AddOnSelector />}
       <span id="basic" />
       <LoadingBlock isLoading={isLoading}>
         <div className={cn(styles.modalContentContainer)}>
-          <div className={cn(styles.gridsOfMainInfo)}>
+          <div
+            className={cn(styles.gridsOfMainInfo, {
+              [styles.withLockout]: uiClass_withLockout,
+            })}
+          >
             <div className={cn(styles.mainItem, styles["grid-1"])}>
               <div className={cn(styles.sectionTitle)}>Basic Information</div>
               <CollapseContainer id="basicInformation">
                 <Sec_OrderBasic />
               </CollapseContainer>
             </div>
-            <div className={cn(styles.mainItem, styles["mainItem-1"])}>
+            <div className={cn(styles.mainItem, styles["grid-2"])}>
               <div className={cn(styles.sectionTitle)}>Order Information</div>
               <CollapseContainer id="orderInformation">
                 <Sec_OrderInfo />
               </CollapseContainer>
             </div>
-            <div className={cn(styles.mainItem, styles["grid-2"])}>
+            <div className={cn(styles.mainItem, styles["grid-3"])}>
               <div className={cn(styles.sectionTitle)}>Order Options</div>
               <CollapseContainer id="orderOptions">
                 <Sec_OrderOptions />
               </CollapseContainer>
             </div>
-            <div className={cn(styles.mainItem, styles["mainItem-2"])}>
+            <div className={cn(styles.mainItem, styles["grid-4-up"])}>
               <div className={cn(styles.sectionTitle)}>Schedule</div>
               <CollapseContainer id="schedule">
                 <Sec_Schedule />
               </CollapseContainer>
+              {!constants.DEV_HOLDING_FEATURES.v20250815_sitelockout_display &&
+              initDataSiteLockout ? (
+                <>
+                  <div className={cn(styles.sectionTitle)}>Site Lockout</div>
+                  <CollapseContainer id="sitelockout">
+                    <CollapseContainer id="sitelockout">
+                      <Sec_SiteLockout />
+                    </CollapseContainer>
+                  </CollapseContainer>
+                </>
+              ) : null}
             </div>
           </div>
           <div>
@@ -253,7 +272,7 @@ const Com = ({}) => {
           {checkEditable() && (
             <div
               className={cn(
-                "justify-content-center flex p-2",
+                "justify-content-center flex gap-2 p-2",
                 styles.buttonContainer,
               )}
               style={{
@@ -263,10 +282,11 @@ const Com = ({}) => {
                 zIndex: 5,
               }}
             >
+              {/* save button */}
               <button
                 className="btn btn-primary align-items-center flex gap-2 px-3"
                 disabled={
-                  !data?.m_WorkOrderNo || isSaving || _.isEmpty(editedGroup)
+                  !data?.m_WorkOrderNo || isSaving || _.isEmpty(editedGroup) // if there is any unsaved update
                 }
                 onClick={onSave}
               >
@@ -282,6 +302,29 @@ const Com = ({}) => {
                 )}
                 Save
               </button>
+
+              {/* detach button */}
+              {/* if it has parent */}
+              <PermissionBlock
+                featureCodeGroup={
+                  constants.FEATURE_CODES["om.prod.woDetachAddOn"]
+                }
+                isValidationInactive={true}
+              >
+                {data?.m_ParentMasterId ? (
+                  <button
+                    className="btn btn-outline-primary align-items-center flex gap-2 px-3"
+                    disabled={
+                      !data?.m_WorkOrderNo ||
+                      isSaving ||
+                      data?.m_AddOnStatus === ADDON_STATUS.detached // if already detached, disable
+                    }
+                    onClick={onDetachAddOn}
+                  >
+                    Detach AddOn
+                  </button>
+                ) : null}
+              </PermissionBlock>
             </div>
           )}
 
@@ -325,69 +368,88 @@ const CollapseContainer = ({ id, children }) => {
   );
 };
 
-const AddonSelector = ({}) => {
-  const { data } = useContext(LocalDataContext);
+const AddOnSelector = ({}) => {
+  const { data, addonGroup, isInAddOnGroup } = useContext(LocalDataContext);
+
+  if (!isInAddOnGroup || !addonGroup.parent) {
+    return null;
+  }
+
   const { onRoute } = useContext(GeneralContext);
 
   const handleSwitch = (masterId) => {
     onRoute({ masterId });
   };
 
-  const addonlist = [
-    {
-      m_MasterId: "d4958dac-01f5-4796-992b-ef2ead37f909",
-      m_WorkOrderNo: "VKTEST5",
-      isParent: true,
-    },
-    {
-      m_MasterId: "e8ee66a5-4c29-4f4c-8aa3-8b43ef96e13d",
-      m_WorkOrderNo: "VKTEST8",
-      isParent: false,
-    },
-    {
-      m_MasterId: "e8ee66a5-4c29-4f4c-8aa3-8b43ef96e13d",
-      m_WorkOrderNo: "VKTEST8",
-      isParent: false,
-    },
-  ];
+  const { parent, addons } = addonGroup || {};
 
   return (
-    <div className={cn(styles.addonContainer)}>
-      <span className="me-2">Parent order:</span>
-      {addonlist
-        ?.filter((a) => a.isParent)
-        ?.map((a) => {
-          return (
-            <div
-              className={cn(
-                styles.addonParent,
-                a?.m_MasterId === data?.m_MasterId ? styles.active : "",
-              )}
-              onClick={() => handleSwitch(a?.m_MasterId)}
-            >
-              {a.m_WorkOrderNo}
-            </div>
-          );
-        })}
-      <span className="me-2 ms-3">Addons:</span>
-      <div className={cn(styles.addonListContainer)}>
-        {addonlist
-          ?.filter((a) => !a.isParent)
-          ?.map((a) => {
-            return (
-              <div
-                className={cn(
-                  styles.addonItem,
-                  a?.m_MasterId === data?.m_MasterId ? styles.active : "",
-                )}
-                onClick={() => handleSwitch(a?.m_MasterId)}
-              >
-                {a.m_WorkOrderNo}
+    <>
+      <div className={cn(styles.addonContainer)}>
+        <div className={cn(styles.addonMainContainer)}>
+          <span className={cn(styles.addonLabel, "me-2")}>
+            {/* <div className={styles.addonParentIcon}></div>  */}
+            <i className={cn("fas fa-box me-1", styles.addonParentIcon)} />
+            Parent order:
+          </span>
+
+          <div
+            className={cn(
+              styles.addonParent,
+              parent?.m_MasterId === data?.m_MasterId ? styles.active : "",
+            )}
+            onClick={() => handleSwitch(parent?.m_MasterId)}
+          >
+            {parent.m_WorkOrderNo}
+          </div>
+
+          {!_.isEmpty(addons) && (
+            <>
+              <span className={cn(styles.addonLabel, "me-2 ms-3")}>
+                <i
+                  className={cn(
+                    "fa-solid fa-file-circle-plus",
+                    styles.addonChildIcon,
+                  )}
+                />{" "}
+                AddOns:
+              </span>
+              <div className={cn(styles.addonListContainer)}>
+                {addons?.map((a) => {
+                  return (
+                    <div
+                      className={cn(
+                        styles.addonItem,
+                        a?.m_MasterId === data?.m_MasterId ? styles.active : "",
+                      )}
+                      onClick={() => handleSwitch(a?.m_MasterId)}
+                    >
+                      {a.m_WorkOrderNo}
+                    </div>
+                  );
+                })}
               </div>
-            );
-          })}
+
+              <OverlayWrapper
+                renderTrigger={() => (
+                  <i
+                    className={cn(
+                      styles.addonIconInfo,
+                      "fa-solid fa-circle-info ms-2",
+                    )}
+                  />
+                )}
+              >
+                <div className="d-flex align-items-center p-2">
+                  background color <div className={cn(styles.addonIcon)}></div>{" "}
+                  means inherited data from {parent.m_WorkOrderNo}
+                </div>
+              </OverlayWrapper>
+            </>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

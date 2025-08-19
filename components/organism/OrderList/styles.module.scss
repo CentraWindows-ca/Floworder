@@ -7,6 +7,8 @@
     text-align: left;
     gap: 5px;
     font-size: 1rem;
+    max-height: 420px;
+    overflow-y: auto;
 
     // align-items: flex-start;
     :global(.ant-btn-icon) {
@@ -20,6 +22,7 @@
     width: 100%;
     text-align: left;
     font-size: 1rem;
+    min-height: 32px;
 }
 
 .table {

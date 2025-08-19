@@ -134,18 +134,23 @@ const Com = ({}) => {
 };
 
 const DisplayDate = (props) => {
-  const { id, displayId, title, Component, ...rest } = props
-  const { data, initData, onChange, validationResult, checkEditable } =
+  const { id, displayId, title, Component, className, ...rest } = props
+  const { data, initData, onChange, validationResult, checkEditable, checkAddOnField } =
     useContext(LocalDataContext);
 
   const className_required = getIsRequired(initData, id) && "required";
+  const addon = checkAddOnField({ id });
+  const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
+
+
   if (Component) {
     return (
       <Block
         className_input={cn(
           styles.columnScheduledInput,
           "justify-content-end align-items-center flex",
-          className_required
+          className_required,
+          addonClass
         )}
         inputData={props}
       />
@@ -173,6 +178,7 @@ const DisplayDate = (props) => {
           }}
           disabled={!checkEditable({ id })}
           errorMessage={validationResult?.[id]}
+          className={cn(className, addonClass)}
           {...rest}
         />
       </div>

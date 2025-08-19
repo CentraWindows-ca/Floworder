@@ -394,6 +394,7 @@ export const EF_Text = React.memo(
       <textarea
         className={cn(
           "form-control",
+          className,
           isHighlightDiff && initValue !== value && styles.diff,
           errorMessage ? styles.error : "",
         )}

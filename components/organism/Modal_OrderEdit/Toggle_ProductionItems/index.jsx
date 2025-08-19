@@ -96,7 +96,8 @@ const Com = ({ title, id }) => {
     setExpands,
   } = useContext(LocalDataContext);
 
-  // const ITEM_CATEGORIES = dictionary.uiItemLabels || [];
+  const ITEM_CATEGORIES = dictionary.uiItemLabels || [];
+
   // console.log(_.values(ITEM_CATEGORIES))
   const [stats, setStats] = useState({});
   const [editingItem, setEditingItem] = useState(null);

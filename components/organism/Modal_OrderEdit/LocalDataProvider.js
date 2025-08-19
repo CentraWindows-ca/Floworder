@@ -16,16 +16,19 @@ import OrdersApi from "lib/api/OrdersApi";
 import WM2CWProdApi from "lib/api/WM2CWProdApi";
 import GlassApi from "lib/api/GlassApi";
 import External_WebCalApi from "lib/api/External_WebCalApi";
+import External_ServiceApi from "lib/api/External_ServiceApi";
 
 import useLoadingBar from "lib/hooks/useLoadingBar";
-import constants, { ORDER_STATUS, ORDER_TRANSFER_FIELDS } from "lib/constants";
+import constants, { ADDON_STATUS, ORDER_STATUS, ORDER_TRANSFER_FIELDS } from "lib/constants";
 import { uiWoFieldEditGroupMapping } from "lib/constants/constants_labelMapping";
 import { getOrderKind } from "lib/utils";
 
 import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
+
 import {
   checkEditableById,
   checkEditableByGroup,
+  checkAddOnFieldById,
   treateGlassItems,
 } from "./Com";
 import useLocalValidation from "./hooks/useLocalValidation";
@@ -54,7 +57,7 @@ export const LocalDataProvider = ({
   ...props
 }) => {
   const generalContext = useContext(GeneralContext);
-  const { toast, permissions } = generalContext;
+  const { toast, permissions, dictionary } = generalContext;
   const { requestData } = useInterrupt();
   const [data, setData] = useState(null);
 
@@ -65,6 +68,10 @@ export const LocalDataProvider = ({
   const [editedGroup, setEditedGroup] = useState({});
 
   const [LbrBreakDowns, setLbrBreakDowns] = useState([]);
+
+  // addon
+  const [addonGroup, setAddOnGroup] = useState({});
+  const isInAddOnGroup = !_.isEmpty(addonGroup?.addons);
 
   // only display. upload/delete will directly call function
   const [existingAttachments, setExistingAttachments] = useState(null);
@@ -85,6 +92,8 @@ export const LocalDataProvider = ({
   const [initData, setInitData] = useState(null);
   const [initDataItems, setInitDataItems] = useState(null);
   const [initDataReturnTrips, setInitDataReturnTrips] = useState(null);
+  const [initDataSiteLockout, setInitDataSiteLockout] = useState({
+  })
 
   const [kind, setKind] = useState(initKind || "m");
 
@@ -176,6 +185,7 @@ export const LocalDataProvider = ({
     setInitDataReturnTrips(null);
     setEditedGroup({});
     setValidationResult(null);
+    setAddOnGroup({});
   };
 
   const doInit = async (initMasterId) => {
@@ -184,12 +194,12 @@ export const LocalDataProvider = ({
     setEditedGroup({});
     setIsEditable(initIsEditable);
     setValidationResult(null);
+    setAddOnGroup({});
 
     const mergedData = await doInitWo(initMasterId);
 
-    // TODO: ADDON - get addon parent
-
-    // TODO: ADDON - get list of addons (master id or parent master id)
+    await doInitAddOn(initMasterId);
+    await doInitSiteLockOut(initMasterId)
 
     if (mergedData) {
       if (initKind === "w" || getOrderKind(mergedData) === "w") {
@@ -272,6 +282,34 @@ export const LocalDataProvider = ({
       return mergedData;
     },
   );
+
+  const doInitAddOn = useLoadingBar(async (initMasterId) => {
+    if (constants.DEV_HOLDING_FEATURES.v20250815_addon) return
+
+    const _addonGroup = await OrdersApi.getAddsOnGroupByMasterId({
+      masterId: initMasterId,
+    });
+
+    const parent = _addonGroup?.find((a) => a.isParent);
+    const addons = _addonGroup?.filter((a) => !a.isParent);
+
+    // if there is only a parent
+    setAddOnGroup({
+      parent,
+      addons,
+    });
+  });
+
+  const doInitSiteLockOut = useLoadingBar(async (initMasterId) => {
+    if (constants.DEV_HOLDING_FEATURES.v20250815_sitelockout_display) return
+
+    const _siteLockOut = await External_ServiceApi.getSiteLockoutByMasterId({
+      masterId: initMasterId,
+    });
+
+    // if there is only a parent
+    setInitDataSiteLockout(_siteLockOut)
+  });
 
   const initItems = useLoadingBar(async (initMasterId) => {
     // NOTE: if user open from window tab, eventhough its door order, we dont show doors
@@ -558,34 +596,61 @@ export const LocalDataProvider = ({
 
       setIsSaving(true);
       // identify changed data:
-      const changedData = utils.findChanges(initData, data);
+      const _changedData = utils.findChanges(initData, data);
 
       // process customized
-      if (changedData.w_ProductionStartDate) {
-        changedData.w_ProductionEndDate = changedData.w_ProductionStartDate;
+      if (_changedData.w_ProductionStartDate) {
+        _changedData.w_ProductionEndDate = _changedData.w_ProductionStartDate;
       }
 
-      if (changedData.d_ProductionStartDate) {
-        changedData.d_ProductionEndDate = changedData.d_ProductionStartDate;
+      if (_changedData.d_ProductionStartDate) {
+        _changedData.d_ProductionEndDate = _changedData.d_ProductionStartDate;
       }
 
       let stillEditingData = {};
       if (group && uiWoFieldEditGroupMapping?.[group]) {
         // only save group fields
         const allFieldsFromGroup = uiWoFieldEditGroupMapping[group];
-        _.keys(changedData)?.map((k) => {
+        _.keys(_changedData)?.map((k) => {
           if (!allFieldsFromGroup[k]) {
-            stillEditingData[k] = changedData[k];
+            stillEditingData[k] = _changedData[k];
           }
         });
       }
 
-      await Wrapper_OrdersApi.updateWorkOrder(data, changedData, initData);
+      await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData);
       toast("Work order saved", { type: "success" });
       await doInitWo(initMasterId, stillEditingData);
       onSave();
     },
-    () => setIsSaving(false),
+    () => setIsSaving(false), // callback function
+  );
+
+  const doDetachAddOn = useLoadingBar(
+    async () => {
+      const _parentWorkOrder = addonGroup?.parent?.m_WorkOrderNo
+      // note: to prevent accdentally detach
+      if (!window.confirm(`Do you want to detach ${initData.m_WorkOrderNo} from ${_parentWorkOrder}?`)) {
+        return null
+      }
+
+      setIsSaving(true);
+
+      const _changedData = {
+        m_AddOnStatus: ADDON_STATUS.detached,
+      };
+
+      await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData);
+
+      toast(
+        `Add-on Work order detached from ${_parentWorkOrder}`,
+        { type: "success" },
+      );
+
+      await doInitWo(initMasterId);
+      onSave();
+    },
+    () => setIsSaving(false), // callback function
   );
 
   const doBatchUpdateItems = useLoadingBar(async (updateList, kind) => {
@@ -638,6 +703,12 @@ export const LocalDataProvider = ({
         _pass =
           _pass && checkEditableByGroup({ group, data, permissions, initKind });
       }
+
+      // if its addon workorder, check if field is addonField
+      // logic to check if split addon
+      const { isAddOnEditable } = checkAddOnField(params) || {};
+      _pass = _pass && isAddOnEditable;
+
       return _pass;
     },
     [
@@ -647,6 +718,9 @@ export const LocalDataProvider = ({
       data?.w_Status,
       data?.d_Status,
       permissions,
+      dictionary,
+      isInAddOnGroup,
+      addonGroup?.parent?.m_MasterId,
     ],
   );
 
@@ -659,6 +733,38 @@ export const LocalDataProvider = ({
       );
     },
     [isEditable, initMasterId, data?.m_Status, permissions],
+  );
+
+  // called by each single input
+  const checkAddOnField = useCallback(
+    (params = {}) => {
+      let result = {
+        isAddOnEditable: true,
+        isSyncedFromParent: false,
+      };
+
+      // if not addon or its addon parent
+      if (!isInAddOnGroup) return result;
+      if (addonGroup?.parent?.m_MasterId === initMasterId) return result;
+
+      // if split(dettached)
+      const { id } = params;
+      if (id) {
+        const { workOrderFields } = dictionary;
+        return checkAddOnFieldById({ id, data, workOrderFields, initKind });
+      }
+      return result;
+    },
+    [
+      isEditable,
+      initMasterId,
+      data?.m_Status,
+      data?.w_Status,
+      data?.d_Status,
+      dictionary?.workOrderFields,
+      isInAddOnGroup,
+      addonGroup?.parent?.m_MasterId,
+    ],
   );
 
   const { onValidate } = useLocalValidation({
@@ -701,6 +807,7 @@ export const LocalDataProvider = ({
     onBatchUpdateItems: doBatchUpdateItems,
     onHide: handleHide,
     onSave: doSave,
+    onDetachAddOn: doDetachAddOn,
     onRestore: doRestore,
     onGetWindowMaker: doGetWindowMaker,
     editedGroup,
@@ -717,14 +824,18 @@ export const LocalDataProvider = ({
     setIsEditable,
     checkEditable,
     checkEditableForSectionSaveButton,
+    checkAddOnField,
     uiOrderType,
     uiShowMore,
     setUiShowMore,
     glassTotal,
     uIstatusObj,
     initData,
+    initDataSiteLockout,
     isDeleted: initData?.m_IsActive === false,
     validationResult,
+    addonGroup,
+    isInAddOnGroup,
   };
   return (
     <LocalDataContext.Provider value={context}>

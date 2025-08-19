@@ -77,12 +77,14 @@ const COMMON_FIELDS = constants.applyField([
 ]);
 
 const Com = ({}) => {
-  const { data, initData, onChange, checkEditable, validationResult} = useContext(LocalDataContext);
+  const { data, initData, onChange, checkEditable, checkAddOnField, validationResult} = useContext(LocalDataContext);
 
   return (
     <div className={cn(styles.columnInputsContainer)}>
       {COMMON_FIELDS?.map((a, i) => {
         const { id, Component, title, overrideOnChange, ...rest } = a;
+        const addon = checkAddOnField({ id });
+        const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
 
         return (
           <DisplayBlock id={id} key={id}>
@@ -102,6 +104,7 @@ const Com = ({}) => {
                 }}
                 errorMessage = {validationResult?.[id]}
                 disabled={!checkEditable({id})}
+                className={cn(addonClass)}
                 {...rest}
               />
             </div>

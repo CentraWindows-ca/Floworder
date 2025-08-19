@@ -91,7 +91,8 @@ import { LocalDataContext } from "./LocalDataProvider";
 // ];
 
 const Com = ({ className, ...props }) => {
-  const { data, LbrBreakDowns, onChange, onHide } = useContext(LocalDataContext);
+  const { data, LbrBreakDowns, onChange, onHide } =
+    useContext(LocalDataContext);
 
   if (!data) return null;
 
@@ -108,6 +109,9 @@ const Com = ({ className, ...props }) => {
   const totalBoxQty =
     (data["w_TotalBoxQty"] || 0) + (data["d_TotalBoxQty"] || 0);
 
+  const totalScreens =
+    (data["w_TotalScreens"] || 0) + (data["d_TotalScreens"] || 0);
+
   const shouldShowTotal =
     [
       data["m_NumberOfWindows"],
@@ -117,14 +121,17 @@ const Com = ({ className, ...props }) => {
       data["m_NumberOfPatioDoors"],
     ]?.filter((a) => a)?.length > 1;
 
+  const otherFields = {
+    TotalGlassQty: data.w_TotalGlassQty,
+    TotalBoxQty: data.w_TotalBoxQty,
+    TotalScreens: data.w_TotalScreens,
+    TotalLBRMin: data.w_TotalLBRMin,
+    TotalPrice: data.w_TotalPrice,
+  };
+
   const groupByWindowDoor = {
     w: {
-      otherFields: {
-        TotalGlassQty: data.w_TotalGlassQty,
-        TotalBoxQty: data.w_TotalBoxQty,
-        TotalLBRMin: data.w_TotalLBRMin,
-        TotalPrice: data.w_TotalPrice,
-      },
+      otherFields,
       numbers: [
         {
           label: "Windows",
@@ -176,19 +183,30 @@ const Com = ({ className, ...props }) => {
               <th>Qty</th>
               <th>Glass Qty</th>
               <th>Box Qty</th>
+              {!constants.DEV_HOLDING_FEATURES
+                .v20250815_screen_number_display && <th>Screen Qty</th>}
+
               <th>LBR Min.</th>
             </tr>
           </thead>
-          <tbody>{shouldShowTotal ? (
+          <tbody>
+            {shouldShowTotal ? (
               <tr>
                 <th>Total</th>
-                <td>{utils.formatCurrency2Decimal(data["m_TotalPrice"], "$")}</td>
+                <td>
+                  {utils.formatCurrency2Decimal(data["m_TotalPrice"], "$")}
+                </td>
                 <td>{utils.formatNumber(totalNumber)}</td>
                 <td>{utils.formatNumber(totalGlassQty)} </td>
                 <td>{utils.formatNumber(totalBoxQty)}</td>
+                {!constants.DEV_HOLDING_FEATURES
+                  .v20250815_screen_number_display && (
+                  <td>{utils.formatNumber(totalScreens)}</td>
+                )}
+
                 <td>{utils.formatNumber(data["m_TotalLBRMin"])}</td>
               </tr>
-            ):null}
+            ) : null}
             {_.keys(groupByWindowDoor)?.map((k) => {
               const prd = groupByWindowDoor[k];
               const numbers = groupByWindowDoor[k].numbers?.filter(
@@ -197,7 +215,8 @@ const Com = ({ className, ...props }) => {
               const colSpan = numbers.length;
 
               return (
-                <React.Fragment key={k}>{numbers?.map((num, j) => {
+                <React.Fragment key={k}>
+                  {numbers?.map((num, j) => {
                     const { label, displayNumber } = num;
                     return (
                       <tr key={label}>
@@ -205,7 +224,10 @@ const Com = ({ className, ...props }) => {
                         {j === 0 && (
                           <>
                             <td rowSpan={colSpan}>
-                              {utils.formatCurrency2Decimal(prd.otherFields?.TotalPrice, "$")}
+                              {utils.formatCurrency2Decimal(
+                                prd.otherFields?.TotalPrice,
+                                "$",
+                              )}
                             </td>
                           </>
                         )}
@@ -221,6 +243,15 @@ const Com = ({ className, ...props }) => {
                             <td rowSpan={colSpan}>
                               {utils.formatNumber(prd.otherFields?.TotalBoxQty)}
                             </td>
+                            {!constants.DEV_HOLDING_FEATURES
+                              .v20250815_screen_number_display && (
+                              <td rowSpan={colSpan}>
+                                {utils.formatNumber(
+                                  prd.otherFields?.TotalScreens,
+                                )}
+                              </td>
+                            )}
+
                             <td rowSpan={colSpan}>
                               {utils.formatNumber(prd.otherFields?.TotalLBRMin)}
                             </td>
@@ -228,10 +259,11 @@ const Com = ({ className, ...props }) => {
                         )}
                       </tr>
                     );
-                  })}</React.Fragment>
+                  })}
+                </React.Fragment>
               );
             })}
-            </tbody>
+          </tbody>
         </table>
 
         <div>

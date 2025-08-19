@@ -7,6 +7,7 @@ import constants, {
   WORKORDER_MAPPING,
   GlassRowStates,
   FEATURE_CODES,
+  ADDON_STATUS,
 } from "lib/constants";
 // styles
 import styles from "./styles.module.scss";
@@ -96,14 +97,16 @@ export const displayFilter = (itemList, { kind, uiOrderType, permissions }) => {
   });
 };
 export const Block = ({ className_input, inputData }) => {
+  const localContext =  useContext(LocalDataContext);
   const {
     data,
     initData,
     onChange,
     checkEditable,
+    checkAddOnField,
     validationResult,
     dictionary,
-  } = useContext(LocalDataContext);
+  } = localContext
   let {
     Component,
     title,
@@ -112,6 +115,7 @@ export const Block = ({ className_input, inputData }) => {
     options,
     overrideOnChange,
     renderValue,
+    className,
     ...rest
   } = inputData;
   if (typeof options === "function") {
@@ -119,9 +123,9 @@ export const Block = ({ className_input, inputData }) => {
   }
   const className_required = getIsRequired(initData, id) && "required";
 
-  const _value = renderValue
-    ? renderValue(data?.[id], data)
-    : data?.[id];
+  const _value = renderValue ? renderValue(data?.[id], data, localContext) : data?.[id];
+  const addon = checkAddOnField({ id });
+  const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
 
   return (
     <DisplayBlock id={displayId || id}>
@@ -142,6 +146,7 @@ export const Block = ({ className_input, inputData }) => {
           disabled={!checkEditable({ id })}
           options={options}
           errorMessage={validationResult?.[id]}
+          className={cn(className, addonClass)}
           {...rest}
         />
       </div>
@@ -431,9 +436,9 @@ export const checkEditableById = ({ id, permissions, data, initKind }) => {
 
   /*
   NOTE 20250729
-  Addon inheritates from parent fields doesnt allow to edit
+  AddOn inheritates from parent fields doesnt allow to edit
   */
-  if (data?.m_isAddon) {
+  if (data?.m_isAddOn) {
     if (checkGroup("basic")) {
       isEnable = false;
     }
@@ -442,7 +447,14 @@ export const checkEditableById = ({ id, permissions, data, initKind }) => {
       isEnable = false;
     }
 
-    if (['m_ShippingStartDate', 'm_RevisedDeliveryDate', 'w_CustomerDate', 'd_CustomerDate'].includes(id)) {
+    if (
+      [
+        "m_ShippingStartDate",
+        "m_RevisedDeliveryDate",
+        "w_CustomerDate",
+        "d_CustomerDate",
+      ].includes(id)
+    ) {
       isEnable = false;
     }
   }
@@ -478,6 +490,43 @@ export const checkEditableByGroup = ({ group, permissions, data }) => {
   // }
 
   return isAllowAny;
+};
+
+export const checkAddOnFieldById = ({
+  id,
+  data,
+  workOrderFields,
+  initKind,
+}) => {
+  let result = { isAddOnEditable: true, isSyncedFromParent: false };
+
+  // if data?.m_AddOnStatus === 'SPLIT', isAddOnEditable is true
+  const isOrderDetach = data?.m_AddOnStatus === ADDON_STATUS.detached;
+
+  if (workOrderFields?.[id]) {
+    let { 
+      isReadOnly, // default
+      isSplitNotSync,  // functional purpose
+      isSyncedFromParent // visual color purpose
+    } =
+      workOrderFields[id];
+
+    let _editable = !isReadOnly;
+    let _syncFromParent = isSyncedFromParent
+
+    // detach has higher priority. if that happens 
+    if (isSplitNotSync) {
+      _editable = isOrderDetach
+      _syncFromParent = !isOrderDetach
+    } 
+
+    result = {
+      isAddOnEditable: _editable,
+      isSyncedFromParent: _syncFromParent, // visual for if sync
+    };
+  }
+
+  return result;
 };
 
 export default {};
