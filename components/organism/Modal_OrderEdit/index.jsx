@@ -15,6 +15,7 @@ import Sec_OrderBasic from "./Sec_OrderBasic";
 import Sec_OrderOptions from "./Sec_OrderOptions";
 import Sec_Schedule from "./Sec_Schedule";
 import Sec_Summary from "./Sec_Summary";
+import Sec_SiteLockout from "./Sec_SiteLockout";
 
 import Toggle_Notes from "./Toggle_Notes";
 import Toggle_ProductionItems from "./Toggle_ProductionItems";
@@ -46,6 +47,7 @@ const Com = ({}) => {
     onDetachAddOn,
 
     data,
+    initDataSiteLockout,
 
     kind,
     checkEditable,
@@ -71,6 +73,7 @@ const Com = ({}) => {
   };
 
   const isOnStatusAllowToEdit = true; // ![WORKORDER_MAPPING.Pending.key].includes( data?.["m_Status"]);
+  const uiClass_withLockout = true;
 
   const jsxTitle = (
     <div className="justify-content-between align-items-center flex-grow-1 flex">
@@ -195,38 +198,53 @@ const Com = ({}) => {
       size="xl"
       onHide={onHide}
       fullscreen={true}
-      bodyClassName={styles.modalBody}
+      bodyClassName={cn(styles.modalBody)}
       headerClassName={styles.modalHeader}
       titleClassName={"flex justify-content-between flex-grow-1"}
     >
-      <AddOnSelector />
+      {constants.DEV_HOLDING_FEATURES.v20250815_addon && <AddOnSelector />}
       <span id="basic" />
       <LoadingBlock isLoading={isLoading}>
         <div className={cn(styles.modalContentContainer)}>
-          <div className={cn(styles.gridsOfMainInfo)}>
+          <div
+            className={cn(styles.gridsOfMainInfo, {
+              [styles.withLockout]: uiClass_withLockout,
+            })}
+          >
             <div className={cn(styles.mainItem, styles["grid-1"])}>
               <div className={cn(styles.sectionTitle)}>Basic Information</div>
               <CollapseContainer id="basicInformation">
                 <Sec_OrderBasic />
               </CollapseContainer>
             </div>
-            <div className={cn(styles.mainItem, styles["mainItem-1"])}>
+            <div className={cn(styles.mainItem, styles["grid-2"])}>
               <div className={cn(styles.sectionTitle)}>Order Information</div>
               <CollapseContainer id="orderInformation">
                 <Sec_OrderInfo />
               </CollapseContainer>
             </div>
-            <div className={cn(styles.mainItem, styles["grid-2"])}>
+            <div className={cn(styles.mainItem, styles["grid-3"])}>
               <div className={cn(styles.sectionTitle)}>Order Options</div>
               <CollapseContainer id="orderOptions">
                 <Sec_OrderOptions />
               </CollapseContainer>
             </div>
-            <div className={cn(styles.mainItem, styles["mainItem-2"])}>
+            <div className={cn(styles.mainItem, styles["grid-4-up"])}>
               <div className={cn(styles.sectionTitle)}>Schedule</div>
               <CollapseContainer id="schedule">
                 <Sec_Schedule />
               </CollapseContainer>
+              {!constants.DEV_HOLDING_FEATURES.v20250815_sitelockout_display &&
+              initDataSiteLockout ? (
+                <>
+                  <div className={cn(styles.sectionTitle)}>Site Lockout</div>
+                  <CollapseContainer id="sitelockout">
+                    <CollapseContainer id="sitelockout">
+                      <Sec_SiteLockout />
+                    </CollapseContainer>
+                  </CollapseContainer>
+                </>
+              ) : null}
             </div>
           </div>
           <div>
@@ -288,8 +306,10 @@ const Com = ({}) => {
               {/* detach button */}
               {/* if it has parent */}
               <PermissionBlock
-                featureCodeGroup={constants.FEATURE_CODES["om.prod.woDetachAddOn"]}
-                isValidationInactive = {true}
+                featureCodeGroup={
+                  constants.FEATURE_CODES["om.prod.woDetachAddOn"]
+                }
+                isValidationInactive={true}
               >
                 {data?.m_ParentMasterId ? (
                   <button

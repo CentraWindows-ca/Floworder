@@ -97,6 +97,7 @@ export const displayFilter = (itemList, { kind, uiOrderType, permissions }) => {
   });
 };
 export const Block = ({ className_input, inputData }) => {
+  const localContext =  useContext(LocalDataContext);
   const {
     data,
     initData,
@@ -105,7 +106,7 @@ export const Block = ({ className_input, inputData }) => {
     checkAddOnField,
     validationResult,
     dictionary,
-  } = useContext(LocalDataContext);
+  } = localContext
   let {
     Component,
     title,
@@ -122,7 +123,7 @@ export const Block = ({ className_input, inputData }) => {
   }
   const className_required = getIsRequired(initData, id) && "required";
 
-  const _value = renderValue ? renderValue(data?.[id], data) : data?.[id];
+  const _value = renderValue ? renderValue(data?.[id], data, localContext) : data?.[id];
   const addon = checkAddOnField({ id });
   const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
 
