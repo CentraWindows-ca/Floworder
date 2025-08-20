@@ -22,7 +22,8 @@ const preventUpdate = (prev, nex) => {
     prev.disabled === nex.disabled &&
     prev.options === nex.options &&
     prev.initValue === nex.initValue &&
-    prev.errorMessage === nex.errorMessage
+    prev.errorMessage === nex.errorMessage &&
+    prev.onChange === nex.onChange
   );
 };
 
@@ -487,6 +488,10 @@ export const EF_Label = React.memo(
   preventUpdate,
 );
 
+export const EF_Renderer = React.memo(({ value, ...props }) => {
+  return value;
+}, preventUpdate);
+
 export const EF_Rack = React.memo(
   ({
     id,
@@ -653,6 +658,7 @@ export const Editable = {
   EF_Checkbox,
   EF_Checkbox_Yesno,
   EF_Label,
+  EF_Renderer,
   EF_Rack,
   EF_Community,
 };

@@ -434,6 +434,18 @@
         margin-bottom: -1px;
     }
 
+    .addonMainContainer.isAddonOnParent {
+        margin-bottom: 4px;
+        .addonParent {
+            display: none;
+        }
+        .addonItem {
+            border-radius: 4px;
+            padding: 2px 14px;
+            border-bottom: 1px solid $color_border_table;
+        }
+    }
+
     .addonListContainer {
         display: flex;
         gap: 2px;
@@ -452,7 +464,7 @@
         border: 1px solid $color_border_table;
         border-radius: 4px 4px 0px 0px;
         border-bottom: none;
-        padding: 8px 14px;
+        padding: 6px 14px;
 
         &:hover {
             background-color: $color_background_addonsync;

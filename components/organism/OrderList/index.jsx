@@ -7,6 +7,7 @@ import { Spin } from "antd";
 
 import OrdersApi from "lib/api/OrdersApi";
 
+import Editable from "components/molecule/Editable";
 import TableSortable from "components/atom/TableSortable";
 import FiltersManager from "components/atom/TableSortable/FilterManager";
 
@@ -301,7 +302,7 @@ const Com = (props) => {
         display: !isDeleted,
         isNotSortable: true,
         isNotFilter: true,
-        width: 80,  
+        width: 80,
       },
       {
         key: "m_TypeofGrant",
@@ -309,7 +310,7 @@ const Com = (props) => {
         display: !isDeleted,
         isNotSortable: true,
         isNotFilter: true,
-        width: 130,  
+        width: 130,
       },
       {
         key: "m_GrantStatus",
@@ -317,7 +318,7 @@ const Com = (props) => {
         display: !isDeleted,
         isNotSortable: true,
         isNotFilter: true,
-        width: 120,  
+        width: 120,
       },
       {
         key: "m_GovGrantExpiryDate_display",
@@ -325,7 +326,7 @@ const Com = (props) => {
         display: !isDeleted,
         isNotSortable: true,
         isNotFilter: true,
-        width: 195,  
+        width: 195,
       },
       {
         key: "m_Status_display",
@@ -420,7 +421,36 @@ const Com = (props) => {
       // ========= addon ========
       {
         key: "m_AddOnsCount",
-        display: !constants.DEV_HOLDING_FEATURES.v20250815_addon
+        width: 100,
+        display: !constants.DEV_HOLDING_FEATURES.v20250815_addon,
+        renderFilter: ({ key }) => {
+          return (
+            <div className="text-center w-full">
+              <Editable.EF_Checkbox
+                {...{
+                  id: key,
+                  value: !!filters?.[key]?.field,
+                  onChange: (v) => {
+                    setFilters((prev) => {
+                      const _v = JSON.parse(JSON.stringify(prev)) || {};
+                      if (v) {
+                        _v[key] = {
+                          operator: "GreaterOrEqual",
+                          value: "1",
+                          field: key,
+                        };
+                      } else {
+                        delete _v[key];
+                      }
+
+                      return _v;
+                    });
+                  },
+                }}
+              />
+            </div>
+          );
+        },
       },
       // ========= addon ========
       {
@@ -602,7 +632,7 @@ const Com = (props) => {
         w_CustomerDate,
         d_CustomerDate,
         w_ProductionStartDate,
-        d_ProductionStartDate
+        d_ProductionStartDate,
       } = merged;
 
       merged.m_Status_display = m_Status
@@ -634,8 +664,9 @@ const Com = (props) => {
       merged.d_ProductionStartDate_colored = d_ProductionStartDate;
 
       merged.m_InstallStatus =
-        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.currentStateName || null;
-      
+        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.currentStateName ||
+        null;
+
       merged.m_RebateIcon =
         resInstallStatusMapping?.[merged.m_WorkOrderNo]?.rebateIcon || null;
 
@@ -646,7 +677,8 @@ const Com = (props) => {
         resInstallStatusMapping?.[merged.m_WorkOrderNo]?.grantStatus || null;
 
       merged.m_GovGrantExpiryDate =
-        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.govGrantExpiryDate || null;
+        resInstallStatusMapping?.[merged.m_WorkOrderNo]?.govGrantExpiryDate ||
+        null;
 
       merged.m_GovGrantExpiryDate_display = merged.m_GovGrantExpiryDate;
 

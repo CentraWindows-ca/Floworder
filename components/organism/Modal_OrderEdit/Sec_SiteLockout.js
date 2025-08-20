@@ -22,18 +22,20 @@ const COMMON_FIELDS = constants.applyField([
     disabled: true,
     isHighlightDiff: false,
     renderValue: (v, data, context) => {
-      return context?.initDataSiteLockout?.scheduledLockoutDate
-    }
+      return context?.initDataSiteLockout?.scheduledLockoutDate;
+    },
   },
   {
     id: "lo_displayName",
     title: "Lockout Number",
-    Component: Editable.EF_Input,
+    Component: Editable.EF_Renderer,
     disabled: true,
     isHighlightDiff: false,
-        renderValue: (v, data, context) => {
-      return context?.initDataSiteLockout?.displayName || "--"
-    }
+    renderValue: (v, data, context) => {
+      return <div style={{width: 140, height: 34}} className="d-flex align-items-center justify-content-center"><a href="/"
+      target="_blank"
+      >{context?.initDataSiteLockout?.displayName || "--"}</a></div>;
+    },
   },
 ]);
 
@@ -67,5 +69,14 @@ const DisplayDate = (props) => {
     );
   }
 };
+
+const CumstomComponentLink = ({}) => {
+
+  return <>
+  Link
+  </>
+}
+
+
 
 export default Com;

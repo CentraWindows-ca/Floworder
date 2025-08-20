@@ -112,25 +112,15 @@ const AddOnSelector = ({}) => {
   return (
     <>
       <div className={cn(styles.addonContainer)}>
-        <div className={cn(styles.addonMainContainer)}>
-          <span className={cn(styles.addonLabel, "me-2")}>
-            <OverlayWrapper
-              renderTrigger={() => (
-                <i
-                  className={cn(
-                    styles.addonIconInfo,
-                    "fa-solid fa-circle-info",
-                  )}
-                />
-              )}
-            >
-              <div className="d-flex align-items-center p-2">
-                background color <div className={cn(styles.addonIcon)}></div>{" "}
-                means inherited data from {parent.m_WorkOrderNo}
-              </div>
-            </OverlayWrapper>
-            AddOns:
-          </span>
+        <div
+          className={cn(
+            styles.addonMainContainer,
+            parent?.m_MasterId === data?.m_MasterId
+              ? styles.isAddonOnParent
+              : "",
+          )}
+        >
+          <span className={cn(styles.addonLabel, "me-2")}>Add-Ons:</span>
           <div className={cn(styles.addonListContainer)}>
             {addons?.map((a) => {
               return (
@@ -146,25 +136,37 @@ const AddOnSelector = ({}) => {
               );
             })}
           </div>
-          {parent?.m_MasterId !== data?.m_MasterId ? (
-            <>
-              <div
-                className={cn(
-                  styles.addonParent,
-                  parent?.m_MasterId === data?.m_MasterId ? styles.active : "",
-                )}
-                onClick={() => handleSwitch(parent?.m_MasterId)}
-              >
-                <span className={cn(styles.addonLabel, "")}>
-                  {/* <i
+
+          <div
+            className={cn(
+              styles.addonParent,
+              parent?.m_MasterId === data?.m_MasterId ? styles.active : "",
+            )}
+            onClick={() => handleSwitch(parent?.m_MasterId)}
+          >
+            <span className={cn(styles.addonLabel, "")}>
+              {/* <i
                     className={cn("fas fa-box me-1", styles.addonParentIcon)}
                   /> */}
-                  Parent order: 
-                </span>
-                {parent.m_WorkOrderNo}
+              Parent order:
+            </span>
+            {parent.m_WorkOrderNo}
+            <OverlayWrapper
+              renderTrigger={() => (
+                <i
+                  className={cn(
+                    styles.addonIconInfo,
+                    "fa-solid fa-circle-info ms-2",
+                  )}
+                />
+              )}
+            >
+              <div className="d-flex align-items-center p-2">
+                background color <div className={cn(styles.addonIcon)}></div>{" "}
+                means inherited data from {parent.m_WorkOrderNo}
               </div>
-            </>
-          ) : null}
+            </OverlayWrapper>
+          </div>
         </div>
       </div>
     </>

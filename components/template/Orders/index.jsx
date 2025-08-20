@@ -102,7 +102,7 @@ const Com = ({}) => {
     }),
     ..._.keys(isEnableFilter ? filters : {})?.map((k) => {
       return {
-        operator: constants.FILTER_OPERATOR.Contains,
+        operator: filters[k]?.operator || constants.FILTER_OPERATOR.Contains,
         value: filters[k]?.value,
         field: k,
       };
