@@ -13,6 +13,7 @@ import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
 
 import { DisplayBlock, displayFilter } from "./Com";
+import { PORTAL_WEBCAL } from "lib/api/SERVER";
 
 const COMMON_FIELDS = constants.applyField([
   {
@@ -32,9 +33,19 @@ const COMMON_FIELDS = constants.applyField([
     disabled: true,
     isHighlightDiff: false,
     renderValue: (v, data, context) => {
-      return <div style={{width: 140, height: 34}} className="d-flex align-items-center justify-content-center"><a href="/"
-      target="_blank"
-      >{context?.initDataSiteLockout?.displayName || "--"}</a></div>;
+      return (
+        <div
+          style={{ width: 140, height: 34 }}
+          className="d-flex align-items-center justify-content-center"
+        >
+          <a
+            href={`${PORTAL_WEBCAL}/?page=month&work-order-number=${context?.initDataSiteLockout?.siteLockoutId}&department=service&isLockout=1`}
+            target="_blank"
+          >
+            {context?.initDataSiteLockout?.displayName || "--"} <i className="ms-1 fa-solid fa-arrow-up-right-from-square" style={{fontSize: 11}}></i>
+          </a>
+        </div>
+      );
     },
   },
 ]);
@@ -71,12 +82,7 @@ const DisplayDate = (props) => {
 };
 
 const CumstomComponentLink = ({}) => {
-
-  return <>
-  Link
-  </>
-}
-
-
+  return <>Link</>;
+};
 
 export default Com;

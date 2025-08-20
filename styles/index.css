@@ -78,6 +78,12 @@ button:hover {
   --bs-pagination-active-bg: #005db9;
 }
 
+a {
+  color: var( --bs-primary);
+}
+a:hover {
+  color: #41a0ff
+}
 .btn-primary:hover {
   background-color: #1b7ada !important; /* Darker shade for hover effect */
   border-color: #1b7ada !important;

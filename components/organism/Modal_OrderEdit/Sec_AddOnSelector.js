@@ -120,9 +120,10 @@ const AddOnSelector = ({}) => {
               : "",
           )}
         >
-          <span className={cn(styles.addonLabel, "me-2")}>Add-Ons:</span>
+          <span className={cn(styles.addonLabel, "me-2")}>Add-ons:</span>
           <div className={cn(styles.addonListContainer)}>
             {addons?.map((a) => {
+              const _isDetached = a?.m_AddOnStatus === "1"
               return (
                 <div
                   className={cn(
@@ -131,7 +132,7 @@ const AddOnSelector = ({}) => {
                   )}
                   onClick={() => handleSwitch(a?.m_MasterId)}
                 >
-                  {a.m_WorkOrderNo}
+                  {a.m_WorkOrderNo}{_isDetached ? <span className={styles.addonDetached}>(Detached)</span>: ""}
                 </div>
               );
             })}

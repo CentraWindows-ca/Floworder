@@ -324,7 +324,7 @@ const Com = ({}) => {
                     }
                     onClick={onDetachAddOn}
                   >
-                    Detach AddOn
+                    Detach Add-on
                   </button>
                 ) : null}
               </PermissionBlock>

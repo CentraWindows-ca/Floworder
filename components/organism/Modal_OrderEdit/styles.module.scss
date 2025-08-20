@@ -474,6 +474,13 @@
             font-weight: bold;
             background-color: $color_background_modal;
         }
+
+        .addonDetached {
+            color: $color_gray_dark;
+            font-size: .8rem;
+            font-weight: normal;
+            margin-left: 5px;
+        }
     }
     .addonParent {
         display: flex;
