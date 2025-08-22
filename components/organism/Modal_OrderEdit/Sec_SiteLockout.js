@@ -42,7 +42,13 @@ const COMMON_FIELDS = constants.applyField([
             href={`${PORTAL_WEBCAL}/?page=month&work-order-number=${context?.initDataSiteLockout?.siteLockoutId}&department=service&isLockout=1`}
             target="_blank"
           >
-            {context?.initDataSiteLockout?.displayName || "--"} <i className="ms-1 fa-solid fa-arrow-up-right-from-square" style={{fontSize: 11}}></i>
+            {context?.initDataSiteLockout?.displayName ||
+              `LO_${context?.initDataSiteLockout?.siteLockoutId}` ||
+              "--"}{" "}
+            <i
+              className="fa-solid fa-arrow-up-right-from-square ms-1"
+              style={{ fontSize: 11 }}
+            ></i>
           </a>
         </div>
       );

@@ -195,7 +195,9 @@ const WorkOrderActions = ({
 
   const actionsActive = (
     <div className={cn(styles.workorderActionsContainer)}>
-      <PermissionBlock isHidden={filterOutByStatus({ id: "viewOrder", data })}>
+      <PermissionBlock
+        isHidden={filterOutByStatus({ id: "viewOrder", data, kind })}
+      >
         <Button
           type="text"
           icon={<EyeOutlined />}
@@ -210,7 +212,7 @@ const WorkOrderActions = ({
 
       <PermissionBlock
         featureCodeGroup={constants.FEATURE_CODES["om.prod.wo"]}
-        isHidden={filterOutByStatus({ id: "editOrder", data })}
+        isHidden={filterOutByStatus({ id: "editOrder", data, kind })}
         op="canEdit"
       >
         <Button
@@ -227,7 +229,7 @@ const WorkOrderActions = ({
 
       <PermissionBlock
         featureCodeGroup={constants.FEATURE_CODES["om.prod.wo"]}
-        isHidden={filterOutByStatus({ id: "editPendingOrder", data })}
+        isHidden={filterOutByStatus({ id: "editPendingOrder", data, kind })}
         op="canEdit"
       >
         <Button
@@ -254,6 +256,7 @@ const WorkOrderActions = ({
               isHidden={filterOutByStatus({
                 id: `windowStatus_${key}`,
                 data,
+                kind,
               })}
             >
               <Button
@@ -286,7 +289,11 @@ const WorkOrderActions = ({
           return (
             <PermissionBlock
               key={key}
-              isHidden={filterOutByStatus({ id: `doorStatus_${key}`, data })}
+              isHidden={filterOutByStatus({
+                id: `doorStatus_${key}`,
+                data,
+                kind,
+              })}
             >
               <Button
                 type="text"
@@ -315,7 +322,12 @@ const WorkOrderActions = ({
           constants.FEATURE_CODES["om.prod.wo"],
           constants.FEATURE_CODES["om.prod.woAdmin"],
         ]}
-        isHidden={filterOutByStatus({ id: "deleteOrder", data, permissions })}
+        isHidden={filterOutByStatus({
+          id: "deleteOrder",
+          data,
+          permissions,
+          kind,
+        })}
         op="canDelete"
       >
         <Button
@@ -329,7 +341,7 @@ const WorkOrderActions = ({
       </PermissionBlock>
       <PermissionBlock
         featureCode={constants.FEATURE_CODES["om.prod.woGetWindowMaker"]}
-        isHidden={filterOutByStatus({ id: "syncFromWindowMaker", data })}
+        isHidden={filterOutByStatus({ id: "syncFromWindowMaker", data, kind })}
         op="canEdit"
       >
         <Button
@@ -343,7 +355,7 @@ const WorkOrderActions = ({
 
       <PermissionBlock
         featureCode={constants.FEATURE_CODES["om.prod.history"]}
-        isHidden={filterOutByStatus({ id: "viewOrderHistory", data })}
+        isHidden={filterOutByStatus({ id: "viewOrderHistory", data, kind })}
         op="canView"
       >
         <Button
@@ -411,7 +423,7 @@ const WorkOrderActions = ({
 };
 
 const useFilterControl = (permissions) => {
-  const filterOutByStatus = ({ id, data }) => {
+  const filterOutByStatus = ({ id, data, kind }) => {
     const _isStatusUpdate =
       id?.startsWith("doorStatus_") || id?.startsWith("windowStatus_");
 
@@ -423,7 +435,7 @@ const useFilterControl = (permissions) => {
     }
 
     // NOTE: same rule applies to popup edit button. if pending or cancelled cant edit
-    if (data?.m_Status === WORKORDER_MAPPING.Pending.key) {
+    if (data?.[`${kind}_Status`] === WORKORDER_MAPPING.Pending.key) {
       if (
         id !== "viewOrder" &&
         id !== "editPendingOrder" &&

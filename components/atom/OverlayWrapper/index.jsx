@@ -8,6 +8,7 @@ import styles from "./styles.module.scss";
 
 const Com = ({
   renderTrigger = () => <></>,
+  trigger = "click",
   isLock = false,
   className,
   maxWidth = "800px",
@@ -52,7 +53,7 @@ const Com = ({
       <div style={{ position: "relative", opacity: isLock ? 0.6 : 1 }}>
         <OverlayTrigger
           show={show}
-          trigger="click"
+          trigger={trigger}
           rootClose
           onToggle={(a) => {
             if (isLock) {

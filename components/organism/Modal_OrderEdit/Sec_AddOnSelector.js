@@ -123,7 +123,7 @@ const AddOnSelector = ({}) => {
           <span className={cn(styles.addonLabel, "me-2")}>Add-ons:</span>
           <div className={cn(styles.addonListContainer)}>
             {addons?.map((a) => {
-              const _isDetached = a?.m_AddOnStatus === "1"
+              const _isDetached = a?.m_AddOnStatus === "1";
               return (
                 <div
                   className={cn(
@@ -132,26 +132,33 @@ const AddOnSelector = ({}) => {
                   )}
                   onClick={() => handleSwitch(a?.m_MasterId)}
                 >
-                  {a.m_WorkOrderNo}{_isDetached ? <span className={styles.addonDetached}>(Detached)</span>: ""}
+                  {a.m_WorkOrderNo}
+                  {_isDetached ? (
+                    <span className={styles.addonDetached}>(Detached)</span>
+                  ) : (
+                    ""
+                  )}
                 </div>
               );
             })}
           </div>
 
-          <div
-            className={cn(
-              styles.addonParent,
-              parent?.m_MasterId === data?.m_MasterId ? styles.active : "",
-            )}
-            onClick={() => handleSwitch(parent?.m_MasterId)}
-          >
-            <span className={cn(styles.addonLabel, "")}>
-              {/* <i
+          <div className={cn(styles.addonParentContainer)}>
+            <div
+              className={cn(
+                styles.addonParent,
+                parent?.m_MasterId === data?.m_MasterId ? styles.active : "",
+              )}
+              onClick={() => handleSwitch(parent?.m_MasterId)}
+            >
+              <span className={cn(styles.addonLabel, "")}>
+                {/* <i
                     className={cn("fas fa-box me-1", styles.addonParentIcon)}
                   /> */}
-              Parent order:
-            </span>
-            {parent.m_WorkOrderNo}
+                Parent order:
+              </span>
+              {parent.m_WorkOrderNo}
+            </div>
             <OverlayWrapper
               renderTrigger={() => (
                 <i
