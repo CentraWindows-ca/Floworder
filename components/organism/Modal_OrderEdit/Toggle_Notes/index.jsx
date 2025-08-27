@@ -5,6 +5,7 @@ import constants from "lib/constants";
 import Editable from "components/molecule/Editable";
 // styles
 import styles from "./styles.module.scss";
+import stylesRoot from "../styles.module.scss";
 
 import { LocalDataContext } from "../LocalDataProvider";
 import { ToggleFull, NoData, DisplayBlock, displayFilter, SaveButton } from "../Com";
@@ -76,7 +77,7 @@ const Com = ({}) => {
 
   const jsxNoteBlock = (id) => {
     const addon = checkAddOnField({ id });
-    const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
+    const addonClass = addon?.isSyncedFromParent ? stylesRoot.addonSync_input : "";
 
     return (
       <DisplayBlock id={id}>

@@ -3,6 +3,8 @@ import cn from "classnames";
 import _ from "lodash";
 import { GeneralContext } from "lib/provider/GeneralProvider";
 import OverlayWrapper from "components/atom/OverlayWrapper";
+import Tooltip from "components/atom/Tooltip";
+import HoverPopover from "components/atom/HoverPopover";
 
 // styles
 import styles from "./styles.module.scss";
@@ -109,71 +111,156 @@ const AddOnSelector = ({}) => {
 
   const { parent, addons } = addonGroup || {};
 
+  const _renderList = _.orderBy(
+    [parent, ...addons],
+    ["isParent", "isUnlinked"],
+    ["desc", "asc"],
+  );
+
+  const _parentList = [parent];
+  const _addonList = addons?.filter((a) => !a.isUnlinked);
+  const _unlinkedList = addons?.filter((a) => a.isUnlinked);
+
+  const jsxRenderParent = (a) => {
+    const { m_WorkOrderNo, m_MasterId } = a;
+    return (
+      <div
+        className={cn(
+          styles.addonItem,
+          a?.m_MasterId === data?.m_MasterId ? styles.active : "",
+        )}
+        onClick={() => handleSwitch(m_MasterId)}
+        key={m_MasterId}
+      >
+        <span className={styles.addonLabel}>
+          {m_WorkOrderNo}
+          <span className={cn(styles.addonBadge, styles.addonBadge_parent)}>
+            Parent
+          </span>
+        </span>
+      </div>
+    );
+  };
+
+  const jsxRenderAddon = (a) => {
+    const { m_WorkOrderNo, m_MasterId } = a;
+    return (
+      <div
+        className={cn(
+          styles.addonItem,
+          a?.m_MasterId === data?.m_MasterId ? styles.active : "",
+        )}
+        onClick={() => handleSwitch(m_MasterId)}
+      >
+        <HoverPopover
+          trigger={
+            <div key={m_MasterId}>
+              <img src="/linked.svg" className={styles.addonIcon} />
+              <span className={styles.addonLabel}>
+                {m_WorkOrderNo}
+                <span className={cn(styles.addonBadge)}>Add-on</span>
+              </span>
+            </div>
+          }
+          className={cn(styles.addonItemPopoverTrigger)}
+        >
+          <div className={styles.addonHoverPopover} style={{ width: 380 }}>
+            <img src="/linked.svg" className={styles.addonIcon} />{" "}
+            <b>Linking Add-on</b>
+            <hr />
+            This add-on ({m_WorkOrderNo}) <b>is linking</b> with the parent
+            order ({parent?.m_WorkOrderNo})
+          </div>
+        </HoverPopover>
+      </div>
+    );
+  };
+
+  const jsxRenderAddonUnlinked = (a) => {
+    const { m_WorkOrderNo, m_MasterId } = a;
+    return (
+      <div
+        className={cn(
+          styles.addonItem,
+          a?.m_MasterId === data?.m_MasterId ? styles.active : "",
+        )}
+        onClick={() => handleSwitch(m_MasterId)}
+        key={m_MasterId}
+      >
+        <HoverPopover
+          trigger={
+            <div>
+              <img src="/unlinked.svg" className={styles.addonIcon} />
+              <span className={styles.addonLabel}>
+                {m_WorkOrderNo}
+                <span className={cn(styles.addonBadge)}>Add-on</span>
+              </span>
+            </div>
+          }
+        >
+          <div className={styles.addonHoverPopover} style={{ width: 380 }}>
+            <img src="/unlinked.svg" className={styles.addonIcon} />{" "}
+            <b>Unlinked Add-on</b>
+            <hr />
+            This add-on ({m_WorkOrderNo}) <b>has been UNLINKED</b> from the
+            parent order ({parent?.m_WorkOrderNo})
+          </div>
+        </HoverPopover>
+      </div>
+    );
+  };
+
   return (
     <>
       <div className={cn(styles.addonContainer)}>
-        <div
-          className={cn(
-            styles.addonMainContainer,
-            parent?.m_MasterId === data?.m_MasterId
-              ? styles.isAddonOnParent
-              : "",
-          )}
-        >
-          <span className={cn(styles.addonLabel, "me-2")}>Add-ons:</span>
-          <div className={cn(styles.addonListContainer)}>
-            {addons?.map((a) => {
-              const _isDetached = a?.m_AddOnStatus === "1";
-              return (
-                <div
-                  className={cn(
-                    styles.addonItem,
-                    a?.m_MasterId === data?.m_MasterId ? styles.active : "",
-                  )}
-                  onClick={() => handleSwitch(a?.m_MasterId)}
-                >
-                  {a.m_WorkOrderNo}
-                  {_isDetached ? (
-                    <span className={styles.addonDetached}>(Detached)</span>
-                  ) : (
-                    ""
-                  )}
-                </div>
-              );
-            })}
+        <div className={cn(styles.addonMainContainer, "")}>
+          <div
+            className={cn(
+              styles.addonListContainer,
+              styles.addonListContainer_parent,
+            )}
+          >
+            {_parentList?.map((a) => jsxRenderParent(a))}
+          </div>
+          <div
+            className={cn(
+              styles.addonListContainer,
+              styles.addonListContainer_addon,
+            )}
+          >
+            {_addonList?.map((a) => jsxRenderAddon(a))}
+            {_addonList?.map((a) => jsxRenderAddon(a))}
+          </div>
+          <div
+            className={cn(
+              styles.addonListContainer,
+              styles.addonListContainer_unlinked,
+            )}
+          >
+            {_unlinkedList?.map((a) => jsxRenderAddonUnlinked(a))}
           </div>
 
-          <div className={cn(styles.addonParentContainer)}>
-            <div
-              className={cn(
-                styles.addonParent,
-                parent?.m_MasterId === data?.m_MasterId ? styles.active : "",
-              )}
-              onClick={() => handleSwitch(parent?.m_MasterId)}
-            >
-              <span className={cn(styles.addonLabel, "")}>
-                {/* <i
-                    className={cn("fas fa-box me-1", styles.addonParentIcon)}
-                  /> */}
-                Parent order:
-              </span>
-              {parent.m_WorkOrderNo}
-            </div>
-            <OverlayWrapper
-              renderTrigger={() => (
+          <div className={cn(styles.addonInfoContainer)}>
+            <HoverPopover
+              trigger={
                 <i
                   className={cn(
                     styles.addonIconInfo,
-                    "fa-solid fa-circle-info ms-2",
+                    "fa-solid fa-circle-info ms-3",
                   )}
                 />
-              )}
+              }
             >
-              <div className="d-flex align-items-center p-2">
-                background color <div className={cn(styles.addonIcon)}></div>{" "}
-                means inherited data from {parent.m_WorkOrderNo}
+              <div style={{ width: 380 }}>
+                <div className={cn(styles.addonBgIcon)} aria-hidden="true" />{" "}
+                <b>Fields with light green background</b>
+                <hr />
+                <span>
+                  Indicates add-on fields pulled from parent order (
+                  {parent.m_WorkOrderNo})
+                </span>
               </div>
-            </OverlayWrapper>
+            </HoverPopover>
           </div>
         </div>
       </div>

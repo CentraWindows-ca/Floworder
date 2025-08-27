@@ -434,77 +434,99 @@
         margin-bottom: -1px;
     }
 
-    .addonMainContainer.isAddonOnParent {
-        margin-bottom: 4px;
-
-        .addonParentContainer {
-            display: none;
-        }
-
-        .addonItem {
-            border-radius: 4px;
-            padding: 2px 14px;
-            border-bottom: 1px solid $color_border_table;
-        }
-    }
-
     .addonListContainer {
         display: flex;
-        gap: 2px;
-    }
 
-    .addonLabel {
-        color: $color_gray_dark;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-
-    .addonItem {
-        cursor: pointer;
-        border: 1px solid $color_border_table;
-        border-radius: 4px 4px 0px 0px;
-        border-bottom: none;
-        padding: 6px 14px;
-
-        &:hover {
-            background-color: $color_background_addonsync;
-        }
-
-        &.active {
-            font-weight: bold;
-            background-color: $color_background_modal;
-        }
-
-        .addonDetached {
-            color: $color_gray_dark;
-            font-size: .8rem;
-            font-weight: normal;
-            margin-left: 5px;
-        }
-    }
-
-    .addonParentContainer {
-        display: flex;
-        align-items: center;
-            align-self: self-start;
-        .addonParent {
-            display: flex;
-            gap: 2px;
-            // border: 1px solid $color_border_table;
-            border-radius: 4px;
-            padding: 2px 8px;
-            margin-left: 8px;
+        .addonItem {
             cursor: pointer;
+            border: 1px solid $color_border_table;
+            border-radius: 4px 4px 0px 0px;
+            // border-bottom: none;
+            padding: 6px 14px;
+            display: flex;
             align-items: center;
-
+            background-color: white;
 
             &:hover {
                 background-color: $color_background_addonsync;
             }
+
+            &.active {
+                font-weight: bold;
+                background-color: $color_background_modal;
+                border-bottom: none !important;
+            }
+
+            .addonBadge {
+                color: #999;
+                font-size: .6rem;
+                font-weight: bold;
+                margin-left: 5px;
+                border: 1px solid #999;
+                background-color: $color_addonsync;
+                color: white;
+                padding: 2px 6px;
+                border-radius: 10px;
+            }
+
+            position: relative;
+
+            .addonHoverPopover {
+                font-weight: normal;
+            }
         }
 
+        &.addonListContainer_parent {
+            .addonItem {
+                border-right: none;
+                padding-right: 40px;
+
+                .addonBadge {
+                    background-color: $primary;
+                }
+            }
+        }
+
+        &.addonListContainer_addon {
+            .addonItem {
+                // border-left: 4px solid $color_addonsync;
+                border-top-left-radius: 16px;
+                margin-left: -10px;
+            }
+
+            .addonItem:not(:last-child) {
+                padding-right: 24px;
+                border-right: none;
+
+            }
+
+        }
+
+        &.addonListContainer_unlinked {
+            gap: 6px;
+            margin-left: 6px;
+
+            .addonItem {
+                border-top-style: dashed;
+                border-left-style: dashed;
+                border-right-style: dashed;
+
+                .addonBadge {
+                    background-color: white;
+                    color: $color_addonsync;
+                }
+            }
+
+            .addonLabel {
+                color: $color_addon_unlink;
+            }
+        }
+    }
+
+    .addonInfoContainer {
+        display: flex;
+        align-items: center;
+        align-self: self-start;
     }
 
 }
@@ -515,7 +537,7 @@
     font-size: .8em;
 }
 
-.addonIcon {
+.addonBgIcon {
     border: 1px solid $color_addonsync;
     background-color: $color_background_addonsync;
     display: inline-block;
@@ -545,6 +567,14 @@
     &[type=checkbox]:checked {
         background-color: $color_addonsync !important;
     }
+}
+
+img.addonIcon {
+    height: 14px;
+    width: 14px;
+    vertical-align: middle;
+    display: inline-block;
+    margin-right: 5px;
 }
 
 .addonParentIcon {

@@ -15,11 +15,14 @@ const Com = ({
   zIndex = 1070,
   children,
   toggle = false,
+  isEnable = true,
 }) => {
+  if (!isEnable) return renderTrigger();
+
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    if (show) {
+    if (show && trigger === "click") {
       // Create overlay element
       const overlay = document.createElement("div");
       overlay.style.position = "fixed";
@@ -38,7 +41,7 @@ const Com = ({
         document.body.removeChild(overlay);
       };
     }
-  }, [show]);
+  }, [show, trigger]);
 
   useEffect(() => {
     setShow(false);

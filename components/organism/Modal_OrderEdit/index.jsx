@@ -45,11 +45,10 @@ const Com = ({}) => {
     onAnchor,
     onRestore,
     onGetWindowMaker,
-    onDetachAddOn,
+    onUnlinkAddOn,
 
     data,
     initDataSiteLockout,
-
     kind,
     checkEditable,
     setIsEditable,
@@ -62,6 +61,9 @@ const Com = ({}) => {
     glassTotal,
     uIstatusObj,
     isDeleted = false,
+
+    isInAddOnGroup,
+    addonGroup,
   } = useContext(LocalDataContext);
 
   // use swr later
@@ -122,12 +124,16 @@ const Com = ({}) => {
           )}
         </PermissionBlock>
         {KindDisplay[kind]} Work Order # {data?.m_WorkOrderNo}
+
+        {/* Add-on info */}
+        {isInAddOnGroup && <small className="fw-normal">{addonGroup?.parent ? "(Parent)" : "(Add-on)"}</small>}
+
         {isDeleted && (
           <div className="align-items-center flex gap-2 text-red-400">
             [DELETED]
           </div>
         )}
-        <div className="align-items-center flex gap-2 ms-2">
+        <div className="align-items-center ms-2 flex gap-2">
           <Sec_Status />
           {["Shipped"].includes(uIstatusObj?.key) &&
             data?.m_TransferredLocation && (
@@ -308,26 +314,28 @@ const Com = ({}) => {
 
               {/* detach button */}
               {/* if it has parent */}
-              <PermissionBlock
-                featureCodeGroup={
-                  constants.FEATURE_CODES["om.prod.woDetachAddOn"]
-                }
-                isValidationInactive={true}
-              >
-                {data?.m_ParentMasterId ? (
-                  <button
-                    className="btn btn-outline-primary align-items-center flex gap-2 px-3"
-                    disabled={
-                      !data?.m_WorkOrderNo ||
-                      isSaving ||
-                      data?.m_AddOnStatus === ADDON_STATUS.detached // if already detached, disable
-                    }
-                    onClick={onDetachAddOn}
-                  >
-                    Detach Add-on
-                  </button>
-                ) : null}
-              </PermissionBlock>
+              {isInAddOnGroup && (
+                <PermissionBlock
+                  featureCodeGroup={
+                    constants.FEATURE_CODES["om.prod.woUnlinkAddOn"]
+                  }
+                  isValidationInactive={true}
+                >
+                  {data?.m_ParentMasterId ? (
+                    <button
+                      className="btn btn-outline-primary align-items-center flex gap-2 px-3"
+                      disabled={
+                        !data?.m_WorkOrderNo ||
+                        isSaving ||
+                        data?.m_AddOnStatus === ADDON_STATUS.detached // if already detached, disable
+                      }
+                      onClick={onUnlinkAddOn}
+                    >
+                      Unlink Add-on
+                    </button>
+                  ) : null}
+                </PermissionBlock>
+              )}
             </div>
           )}
 

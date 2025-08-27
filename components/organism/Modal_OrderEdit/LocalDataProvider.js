@@ -19,7 +19,11 @@ import External_WebCalApi from "lib/api/External_WebCalApi";
 import External_ServiceApi from "lib/api/External_ServiceApi";
 
 import useLoadingBar from "lib/hooks/useLoadingBar";
-import constants, { ADDON_STATUS, ORDER_STATUS, ORDER_TRANSFER_FIELDS } from "lib/constants";
+import constants, {
+  ADDON_STATUS,
+  ORDER_STATUS,
+  ORDER_TRANSFER_FIELDS,
+} from "lib/constants";
 import { uiWoFieldEditGroupMapping } from "lib/constants/constants_labelMapping";
 import { getOrderKind } from "lib/utils";
 
@@ -92,8 +96,7 @@ export const LocalDataProvider = ({
   const [initData, setInitData] = useState(null);
   const [initDataItems, setInitDataItems] = useState(null);
   const [initDataReturnTrips, setInitDataReturnTrips] = useState(null);
-  const [initDataSiteLockout, setInitDataSiteLockout] = useState({
-  })
+  const [initDataSiteLockout, setInitDataSiteLockout] = useState({});
 
   const [kind, setKind] = useState(initKind || "m");
 
@@ -199,7 +202,7 @@ export const LocalDataProvider = ({
     const mergedData = await doInitWo(initMasterId);
 
     await doInitAddOn(initMasterId);
-    await doInitSiteLockOut(initMasterId)
+    await doInitSiteLockOut(initMasterId);
 
     if (mergedData) {
       if (initKind === "w" || getOrderKind(mergedData) === "w") {
@@ -284,14 +287,22 @@ export const LocalDataProvider = ({
   );
 
   const doInitAddOn = useLoadingBar(async (initMasterId) => {
-    if (constants.DEV_HOLDING_FEATURES.v20250815_addon) return
+    if (constants.DEV_HOLDING_FEATURES.v20250815_addon) return;
 
     const _addonGroup = await OrdersApi.getAddsOnGroupByMasterId({
       masterId: initMasterId,
     });
 
     const parent = _addonGroup?.find((a) => a.isParent);
-    const addons = _addonGroup?.filter((a) => !a.isParent);
+    const addons = _addonGroup
+      ?.map((a) => {
+        const { m_AddOnStatus } = a;
+        return {
+          ...a,
+          isUnlinked: m_AddOnStatus === "1",
+        };
+      })
+      ?.filter((a) => !a.isParent);
 
     // if there is only a parent
     setAddOnGroup({
@@ -301,14 +312,14 @@ export const LocalDataProvider = ({
   });
 
   const doInitSiteLockOut = useLoadingBar(async (initMasterId) => {
-    if (constants.DEV_HOLDING_FEATURES.v20250815_sitelockout_display) return
+    if (constants.DEV_HOLDING_FEATURES.v20250815_sitelockout_display) return;
 
     const _siteLockOut = await External_ServiceApi.getSiteLockoutByMasterId({
       masterId: initMasterId,
     });
 
     // if there is only a parent
-    setInitDataSiteLockout(_siteLockOut)
+    setInitDataSiteLockout(_siteLockOut);
   });
 
   const initItems = useLoadingBar(async (initMasterId) => {
@@ -626,12 +637,16 @@ export const LocalDataProvider = ({
     () => setIsSaving(false), // callback function
   );
 
-  const doDetachAddOn = useLoadingBar(
+  const doUnlinkAddOn = useLoadingBar(
     async () => {
-      const _parentWorkOrder = addonGroup?.parent?.m_WorkOrderNo
+      const _parentWorkOrder = addonGroup?.parent?.m_WorkOrderNo;
       // note: to prevent accdentally detach
-      if (!window.confirm(`Do you want to detach ${initData.m_WorkOrderNo} from ${_parentWorkOrder}?`)) {
-        return null
+      if (
+        !window.confirm(
+          `Do you want to detach ${initData.m_WorkOrderNo} from ${_parentWorkOrder}?`,
+        )
+      ) {
+        return null;
       }
 
       setIsSaving(true);
@@ -642,10 +657,9 @@ export const LocalDataProvider = ({
 
       await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData);
 
-      toast(
-        `Add-on Work order detached from ${_parentWorkOrder}`,
-        { type: "success" },
-      );
+      toast(`Add-on Work order detached from ${_parentWorkOrder}`, {
+        type: "success",
+      });
 
       await doInitWo(initMasterId);
       onSave();
@@ -807,7 +821,7 @@ export const LocalDataProvider = ({
     onBatchUpdateItems: doBatchUpdateItems,
     onHide: handleHide,
     onSave: doSave,
-    onDetachAddOn: doDetachAddOn,
+    onUnlinkAddOn: doUnlinkAddOn,
     onRestore: doRestore,
     onGetWindowMaker: doGetWindowMaker,
     editedGroup,

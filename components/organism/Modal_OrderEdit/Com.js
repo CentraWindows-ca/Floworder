@@ -501,7 +501,7 @@ export const checkAddOnFieldById = ({
   let result = { isAddOnEditable: true, isSyncedFromParent: false };
 
   // if data?.m_AddOnStatus === 'SPLIT', isAddOnEditable is true
-  const isOrderDetach = data?.m_AddOnStatus === ADDON_STATUS.detached;
+  const isOrderUnlink = data?.m_AddOnStatus === ADDON_STATUS.detached;
 
   if (workOrderFields?.[id]) {
     let { 
@@ -516,8 +516,8 @@ export const checkAddOnFieldById = ({
 
     // detach has higher priority. if that happens 
     if (isSplitNotSync) {
-      _editable = isOrderDetach
-      _syncFromParent = !isOrderDetach
+      _editable = isOrderUnlink
+      _syncFromParent = !isOrderUnlink
     } 
 
     result = {

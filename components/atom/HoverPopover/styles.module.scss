@@ -1,0 +1,17 @@
+@use "styles/theme"as *;
+
+.panel {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  background: #fff;
+
+  @include breakpoint-up(mobile) {
+    // max-width: calc(100% - 30px);
+    border-radius: 0px;
+    border-top: 3px solid $primary;
+  }
+
+  z-index: $layer_sideToggleIcon;
+}
