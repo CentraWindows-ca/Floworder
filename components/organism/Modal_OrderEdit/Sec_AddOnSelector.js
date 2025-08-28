@@ -229,7 +229,6 @@ const AddOnSelector = ({}) => {
             )}
           >
             {_addonList?.map((a) => jsxRenderAddon(a))}
-            {_addonList?.map((a) => jsxRenderAddon(a))}
           </div>
           <div
             className={cn(
