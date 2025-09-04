@@ -500,8 +500,8 @@ export const checkAddOnFieldById = ({
 }) => {
   let result = { isAddOnEditable: true, isSyncedFromParent: false };
 
-  // if data?.m_AddOnStatus === 'SPLIT', isAddOnEditable is true
-  const isOrderUnlink = data?.m_AddOnStatus === ADDON_STATUS.detached;
+  // if data?.m_AddOnLinked === 'SPLIT', isAddOnEditable is true
+  const isOrderUnlink = data?.m_AddOnLinked === ADDON_STATUS.detached;
 
   if (workOrderFields?.[id]) {
     let { 

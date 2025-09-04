@@ -111,12 +111,6 @@ const AddOnSelector = ({}) => {
 
   const { parent, addons } = addonGroup || {};
 
-  const _renderList = _.orderBy(
-    [parent, ...addons],
-    ["isParent", "isUnlinked"],
-    ["desc", "asc"],
-  );
-
   const _parentList = [parent];
   const _addonList = addons?.filter((a) => !a.isUnlinked);
   const _unlinkedList = addons?.filter((a) => a.isUnlinked);

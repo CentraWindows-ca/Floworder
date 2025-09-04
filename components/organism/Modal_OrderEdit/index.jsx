@@ -327,7 +327,7 @@ const Com = ({}) => {
                       disabled={
                         !data?.m_WorkOrderNo ||
                         isSaving ||
-                        data?.m_AddOnStatus === ADDON_STATUS.detached // if already detached, disable
+                        data?.m_AddOnLinked === ADDON_STATUS.detached // if already detached, disable
                       }
                       onClick={onUnlinkAddOn}
                     >
