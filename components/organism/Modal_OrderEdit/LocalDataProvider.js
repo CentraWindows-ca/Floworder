@@ -299,7 +299,7 @@ export const LocalDataProvider = ({
         const { m_AddOnLinked } = a;
         return {
           ...a,
-          isUnlinked: m_AddOnLinked === "1",
+          isUnlinked: m_AddOnLinked === ADDON_STATUS.detached,
         };
       })
       ?.filter((a) => !a.isParent);
