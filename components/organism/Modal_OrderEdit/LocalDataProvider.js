@@ -296,15 +296,15 @@ export const LocalDataProvider = ({
     const parent = _addonGroup?.find((a) => a.isParent);
     const addons = _addonGroup
       ?.map((a) => {
-        const { m_AddOnLinked } = a;
+        const { m_AddOnStatus } = a;
         return {
           ...a,
-          isUnlinked: m_AddOnLinked === ADDON_STATUS.detached,
+          isUnlinked: m_AddOnStatus === ADDON_STATUS.detached,
         };
       })
       ?.filter((a) => !a.isParent);
 
-    // if there is only a parent
+      // if there is only a parent
     setAddOnGroup({
       parent,
       addons,
@@ -652,7 +652,7 @@ export const LocalDataProvider = ({
       setIsSaving(true);
 
       const _changedData = {
-        m_AddOnLinked: ADDON_STATUS.detached,
+        m_AddOnStatus: ADDON_STATUS.detached,
       };
 
       await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData);

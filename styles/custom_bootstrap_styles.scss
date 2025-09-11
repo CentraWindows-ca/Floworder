@@ -1,5 +1,7 @@
 $primary: #005db9; // Change this to your desired primary color
 $primary-hover: #0273e2;
+
+$btn-disabled-opacity: 0.4; 
 // Import Bootstrap’s SCSS
 @import "bootstrap/scss/bootstrap";
 

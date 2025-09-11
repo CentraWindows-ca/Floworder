@@ -126,7 +126,7 @@ const Com = ({}) => {
         {KindDisplay[kind]} Work Order # {data?.m_WorkOrderNo}
 
         {/* Add-on info */}
-        {isInAddOnGroup && <small className="fw-normal">{addonGroup?.parent ? "(Parent)" : "(Add-on)"}</small>}
+        {isInAddOnGroup && <small className="fw-normal">{addonGroup?.parent?.m_MasterId === initMasterId ? "(Parent)" : "(Add-on)"}</small>}
 
         {isDeleted && (
           <div className="align-items-center flex gap-2 text-red-400">
@@ -327,7 +327,7 @@ const Com = ({}) => {
                       disabled={
                         !data?.m_WorkOrderNo ||
                         isSaving ||
-                        data?.m_AddOnLinked === ADDON_STATUS.detached // if already detached, disable
+                        data?.m_AddOnStatus === ADDON_STATUS.detached // if already detached, disable
                       }
                       onClick={onUnlinkAddOn}
                     >

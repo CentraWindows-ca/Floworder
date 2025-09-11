@@ -150,7 +150,6 @@ const DisplayDate = (props) => {
           styles.columnScheduledInput,
           "justify-content-end align-items-center flex",
           className_required,
-          addonClass
         )}
         inputData={props}
       />

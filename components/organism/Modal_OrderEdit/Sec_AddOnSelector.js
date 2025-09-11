@@ -148,12 +148,10 @@ const AddOnSelector = ({}) => {
       >
         <HoverPopover
           trigger={
-            <div key={m_MasterId}>
+            <div className="d-flex align-items-center gap-1">
               <img src="/linked.svg" className={styles.addonIcon} />
-              <span className={styles.addonLabel}>
-                {m_WorkOrderNo}
-                <span className={cn(styles.addonBadge)}>Add-on</span>
-              </span>
+              <span className={styles.addonLabel}>{m_WorkOrderNo}</span>
+              <div className={cn(styles.addonBadge)}>Add-on</div>
             </div>
           }
           className={cn(styles.addonItemPopoverTrigger)}
@@ -183,12 +181,10 @@ const AddOnSelector = ({}) => {
       >
         <HoverPopover
           trigger={
-            <div>
+            <div className="d-flex align-items-center gap-1">
               <img src="/unlinked.svg" className={styles.addonIcon} />
-              <span className={styles.addonLabel}>
-                {m_WorkOrderNo}
-                <span className={cn(styles.addonBadge)}>Add-on</span>
-              </span>
+              <span className={styles.addonLabel}>{m_WorkOrderNo}</span>
+              <div className={cn(styles.addonBadge)}>Add-on</div>
             </div>
           }
         >
