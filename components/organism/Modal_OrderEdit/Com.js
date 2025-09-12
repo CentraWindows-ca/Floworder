@@ -463,6 +463,9 @@ export const checkEditableById = ({ id, permissions, data, initKind }) => {
 };
 
 export const checkEditableByGroup = ({ group, permissions, data }) => {
+  /*
+    usually for external tables that cant be identified by id. like files, items
+  */
   const isAllowWindow = _.get(
     permissions,
     [`om.prod.wo.${group}.window`, `canEdit`],

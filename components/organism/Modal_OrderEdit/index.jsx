@@ -66,7 +66,6 @@ const Com = ({}) => {
     addonGroup,
   } = useContext(LocalDataContext);
 
-  // use swr later
   const [historyOrderMasterId, setHistoryOrderMasterId] = useState(null);
 
   const KindDisplay = {
@@ -75,7 +74,8 @@ const Com = ({}) => {
     d: <b className="text-primary">[Doors]</b>,
   };
 
-  const isOnStatusAllowToEdit = true; // ![WORKORDER_MAPPING.Pending.key].includes( data?.["m_Status"]);
+  /* NOTE: <rule 250912_cancel_editable> */
+  const isOnStatusAllowToEdit = ![WORKORDER_MAPPING.Cancelled.key].includes( data?.[`${kind}_Status`]);
   const uiClass_withLockout = true;
 
   const jsxTitle = (

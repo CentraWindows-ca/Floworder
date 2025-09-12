@@ -706,11 +706,19 @@ export const LocalDataProvider = ({
   const uIstatusObj =
     ORDER_STATUS?.find((a) => a.key === data?.[STATUS[kind]]) || {};
 
+  // called by each single input
   const checkEditable = useCallback(
     (params = {}) => {
+      /*
+        id: if editable of fields (order level)
+        -- for permission or status
+
+        group: usually for external tables that cant be identified by id. Like files, items. 
+        -- mostly for permission purpose
+      */
       const { id, group } = params;
       let _pass = isEditable;
-      if (id) {
+      if (id) { 
         _pass = _pass && checkEditableById({ id, data, permissions, initKind });
       }
       if (group) {
@@ -718,8 +726,8 @@ export const LocalDataProvider = ({
           _pass && checkEditableByGroup({ group, data, permissions, initKind });
       }
 
-      // if its addon workorder, check if field is addonField
-      // logic to check if split addon
+      /* if its addon workorder, check if field is addonField
+          logic to check if split addon*/
       const { isAddOnEditable } = checkAddOnField(params) || {};
       _pass = _pass && isAddOnEditable;
 
@@ -736,17 +744,6 @@ export const LocalDataProvider = ({
       isInAddOnGroup,
       addonGroup?.parent?.m_MasterId,
     ],
-  );
-
-  const checkEditableForSectionSaveButton = useCallback(
-    (params = {}) => {
-      const { group } = params;
-      return (
-        isEditable &&
-        checkEditableByGroup({ group, data, permissions, initKind })
-      );
-    },
-    [isEditable, initMasterId, data?.m_Status, permissions],
   );
 
   // called by each single input
@@ -837,7 +834,6 @@ export const LocalDataProvider = ({
     isEditable,
     setIsEditable,
     checkEditable,
-    checkEditableForSectionSaveButton,
     checkAddOnField,
     uiOrderType,
     uiShowMore,
