@@ -643,12 +643,13 @@ export const LocalDataProvider = ({
       // note: to prevent accdentally detach
       if (
         !window.confirm(
-          `Do you want to detach ${initData.m_WorkOrderNo} from ${_parentWorkOrder}?`,
+          `Do you want to unlink ${initData.m_WorkOrderNo} from ${_parentWorkOrder}?`,
         )
       ) {
         return null;
       }
 
+      // return 
       setIsSaving(true);
 
       const _changedData = {
@@ -657,11 +658,42 @@ export const LocalDataProvider = ({
 
       await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData);
 
-      toast(`Add-on Work order detached from ${_parentWorkOrder}`, {
+      toast(`Add-on Work order unlinked from ${_parentWorkOrder}`, {
         type: "success",
       });
 
-      await doInitWo(initMasterId);
+      await doInit(initMasterId);
+      onSave();
+    },
+    () => setIsSaving(false), // callback function
+  );
+
+  const doLinkAddOn = useLoadingBar(
+    async () => {
+      const _parentWorkOrder = addonGroup?.parent?.m_WorkOrderNo;
+      // note: to prevent accdentally detach
+      if (
+        !window.confirm(
+          `Do you want to link ${initData.m_WorkOrderNo} with ${_parentWorkOrder}?`,
+        )
+      ) {
+        return null;
+      }
+
+      // return 
+      setIsSaving(true);
+
+      const _changedData = {
+        m_AddOnStatus: ADDON_STATUS.attached,
+      };
+
+      await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData);
+
+      toast(`Add-on Work order linked from ${_parentWorkOrder}`, {
+        type: "success",
+      });
+
+      await doInit(initMasterId);
       onSave();
     },
     () => setIsSaving(false), // callback function
@@ -819,6 +851,7 @@ export const LocalDataProvider = ({
     onHide: handleHide,
     onSave: doSave,
     onUnlinkAddOn: doUnlinkAddOn,
+    onLinkAddOn: doLinkAddOn,
     onRestore: doRestore,
     onGetWindowMaker: doGetWindowMaker,
     editedGroup,

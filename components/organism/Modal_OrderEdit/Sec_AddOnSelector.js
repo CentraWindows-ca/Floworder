@@ -242,8 +242,6 @@ const AddOnSelector = ({}) => {
           >
             {_unlinkedList?.map((a) => jsxRenderAddonUnlinked(a))}
           </div>
-
-          
         </div>
       </div>
     </>
