@@ -162,6 +162,13 @@ const AddOnSelector = ({}) => {
             <hr />
             This add-on ({m_WorkOrderNo}) <b>is linking</b> with the parent
             order ({parent?.m_WorkOrderNo})
+            <hr />
+            <div className={cn(styles.addonBgIcon)} aria-hidden="true" />{" "}
+            <b>Fields with light green background: </b>
+            <span>
+              Indicates add-on fields pulled from parent order (
+              {parent.m_WorkOrderNo})
+            </span>
           </div>
         </HoverPopover>
       </div>
@@ -194,6 +201,13 @@ const AddOnSelector = ({}) => {
             <hr />
             This add-on ({m_WorkOrderNo}) <b>has been UNLINKED</b> from the
             parent order ({parent?.m_WorkOrderNo})
+            <hr />
+            <div className={cn(styles.addonBgIcon)} aria-hidden="true" />{" "}
+            <b>Fields with light green background: </b>
+            <span>
+              Indicates add-on fields pulled from parent order (
+              {parent.m_WorkOrderNo})
+            </span>
           </div>
         </HoverPopover>
       </div>
@@ -229,28 +243,7 @@ const AddOnSelector = ({}) => {
             {_unlinkedList?.map((a) => jsxRenderAddonUnlinked(a))}
           </div>
 
-          <div className={cn(styles.addonInfoContainer)}>
-            <HoverPopover
-              trigger={
-                <i
-                  className={cn(
-                    styles.addonIconInfo,
-                    "fa-solid fa-circle-info ms-3",
-                  )}
-                />
-              }
-            >
-              <div style={{ width: 380 }}>
-                <div className={cn(styles.addonBgIcon)} aria-hidden="true" />{" "}
-                <b>Fields with light green background</b>
-                <hr />
-                <span>
-                  Indicates add-on fields pulled from parent order (
-                  {parent.m_WorkOrderNo})
-                </span>
-              </div>
-            </HoverPopover>
-          </div>
+          
         </div>
       </div>
     </>

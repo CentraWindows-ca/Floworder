@@ -323,7 +323,7 @@ const Com = ({}) => {
                 >
                   {data?.m_ParentMasterId ? (
                     <button
-                      className="btn btn-outline-primary align-items-center flex gap-2 px-3"
+                      className="btn btn-danger align-items-center flex gap-2 px-3"
                       disabled={
                         !data?.m_WorkOrderNo ||
                         isSaving ||
