@@ -144,6 +144,7 @@ const AddOnSelector = ({}) => {
           styles.addonItem,
           a?.m_MasterId === data?.m_MasterId ? styles.active : "",
         )}
+        key={m_MasterId}
         onClick={() => handleSwitch(m_MasterId)}
       >
         <HoverPopover

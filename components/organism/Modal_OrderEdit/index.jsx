@@ -331,21 +331,20 @@ const Com = ({}) => {
                     <>
                       {data?.m_AddOnStatus !== ADDON_STATUS.detached ? (
                         <button
-                          className="btn btn-danger align-items-center flex gap-2 px-3"
+                          className="btn btn-outline-danger align-items-center flex gap-2 px-3"
                           disabled={!data?.m_WorkOrderNo || isSaving}
                           onClick={onUnlinkAddOn}
                         >
+                          <img src="/unlinked.svg" className={styles.addonIcon} />
                           Unlink Add-on
                         </button>
                       ) : (
                         <button
-                          className="btn btn-success align-items-center flex gap-2 px-3"
-                          disabled={
-                            !data?.m_WorkOrderNo ||
-                            isSaving
-                          }
+                          className="btn btn-outline-success align-items-center flex gap-2 px-3"
+                          disabled={!data?.m_WorkOrderNo ||isSaving}
                           onClick={onLinkAddOn}
                         >
+                          <img src="/linked.svg" className={styles.addonIcon} />
                           Link Add-on
                         </button>
                       )}
