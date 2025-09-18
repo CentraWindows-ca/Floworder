@@ -296,10 +296,10 @@ export const LocalDataProvider = ({
     const parent = _addonGroup?.find((a) => a.isParent);
     const addons = _addonGroup
       ?.map((a) => {
-        const { m_AddOnStatus } = a;
+        const { m_AddOnLinked } = a;
         return {
           ...a,
-          isUnlinked: m_AddOnStatus === ADDON_STATUS.detached,
+          isUnlinked: m_AddOnLinked === ADDON_STATUS.detached,
         };
       })
       ?.filter((a) => !a.isParent);
@@ -653,7 +653,7 @@ export const LocalDataProvider = ({
       setIsSaving(true);
 
       const _changedData = {
-        m_AddOnStatus: ADDON_STATUS.detached,
+        m_AddOnLinked: ADDON_STATUS.detached,
       };
 
       await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData);
@@ -684,7 +684,7 @@ export const LocalDataProvider = ({
       setIsSaving(true);
 
       const _changedData = {
-        m_AddOnStatus: ADDON_STATUS.attached,
+        m_AddOnLinked: ADDON_STATUS.attached,
       };
 
       await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData);

@@ -329,7 +329,7 @@ const Com = ({}) => {
                 >
                   {data?.m_ParentMasterId ? (
                     <>
-                      {data?.m_AddOnStatus !== ADDON_STATUS.detached ? (
+                      {data?.m_AddOnLinked !== ADDON_STATUS.detached ? (
                         <button
                           className="btn btn-outline-danger align-items-center flex gap-2 px-3"
                           disabled={!data?.m_WorkOrderNo || isSaving}
