@@ -425,7 +425,7 @@ const Com = (props) => {
         display: !constants.DEV_HOLDING_FEATURES.v20250815_addon,
         renderFilter: ({ key }) => {
           return (
-            <div className="text-center w-full">
+            <div className="w-full text-center">
               <Editable.EF_Checkbox
                 {...{
                   id: key,
@@ -690,37 +690,40 @@ const Com = (props) => {
 
   return (
     <>
-      {error ? (
-        <div className={cn(styles.tableError)}>
-          <div>Network Error</div>
-        </div>
-      ) : isLoading ? (
-        <div className={cn(styles.tableLoading)}>
-          <Spin spinning={true} size="large" />
-        </div>
-      ) : null}
+      <div className={styles.tableContainer}>
+        {error ? (
+          <div className={cn(styles.tableError)}>
+            <div>Network Error</div>
+          </div>
+        ) : isLoading ? (
+          <div className={cn(styles.tableLoading)}>
+            <Spin spinning={true} size="large" />
+          </div>
+        ) : null}
 
-      <TableSortable
-        {...{
-          data: treatedData,
-          filters,
-          isEnableFilter,
-          setFilters,
-          columns: COLUMN_SEQUENCE_FOR_STATUS(status, columns),
-          sort,
-          setSort,
-          className: styles.table,
-        }}
-      />
-      <FiltersManager
-        {...{
-          columns: COLUMN_SEQUENCE_FOR_STATUS(status, columns),
-          filters,
-          isEnableFilter,
-          onEnableFilter,
-          setFilters,
-        }}
-      />
+        <TableSortable
+          {...{
+            data: treatedData,
+            filters,
+            isEnableFilter,
+            setFilters,
+            columns: COLUMN_SEQUENCE_FOR_STATUS(status, columns),
+            sort,
+            setSort,
+            headerClassName: styles.theadOfMainTable,
+            className: styles.table,
+          }}
+        />
+        <FiltersManager
+          {...{
+            columns: COLUMN_SEQUENCE_FOR_STATUS(status, columns),
+            filters,
+            isEnableFilter,
+            onEnableFilter,
+            setFilters,
+          }}
+        />
+      </div>
     </>
   );
 };

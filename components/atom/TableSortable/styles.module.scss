@@ -25,12 +25,13 @@
     td {
         padding: 0px;
         background-color: $color_background_tableHeader;
+        height: 32px;
 
         &>div {
             // border-right: 1px solid $color_border_table;
             background-color: $color_background_tableHeader;
             border-bottom: 1px solid $color_border_table;
-
+            position: relative;
             left: -1px !important;
             top: -1px !important;
             // margin-left: -1px;
@@ -61,11 +62,11 @@
 
     .tableTitle {
         transition: background-color 0.3s;
-        // min-height: 32px;
         display: flex;
         // padding-left: 5px;
         align-items: center;
         padding: 5px;
+        min-height: 35px;
     }
 
     .sortableTitle {
