@@ -87,8 +87,4 @@ const DisplayDate = (props) => {
   }
 };
 
-const CumstomComponentLink = ({}) => {
-  return <>Link</>;
-};
-
 export default Com;
