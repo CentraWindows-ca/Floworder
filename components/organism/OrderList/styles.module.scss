@@ -81,6 +81,17 @@
 
 .theadOfMainTable {
     border-left: none;
+    th,
+    td {
+        &>div {
+            /* 
+                in order list, let "top: -1px" work
+                when we lock 1st column 
+            */
+            position: relative;
+            top: -1px !important;
+        }
+    }
 }
 
 .tableStatusBlock {
