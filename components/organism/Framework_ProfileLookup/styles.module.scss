@@ -1,0 +1,28 @@
+@use "styles/theme" as *;
+
+.manufacturingFacilityContainer {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+
+.itemsContainer {
+	// overflow-y: scroll;
+	flex-grow: 1;
+	overflow: hidden;
+	width: 270px;
+	position: absolute;
+	right: 15px;
+
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+
+	.itemsContainerTitle {
+		border-radius: 4px;
+		background-color: $color_background;
+		padding: 15px;
+		// margin: 20px 10px 0px 10px;
+		margin: 15px 10px 5px 10px;
+	}
+}

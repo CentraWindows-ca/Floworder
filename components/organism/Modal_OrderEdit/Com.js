@@ -4,7 +4,7 @@ import { Spin } from "antd";
 import { LoadingOutlined, SaveOutlined } from "@ant-design/icons";
 import { getIsRequired } from "./hooks/vconfig";
 import constants, {
-  WORKORDER_MAPPING,
+  WORKORDER_STATUS_MAPPING,
   GlassRowStates,
   FEATURE_CODES,
   ADDON_STATUS,
@@ -41,7 +41,7 @@ export const getIfFieldDisplayAsProductType = (
   }
 
   if (id === "m_ShippedDate") {
-    _isDisplay &= [WORKORDER_MAPPING.Shipped.key].includes(data?.m_Status);
+    _isDisplay &= [WORKORDER_STATUS_MAPPING.Shipped.key].includes(data?.m_Status);
   }
 
   if (
@@ -427,7 +427,7 @@ export const checkEditableById = ({ id, permissions, data, initKind }) => {
   here "where" means which tab (master, window, door) they search the order from
   */
   let status_ForPendingRule = data?.[`${initKind}_Status`];
-  if (status_ForPendingRule === WORKORDER_MAPPING.Pending.key) {
+  if (status_ForPendingRule === WORKORDER_STATUS_MAPPING.Pending.key) {
     // check from group 'schedule', but still from field level (in case we dont pass group)
     if (!checkGroup("schedule")) {
       isEnable = false;
@@ -485,7 +485,7 @@ export const checkEditableByGroup = ({ group, permissions, data }) => {
   let isAllowAny = isAllowWindow || isAllowDoor || isAllowBoth;
 
   // ============ functional checking: "disable" rules ============
-  // if (data?.m_Status === WORKORDER_MAPPING.Pending.key) {
+  // if (data?.m_Status === WORKORDER_STATUS_MAPPING.Pending.key) {
   //   // check from group 'schedule', but still from field level (in case we dont pass group)
   //   if (group !== "schedule") {
   //     return false

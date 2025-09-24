@@ -2,7 +2,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import cn from "classnames";
 import _ from "lodash";
-import { ORDER_STATUS_AS_GROUP } from "lib/constants";
+import { INVOICE_STATUS_AS_GROUP } from "lib/constants";
 
 // styles
 import styles from "./styles.module.scss";
@@ -38,49 +38,12 @@ const Com = (props) => {
     );
   };
 
-  const handleTrash = (v) => {
-    const currentPath = router?.asPath?.split("?")?.[0];
-    const targetPath = "/";
-    let newQuery = {};
-    
-    newQuery = {
-      ...router.query,
-      isDeleted: 1,
-    };
-
-    if (currentPath === targetPath) {
-      delete newQuery.p;
-      delete newQuery.status;
-    }
-    router.replace(
-      {
-        pathname: targetPath,
-        query: newQuery,
-      },
-      undefined,
-      { shallow: false },
-    );
-  };
-
-  const handleNavigate = (path) => {
-    const currentPath = router?.asPath?.split("?")?.[0];
-
-    router.replace(
-      {
-        pathname: path,
-        query: {},
-      },
-      undefined,
-      { shallow: false },
-    );
-  };
-
   return (
     <div className={cn("w-full", styles.root)}>
       <div className={cn(styles.statusGroups)}>
         <NavSideMenu
           item={{
-            label: "All Work orders",
+            label: "All Invoice",
             color: "#005db9",
             textColor: "#005db9",
             icon: (
@@ -101,7 +64,7 @@ const Com = (props) => {
         />
       </div>
 
-      {ORDER_STATUS_AS_GROUP?.map((group, i) => {
+      {INVOICE_STATUS_AS_GROUP?.map((group, i) => {
         return (
           <div className={cn(styles.statusGroups)} key={`status_group_${i}`}>
             {group?.map((a) => {
@@ -127,31 +90,6 @@ const Com = (props) => {
           </div>
         );
       })}
-
-      <div className={cn(styles.statusGroups)}>
-        <NavSideMenu
-          item={{
-            label: "Trash Bin",
-            color: "#B0B0B0",
-            icon: <i className="fa-solid fa-trash-can" />,
-          }}
-          isActive={activeKey === "/" && !!isDeleted?.toString()}
-          onClick={() => {
-            handleTrash();
-          }}
-        />
-        <NavSideMenu
-          item={{
-            label: "Profile Lookup",
-            color: "#bd148a",
-            icon: <i className="fa-solid fa-magnifying-glass" />,
-          }}
-          isActive={activeKey === "/profileLookup"}
-          onClick={() => {
-            handleNavigate("/profileLookup");
-          }}
-        />
-      </div>
     </div>
   );
 };

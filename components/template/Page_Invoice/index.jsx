@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import cn from "classnames";
 import _ from "lodash";
 
-import constants, { WORKORDER_MAPPING } from "lib/constants";
+import constants, { WORKORDER_STATUS_MAPPING } from "lib/constants";
 
 import OrdersApi from "lib/api/OrdersApi";
 
@@ -17,7 +17,7 @@ import useOrderListPermission from "lib/permissions/useOrderListPermission";
 import styles from "./styles.module.scss";
 
 const DEFAULT_SORT = (status) => {
-  if (status === WORKORDER_MAPPING.Scheduled.key) {
+  if (status === WORKORDER_STATUS_MAPPING.Scheduled.key) {
     return [
       {
         field: "m_LastModifiedAt",
@@ -96,7 +96,7 @@ const Com = ({}) => {
 
   // ====== consts
   return (
-    <Framework_Invoice onRefresh={handleRefresh}>
+    <Framework_Invoice>
       hi this is invoice
     </Framework_Invoice>
   );

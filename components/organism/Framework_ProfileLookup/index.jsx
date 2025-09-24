@@ -26,6 +26,7 @@ const Com = ({ children, onRefresh }) => {
   const router = useRouter();
   const tab = router?.query?.["tab"] || "m";
   // ====== search
+  const [drawerOpen, handleToggleDrawer] = useState(true);
   const defaultTab = "m";
   const tabs = [
     {
@@ -60,11 +61,6 @@ const Com = ({ children, onRefresh }) => {
 
   return (
     <Framework
-      jsxTabs={
-        <TabLinksFull
-          {...{ defaultTab, tabs, renderTool, resetParam: ["facility"] }}
-        />
-      }
       jsxSideMenu={
         <div className={styles.itemsContainer}>
           <div className={styles.itemsContainerTitle}>
@@ -73,7 +69,7 @@ const Com = ({ children, onRefresh }) => {
           <SideMenu_Production />
         </div>
       }
-      className = {styles.root}
+      className={styles.root}
     >
       <InterruptModal>
         <Modal_OrderStatusUpdate />
@@ -82,6 +78,5 @@ const Com = ({ children, onRefresh }) => {
     </Framework>
   );
 };
-
 
 export default Com;

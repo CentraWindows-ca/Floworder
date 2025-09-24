@@ -1,7 +1,7 @@
 import React from "react";
 
 // components
-import Invoice from "components/template/Invoice"
+import ComPage from "components/template/Page_Invoice"
 
 // layout for page
 import AdminProvider from "layouts/AdminProvider";
@@ -12,7 +12,7 @@ export default function Page(props) {
   return (
     <AdminLayout>
       {/* this dashboard is devs-only */}
-      <Invoice {...props}/>
+      <ComPage {...props}/>
     </AdminLayout>
   );
 }
