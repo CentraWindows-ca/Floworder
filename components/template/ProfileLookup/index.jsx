@@ -8,7 +8,7 @@ import constants from "lib/constants";
 import OrdersApi from "lib/api/OrdersApi";
 import Prod2FFApi from "lib/api/Prod2FFApi";
 
-import Framework_Production from "components/organism/Framework_Production";
+import Framework_ProfileLookup from "components/organism/Framework_ProfileLookup";
 import Panel_ProfileLookup from "components/organism/Panel_ProfileLookup";
 
 // hooks
@@ -72,7 +72,7 @@ const Com = ({}) => {
 
   // ====== consts
   return (
-    <Framework_Production onRefresh={handleRefreshWorkOrderList}>
+    <Framework_ProfileLookup onRefresh={handleRefreshWorkOrderList}>
       <Panel_ProfileLookup
         {...{
           data,
@@ -80,7 +80,7 @@ const Com = ({}) => {
           onRefresh: handleRefreshWorkOrderList,
         }}
       />
-    </Framework_Production>
+    </Framework_ProfileLookup>
   );
 };
 

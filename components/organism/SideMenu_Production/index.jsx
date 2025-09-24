@@ -9,7 +9,7 @@ import styles from "./styles.module.scss";
 
 const list = ORDER_STATUS;
 
-const Com = (props) => {
+const Com = ({isShallow = true, ...props}, ) => {
   const router = useRouter();
   const status = router?.query?.status;
   const isDeleted = router?.query?.isDeleted;
@@ -35,7 +35,7 @@ const Com = (props) => {
         query: newQuery,
       },
       undefined,
-      { shallow: true },
+      { shallow: isShallow },
     );
   };
 
@@ -58,11 +58,11 @@ const Com = (props) => {
         query: newQuery,
       },
       undefined,
-      { shallow: true },
+      { shallow: isShallow },
     );
   };
 
-  const handleNavigate = (path) => {
+  const handleNavigate = (path, shallow) => {
     const currentPath = router?.asPath?.split("?")?.[0];
 
     router.replace(
@@ -71,7 +71,7 @@ const Com = (props) => {
         query: {},
       },
       undefined,
-      { shallow: true },
+      { shallow },
     );
   };
 
@@ -137,9 +137,9 @@ const Com = (props) => {
             color: "#bd148a",
             icon: <i className="fa-solid fa-magnifying-glass" />,
           }}
-          isActive={activeKey === "/orders/profileLookup"}
+          isActive={activeKey === "/profileLookup"}
           onClick={() => {
-            handleNavigate("/orders/profileLookup");
+            handleNavigate("/profileLookup", false);
           }}
         />
       </div>
