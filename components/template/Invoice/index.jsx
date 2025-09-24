@@ -7,7 +7,7 @@ import constants, { WORKORDER_MAPPING } from "lib/constants";
 
 import OrdersApi from "lib/api/OrdersApi";
 
-import Framework_Production from "components/organism/Framework_Production";
+import Framework_Invoice from "components/organism/Framework_Invoice";
 
 // hooks
 import useDataInit from "lib/hooks/useDataInit";
@@ -96,9 +96,9 @@ const Com = ({}) => {
 
   // ====== consts
   return (
-    <Framework_Production onRefresh={handleRefresh}>
+    <Framework_Invoice onRefresh={handleRefresh}>
       hi this is invoice
-    </Framework_Production>
+    </Framework_Invoice>
   );
 };
 

@@ -21,7 +21,10 @@ const Com = ({ children, className, jsxTabs, jsxSideMenu }) => {
       <PageContainer>
         {/* layout of panels */}
         <div className={styles.mainContainer}>
-          <div className={styles.tabContainer}>{jsxTabs}</div>
+          {jsxTabs ? (
+            <div className={styles.tabContainer}>{jsxTabs}</div>
+          ) : null}
+
           <div className={styles.twoColumns}>
             <div
               className={cn(

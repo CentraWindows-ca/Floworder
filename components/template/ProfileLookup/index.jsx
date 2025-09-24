@@ -2,30 +2,17 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import cn from "classnames";
 import _ from "lodash";
-import { RedoOutlined } from "@ant-design/icons";
-import { Button } from "antd";
-import Tooltip from "components/atom/Tooltip";
 
 import constants from "lib/constants";
 
 import OrdersApi from "lib/api/OrdersApi";
 import Prod2FFApi from "lib/api/Prod2FFApi";
-// components
-import PageContainer from "components/atom/PageContainer";
-// import Search from "components/molecule/bak_Search";
-import Tabs_ManufacturingFacility from "components/molecule/Tabs_ManufacturingFacility";
-import { InterruptModal } from "lib/provider/InterruptProvider/InterruptModal";
-import Modal_StatusUpdate from "components/organism/Modal_StatusUpdate";
 
 import Framework_Production from "components/organism/Framework_Production";
 import Panel_ProfileLookup from "components/organism/Panel_ProfileLookup";
 
 // hooks
 import useDataInit from "lib/hooks/useDataInit";
-
-// styles
-import styles from "./styles.module.scss";
-import useLoadingBar from "lib/hooks/useLoadingBar";
 
 const DEFAULT_SORT = [
   {

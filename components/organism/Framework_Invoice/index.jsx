@@ -13,7 +13,7 @@ import PageContainer from "components/atom/PageContainer";
 // import Search from "components/molecule/bak_Search";
 import Tabs_ManufacturingFacility from "components/molecule/Tabs_ManufacturingFacility";
 import { InterruptModal } from "lib/provider/InterruptProvider/InterruptModal";
-import Modal_StatusUpdate from "components/organism/Modal_StatusUpdate";
+import Modal_StatusUpdate from "components/organism/Modal_OrderStatusUpdate";
 import Framework from "components/molecule/Framework";
 
 import TabLinksFull from "components/atom/TabLinksFull";
@@ -61,17 +61,12 @@ const Com = ({ children, onRefresh }) => {
 
   return (
     <Framework
-      jsxTabs={
-        <TabLinksFull
-          {...{ defaultTab, tabs, renderTool, resetParam: ["facility"] }}
-        />
-      }
       jsxSideMenu={
         <div className={styles.itemsContainer}>
           <div className={styles.itemsContainerTitle}>
-            <i className="fa-solid fa-list-check me-2"></i>Production Status
+            <i className="fa-solid fa-list-check me-2"></i>Invoice Status
           </div>
-          <SideMenu_Production />
+          {/* <SideMenu_Production /> */}
         </div>
       }
       className = {styles.root}
@@ -81,64 +76,6 @@ const Com = ({ children, onRefresh }) => {
       </InterruptModal>
       {children}
     </Framework>
-  );
-
-  return (
-    <div className={cn("w-full", styles.root)}>
-      <InterruptModal>
-        <Modal_StatusUpdate />
-      </InterruptModal>
-      <PageContainer>
-        {/* layout of panels */}
-        <div className={styles.mainContainer}>
-          <div className={styles.tabContainer}>
-            <TabLinksFull
-              {...{ defaultTab, tabs, renderTool, resetParam: ["facility"] }}
-            />
-          </div>
-          <div className={styles.twoColumns}>
-            <div
-              className={cn(
-                styles.columnOfItems,
-                styles[drawerOpen ? "drawerOpen" : "drawerClose"],
-              )}
-            >
-              <div className={styles.toggleIcon}>
-                <ToggleOfSidemenu {...{ drawerOpen, handleToggleDrawer }} />
-              </div>
-              <div className={styles.itemsDrawerContainer}>
-                <div className={styles.itemsContainer}>
-                  <div className={styles.itemsContainerTitle}>
-                    <i className="fa-solid fa-list-check me-2"></i>Production
-                    Status
-                  </div>
-                  <SideMenu_Production />
-                </div>
-              </div>
-            </div>
-            <div className={styles.columnOfDetailPanel}>{children}</div>
-          </div>
-        </div>
-      </PageContainer>
-    </div>
-  );
-};
-
-const ToggleOfSidemenu = ({ drawerOpen, handleToggleDrawer }) => {
-  return (
-    <Tooltip title={`${drawerOpen ? "Minimize" : "Expand"} Orders Menu`}>
-      <Button
-        className="z-10 mr-4 mt-1 w-[12px] rounded-full bg-white text-gray-600 hover:bg-blue-500 hover:text-red-400"
-        onClick={() => handleToggleDrawer((prev) => !prev)}
-      >
-        <i
-          className={cn(
-            "fa-solid",
-            drawerOpen ? "fa-chevron-left" : "fa-chevron-right",
-          )}
-        ></i>
-      </Button>
-    </Tooltip>
   );
 };
 

@@ -137,9 +137,9 @@ const Com = (props) => {
             color: "#bd148a",
             icon: <i className="fa-solid fa-magnifying-glass" />,
           }}
-          isActive={activeKey === "/profileLookup"}
+          isActive={activeKey === "/orders/profileLookup"}
           onClick={() => {
-            handleNavigate("/profileLookup");
+            handleNavigate("/orders/profileLookup");
           }}
         />
       </div>
