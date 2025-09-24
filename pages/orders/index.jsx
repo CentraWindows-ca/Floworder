@@ -1,7 +1,7 @@
 import React from "react";
 
 // components
-import Orders from "components/template/Orders"
+import ComPage from "components/template/Page_Orders"
 
 // layout for page
 import AdminProvider from "layouts/AdminProvider";
@@ -12,7 +12,7 @@ export default function Page(props) {
   return (
     <AdminLayout>
       {/* this dashboard is devs-only */}
-      <Orders {...props}/>
+      <ComPage {...props}/>
     </AdminLayout>
   );
 }

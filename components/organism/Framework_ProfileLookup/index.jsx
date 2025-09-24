@@ -66,7 +66,7 @@ const Com = ({ children, onRefresh }) => {
           <div className={styles.itemsContainerTitle}>
             <i className="fa-solid fa-list-check me-2"></i>Production Status
           </div>
-          <SideMenu_Production shallow={false} />
+          <SideMenu_Production />
         </div>
       }
       className={styles.root}

@@ -4,7 +4,7 @@ import _ from "lodash";
 import constants, {
   ORDER_STATUS,
   WORKORDER_WORKFLOW,
-  WORKORDER_MAPPING,
+  WORKORDER_STATUS_MAPPING,
 } from "lib/constants";
 
 import OverlayWrapper from "components/atom/OverlayWrapper";
@@ -28,10 +28,10 @@ const Com = ({}) => {
     ORDER_STATUS?.find((a) => a.key === data?.[`m_Status`]) || {};
   const { color, label, textColor } = uIstatusObj;
 
-  const isTransferred_w = [WORKORDER_MAPPING.Transferred.key].includes(
+  const isTransferred_w = [WORKORDER_STATUS_MAPPING.Transferred.key].includes(
     data?.w_Status,
   );
-  const isTransferred_d = [WORKORDER_MAPPING.Transferred.key].includes(
+  const isTransferred_d = [WORKORDER_STATUS_MAPPING.Transferred.key].includes(
     data?.d_Status,
   );
 
@@ -147,7 +147,7 @@ const StatusUpdate = ({ statusLabel, currentKind }) => {
 const PopoverEdit = ({ onChange, uIstatusObj, statusLabel }) => {
   const allowedStatusNames = WORKORDER_WORKFLOW[uIstatusObj?.systemName];
   const allowedStatus =
-    allowedStatusNames?.map((n) => WORKORDER_MAPPING[n]) ||
+    allowedStatusNames?.map((n) => WORKORDER_STATUS_MAPPING[n]) ||
     ORDER_STATUS.filter((a) => a.key);
 
   return (

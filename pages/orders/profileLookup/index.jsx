@@ -1,7 +1,7 @@
 import React from "react";
 
 // components
-import ProfileLookup from "components/template/ProfileLookup"
+import ComPage from "components/template/Page_ProfileLookup"
 
 // layout for page
 import AdminProvider from "layouts/AdminProvider";
@@ -12,7 +12,7 @@ export default function Page(props) {
   return (
     <AdminLayout>
       {/* this dashboard is devs-only */}
-      <ProfileLookup {...props}/>
+      <ComPage {...props}/>
     </AdminLayout>
   );
 }

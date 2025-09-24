@@ -17,7 +17,7 @@ import useLoadingBar from "lib/hooks/useLoadingBar";
 // styles
 import Editable from "components/molecule/Editable";
 import { GeneralContext } from "lib/provider/GeneralProvider";
-import constants, { WORKORDER_MAPPING } from "lib/constants";
+import constants, { WORKORDER_STATUS_MAPPING } from "lib/constants";
 import PermissionBlock from "components/atom/PermissionBlock";
 
 // const DEFAULT_WINDOW_FACILITY = 'Langley'
@@ -292,7 +292,7 @@ const Screen2 = ({
       updateValues.status = newStatus;
     } else {
       updateValues.status =
-        existingWorkOrder?.m_Status || WORKORDER_MAPPING.Scheduled.key;
+        existingWorkOrder?.m_Status || WORKORDER_STATUS_MAPPING.Scheduled.key;
     }
 
     if (selectedOverrideOption === "ResetWorkOrder") {
@@ -544,7 +544,7 @@ const Screen2 = ({
               <button
                 className="btn btn-outline-secondary align-items-center flex gap-2"
                 onClick={() =>
-                  doFetch(WORKORDER_MAPPING.DraftReservation.key, true)
+                  doFetch(WORKORDER_STATUS_MAPPING.DraftReservation.key, true)
                 }
                 disabled={disabled || isLoading}
               >
@@ -559,7 +559,7 @@ const Screen2 = ({
                     display: "inline-block",
                     height: "15px",
                     width: "15px",
-                    background: WORKORDER_MAPPING.DraftReservation.color,
+                    background: WORKORDER_STATUS_MAPPING.DraftReservation.color,
                     border: "1px solid, white",
                   }}
                 ></div>
@@ -568,7 +568,7 @@ const Screen2 = ({
             </PermissionBlock>
             <button
               className="btn btn-outline-secondary align-items-center flex gap-2"
-              onClick={() => doFetch(WORKORDER_MAPPING.Draft.key)}
+              onClick={() => doFetch(WORKORDER_STATUS_MAPPING.Draft.key)}
               disabled={disabled || isLoading}
             >
               <Spin
@@ -582,7 +582,7 @@ const Screen2 = ({
                   display: "inline-block",
                   height: "15px",
                   width: "15px",
-                  background: WORKORDER_MAPPING.Draft.color,
+                  background: WORKORDER_STATUS_MAPPING.Draft.color,
                   border: "1px solid, white",
                 }}
               ></div>

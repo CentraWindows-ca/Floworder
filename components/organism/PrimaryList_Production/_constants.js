@@ -2,7 +2,7 @@ import _ from "lodash";
 import constants, {
   WorkOrderSelectOptions,
   ORDER_STATUS,
-  WORKORDER_MAPPING,
+  WORKORDER_STATUS_MAPPING,
 } from "lib/constants";
 
 const COLUMN_PRODUCT_NUMBERS = [
@@ -40,7 +40,7 @@ const COLUMN_PROJECT = [
 export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
   let sequence = [];
   switch (status) {
-    case WORKORDER_MAPPING.Pending.key:
+    case WORKORDER_STATUS_MAPPING.Pending.key:
       sequence = [
         "m_WorkOrderNo",
         "m_CreatedAt_display",
@@ -64,7 +64,7 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         ...COLUMN_PROJECT,
       ];
       break;
-    case WORKORDER_MAPPING.Draft.key:
+    case WORKORDER_STATUS_MAPPING.Draft.key:
       sequence = [
         "m_WorkOrderNo",
         "m_Status_display",
@@ -89,9 +89,9 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         ...COLUMN_PROJECT,
       ];
       break;
-    case WORKORDER_MAPPING.Scheduled.key:
-    case WORKORDER_MAPPING.InProgress.key:
-    case WORKORDER_MAPPING.OnHold.key:
+    case WORKORDER_STATUS_MAPPING.Scheduled.key:
+    case WORKORDER_STATUS_MAPPING.InProgress.key:
+    case WORKORDER_STATUS_MAPPING.OnHold.key:
       sequence = [
         "m_WorkOrderNo",
         "m_Status_display",
@@ -118,7 +118,7 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         ...COLUMN_PROJECT,
       ];
       break;
-    case WORKORDER_MAPPING.ReadyToShip.key:
+    case WORKORDER_STATUS_MAPPING.ReadyToShip.key:
       sequence = [
         "m_WorkOrderNo",
         "m_Status_display",
@@ -144,7 +144,7 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         ...COLUMN_PROJECT,
       ];
       break;
-    case WORKORDER_MAPPING.Transferred.key:
+    case WORKORDER_STATUS_MAPPING.Transferred.key:
       sequence = [
         "m_WorkOrderNo",
         "m_Status_display",
@@ -170,7 +170,7 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         ...COLUMN_PROJECT,
       ];
       break;
-    case WORKORDER_MAPPING.Shipped.key:
+    case WORKORDER_STATUS_MAPPING.Shipped.key:
       sequence = [
         "m_WorkOrderNo",
         "m_Status_display",
@@ -195,9 +195,9 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         ...COLUMN_PROJECT,
       ];
       break;
-    case WORKORDER_MAPPING.DraftReservation.key:
-    case WORKORDER_MAPPING.ConfirmedReservation.key:
-    case WORKORDER_MAPPING.CompletedReservation.key:
+    case WORKORDER_STATUS_MAPPING.DraftReservation.key:
+    case WORKORDER_STATUS_MAPPING.ConfirmedReservation.key:
+    case WORKORDER_STATUS_MAPPING.CompletedReservation.key:
       sequence = [
         "m_WorkOrderNo",
         "m_Status_display",

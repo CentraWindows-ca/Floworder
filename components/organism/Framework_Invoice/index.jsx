@@ -17,7 +17,7 @@ import Modal_StatusUpdate from "components/organism/Modal_OrderStatusUpdate";
 import Framework from "components/molecule/Framework";
 
 import TabLinksFull from "components/atom/TabLinksFull";
-import SideMenu_Production from "components/organism/SideMenu_Production";
+import SideMenu_Invoice from "components/organism/SideMenu_Invoice";
 
 // styles
 import styles from "./styles.module.scss";
@@ -43,19 +43,6 @@ const Com = ({ children, onRefresh }) => {
     },
   ];
 
-  // ======
-  const renderTool = () => {
-    return (
-      <div className="justify-content-between flex w-full gap-3">
-        <div></div>
-        <div className={cn(styles.manufacturingFacilityContainer)}>
-          <RedoOutlined onClick={onRefresh} />
-          <Tabs_ManufacturingFacility disabled={tab === "m"} />
-        </div>
-        <div></div>
-      </div>
-    );
-  };
 
   // ====== consts
 
@@ -64,9 +51,9 @@ const Com = ({ children, onRefresh }) => {
       jsxSideMenu={
         <div className={styles.itemsContainer}>
           <div className={styles.itemsContainerTitle}>
-            <i className="fa-solid fa-list-check me-2"></i>Invoice Status
+            <i className="fa-solid fa-list-check me-2"></i>Invoices
           </div>
-          {/* <SideMenu_Production /> */}
+          <SideMenu_Invoice />
         </div>
       }
       className = {styles.root}

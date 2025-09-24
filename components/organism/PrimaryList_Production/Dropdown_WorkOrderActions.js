@@ -23,7 +23,7 @@ import constants, {
   DraftReservation,
   ORDER_STATUS,
   WORKORDER_WORKFLOW,
-  WORKORDER_MAPPING,
+  WORKORDER_STATUS_MAPPING,
   ORDER_TRANSFER_FIELDS,
 } from "lib/constants";
 
@@ -249,7 +249,7 @@ const WorkOrderActions = ({
       >
         {allowedStatusWindow?.map((stepName) => {
           const { label, color, key, isReservation } =
-            WORKORDER_MAPPING[stepName];
+            WORKORDER_STATUS_MAPPING[stepName];
           return (
             <PermissionBlock
               key={key}
@@ -285,7 +285,7 @@ const WorkOrderActions = ({
       >
         {allowedStatusDoor?.map((stepName) => {
           const { label, color, key, isReservation } =
-            WORKORDER_MAPPING[stepName];
+            WORKORDER_STATUS_MAPPING[stepName];
           return (
             <PermissionBlock
               key={key}
@@ -434,7 +434,7 @@ const useFilterControl = (permissions) => {
       }
     }
 
-    if (data?.[`${kind}_Status`] === WORKORDER_MAPPING.Pending.key) {
+    if (data?.[`${kind}_Status`] === WORKORDER_STATUS_MAPPING.Pending.key) {
       if (
         id !== "viewOrder" &&
         id !== "editPendingOrder" &&
@@ -449,7 +449,7 @@ const useFilterControl = (permissions) => {
     }
     
     /*NOTE: <rule 250912_cancel_editable> same rule applies to popup edit button. if cancelled cant edit */
-    if (data?.[`${kind}_Status`] === WORKORDER_MAPPING.Cancelled.key) {
+    if (data?.[`${kind}_Status`] === WORKORDER_STATUS_MAPPING.Cancelled.key) {
       if (
         id !== "viewOrder" &&
         id !== "deleteOrder" &&
@@ -462,22 +462,22 @@ const useFilterControl = (permissions) => {
 
     // ========== temporary solution: @250423_handle_reservation: allow between regular and reservation ===========
     const temporaryReserv = [
-      data?.d_Status === WORKORDER_MAPPING.Draft.key &&
-        id === `doorStatus_${WORKORDER_MAPPING.DraftReservation.key}`,
-      data?.w_Status === WORKORDER_MAPPING.Draft.key &&
-        id === `windowStatus_${WORKORDER_MAPPING.DraftReservation.key}`,
-      data?.d_Status === WORKORDER_MAPPING.Scheduled.key &&
-        id === `doorStatus_${WORKORDER_MAPPING.ConfirmedReservation.key}`,
-      data?.w_Status === WORKORDER_MAPPING.Scheduled.key &&
-        id === `windowStatus_${WORKORDER_MAPPING.ConfirmedReservation.key}`,
-      data?.d_Status === WORKORDER_MAPPING.DraftReservation.key &&
-        id === `doorStatus_${WORKORDER_MAPPING.Draft.key}`,
-      data?.w_Status === WORKORDER_MAPPING.DraftReservation.key &&
-        id === `windowStatus_${WORKORDER_MAPPING.Draft.key}`,
-      data?.d_Status === WORKORDER_MAPPING.ConfirmedReservation.key &&
-        id === `doorStatus_${WORKORDER_MAPPING.Scheduled.key}`,
-      data?.d_Status === WORKORDER_MAPPING.ConfirmedReservation.key &&
-        id === `windowStatus_${WORKORDER_MAPPING.Scheduled.key}`,
+      data?.d_Status === WORKORDER_STATUS_MAPPING.Draft.key &&
+        id === `doorStatus_${WORKORDER_STATUS_MAPPING.DraftReservation.key}`,
+      data?.w_Status === WORKORDER_STATUS_MAPPING.Draft.key &&
+        id === `windowStatus_${WORKORDER_STATUS_MAPPING.DraftReservation.key}`,
+      data?.d_Status === WORKORDER_STATUS_MAPPING.Scheduled.key &&
+        id === `doorStatus_${WORKORDER_STATUS_MAPPING.ConfirmedReservation.key}`,
+      data?.w_Status === WORKORDER_STATUS_MAPPING.Scheduled.key &&
+        id === `windowStatus_${WORKORDER_STATUS_MAPPING.ConfirmedReservation.key}`,
+      data?.d_Status === WORKORDER_STATUS_MAPPING.DraftReservation.key &&
+        id === `doorStatus_${WORKORDER_STATUS_MAPPING.Draft.key}`,
+      data?.w_Status === WORKORDER_STATUS_MAPPING.DraftReservation.key &&
+        id === `windowStatus_${WORKORDER_STATUS_MAPPING.Draft.key}`,
+      data?.d_Status === WORKORDER_STATUS_MAPPING.ConfirmedReservation.key &&
+        id === `doorStatus_${WORKORDER_STATUS_MAPPING.Scheduled.key}`,
+      data?.d_Status === WORKORDER_STATUS_MAPPING.ConfirmedReservation.key &&
+        id === `windowStatus_${WORKORDER_STATUS_MAPPING.Scheduled.key}`,
     ];
     if (_.some(temporaryReserv)) {
       if (permissions?.["om.prod.wo.statusReservation"]?.["canEdit"]) {

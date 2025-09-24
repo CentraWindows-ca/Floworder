@@ -26,7 +26,7 @@ import Toggle_Files from "./Toggle_Files";
 import Toggle_ReturnTrips from "./Toggle_ReturnTrips";
 
 import { DisplayBlock } from "./Com";
-import constants, { ADDON_STATUS, WORKORDER_MAPPING } from "lib/constants";
+import constants, { ADDON_STATUS, WORKORDER_STATUS_MAPPING } from "lib/constants";
 
 import Modal_OrderHistory from "components/organism/Modal_OrderHistory";
 // styles
@@ -75,7 +75,7 @@ const Com = ({}) => {
   };
 
   /* NOTE: <rule 250912_cancel_editable> */
-  const isOnStatusAllowToEdit = ![WORKORDER_MAPPING.Cancelled.key].includes(
+  const isOnStatusAllowToEdit = ![WORKORDER_STATUS_MAPPING.Cancelled.key].includes(
     data?.[`${kind}_Status`],
   );
   const uiClass_withLockout = true;

@@ -19,7 +19,7 @@ import Dropdown_WorkOrderActions from "./Dropdown_WorkOrderActions";
 import constants, {
   WorkOrderSelectOptions,
   ORDER_STATUS,
-  WORKORDER_MAPPING,
+  WORKORDER_STATUS_MAPPING,
 } from "lib/constants";
 import utils from "lib/utils";
 
@@ -86,7 +86,7 @@ const Com = (props) => {
     } catch (err) {}
   };
 
-  const isPending = status === WORKORDER_MAPPING.Pending.key;
+  const isPending = status === WORKORDER_STATUS_MAPPING.Pending.key;
 
   const COLUMN_PRODUCT_NUMBERS = !uiIsShowBreakdown
     ? [

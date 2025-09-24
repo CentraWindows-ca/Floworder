@@ -9,8 +9,11 @@ import { NextResponse } from 'next/server';
 const HOST_TO_PREFIX = {
   'staging-production.centra.ca': '/orders',
   'production.centra.ca': '/orders',
-  'staging-invoice.centra.ca': '/invoice',
-  'invoice.centra.ca': '/invoice',
+  'localhost:1730': '/orders',
+  
+  'staging-remake.centra.ca': '/remake',
+  'remake.centra.ca': '/remake',
+  'localhost:1731': '/remake',
 };
 
 export function middleware(req) {
