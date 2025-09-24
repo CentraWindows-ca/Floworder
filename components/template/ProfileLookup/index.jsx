@@ -17,9 +17,7 @@ import Tabs_ManufacturingFacility from "components/molecule/Tabs_ManufacturingFa
 import { InterruptModal } from "lib/provider/InterruptProvider/InterruptModal";
 import Modal_StatusUpdate from "components/organism/Modal_StatusUpdate";
 
-import Framework from "components/organism/Framework";
-import TabLinksFull from "components/atom/TabLinksFull";
-import SideMenu from "components/organism/SideMenu";
+import Framework_Production from "components/organism/Framework_Production";
 import Panel_ProfileLookup from "components/organism/Panel_ProfileLookup";
 
 // hooks
@@ -87,7 +85,7 @@ const Com = ({}) => {
 
   // ====== consts
   return (
-    <Framework onRefresh={handleRefreshWorkOrderList}>
+    <Framework_Production onRefresh={handleRefreshWorkOrderList}>
       <Panel_ProfileLookup
         {...{
           data,
@@ -95,7 +93,7 @@ const Com = ({}) => {
           onRefresh: handleRefreshWorkOrderList,
         }}
       />
-    </Framework>
+    </Framework_Production>
   );
 };
 

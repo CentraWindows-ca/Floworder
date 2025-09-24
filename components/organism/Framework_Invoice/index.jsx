@@ -8,16 +8,16 @@ import Tooltip from "components/atom/Tooltip";
 
 import constants from "lib/constants";
 
-import OrdersApi from "lib/api/OrdersApi";
 // components
 import PageContainer from "components/atom/PageContainer";
 // import Search from "components/molecule/bak_Search";
 import Tabs_ManufacturingFacility from "components/molecule/Tabs_ManufacturingFacility";
 import { InterruptModal } from "lib/provider/InterruptProvider/InterruptModal";
 import Modal_StatusUpdate from "components/organism/Modal_StatusUpdate";
+import Framework from "components/molecule/Framework";
 
 import TabLinksFull from "components/atom/TabLinksFull";
-import SideMenu from "components/organism/SideMenu";
+import SideMenu_Production from "components/organism/SideMenu_Production";
 
 // styles
 import styles from "./styles.module.scss";
@@ -43,10 +43,6 @@ const Com = ({ children, onRefresh }) => {
     },
   ];
 
-  const handleUpdateTab = () => {
-
-  }
-
   // ======
   const renderTool = () => {
     return (
@@ -60,7 +56,33 @@ const Com = ({ children, onRefresh }) => {
       </div>
     );
   };
+
   // ====== consts
+
+  return (
+    <Framework
+      jsxTabs={
+        <TabLinksFull
+          {...{ defaultTab, tabs, renderTool, resetParam: ["facility"] }}
+        />
+      }
+      jsxSideMenu={
+        <div className={styles.itemsContainer}>
+          <div className={styles.itemsContainerTitle}>
+            <i className="fa-solid fa-list-check me-2"></i>Production Status
+          </div>
+          <SideMenu_Production />
+        </div>
+      }
+      className = {styles.root}
+    >
+      <InterruptModal>
+        <Modal_StatusUpdate />
+      </InterruptModal>
+      {children}
+    </Framework>
+  );
+
   return (
     <div className={cn("w-full", styles.root)}>
       <InterruptModal>
@@ -70,7 +92,9 @@ const Com = ({ children, onRefresh }) => {
         {/* layout of panels */}
         <div className={styles.mainContainer}>
           <div className={styles.tabContainer}>
-            <TabLinksFull {...{ defaultTab, tabs, renderTool, resetParam: ['facility'] }} />
+            <TabLinksFull
+              {...{ defaultTab, tabs, renderTool, resetParam: ["facility"] }}
+            />
           </div>
           <div className={styles.twoColumns}>
             <div
@@ -88,7 +112,7 @@ const Com = ({ children, onRefresh }) => {
                     <i className="fa-solid fa-list-check me-2"></i>Production
                     Status
                   </div>
-                  <SideMenu />
+                  <SideMenu_Production />
                 </div>
               </div>
             </div>

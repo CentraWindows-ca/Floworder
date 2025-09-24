@@ -10,10 +10,7 @@ import { TableHeader, TableWrapper } from "components/atom/TableSortable";
 import constants from "lib/constants";
 
 // components
-import Pagination from "components/atom/Pagination";
-import OrderList from "components/organism/OrderList";
 import Editable from "components/molecule/Editable";
-import PermissionBlock from "components/atom/PermissionBlock";
 
 import { ORDER_STATUS } from "lib/constants";
 

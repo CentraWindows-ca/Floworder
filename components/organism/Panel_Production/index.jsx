@@ -6,7 +6,7 @@ import constants from "lib/constants";
 
 // components
 import Pagination from "components/atom/Pagination";
-import OrderList from "components/organism/OrderList";
+import PrimaryList_Production from "components/organism/PrimaryList_Production";
 import Editable from "components/molecule/Editable";
 import PermissionBlock from "components/atom/PermissionBlock";
 
@@ -326,7 +326,7 @@ const Com = ({
         </div>
       </div>
       <div className={cn(styles.detail)}>
-        <OrderList
+        <PrimaryList_Production
           kind={tab}
           onEdit={(woMasterId) => handleEdit(woMasterId, "edit")}
           onEditPending={(woMasterId) => handleEdit(woMasterId, "editPending")}

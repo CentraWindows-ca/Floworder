@@ -6,12 +6,8 @@ import _ from "lodash";
 import constants, { WORKORDER_MAPPING } from "lib/constants";
 
 import OrdersApi from "lib/api/OrdersApi";
-// components
 
-// import Search from "components/molecule/bak_Search";
 import Framework_Production from "components/organism/Framework_Production";
-
-import Panel_Production from "components/organism/Panel_Production";
 
 // hooks
 import useDataInit from "lib/hooks/useDataInit";
@@ -90,64 +86,18 @@ const Com = ({}) => {
     }));
   }
 
-  /* 
-    NOTE: filtersObj is from big buttons; filters is from table header
-  */
-  const _conditions = [
-    ..._.keys(filtersObj)?.map((k) => {
-      return {
-        ...filtersObj[k],
-        field: k,
-      };
-    }),
-    ..._.keys(isEnableFilter ? filters : {})?.map((k) => {
-      return {
-        operator: filters[k]?.operator || constants.FILTER_OPERATOR.Contains,
-        value: filters[k]?.value,
-        field: k,
-      };
-    }),
-  ];
-
-  const {excludeStatuses, conditions} = applyPermissionsToExcludeStatuses(_conditions);
-
-  const endPoint = OrdersApi.initQueryWorkOrderHeaderWithPrefixAsync(null, {
-    page: (parseInt(p) || 0) + 1,
-    pageSize: 50,
-    filterGroup: conditions?.length
-      ? {
-          logicOp: "AND",
-          conditions: conditions?.filter((a) => a.value),
-        }
-      : undefined,
-    orderByItems: _.isEmpty(sortArr) ? DEFAULT_SORT(status) : sortArr,
-    kind: tab,
-    isActive: isDeleted ? 0 : 1,
-    excludeStatuses
-  });
-
+  const endPoint = ''
   // use swr
   const { data, error, mutate } = useDataInit(endPoint);
 
-  const handleRefreshWorkOrderList = () => {
+  const handleRefresh = () => {
     mutate(null);
   };
 
   // ====== consts
   return (
-    <Framework_Production onRefresh={handleRefreshWorkOrderList}>
-      <Panel_Production
-        {...{
-          filters,
-          setFilters,
-          isEnableFilter,
-          setIsEnableFilter,
-          data,
-          error,
-          mutate,
-          sortObj,
-        }}
-      />
+    <Framework_Production onRefresh={handleRefresh}>
+      hi this is invoice
     </Framework_Production>
   );
 };
