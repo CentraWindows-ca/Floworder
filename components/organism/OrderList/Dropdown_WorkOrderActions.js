@@ -434,7 +434,6 @@ const useFilterControl = (permissions) => {
       }
     }
 
-    // NOTE: same rule applies to popup edit button. if pending or cancelled cant edit
     if (data?.[`${kind}_Status`] === WORKORDER_MAPPING.Pending.key) {
       if (
         id !== "viewOrder" &&
@@ -448,7 +447,9 @@ const useFilterControl = (permissions) => {
         return true;
       }
     }
-    if (data?.m_Status === WORKORDER_MAPPING.Cancelled.key) {
+    
+    /*NOTE: <rule 250912_cancel_editable> same rule applies to popup edit button. if cancelled cant edit */
+    if (data?.[`${kind}_Status`] === WORKORDER_MAPPING.Cancelled.key) {
       if (
         id !== "viewOrder" &&
         id !== "deleteOrder" &&

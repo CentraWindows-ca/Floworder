@@ -478,7 +478,7 @@
 
         &.addonListContainer_parent {
             .addonItem {
-                border-right: none;
+                
                 padding-right: 40px;
 
                 .addonBadge {
@@ -497,7 +497,6 @@
             .addonItem:not(:last-child) {
                 padding-right: 24px;
                 border-right: none;
-
             }
 
         }
@@ -552,7 +551,7 @@
 
 .addonSync_status {
     .statesContainer {
-        outline: 2px solid $color_addonsync;
+        outline: 3px double $color_addonsync;
     }
 }
 
@@ -574,7 +573,6 @@ img.addonIcon {
     width: 14px;
     vertical-align: middle;
     display: inline-block;
-    margin-right: 5px;
 }
 
 .addonParentIcon {

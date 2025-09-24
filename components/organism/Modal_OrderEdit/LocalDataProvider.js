@@ -296,15 +296,15 @@ export const LocalDataProvider = ({
     const parent = _addonGroup?.find((a) => a.isParent);
     const addons = _addonGroup
       ?.map((a) => {
-        const { m_AddOnStatus } = a;
+        const { m_AddOnLinked } = a;
         return {
           ...a,
-          isUnlinked: m_AddOnStatus === "1",
+          isUnlinked: m_AddOnLinked === ADDON_STATUS.detached,
         };
       })
       ?.filter((a) => !a.isParent);
 
-    // if there is only a parent
+      // if there is only a parent
     setAddOnGroup({
       parent,
       addons,
@@ -643,25 +643,57 @@ export const LocalDataProvider = ({
       // note: to prevent accdentally detach
       if (
         !window.confirm(
-          `Do you want to detach ${initData.m_WorkOrderNo} from ${_parentWorkOrder}?`,
+          `Do you want to unlink ${initData.m_WorkOrderNo} from ${_parentWorkOrder}?`,
         )
       ) {
         return null;
       }
 
+      // return 
       setIsSaving(true);
 
       const _changedData = {
-        m_AddOnStatus: ADDON_STATUS.detached,
+        m_AddOnLinked: ADDON_STATUS.detached,
       };
 
       await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData);
 
-      toast(`Add-on Work order detached from ${_parentWorkOrder}`, {
+      toast(`Add-on Work order unlinked from ${_parentWorkOrder}`, {
         type: "success",
       });
 
-      await doInitWo(initMasterId);
+      await doInit(initMasterId);
+      onSave();
+    },
+    () => setIsSaving(false), // callback function
+  );
+
+  const doLinkAddOn = useLoadingBar(
+    async () => {
+      const _parentWorkOrder = addonGroup?.parent?.m_WorkOrderNo;
+      // note: to prevent accdentally detach
+      if (
+        !window.confirm(
+          `Do you want to link ${initData.m_WorkOrderNo} with ${_parentWorkOrder}?`,
+        )
+      ) {
+        return null;
+      }
+
+      // return 
+      setIsSaving(true);
+
+      const _changedData = {
+        m_AddOnLinked: ADDON_STATUS.attached,
+      };
+
+      await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData);
+
+      toast(`Add-on Work order linked from ${_parentWorkOrder}`, {
+        type: "success",
+      });
+
+      await doInit(initMasterId);
       onSave();
     },
     () => setIsSaving(false), // callback function
@@ -706,11 +738,19 @@ export const LocalDataProvider = ({
   const uIstatusObj =
     ORDER_STATUS?.find((a) => a.key === data?.[STATUS[kind]]) || {};
 
+  // called by each single input
   const checkEditable = useCallback(
     (params = {}) => {
+      /*
+        id: if editable of fields (order level)
+        -- for permission or status
+
+        group: usually for external tables that cant be identified by id. Like files, items. 
+        -- mostly for permission purpose
+      */
       const { id, group } = params;
       let _pass = isEditable;
-      if (id) {
+      if (id) { 
         _pass = _pass && checkEditableById({ id, data, permissions, initKind });
       }
       if (group) {
@@ -718,8 +758,8 @@ export const LocalDataProvider = ({
           _pass && checkEditableByGroup({ group, data, permissions, initKind });
       }
 
-      // if its addon workorder, check if field is addonField
-      // logic to check if split addon
+      /* if its addon workorder, check if field is addonField
+          logic to check if split addon*/
       const { isAddOnEditable } = checkAddOnField(params) || {};
       _pass = _pass && isAddOnEditable;
 
@@ -736,17 +776,6 @@ export const LocalDataProvider = ({
       isInAddOnGroup,
       addonGroup?.parent?.m_MasterId,
     ],
-  );
-
-  const checkEditableForSectionSaveButton = useCallback(
-    (params = {}) => {
-      const { group } = params;
-      return (
-        isEditable &&
-        checkEditableByGroup({ group, data, permissions, initKind })
-      );
-    },
-    [isEditable, initMasterId, data?.m_Status, permissions],
   );
 
   // called by each single input
@@ -822,6 +851,7 @@ export const LocalDataProvider = ({
     onHide: handleHide,
     onSave: doSave,
     onUnlinkAddOn: doUnlinkAddOn,
+    onLinkAddOn: doLinkAddOn,
     onRestore: doRestore,
     onGetWindowMaker: doGetWindowMaker,
     editedGroup,
@@ -837,7 +867,6 @@ export const LocalDataProvider = ({
     isEditable,
     setIsEditable,
     checkEditable,
-    checkEditableForSectionSaveButton,
     checkAddOnField,
     uiOrderType,
     uiShowMore,

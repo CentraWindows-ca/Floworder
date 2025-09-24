@@ -46,7 +46,7 @@ const Com = ({}) => {
     onRestore,
     onGetWindowMaker,
     onUnlinkAddOn,
-
+    onLinkAddOn,
     data,
     initDataSiteLockout,
     kind,
@@ -66,7 +66,6 @@ const Com = ({}) => {
     addonGroup,
   } = useContext(LocalDataContext);
 
-  // use swr later
   const [historyOrderMasterId, setHistoryOrderMasterId] = useState(null);
 
   const KindDisplay = {
@@ -75,7 +74,10 @@ const Com = ({}) => {
     d: <b className="text-primary">[Doors]</b>,
   };
 
-  const isOnStatusAllowToEdit = true; // ![WORKORDER_MAPPING.Pending.key].includes( data?.["m_Status"]);
+  /* NOTE: <rule 250912_cancel_editable> */
+  const isOnStatusAllowToEdit = ![WORKORDER_MAPPING.Cancelled.key].includes(
+    data?.[`${kind}_Status`],
+  );
   const uiClass_withLockout = true;
 
   const jsxTitle = (
@@ -124,10 +126,14 @@ const Com = ({}) => {
           )}
         </PermissionBlock>
         {KindDisplay[kind]} Work Order # {data?.m_WorkOrderNo}
-
         {/* Add-on info */}
-        {isInAddOnGroup && <small className="fw-normal">{addonGroup?.parent ? "(Parent)" : "(Add-on)"}</small>}
-
+        {isInAddOnGroup && (
+          <small className="fw-normal">
+            {addonGroup?.parent?.m_MasterId === initMasterId
+              ? "(Parent)"
+              : "(Add-on)"}
+          </small>
+        )}
         {isDeleted && (
           <div className="align-items-center flex gap-2 text-red-400">
             [DELETED]
@@ -322,17 +328,27 @@ const Com = ({}) => {
                   isValidationInactive={true}
                 >
                   {data?.m_ParentMasterId ? (
-                    <button
-                      className="btn btn-outline-primary align-items-center flex gap-2 px-3"
-                      disabled={
-                        !data?.m_WorkOrderNo ||
-                        isSaving ||
-                        data?.m_AddOnStatus === ADDON_STATUS.detached // if already detached, disable
-                      }
-                      onClick={onUnlinkAddOn}
-                    >
-                      Unlink Add-on
-                    </button>
+                    <>
+                      {data?.m_AddOnLinked !== ADDON_STATUS.detached ? (
+                        <button
+                          className="btn btn-outline-danger align-items-center flex gap-2 px-3"
+                          disabled={!data?.m_WorkOrderNo || isSaving}
+                          onClick={onUnlinkAddOn}
+                        >
+                          <img src="/unlinked.svg" className={styles.addonIcon} />
+                          Unlink Add-on
+                        </button>
+                      ) : (
+                        <button
+                          className="btn btn-outline-success align-items-center flex gap-2 px-3"
+                          disabled={!data?.m_WorkOrderNo ||isSaving}
+                          onClick={onLinkAddOn}
+                        >
+                          <img src="/linked.svg" className={styles.addonIcon} />
+                          Link Add-on
+                        </button>
+                      )}
+                    </>
                   ) : null}
                 </PermissionBlock>
               )}

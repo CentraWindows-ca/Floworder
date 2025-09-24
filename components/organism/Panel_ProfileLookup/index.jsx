@@ -38,11 +38,13 @@ const Com = ({ data, dataProfile, onRefresh }) => {
     },
     {
       key: "w_ManufacturingFacility",
+      title: "Window Facility",
       width: 180,
       isNotSortable: true,
     },
     {
       key: "d_ManufacturingFacility",
+      title: "Door Facility",
       width: 180,
       isNotSortable: true,
     },  
@@ -247,6 +249,7 @@ const Com = ({ data, dataProfile, onRefresh }) => {
                               <td></td>
                               <td></td>
                               <td>{barProfileName}</td>
+                              <td></td>
                               <td className="text-right">{neededofBars}</td>
                               <td className="text-right">{wastedofBars}</td>
                             </tr>

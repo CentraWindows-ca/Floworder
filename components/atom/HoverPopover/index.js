@@ -27,6 +27,7 @@ const HoverPopover = ({
   ariaLabel = "Open menu",
   // Focus lock is optional; not required by WCAG for non-modal popovers
   lockFocus = false,
+  isClick = false,
   layer = 1,
 }) => {
   const [open, setOpen] = useState(false);
@@ -54,12 +55,17 @@ const HoverPopover = ({
   // A11y role for the floating panel (generic popover -> dialog role)
   const role = useRole(context, { role: "dialog" });
 
-  const { getReferenceProps, getFloatingProps } = useInteractions([
+  const _interactions = [
     hover,
-    click,
     dismiss,
     role,
-  ]);
+  ]
+
+  if (isClick) {
+    _interactions.push(click)
+  }
+
+  const { getReferenceProps, getFloatingProps } = useInteractions(_interactions);
 
   // Keyboard support on trigger to satisfy WCAG 2.1.1 (Keyboard)
   const onTriggerKeyDown = (e) => {
