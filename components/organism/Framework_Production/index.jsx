@@ -26,7 +26,6 @@ const Com = ({ children, onRefresh }) => {
   const router = useRouter();
   const tab = router?.query?.["tab"] || "m";
   // ====== search
-  const [drawerOpen, handleToggleDrawer] = useState(true);
   const defaultTab = "m";
   const tabs = [
     {
