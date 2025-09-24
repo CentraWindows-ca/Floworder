@@ -97,7 +97,7 @@ const Com = ({}) => {
   // ====== consts
   return (
     <Framework_Invoice onRefresh={handleRefresh}>
-      hi this is invoice
+      hi this is remake
     </Framework_Invoice>
   );
 };

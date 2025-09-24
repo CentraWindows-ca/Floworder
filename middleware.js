@@ -11,9 +11,14 @@ const HOST_TO_PREFIX = {
   'production.centra.ca': '/orders',
   'localhost:1730': '/orders',
   
+  'staging-invoice.centra.ca': '/invoice',
+  'invoice.centra.ca': '/invoice',
+  'localhost:1731': '/invoice',
+
   'staging-remake.centra.ca': '/remake',
   'remake.centra.ca': '/remake',
-  'localhost:1731': '/remake',
+  'localhost:1732': '/remake',
+  
 };
 
 export function middleware(req) {

@@ -11,6 +11,7 @@
     "build:win": "set NEXT_PUBLIC_ENV=development&&next build&&next export",
     "dev": "set NEXT_PUBLIC_ENV=development&&set NODE_ENV=development&&next dev -p 1730",
     "devInvoice": "set NEXT_PUBLIC_ENV=development&&set NODE_ENV=development&&next dev -p 1731",
+    "devRemake": "set NEXT_PUBLIC_ENV=development&&set NODE_ENV=development&&next dev -p 1732",
     "build:tailwind": "tailwind build styles/index.css -o styles/tailwind.css",
     "release:production": "NEXT_PUBLIC_ENV=production next build&&next export&&pm2 start pm2.json",
     "release:staging": "NEXT_PUBLIC_ENV=staging next build&&next export&&pm2 start pm2_staging.json",
