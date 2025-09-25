@@ -18,7 +18,6 @@ const HOST_TO_PREFIX = {
   'staging-remake.centra.ca': '/remake',
   'remake.centra.ca': '/remake',
   'localhost:1732': '/remake',
-  
 };
 
 export function middleware(req) {
