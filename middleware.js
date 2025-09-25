@@ -1,10 +1,4 @@
-// middleware.js
-// Purpose: Host-based internal rewrites for page routes only.
-// - staging-production / production  -> /orders
-// - staging-invoice / invoice        -> /invoice
-// Static assets (/public, /_next/*) and /api/* are NOT rewritten.
-
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
 const HOST_TO_PREFIX = {
   'staging-production.centra.ca': '/orders',
