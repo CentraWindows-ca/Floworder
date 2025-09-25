@@ -52,7 +52,7 @@ export default React.memo(
               newArr = newArr.filter((a) => a[valueKey] !== v);
             } else {
               const newItem = options?.find((a) => a[valueKey] === v);
-              newArr = [...value || [], newItem];
+              newArr = [...(value || []), newItem];
             }
 
             newArr = newArr.filter(a => a)

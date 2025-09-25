@@ -101,8 +101,8 @@ const ExportedComponent = ({
           {pageList?.[0]?.i > 0 && (
             <>
               <li className="page-item">
-                <Link href={first} aria-label="Previous">
-                  <a className="page-link">{1}</a>
+                <Link href={first} aria-label="Previous" className="page-link">
+                  {1}
                 </Link>
               </li>
               {pageList?.[0]?.i > 1 &&  <li className="page-item"><span className="page-link">...</span></li>}
@@ -118,8 +118,8 @@ const ExportedComponent = ({
                 {a.isCurrent ? (
                   <span className="page-link">{a.i + 1}</span>
                 ) : (
-                  <Link href={a.url}>
-                    <a className="page-link">{a.i + 1}</a>
+                  <Link href={a.url} className="page-link">
+                    {a.i + 1}
                   </Link>
                 )}
               </li>
@@ -131,8 +131,8 @@ const ExportedComponent = ({
                 <li className="page-item"><span className="page-link">...</span></li>
               )}
               <li className="page-item">
-                <Link href={last} aria-label="Next">
-                  <a className="page-link">{lastPageIdx + 1}</a>
+                <Link href={last} aria-label="Next" className="page-link">
+                  {lastPageIdx + 1}
                 </Link>
               </li>
             </>
