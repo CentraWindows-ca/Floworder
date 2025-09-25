@@ -220,37 +220,37 @@ const Com = ({ title, id }) => {
               return (
                 <TableWindow
                   {...{
-                    key: dictKey,
                     ...o,
                     handleShowItem,
                     list: grouppedItems,
                     stats,
                   }}
+                  key = {dictKey}
                 />
               );
             case "Doors":
               return (
                 <TableDoor
                   {...{
-                    key: dictKey,
                     ...o,
                     handleShowItem,
                     list: grouppedItems,
                     stats,
                   }}
+                  key = {dictKey}
                 />
               );
             case "Others":
               return (
                 <TableOther
                   {...{
-                    key: dictKey,
                     ...o,
                     handleShowItem,
                     list: grouppedItems,
                     stats,
                     kind: dictKey.startsWith("doors") ? "d" : "w",
                   }}
+                  key = {dictKey}
                 />
               );
             default:

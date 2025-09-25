@@ -3,7 +3,7 @@ $primary-hover: #0273e2;
 
 $btn-disabled-opacity: 0.4; 
 // Import Bootstrap’s SCSS
-@import "bootstrap/scss/bootstrap";
+@forward "bootstrap/scss/bootstrap";
 
 .noteTooltip > .tooltip-inner {
    max-width: 20vw;
