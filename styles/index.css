@@ -7,8 +7,13 @@
   --centraBlue: #005db9;
   --centerBlue_hover: #0273e2;
   --centraDark: #3b444b;
-  /* --bs-primary-rgb: 0, 93, 185;
-  --bs-border-color: #BBB; */
+  --bs-btn-bg: var(--centraBlue);
+  --bs-primary-rgb: 0, 93, 185;
+  --bs-primary: #005db9;
+  --bs-border-color: #BBB; 
+}
+.btn {
+  --bs-btn-disabled-opacity: 0.4
 }
 
 @tailwind utilities;
@@ -80,6 +85,18 @@ a {
 a:hover {
   color: #41a0ff
 }
+
+.btn-primary {
+  --bs-btn-bg: var(--bs-primary);
+  --bs-btn-border-color: var(--bs-primary);
+  --bs-btn-hover-bg: var(--bs-primary-hover);
+  --bs-btn-hover-border-color: var(--bs-primary-hover);
+  --bs-btn-active-bg: var(--bs-primary-hover);
+  --bs-btn-active-border-color: var(--bs-primary-hover);
+  --bs-btn-disabled-bg: var(--bs-primary);
+  --bs-btn-disabled-border-color: var(--bs-primary);
+}
+
 .btn-primary:hover {
   background-color: var(--centerBlue_hover) !important; /* Darker shade for hover effect */
   border-color: var(--centerBlue_hover) !important;

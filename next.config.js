@@ -31,6 +31,11 @@ const nextConfig = {
     return config;
   },
 
+  sassOptions: {
+    // Silence deprecation warnings from node_modules (like bootstrap)
+    quietDeps: true,
+  },
+  
   // async rewrites() {
   //   const HOST_TO_PREFIX = {
   //     'staging-production.centra.ca': '/orders',

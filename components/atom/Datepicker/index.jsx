@@ -193,6 +193,7 @@ const DFDatePicker = ({
           renderCustomHeader={jsxCustomHeader}
           {...otherProps}
           {...props}
+          popperPlacement="top-end"
         />
       )}
     </>

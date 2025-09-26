@@ -8,8 +8,10 @@ import { createRoot } from "react-dom/client";
 // ------ global nav
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
+
+import "@ant-design/v5-patch-for-react-19";
 // ------ global nav
-import 'antd/dist/reset.css';
+import "antd/dist/reset.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "react-datepicker/dist/react-datepicker.css";
 // import "styles/tailwind.css";
@@ -107,6 +109,10 @@ export default class MyApp extends App {
   render() {
     const { Component, pageProps } = this.props;
     const Layout = Component.layout || (({ children }) => children);
+    const title =
+      "Order Management" + process.env.NEXT_PUBLIC_ENV !== "production"
+        ? ` (${process.env.NEXT_PUBLIC_ENV})`
+        : "";
     return (
       <React.Fragment>
         <Head>
@@ -114,12 +120,7 @@ export default class MyApp extends App {
             name="viewport"
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
           />
-          <title>
-            Centra Production
-            {process.env.NEXT_PUBLIC_ENV !== "production"
-              ? ` (${process.env.NEXT_PUBLIC_ENV})`
-              : ""}
-          </title>
+          <title>{title}</title>
         </Head>
         <div className="main_wrapper">
           <ComAuthNav onLoaded={this.handleLoaded} />
@@ -161,11 +162,10 @@ const ComAuthNav = ({ onLoaded }) => {
         onAction: handleAction,
         appCode: "OM",
         isExternal: false,
-        clientURL: "https://production.centra.ca"
+        clientURL: "https://production.centra.ca",
         // isLocalAppOnly: true
         // defaultList: DEFAULT_MENU,
       }}
-
       activeFeature="om.prod"
     ></AuthNav>
   );
