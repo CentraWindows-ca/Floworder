@@ -29,6 +29,8 @@ export function middleware(req) {
   const prefix =
     HOST_TO_PREFIX[hostWithPort] ?? HOST_TO_PREFIX[hostnameOnly];
 
+  console.log("???HOST_TO_PREFIX", hostWithPort, hostnameOnly)
+
   if (!prefix) return NextResponse.next();
 
   // Avoid loops if already under the correct prefix
