@@ -61,7 +61,22 @@ i.copiedIcon {
     }
 }
 
+.tableStatusBlock {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
 
+    .tableStatusColor {
+        position: absolute;
+        padding: 3px;
+        top: 2px;
+        bottom: 2px;
+        left: 2px;
+        right: 2px;
+    }
+}
 
 .tableLoading,
 .tableError {
