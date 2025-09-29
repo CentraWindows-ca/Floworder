@@ -25,91 +25,43 @@
     min-height: 32px;
 }
 
-.tableContainer {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-}
 
-.table {
-    overflow: auto;
-    height: 100%;
-    border-radius: 4px;
-
-    .orderNumber {
-        span {
-            cursor: pointer;
-            color: $color_centraBlack;
-            font-weight: 600;
-            text-decoration: underline;
-
-            &:hover {
-                color: $color_centraBlue_hover;
-            }
-        }
-
-        i.copiedIcon {
-            display: none;
-        }
-
-        &:hover {
-            i.copiedIcon {
-                display: inline-block;
-            }
-        }
-    }
-
-    i {}
-
-    i.notCopiedIcon,
-    i.copiedIcon {
-        display: inline-block;
-        color: $color_gray_dark;
+.orderNumber {
+    span {
         cursor: pointer;
+        color: $color_centraBlack;
+        font-weight: 600;
+        text-decoration: underline;
 
         &:hover {
             color: $color_centraBlue_hover;
         }
     }
 
-    tbody td:first-child {
-        border-left: none;
+    i.copiedIcon {
+        display: none;
     }
-}
 
-.theadOfMainTable {
-    border-left: none;
-    th,
-    td {
-        &>div {
-            /* 
-                in order list, let "top: -1px" work
-                when we lock 1st column 
-            */
-            position: relative;
-            top: -1px !important;
+    &:hover {
+        i.copiedIcon {
+            display: inline-block;
         }
     }
 }
 
-.tableStatusBlock {
-    position: absolute;
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
 
-    .tableStatusColor {
-        position: absolute;
-        padding: 3px;
-        top: 2px;
-        bottom: 2px;
-        left: 2px;
-        right: 2px;
+i.notCopiedIcon,
+i.copiedIcon {
+    display: inline-block;
+    color: $color_gray_dark;
+    cursor: pointer;
+
+    &:hover {
+        color: $color_centraBlue_hover;
     }
 }
+
+
 
 .tableLoading,
 .tableError {

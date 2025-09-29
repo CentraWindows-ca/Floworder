@@ -34,7 +34,7 @@ const Com = (props) => {
         query: newQuery,
       },
       undefined,
-      { shallow: false },
+      { shallow: true },
     );
   };
 
@@ -58,7 +58,7 @@ const Com = (props) => {
         query: newQuery,
       },
       undefined,
-      { shallow: false },
+      { shallow: true },
     );
   };
 
@@ -71,7 +71,7 @@ const Com = (props) => {
         query: {},
       },
       undefined,
-      { shallow: false },
+      { shallow: true },
     );
   };
 

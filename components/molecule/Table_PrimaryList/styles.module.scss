@@ -1,0 +1,54 @@
+@use "styles/theme" as *;
+
+
+.tableContainer {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.tableLoading,
+.tableError {
+    background-color: rgba($color: #FFFFFF, $alpha: 0.8);
+    position: absolute;
+    left: 1px;
+    right: 13px;
+    bottom: 1px;
+    top: 65px;
+    z-index: $layer_orderlist_loading;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tableError {
+    color: $color_red;
+}
+
+.table {
+    overflow: auto;
+    height: 100%;
+    border-radius: 4px;
+
+    tbody td:first-child {
+        border-left: none;
+    }
+}
+
+.theadOfMainTable {
+    border-left: none;
+
+    th,
+    td {
+        &>div {
+            /* 
+                in order list, let "top: -1px" work
+                when we lock 1st column 
+            */
+            position: relative;
+            top: -1px !important;
+        }
+    }
+}

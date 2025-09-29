@@ -3,15 +3,12 @@ import cn from "classnames";
 import _ from "lodash";
 import { format } from "date-fns";
 import { GeneralContext } from "lib/provider/GeneralProvider";
-import { Spin } from "antd";
-
 import OrdersApi from "lib/api/OrdersApi";
 
 import Editable from "components/molecule/Editable";
-import TableSortable from "components/atom/TableSortable";
-import FiltersManager from "components/atom/TableSortable/FilterManager";
 
 import LabelDisplay from "components/atom/LabelDisplay";
+import Table_PrimaryList from "components/molecule/Table_PrimaryList"
 
 // styles
 import styles from "./styles.module.scss";
@@ -61,7 +58,6 @@ const Com = (props) => {
   const isWindow = kind === "w" || (kind === "m" && uiIsShowWindow);
   const isDoor = kind === "d" || (kind === "m" && uiIsShowDoor);
   const isMasterOnly = uiIsShowWindow && uiIsShowDoor;
-
   const [treatedData, setTreatedData] = useState(null);
   const [copied, setCopied] = useState(false);
 
@@ -81,6 +77,7 @@ const Com = (props) => {
         </div>,
         {
           type: "info",
+          autoClose: 500
         },
       );
     } catch (err) {}
@@ -689,60 +686,21 @@ const Com = (props) => {
   };
 
   return (
-    <>
-      <div className={styles.tableContainer}>
-        {error ? (
-          <div className={cn(styles.tableError)}>
-            <div>Network Error</div>
-          </div>
-        ) : isLoading ? (
-          <div className={cn(styles.tableLoading)}>
-            <Spin spinning={true} size="large" />
-          </div>
-        ) : null}
-
-        <TableSortable
-          {...{
-            data: treatedData,
-            filters,
-            isEnableFilter,
-            setFilters,
-            columns: COLUMN_SEQUENCE_FOR_STATUS(status, columns),
-            sort,
-            setSort,
-            headerClassName: styles.theadOfMainTable,
-            className: styles.table,
-          }}
-        />
-        <FiltersManager
-          {...{
-            columns: COLUMN_SEQUENCE_FOR_STATUS(status, columns),
-            filters,
-            isEnableFilter,
-            onEnableFilter,
-            setFilters,
-          }}
-        />
-      </div>
-    </>
+    <Table_PrimaryList
+      {...{
+        error,
+        isLoading,
+        data: treatedData,
+        filters,
+        isEnableFilter,
+        setFilters,
+        columns: COLUMN_SEQUENCE_FOR_STATUS(status, columns),
+        sort,
+        setSort,
+        onEnableFilter,
+      }}
+    />
   );
 };
 
-/* <TableFullHeight
-          size="small"
-          dataSource={treatedData}
-          columns={columns}
-          pagination={false}
-          className={cn(styles.orderTable)}
-          components={{
-            header: {
-              wrapper: (props) => (
-                <thead {...props}>
-                  {props.children}
-                  <CustomHeader />
-                </thead>
-              ),
-            },
-          }}
-        />  */
 export default Com;
