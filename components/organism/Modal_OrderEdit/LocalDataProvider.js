@@ -24,7 +24,7 @@ import constants, {
   ORDER_STATUS,
   ORDER_TRANSFER_FIELDS,
 } from "lib/constants";
-import { uiWoFieldEditGroupMapping } from "lib/constants/constants_labelMapping";
+import { uiWoFieldEditGroupMapping } from "lib/constants/production_constants_labelMapping";
 import { getOrderKind } from "lib/utils";
 
 import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";

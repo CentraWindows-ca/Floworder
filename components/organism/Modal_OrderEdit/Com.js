@@ -13,7 +13,7 @@ import constants, {
 import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
 import utils from "lib/utils";
-import { uiWoFieldEditGroupMapping as gmp } from "lib/constants/constants_labelMapping";
+import { uiWoFieldEditGroupMapping as gmp } from "lib/constants/production_constants_labelMapping";
 
 export const getIfFieldDisplayAsProductType = (
   { kind, uiOrderType, id, displayAs, permissions },

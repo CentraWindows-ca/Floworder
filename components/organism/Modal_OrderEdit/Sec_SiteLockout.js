@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
+import {labelMapping, applyField} from "lib/constants/production_constants_labelMapping";
+
 import { getIsRequired } from "./hooks/vconfig";
 import { Block } from "./Com";
 
@@ -15,7 +17,7 @@ import { LocalDataContext } from "./LocalDataProvider";
 import { DisplayBlock, displayFilter } from "./Com";
 import { PORTAL_WEBCAL } from "lib/api/SERVER";
 
-const COMMON_FIELDS = constants.applyField([
+const COMMON_FIELDS = applyField([
   {
     id: "lo_scheduledLockoutDate",
     title: "Schedule Date",

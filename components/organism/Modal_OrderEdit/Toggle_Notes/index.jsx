@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext, useMemo } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
+import {labelMapping, applyField} from "lib/constants/production_constants_labelMapping";
+
 import Editable from "components/molecule/Editable";
 // styles
 import styles from "./styles.module.scss";
@@ -10,13 +12,14 @@ import stylesRoot from "../styles.module.scss";
 import { LocalDataContext } from "../LocalDataProvider";
 import { ToggleFull, NoData, DisplayBlock, displayFilter, SaveButton } from "../Com";
 
+
 // const group = "notes";
 
 const Com = ({}) => {
   const { data, initData, validationResult, kind, uiOrderType, onChange, permissions, checkEditable, checkAddOnField, onHide } =
     useContext(LocalDataContext);
 
-  const COMMON_FIELDS = constants.applyField([
+  const COMMON_FIELDS = applyField([
     { id: "w_OfficeNotes" },
     { id: "d_OfficeNotes" },
     { id: "w_PlantNotes" },
@@ -88,7 +91,7 @@ const Com = ({}) => {
               "justify-content-between align-items-center flex",
             )}
           >
-            <label>{constants.constants_labelMapping[id]?.title}</label>
+            <label>{labelMapping[id]?.title}</label>
           </div>
           <Editable.EF_Text
             k={id}

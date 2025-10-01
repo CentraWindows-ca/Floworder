@@ -8,13 +8,16 @@ import constants, { WORKORDER_STATUS_MAPPING } from "lib/constants";
 import OrdersApi from "lib/api/OrdersApi";
 
 import Framework_Invoice from "components/organism/Framework_Invoice";
+import Panel_Invoice from "components/organism/Panel_Invoice";
 
 // hooks
 import useDataInit from "lib/hooks/useDataInit";
 import useOrderListPermission from "lib/permissions/useOrderListPermission";
+import DUMMY from "./dummy"
 
 // styles
 import styles from "./styles.module.scss";
+
 
 const DEFAULT_SORT = (status) => {
   if (status === WORKORDER_STATUS_MAPPING.Scheduled.key) {
@@ -41,7 +44,6 @@ const Com = ({}) => {
 
   // ====== search
   const [filters, setFilters] = useState({});
-  const [advancedFilters, setAdvancedFilters] = useState({});
   const [isEnableFilter, setIsEnableFilter] = useState(true);
 
   const {
@@ -57,15 +59,7 @@ const Com = ({}) => {
   const sortObj = {};
   let sortArr = [];
 
-  const status = statusFromParam === "All" ? "" : statusFromParam
-  const facility = facilityFromParam === "All" ? "" : facilityFromParam
-
-  if (facility) {
-    filtersObj[tab + "_ManufacturingFacility"] = {
-      operator: constants.FILTER_OPERATOR.Equals,
-      value: facility,
-    };
-  }
+  const status = statusFromParam === "All" ? "" : statusFromParam;
 
   if (status) {
     filtersObj[tab + "_Status"] = {
@@ -86,18 +80,25 @@ const Com = ({}) => {
     }));
   }
 
-  const endPoint = ''
+  const endPoint = "";
   // use swr
   const { data, error, mutate } = useDataInit(endPoint);
-
-  const handleRefresh = () => {
-    mutate(null);
-  };
 
   // ====== consts
   return (
     <Framework_Invoice>
-      hi this is invoice
+      <Panel_Invoice
+        {...{
+          filters,
+          setFilters,
+          isEnableFilter,
+          setIsEnableFilter,
+          data: {data: DUMMY},
+          error,
+          mutate,
+          sortObj,
+        }}
+      />
     </Framework_Invoice>
   );
 };

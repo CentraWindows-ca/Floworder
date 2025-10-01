@@ -13,7 +13,7 @@ import PageContainer from "components/atom/PageContainer";
 // import Search from "components/molecule/bak_Search";
 import Tabs_ManufacturingFacility from "components/molecule/Tabs_ManufacturingFacility";
 import { InterruptModal } from "lib/provider/InterruptProvider/InterruptModal";
-import Modal_OrderStatusUpdate from "components/organism/Modal_OrderStatusUpdate";
+import Modal_StatusUpdate from "./Modal_StatusUpdate_Production";
 import Framework from "components/molecule/Framework";
 
 import TabLinksFull from "components/atom/TabLinksFull";
@@ -76,7 +76,7 @@ const Com = ({ children, onRefresh }) => {
       className = {styles.root}
     >
       <InterruptModal>
-        <Modal_OrderStatusUpdate />
+        <Modal_StatusUpdate />
       </InterruptModal>
       {children}
     </Framework>

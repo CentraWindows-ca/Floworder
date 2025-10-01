@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import constants from "lib/constants";
+import {labelMapping, applyField} from "lib/constants/production_constants_labelMapping";
+
 import cn from "classnames";
 import Modal from "components/molecule/Modal";
 import Editable from "components/molecule/Editable";
@@ -9,7 +11,7 @@ import utils from "lib/utils";
 
 // styles
 import styles from "../styles.module.scss";
-const WINDOW_FIELDS = constants.applyField([
+const WINDOW_FIELDS = applyField([
   {
     Component: Editable.EF_Label,
     id: "Item",
@@ -100,7 +102,7 @@ const WINDOW_FIELDS = constants.applyField([
   },
 ]);
 
-const DOOR_FIELDS = constants.applyField([
+const DOOR_FIELDS = applyField([
   {
     Component: Editable.EF_Label,
     id: "Item",

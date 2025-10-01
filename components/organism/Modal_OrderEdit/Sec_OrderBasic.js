@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
+import {applyField} from "lib/constants/production_constants_labelMapping";
+
 import Editable from "components/molecule/Editable";
 
 // styles
@@ -11,7 +13,7 @@ import { LocalDataContext } from "./LocalDataProvider";
 
 import { DisplayBlock } from "./Com";
 
-const COMMON_FIELDS = constants.applyField([
+const COMMON_FIELDS = applyField([
   {
     Component: Editable.EF_Text,
     id: "m_CustomerName",

@@ -1,4 +1,4 @@
-import { uiWoFieldEditGroupMapping as f } from "lib/constants/constants_labelMapping";
+import { uiWoFieldEditGroupMapping as f } from "lib/constants/production_constants_labelMapping";
 
 export const config_regular = {
   [f.information.m_BranchId]: { required: true },

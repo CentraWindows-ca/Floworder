@@ -74,6 +74,7 @@ const Com = (props) => {
                         </React.Fragment>
                       );
                     }
+
                     return (
                       <td
                         className={cn(className)}

@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
+import {labelMapping, applyField} from "lib/constants/production_constants_labelMapping";
 
 import Modal from "components/molecule/Modal";
 // styles
@@ -12,7 +13,7 @@ import { LocalDataContext } from "../LocalDataProvider";
 import { ToggleBlock, NoData } from "../Com";
 import Editable from "components/molecule/Editable";
 
-const COMMON_FIELDS = constants.applyField([
+const COMMON_FIELDS = applyField([
   {
     Component: Editable.EF_DateOnly,
     id: "returnTripDate",

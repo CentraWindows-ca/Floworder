@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
+import {labelMapping, applyField} from "lib/constants/production_constants_labelMapping";
+
 import { getIsRequired } from "./hooks/vconfig";
 
 import {formatCurrency2Decimal} from "lib/utils";
@@ -15,7 +17,7 @@ import { LocalDataContext } from "./LocalDataProvider";
 
 import { displayFilter, Block } from "./Com";
 
-const COMMON_FIELDS = constants.applyField([
+const COMMON_FIELDS = applyField([
   {
     Component: Editable.EF_SelectWithLabel,
     id: "m_BranchId",
@@ -81,7 +83,7 @@ const COMMON_FIELDS = constants.applyField([
   },
 ]);
 
-const WINDOW_FIELDS = constants.applyField([
+const WINDOW_FIELDS = applyField([
   {
     Component: Editable.EF_SelectWithLabel,
     id: "w_ManufacturingFacility",
@@ -122,7 +124,7 @@ const WINDOW_FIELDS = constants.applyField([
   },
 ]);
 
-const DOOR_FIELDS = constants.applyField([
+const DOOR_FIELDS = applyField([
   {
     Component: Editable.EF_SelectWithLabel,
     id: "d_ManufacturingFacility",

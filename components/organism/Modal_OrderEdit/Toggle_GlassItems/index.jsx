@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import cn from "classnames";
 import constants from "lib/constants";
+import {labelMapping, applyField} from "lib/constants/production_constants_labelMapping";
 
 import _ from "lodash";
 
@@ -55,7 +56,7 @@ const Com = ({}) => {
     </div>
   );
 
-  const columns = constants.applyField([
+  const columns = applyField([
     {
       key: "receivedExpected",
       width: 125,

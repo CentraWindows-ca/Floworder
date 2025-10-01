@@ -8,6 +8,7 @@ import Prod2FFApi from "lib/api/Prod2FFApi";
 import { TableHeader, TableWrapper } from "components/atom/TableSortable";
 
 import constants from "lib/constants";
+import {labelMapping, applyField} from "lib/constants/production_constants_labelMapping";
 
 // components
 import Editable from "components/molecule/Editable";
@@ -27,7 +28,7 @@ const Com = ({ data, dataProfile, onRefresh }) => {
   const [sort, setSort] = useState(null);
   const [filters, setFilters] = useState(null);
 
-  const columns = constants.applyField([
+  const columns = applyField([
     {
       key: "m_WorkOrderNo",
       width: 125,

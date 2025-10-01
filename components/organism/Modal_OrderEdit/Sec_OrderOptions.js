@@ -5,6 +5,8 @@ import constants from "lib/constants";
 
 import Editable from "components/molecule/Editable";
 
+import {labelMapping, applyField} from "lib/constants/production_constants_labelMapping";
+
 import {
   RushIcon,
   PaintIcon,
@@ -26,14 +28,14 @@ import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
 import { DisplayBlock, displayFilter } from "./Com";
 
-const COMMON_FIELDS = constants.applyField([
+const COMMON_FIELDS = applyField([
   {
     icon: () => <CustomerPickupIcon />,
     id: "m_CustomerPickup",
   },
 ]);
 
-const WINDOW_FIELDS = constants.applyField([
+const WINDOW_FIELDS = applyField([
   {
     icon: () => <RushIcon />,
     id: "w_RushOrder",
@@ -81,7 +83,7 @@ const WINDOW_FIELDS = constants.applyField([
   //         <div className={styles.columnOptionsSubContainer}>
   //           <label>
   //             {
-  //               constants.constants_labelMapping["w_WaterPenetrationResistance"]
+  //               labelMapping["w_WaterPenetrationResistance"]
   //                 .title
   //             }
   //           </label>
@@ -101,7 +103,7 @@ const WINDOW_FIELDS = constants.applyField([
   //   },
   // },
 ]);
-const DOOR_FIELDS = constants.applyField([
+const DOOR_FIELDS = applyField([
   {
     icon: () => <RushIcon />,
     id: "d_RushOrder",

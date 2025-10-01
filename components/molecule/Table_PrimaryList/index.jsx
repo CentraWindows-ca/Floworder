@@ -12,7 +12,7 @@ import styles from "./styles.module.scss";
 
 const Com = ({ error, isLoading, onEnableFilter, ...props }) => {
   return (
-    <div className={styles.tableContainer}>
+    <div className={cn(styles.tableContainer, (error || isLoading) && styles.tableContainerLoading)}>
       {error ? (
         <div className={cn(styles.tableError)}>
           <div>Network Error</div>

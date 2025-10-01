@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
+import {labelMapping, applyField} from "lib/constants/production_constants_labelMapping";
+
 import { getIsRequired } from "./hooks/vconfig";
 import { Block } from "./Com";
 
@@ -14,7 +16,7 @@ import { LocalDataContext } from "./LocalDataProvider";
 
 import { DisplayBlock, displayFilter } from "./Com";
 
-const COMMON_FIELDS = constants.applyField([
+const COMMON_FIELDS = applyField([
   {
     id: "m_ShippingStartDate",
   },
@@ -35,7 +37,7 @@ const COMMON_FIELDS = constants.applyField([
     options: constants.WorkOrderSelectOptions.branches,
   },
 ]);
-const WINDOW_FIELDS = constants.applyField([
+const WINDOW_FIELDS = applyField([
   {
     id: "w_CustomerDate",
   },
@@ -53,7 +55,7 @@ const WINDOW_FIELDS = constants.applyField([
     id: "w_GlassRecDate",
   },
 ]);
-const DOOR_FIELDS = constants.applyField([
+const DOOR_FIELDS = applyField([
   {
     id: "d_CustomerDate",
   },

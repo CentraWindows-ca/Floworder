@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
+import {labelMapping, applyField} from "lib/constants/production_constants_labelMapping";
+
 import { ITEM_STATUS, ITEM_LITES, ITEM_DOOR_TYPES } from "lib/constants";
 import Editable from "components/molecule/Editable";
 import TableSortable from "components/atom/TableSortable";
@@ -305,7 +307,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState({});
 
-  const columnsWindow = constants.applyField([
+  const columnsWindow = applyField([
     {
       key: "Item",
       width: 80,
@@ -601,7 +603,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
 
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState({});
-  const columns = constants.applyField([
+  const columns = applyField([
     {
       key: "Item",
       width: 80,
@@ -911,7 +913,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
     }
   };
 
-  const columns = constants.applyField([
+  const columns = applyField([
     _isGroupEditable
       ? {
           // NOTE 20250730: update/not update of others

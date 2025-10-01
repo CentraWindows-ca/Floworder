@@ -2,7 +2,7 @@ import _ from "lodash";
 import {
   uiWoFieldEditGroupMapping,
   labelMapping,
-} from "lib/constants/constants_labelMapping";
+} from "lib/constants/production_constants_labelMapping";
 import { getIfFieldDisplayAsProductType } from "../Com";
 
 import { getVConfig } from "./vconfig";

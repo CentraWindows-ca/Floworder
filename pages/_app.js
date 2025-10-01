@@ -1,9 +1,6 @@
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
 import App from "next/app";
 import Head from "next/head";
-import Router from "next/router";
-import { createRoot } from "react-dom/client";
 
 // ------ global nav
 import { useRouter } from "next/router";
@@ -27,34 +24,6 @@ import "styles/index.css";
 
 const AuthNav = dynamic(() => import("@centrawindows-ca/authnav"), {
   ssr: false, // This will prevent server-side render
-});
-
-Router.events.on("routeChangeStart", (url) => {
-  console.log(`Loading: ${url}`);
-
-  // note: update to satisfy React v18
-  window.root = createRoot(document.getElementById("page-transition"));
-
-  // note: its annoying
-  // window.root.render(<PageChange path={url} />);
-
-  // document.body.classList.add("body-page-transition");
-  // ReactDOM.render(
-  //   <PageChange path={url} />,
-  //   document.getElementById("page-transition")
-  // );
-});
-Router.events.on("routeChangeComplete", () => {
-  window.root.unmount();
-
-  // ReactDOM.unmountComponentAtNode(document.getElementById("page-transition"));
-  document.body.classList.remove("body-page-transition");
-});
-Router.events.on("routeChangeError", () => {
-  // ReactDOM.unmountComponentAtNode(document.getElementById("page-transition"));
-
-  window.root.unmount();
-  document.body.classList.remove("body-page-transition");
 });
 
 export default class MyApp extends App {
@@ -110,9 +79,9 @@ export default class MyApp extends App {
     const { Component, pageProps } = this.props;
     const Layout = Component.layout || (({ children }) => children);
     const title =
-      "Order Management" + process.env.NEXT_PUBLIC_ENV !== "production"
+      "Order Management" + (process.env.NEXT_PUBLIC_ENV !== "production"
         ? ` (${process.env.NEXT_PUBLIC_ENV})`
-        : "";
+        : "");
     return (
       <React.Fragment>
         <Head>
@@ -146,10 +115,10 @@ const ComAuthNav = ({ onLoaded }) => {
 
   const handleOnRoute = (path) => router.push(path);
 
-  const handleAction = (type, permimssions, rawdata, token) => {
-    if ((type = "LOADED")) {
-      onLoaded(permimssions, rawdata);
-      console.log(type, permimssions, rawdata);
+  const handleAction = (type, permissions, rawdata, token) => {
+    if ((type === "LOADED")) {
+      onLoaded(permissions, rawdata);
+      console.log(type, permissions, rawdata);
       localStorage.setItem("user_email", rawdata?.email);
     }
   };

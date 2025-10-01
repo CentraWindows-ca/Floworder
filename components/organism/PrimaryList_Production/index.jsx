@@ -18,6 +18,8 @@ import constants, {
   ORDER_STATUS,
   WORKORDER_STATUS_MAPPING,
 } from "lib/constants";
+import {labelMapping, applyField} from "lib/constants/production_constants_labelMapping";
+
 import utils from "lib/utils";
 
 import { COLUMN_SEQUENCE_FOR_STATUS } from "./_constants";
@@ -246,7 +248,7 @@ const Com = (props) => {
       ]
     : [];
 
-  const columns = constants.applyField(
+  const columns = applyField(
     [
       {
         key: "m_WorkOrderNo",
