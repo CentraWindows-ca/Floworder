@@ -6,14 +6,15 @@ import constants from "lib/constants";
 
 // components
 import Pagination from "components/atom/Pagination";
-import PrimaryList_Invoice from "components/organism/PrimaryList_Invoice";
+import PrimaryList_Production from "components/organism/Production_PrimaryList";
 import Editable from "components/molecule/Editable";
 import PermissionBlock from "components/atom/PermissionBlock";
 
-import Modal_OrderEdit from "components/organism/Modal_OrderEdit";
-import Modal_OrderHistory from "components/organism/Modal_OrderHistory";
+import Modal_Edit from "components/organism/Production_Modal_OrderEdit";
+import Modal_Create from "components/organism/Production_Modal_OrderCreate";
+import Modal_History from "components/organism/Production_Modal_OrderHistory";
 
-import { INVOICE_STATUS_MAPPING } from "lib/constants";
+import { ORDER_STATUS } from "lib/constants";
 
 // styles
 import styles from "./styles.module.scss";
@@ -40,14 +41,24 @@ const Com = ({
   } = router?.query || {};
 
   const [treatedData, setTreatedData] = useState({});
+  const [isShowCreate, setIsShowCreate] = useState(false);
 
   const [editingOrderMasterId, setEditingOrderMasterId] = useState(null);
   const [isEditable, setIsEditable] = useState(false);
+
   const [historyOrderMasterId, setHistoryOrderMasterId] = useState(null);
+
+  const [uiIsShowWindow, setUiIsShowWindow] = useState(true);
+  const [uiIsShowDoor, setUiIsShowDoor] = useState(true);
+  const [uiIsShowBreakdown, setUiIsShowBreakdown] = useState(false);
 
   useEffect(() => {
     switch (modalType) {
       case "edit":
+        setEditingOrderMasterId(masterId);
+        setIsEditable(true);
+        break;
+      case "editPending":
         setEditingOrderMasterId(masterId);
         setIsEditable(true);
         break;
@@ -159,6 +170,17 @@ const Com = ({
     );
   };
 
+  const handleCreate = () => {
+    setIsShowCreate(true);
+  };
+
+  const handleCreateDone = async (masterId) => {
+    // jump to the masterId and not deleted
+    handleEdit(masterId, "edit", true);
+    mutate(null);
+    // endPoint
+  };
+
   const handleSaveDone = async () => {
     mutate(null);
     // endPoint
@@ -184,14 +206,10 @@ const Com = ({
       { shallow: true },
     );
   };
-  
-  const handleRefresh = () => {
-    mutate(null);
-  };
 
   const [sortBy, dir] = sort?.split(":") || [];
   const statusDisplay =
-    _.values(INVOICE_STATUS_MAPPING)?.find((a) => status?.trim() === a.key?.trim()) || null;
+    ORDER_STATUS?.find((a) => status?.trim() === a.key?.trim()) || null;
 
   const jsxStatus = (
     <label className="align-items-center me-3 flex">
@@ -238,15 +256,80 @@ const Com = ({
     <div className={cn("w-full", styles.root)}>
       <div className={cn(styles.topBar)} style={{ paddingLeft: "25px" }}>
         <div className="align-items-center justify-content-between flex gap-2">
-          {isDeleted == 1 ? jsxTrash : statusDisplay && jsxStatus}       
+          {isDeleted == 1 ? jsxTrash : statusDisplay && jsxStatus}
+
+          <PermissionBlock
+            featureCode={constants.FEATURE_CODES["om.prod.wo"]}
+            op="canAdd"
+          >
+            <button
+              className="btn btn-success me-2 px-2"
+              onClick={handleCreate}
+            >
+              <i className="fa-solid fa-circle-plus me-2"></i>
+              Create
+            </button>
+          </PermissionBlock>
+
+          {tab === "m" && (
+            <>
+              <div className="align-items-center flex gap-2">
+                <div>
+                  <Editable.EF_Checkbox
+                    id={"ui_window"}
+                    value={uiIsShowWindow}
+                    onChange={(v) => setUiIsShowWindow(v)}
+                  />
+                </div>
+                <label
+                  htmlFor={"ui_window"}
+                  className="align-items-center flex gap-1"
+                >
+                  Windows Info
+                </label>
+              </div>
+              <div className="align-items-center flex gap-2">
+                <div>
+                  <Editable.EF_Checkbox
+                    id={"ui_door"}
+                    value={uiIsShowDoor}
+                    onChange={(v) => setUiIsShowDoor(v)}
+                  />
+                </div>
+                <label
+                  htmlFor={"ui_door"}
+                  className="align-items-center flex gap-1"
+                >
+                  Doors Info
+                </label>
+              </div>
+            </>
+          )}
+          <div className="align-items-center flex gap-2">
+            <div>
+              <Editable.EF_Checkbox
+                id={"ui_breakdown"}
+                value={uiIsShowBreakdown}
+                onChange={(v) => setUiIsShowBreakdown(v)}
+              />
+            </div>
+            <label
+              htmlFor={"ui_breakdown"}
+              className="align-items-center flex gap-1"
+            >
+              Split by System
+            </label>
+          </div>
         </div>
         <div>
           <Pagination count={treatedData?.total} basepath={"/"} />
         </div>
       </div>
       <div className={cn(styles.detail)}>
-        <PrimaryList_Invoice
+        <PrimaryList_Production
+          kind={tab}
           onEdit={(woMasterId) => handleEdit(woMasterId, "edit")}
+          onEditPending={(woMasterId) => handleEdit(woMasterId, "editPending")}
           onView={(woMasterId) => handleEdit(woMasterId, "view")}
           onHistory={(woMasterId) => handleHistory(woMasterId)}
           onUpdate={handleSaveDone}
@@ -255,6 +338,9 @@ const Com = ({
           status={status}
           count={treatedData?.total}
           {...{
+            uiIsShowWindow,
+            uiIsShowDoor,
+            uiIsShowBreakdown,
             data: treatedData?.data,
             isEnableFilter,
             filters,
@@ -270,7 +356,7 @@ const Com = ({
         />
       </div>
 
-      <Modal_OrderEdit
+      <Modal_Edit
         onHide={() => handleEdit()}
         onSave={handleSaveDone}
         onRestore={handleRestoreDone}
@@ -280,7 +366,12 @@ const Com = ({
         facility={facility}
         initIsEditable={isEditable}
       />
-      <Modal_OrderHistory
+      <Modal_Create
+        show={isShowCreate}
+        onCreate={handleCreateDone}
+        onHide={() => setIsShowCreate(false)}
+      />
+      <Modal_History
         initMasterId={historyOrderMasterId}
         onHide={() => handleHistory()}
       />

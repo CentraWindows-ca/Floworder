@@ -8,8 +8,8 @@ import constants from "lib/constants";
 import OrdersApi from "lib/api/OrdersApi";
 import Prod2FFApi from "lib/api/Prod2FFApi";
 
-import Framework_ProfileLookup from "components/organism/Framework_ProfileLookup";
-import Panel_ProfileLookup from "components/organism/Panel_ProfileLookup";
+import Framework_ProfileLookup from "components/organism/ProfileLookup_Framework";
+import Panel_ProfileLookup from "components/organism/ProfileLookup_Panel";
 
 // hooks
 import useDataInit from "lib/hooks/useDataInit";

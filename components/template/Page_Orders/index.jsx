@@ -9,9 +9,9 @@ import OrdersApi from "lib/api/OrdersApi";
 // components
 
 // import Search from "components/molecule/bak_Search";
-import Framework_Production from "components/organism/Framework_Production";
+import Framework_Production from "components/organism/Production_Framework";
 
-import Panel_Production from "components/organism/Panel_Production";
+import Panel_Production from "components/organism/Production_Panel";
 
 // hooks
 import useDataInit from "lib/hooks/useDataInit";

@@ -40,12 +40,9 @@ const WorkOrderActions = ({
   data,
   onHistory,
   onEdit,
-  onEditPending,
-  onView,
   onUpdate,
-  kind,
 }) => {
-  const { invoiceNumber, invoiceStatus } = data;
+  const { tmp_invoiceNumber, tmp_invoiceStatus } = data;
   const { toast, permissions } = useContext(GeneralContext);
 
   const { requestData } = useInterrupt();
@@ -55,15 +52,15 @@ const WorkOrderActions = ({
 
   // statusIndex
   let allowedStatus = [];
-  allowedStatus = INVOICE_WORKFLOW[getStatusName(invoiceStatus)] || [];
+  allowedStatus = INVOICE_WORKFLOW[getStatusName(tmp_invoiceStatus)] || [];
 
   const getStatusPayload = async (data, newStatus, _kind) => {
-    const { invoiceNumber } = data;
+    const { tmp_invoiceNumber } = data;
     const payload = {
-      invoiceNumber,
+      tmp_invoiceNumber,
       newStatus,
     };
-    payload["oldStatus"] = data.invoiceStatus
+    payload["oldStatus"] = data.tmp_invoiceStatus
 
     // different target has different required fields
     const missingFields = INVOICE_TRANSFER_FIELDS?.[newStatus] || {};
@@ -81,7 +78,7 @@ const WorkOrderActions = ({
     if (payload === null) return null;
     if (
       !window.confirm(
-        `For work order [${data?.invoiceNumber}], are you sure to update Status to ${newStatus}?`,
+        `For invoice [${data?.tmp_invoiceNumber}], are you sure to update Status to ${newStatus}?`,
       )
     ) {
       return null;
@@ -102,17 +99,6 @@ const WorkOrderActions = ({
     <div className={cn(styles.workorderActionsContainer)}>
       <Button
         type="text"
-        icon={<EyeOutlined />}
-        onClick={() => {
-          onView();
-          setCloseToggle((p) => !p);
-        }}
-      >
-        View Invoice
-      </Button>
-
-      <Button
-        type="text"
         icon={<EditOutlined />}
         onClick={() => {
           onEdit();
@@ -129,6 +115,7 @@ const WorkOrderActions = ({
             type="text"
             icon={<ArrowRightOutlined />}
             onClick={() => handleMoveTo(key, "w")}
+            key={`${tmp_invoiceNumber}_${key}`}
           >
             Move To:{" "}
             <span
@@ -163,7 +150,7 @@ const WorkOrderActions = ({
         renderTrigger={(onClick) => {
           return (
             <span style={{ cursor: "pointer" }} onClick={onClick}>
-              {invoiceNumber}
+              {tmp_invoiceNumber}
             </span>
           );
         }}

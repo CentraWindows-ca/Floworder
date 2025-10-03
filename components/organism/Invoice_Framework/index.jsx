@@ -17,7 +17,7 @@ import Modal_StatusUpdate from "./Modal_StatusUpdate_Invoice";
 import Framework from "components/molecule/Framework";
 
 import TabLinksFull from "components/atom/TabLinksFull";
-import SideMenu_Invoice from "components/organism/SideMenu_Invoice";
+import SideMenu_Invoice from "components/organism/Invoice_SideMenu";
 
 // styles
 import styles from "./styles.module.scss";

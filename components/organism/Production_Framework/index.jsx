@@ -17,7 +17,7 @@ import Modal_StatusUpdate from "./Modal_StatusUpdate_Production";
 import Framework from "components/molecule/Framework";
 
 import TabLinksFull from "components/atom/TabLinksFull";
-import SideMenu_Production from "components/organism/SideMenu_Production";
+import SideMenu_Production from "components/organism/Production_SideMenu";
 
 // styles
 import styles from "./styles.module.scss";

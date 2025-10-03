@@ -7,8 +7,8 @@ import constants, { WORKORDER_STATUS_MAPPING } from "lib/constants";
 
 import OrdersApi from "lib/api/OrdersApi";
 
-import Framework_Invoice from "components/organism/Framework_Invoice";
-import Panel_Invoice from "components/organism/Panel_Invoice";
+import Framework_Invoice from "components/organism/Invoice_Framework";
+import Panel_Invoice from "components/organism/Invoice_Panel";
 
 // hooks
 import useDataInit from "lib/hooks/useDataInit";

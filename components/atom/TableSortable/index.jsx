@@ -137,7 +137,7 @@ export const TableHeader = ({
   className,
 }) => {
   const handleSortChange = (k) => {
-    const newSortObj = null;
+    let newSortObj = null;
     // only 1 sorting field currently
     // JSON.parse(JSON.stringify(sortObj || {}))
     const { sortBy, dir } = sort || {};

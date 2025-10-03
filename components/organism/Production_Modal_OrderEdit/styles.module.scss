@@ -1,0 +1,590 @@
+@use "styles/theme" as *;
+
+
+
+.root {
+    overflow: auto;
+    height: 100%;
+}
+
+.statesDropdownContainer {
+    min-width: 300px;
+    padding: 20px;
+}
+
+.statesContainer {
+    border-radius: 4px;
+    padding: 4px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+    min-height: 30px;
+    font-size: 1rem;
+}
+
+.statesContainerEditable {
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.8;
+        background-color: $color_active;
+    }
+}
+
+
+.gridsOfMainInfo {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(4, 1fr);
+    margin-bottom: 10px;
+}
+
+
+.mainItem,
+.toggleContainer {
+    border: 1px solid #ccc;
+    // border-radius: 4px;
+    text-align: center;
+    box-sizing: border-box;
+    // overflow: hidden;
+    background-color: $color_white;
+    display: flex;
+    flex-direction: column;
+
+    .togglePadding {
+        padding: 10px;
+    }
+}
+
+.sectionTitle {
+    text-align: left;
+    font-weight: bold;
+    padding: 5px 10px;
+    height: 35px;
+    background-color: $color_background;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.subTitle {
+    text-align: left;
+    font-weight: bold;
+    margin-top: 5px;
+    padding: 5px 10px 2px 10px;
+    border-top: 5px solid $color_background;
+
+    label {
+        color: $color_centraBlue;
+        font-weight: bold;
+    }
+}
+
+.itemSubTitle {
+    text-align: left;
+    padding: 10px 0px;
+
+    label {
+        color: $color_centraBlue;
+        font-weight: bold;
+    }
+}
+
+.toggleFullClose {
+    cursor: pointer;
+}
+
+.toggleTitle {
+    text-align: left;
+    font-weight: bold;
+    padding: 5px 10px;
+    height: 35px;
+    background-color: $color_background_grayYellow;
+    border-bottom: 1px solid $color_gray;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+
+    &:hover:not(:has(.toolButton:hover)) {
+        // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        background-color: $color_background_yellow;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    z-index: 4;
+    position: sticky;
+    top: 0px;
+
+}
+
+.columnInputsContainer {
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+    gap: 5px;
+
+    label {
+        text-align: left;
+    }
+}
+
+.columnScheduledContainer {
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+    gap: 5px;
+
+    label {
+        text-align: left;
+    }
+
+    .columnScheduledInput {
+
+        & select,
+        & input {
+            max-width: 140px;
+            text-align: center;
+        }
+
+    }
+
+}
+
+.columnOptionsContainer {
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 24px auto;
+    align-items: flex-start;
+    // justify-content: flex-start;
+    text-align: left;
+    gap: 10px;
+
+    label {
+        text-align: left;
+    }
+
+    .columnOptionsSubContainer {
+        border: 1px solid $color_border_table;
+        background-color: $color_active;
+        border-radius: 8px;
+        padding: 10px;
+        margin-top: 10px;
+    }
+}
+
+
+.columnSummaryContainer {
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+
+    label {
+        text-align: left;
+    }
+
+    .valueContainer {
+        text-align: right;
+    }
+}
+
+.columnItemInputsContainer {
+    padding: 10px;
+    align-items: center;
+    width: 100%;
+
+    .itemRow {
+        width: 100%;
+        padding: 10px 0px;
+        display: grid;
+        grid-template-columns: 150px auto;
+        border-bottom: 1px solid $color_gray;
+        gap: 5px;
+
+        label {
+            text-align: left;
+            width: 100%;
+        }
+
+        .columnInput {
+            // border-bottom: 1px solid $color_gray;
+
+        }
+    }
+}
+
+.anchors {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: $color_gray;
+
+    span {
+        cursor: pointer;
+        padding: 5px;
+        color: $color_centraBlue;
+        font-weight: normal;
+        font-size: $font_main;
+
+        &:hover {
+            color: $color_centraBlue_hover;
+            text-decoration: underline;
+        }
+    }
+
+    font-size: 10px;
+}
+
+.subTitle {
+    label {
+        color: $color_centraBlue;
+        font-weight: bold;
+    }
+}
+
+.toggleZone {
+    // min-height: 100px;
+}
+
+.modalHeader {
+    padding: 10px;
+}
+
+.modalBody {
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    background-color: $color_background_modal;
+
+    .modalToolBar {
+        padding: 5px 15px;
+        // height: 50px;
+        // position: sticky;
+        // top: 0px;
+        // background-color: $color_white;
+        // z-index: 1;
+        background-color: $color_background_tableHeader;
+        border-bottom: 1px solid $color_gray;
+    }
+
+    .modalContentContainer {
+        padding: 0px 10px;
+        margin: 10px 0px;
+    }
+}
+
+.collapseContainer {}
+
+.hiddingContainer {
+    height: 300px;
+    overflow: hidden;
+    position: relative;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0));
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0));
+}
+
+.showingContainer {
+    flex-grow: 1;
+}
+
+.buttonContainer {
+    background-color: $color_background_lightBlue;
+    border: 1px solid $color_border_table;
+}
+
+.showmore {
+    width: 100%;
+    height: 30px;
+    border-top: 1px solid $color_gray;
+    background-color: #F8F8F8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-top: auto;
+}
+
+.summaryContainer {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 5px;
+
+    table {
+        td {
+            text-align: right;
+        }
+    }
+
+    .summaryLaborsTitle {
+        height: 38px;
+        line-height: 38px;
+        font-weight: bold;
+        border-bottom: 1px solid $color_border_table;
+        text-align: center;
+        // padding-left: 10px;
+    }
+
+    .summaryLaborsContainer {
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+        flex-wrap: wrap;
+        // font-size: .8em;
+
+        padding: 12px 0px;
+
+        .summaryLabor {
+            color: $color_dark;
+            border-radius: 4px;
+            border: 1px solid $color_border_table;
+            overflow: hidden;
+            min-width: 100px;
+
+            .summaryLaborSubtitle {
+                // background-color: $color_gray;
+                line-height: 30px;
+                border-bottom: 1px solid $color_border_table;
+                color: black;
+                font-weight: bold;
+                // padding: 5px;
+            }
+
+            .summaryLaborNumbers {
+                padding: 10px;
+                // font-weight: bold;
+
+                .summaryLaborNumberSpan {
+                    // color: $color_red;
+                    color: black;
+                    font-weight: bold;
+                }
+            }
+
+            i {
+                color: $color_gray_dark;
+                font-size: .8.5em;
+            }
+        }
+    }
+}
+
+// ====== AddOns
+// .addonContainer {
+//     padding: 10px;
+//     padding-bottom: 0px;
+//     border-bottom: 1px solid $color_border_table;
+//     background-color: $color_white;
+//     display: flex;
+//     align-items: center;
+//     justify-content: space-between;
+
+//     .addonMainContainer {
+//         width: auto;
+//         border-collapse: collapse;
+//         margin-bottom: -1px;
+//     }
+//     .addonCell {
+//         padding: 4px 15px;
+//         // min-width: 10px;
+//     }
+
+//     .addonLabel {
+//         color: $color_gray_dark;
+//         display: flex;
+//         align-items: center;
+//         gap: 6px;
+//     }
+
+//     .addonParent,
+//     .addonItem {
+//         cursor: pointer;
+//         border: 1px solid $color_border_table;
+//         border-radius: 4px 4px 0px 0px;
+//         // border-bottom: none;
+//         &:hover {
+//             background-color: $color_background;
+//         }
+
+//         &.active {
+//             background-color: $color_background_modal;
+//             border-bottom: 1px solid $color_background_modal;
+//         }
+//     }
+// }
+
+.addonContainer {
+    padding: 10px;
+    padding-bottom: 0px;
+    border-bottom: 1px solid $color_border_table;
+    background-color: $color_white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .addonMainContainer {
+        display: flex;
+        align-items: center;
+        margin-bottom: -1px;
+    }
+
+    .addonListContainer {
+        display: flex;
+
+        .addonItem {
+            cursor: pointer;
+            border: 1px solid $color_border_table;
+            border-radius: 4px 4px 0px 0px;
+            // border-bottom: none;
+            padding: 6px 14px;
+            display: flex;
+            align-items: center;
+            background-color: white;
+
+            &:hover {
+                background-color: $color_background_addonsync;
+            }
+
+            &.active {
+                font-weight: bold;
+                background-color: $color_background_modal;
+                border-bottom: none !important;
+            }
+
+            .addonBadge {
+                color: #999;
+                font-size: .6rem;
+                font-weight: bold;
+                margin-left: 5px;
+                border: 1px solid #999;
+                background-color: $color_addonsync;
+                color: white;
+                padding: 2px 6px;
+                border-radius: 10px;
+            }
+
+            position: relative;
+
+            .addonHoverPopover {
+                font-weight: normal;
+            }
+        }
+
+        &.addonListContainer_parent {
+            .addonItem {
+                
+                padding-right: 40px;
+
+                .addonBadge {
+                    background-color: $primary;
+                }
+            }
+        }
+
+        &.addonListContainer_addon {
+            .addonItem {
+                // border-left: 4px solid $color_addonsync;
+                border-top-left-radius: 16px;
+                margin-left: -10px;
+            }
+
+            .addonItem:not(:last-child) {
+                padding-right: 24px;
+                border-right: none;
+            }
+
+        }
+
+        &.addonListContainer_unlinked {
+            gap: 6px;
+            margin-left: 6px;
+
+            .addonItem {
+                border-top-style: dashed;
+                border-left-style: dashed;
+                border-right-style: dashed;
+
+                .addonBadge {
+                    background-color: white;
+                    color: $color_addonsync;
+                }
+            }
+
+            .addonLabel {
+                color: $color_addon_unlink;
+            }
+        }
+    }
+
+    .addonInfoContainer {
+        display: flex;
+        align-items: center;
+        align-self: self-start;
+    }
+
+}
+
+.addonIconInfo {
+    color: $color_addonsync;
+    cursor: pointer;
+    font-size: .8em;
+}
+
+.addonBgIcon {
+    border: 1px solid $color_addonsync;
+    background-color: $color_background_addonsync;
+    display: inline-block;
+    height: 10px;
+    width: 20px;
+    margin: 0px 5px;
+}
+
+.addonSync_option {
+    background-color: $color_background_addonsync;
+}
+
+.addonSync_status {
+    .statesContainer {
+        outline: 3px double $color_addonsync;
+    }
+}
+
+.addonSync_input {
+    background-color: $color_background_addonsync !important;
+
+    :global(.rbt-input-main) {
+        // background-color: $color_background_edited;
+        background-color: $color_background_addonsync !important;
+    }
+
+    &[type=checkbox]:checked {
+        background-color: $color_addonsync !important;
+    }
+}
+
+img.addonIcon {
+    height: 14px;
+    width: 14px;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.addonParentIcon {
+    color: $color_gray;
+}
+
+.addonChildIcon {
+    color: $color_gray;
+}
+
+
+// ============= UI switch ===========
+.uiClass_withLockout {
+    background-color: red;
+}

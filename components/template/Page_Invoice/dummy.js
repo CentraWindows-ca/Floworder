@@ -47,9 +47,10 @@ function generateDummy(count = 50) {
     const num = (1000 + i).toString(); // invoice number as a 4-digit string
     const date = randomDate();
     result.push({
-      invoiceNumber: num,
+      id: num,
+      tmp_invoiceNumber: num,
       m_Status: randomPick(ITEM_STATUS).key,
-      invoiceStatus: randomPick(INVOICE_STATUS).key,
+      tmp_invoiceStatus: randomPick(INVOICE_STATUS).key,
       createdAt: date,
       createdBy: randomPick(NAMES),
     });

@@ -16,7 +16,7 @@ import { InterruptModal } from "lib/provider/InterruptProvider/InterruptModal";
 import Framework from "components/molecule/Framework";
 
 import TabLinksFull from "components/atom/TabLinksFull";
-import SideMenu_Production from "components/organism/SideMenu_Production";
+import SideMenu_Production from "components/organism/Production_SideMenu";
 
 // styles
 import styles from "./styles.module.scss";

@@ -12,7 +12,7 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
     case WORKORDER_STATUS_MAPPING.Pending.key:
     default: // all
       sequence = [
-        "invoiceNumber",
+        "tmp_invoiceNumber",
         "m_Status_display",
         "invoiceStatus_display",
         "createdAt_display",

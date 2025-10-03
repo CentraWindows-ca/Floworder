@@ -14,13 +14,11 @@ import utils from "lib/utils";
 
 import OrdersApi from "lib/api/OrdersApi";
 import WM2CWProdApi from "lib/api/WM2CWProdApi";
-import GlassApi from "lib/api/GlassApi";
 import External_WebCalApi from "lib/api/External_WebCalApi";
 import External_ServiceApi from "lib/api/External_ServiceApi";
 
 import useLoadingBar from "lib/hooks/useLoadingBar";
 import constants, {
-  ADDON_STATUS,
   ORDER_STATUS,
   ORDER_TRANSFER_FIELDS,
 } from "lib/constants";
@@ -32,11 +30,9 @@ import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
 import {
   checkEditableById,
   checkEditableByGroup,
-  checkAddOnFieldById,
-  treateGlassItems,
 } from "./Com";
 import useLocalValidation from "./hooks/useLocalValidation";
-import { TEMPORARY_DISPLAY_FILTER } from "../PrimaryList_Production/_constants";
+import { TEMPORARY_DISPLAY_FILTER } from "../Production_PrimaryList/_constants";
 
 export const LocalDataContext = createContext(null);
 
@@ -48,7 +44,7 @@ const STATUS = {
 
 export const LocalDataProvider = ({
   children,
-  initMasterId,
+  initInvoiceId,
 
   // the tab we are open from. we need some logic rely on the path they open the modal
   kind: initKind,
@@ -60,6 +56,7 @@ export const LocalDataProvider = ({
   isDeleted,
   ...props
 }) => {
+  console.log(initInvoiceId)
   const generalContext = useContext(GeneralContext);
   const { toast, permissions, dictionary } = generalContext;
   const { requestData } = useInterrupt();
@@ -73,30 +70,18 @@ export const LocalDataProvider = ({
 
   const [LbrBreakDowns, setLbrBreakDowns] = useState([]);
 
-  // addon
-  const [addonGroup, setAddOnGroup] = useState({});
-  const isInAddOnGroup = !_.isEmpty(addonGroup?.addons);
-
   // only display. upload/delete will directly call function
   const [existingAttachments, setExistingAttachments] = useState(null);
-  const [existingImages, setExistingImages] = useState(null);
-
   const [newAttachments, setNewAttachments] = useState(null);
-  const [newImages, setNewImages] = useState(null);
 
-  const [windowItems, setWindowItems] = useState(null);
-  const [doorItems, setDoorItems] = useState(null);
   const [returnTrips, setReturnTrips] = useState(null);
-  const [glassItems, setGlassItems] = useState(null);
 
   const [uiOrderType, setUiOrderType] = useState({});
   const [uiShowMore, setUiShowMore] = useState(true);
   const [validationResult, setValidationResult] = useState(null);
 
   const [initData, setInitData] = useState(null);
-  const [initDataItems, setInitDataItems] = useState(null);
   const [initDataReturnTrips, setInitDataReturnTrips] = useState(null);
-  const [initDataSiteLockout, setInitDataSiteLockout] = useState({});
 
   const [kind, setKind] = useState(initKind || "m");
 
@@ -104,10 +89,10 @@ export const LocalDataProvider = ({
   const [expands, setExpands] = useState({});
 
   useEffect(() => {
-    if (initMasterId) {
-      doInit(initMasterId);
+    if (initInvoiceId) {
+      doInit(initInvoiceId);
     }
-  }, [initMasterId, isDeleted]);
+  }, [initInvoiceId, isDeleted]);
 
   const handleChange = (v, k) => {
     setData((prev) => {
@@ -175,34 +160,23 @@ export const LocalDataProvider = ({
   // ====== api calls
   const clear = () => {
     setData(null);
-    setDoorItems(null);
-    setWindowItems(null);
     setReturnTrips(null);
     setExistingAttachments(null);
     setNewAttachments(null);
-    setExistingImages(null);
-    setNewImages(null);
-    setGlassItems(null);
     setInitData(null);
-    setInitDataItems(null);
     setInitDataReturnTrips(null);
     setEditedGroup({});
     setValidationResult(null);
-    setAddOnGroup({});
   };
 
-  const doInit = async (initMasterId) => {
+  const doInit = async (initInvoiceId) => {
     setIsLoading(true);
     setData(null);
     setEditedGroup({});
     setIsEditable(initIsEditable);
     setValidationResult(null);
-    setAddOnGroup({});
 
-    const mergedData = await doInitWo(initMasterId);
-
-    await doInitAddOn(initMasterId);
-    await doInitSiteLockOut(initMasterId);
+    const mergedData = await doInitWo(initInvoiceId);
 
     if (mergedData) {
       if (initKind === "w" || getOrderKind(mergedData) === "w") {
@@ -213,23 +187,19 @@ export const LocalDataProvider = ({
         setKind("m");
       }
 
-      await initItems(initMasterId);
       initAttachmentList(mergedData?.m_MasterId);
-      initImageList(mergedData?.m_MasterId);
       await initReturnTrips(mergedData?.m_MasterId);
 
-      // skip if error out
-      initGlassItems(mergedData);
     }
 
     setIsLoading(false);
   };
 
   const doInitWo = useLoadingBar(
-    async (initMasterId, stillEditingData = {}) => {
+    async (initInvoiceId, stillEditingData = {}) => {
       setEditedGroup({});
       const [res] = await Wrapper_OrdersApi.getWorkOrder(
-        initMasterId,
+        initInvoiceId,
         isDeleted ? 0 : 1,
       );
       let mergedData = {};
@@ -286,84 +256,9 @@ export const LocalDataProvider = ({
     },
   );
 
-  const doInitAddOn = useLoadingBar(async (initMasterId) => {
-    if (constants.DEV_HOLDING_FEATURES.v20250815_addon) return;
-
-    const _addonGroup = await OrdersApi.getAddsOnGroupByMasterId({
-      masterId: initMasterId,
-    });
-
-    const parent = _addonGroup?.find((a) => a.isParent);
-    const addons = _addonGroup
-      ?.map((a) => {
-        const { m_AddOnLinked } = a;
-        return {
-          ...a,
-          isUnlinked: m_AddOnLinked === ADDON_STATUS.detached,
-        };
-      })
-      ?.filter((a) => !a.isParent);
-
-      // if there is only a parent
-    setAddOnGroup({
-      parent,
-      addons,
-    });
-  });
-
-  const doInitSiteLockOut = useLoadingBar(async (initMasterId) => {
-    if (constants.DEV_HOLDING_FEATURES.v20250815_sitelockout_display) return;
-
-    const _siteLockOut = await External_ServiceApi.getSiteLockoutByMasterId({
-      masterId: initMasterId,
-    });
-
-    // if there is only a parent
-    setInitDataSiteLockout(_siteLockOut);
-  });
-
-  const initItems = useLoadingBar(async (initMasterId) => {
-    // NOTE: if user open from window tab, eventhough its door order, we dont show doors
-    let windowItems = [];
-
-    windowItems = await Wrapper_OrdersApi.getWindowItems(initMasterId);
-    windowItems = windowItems.filter(
-      (a) => !TEMPORARY_DISPLAY_FILTER[a.System],
-    );
-    setWindowItems(_.orderBy(windowItems, ["Item"]));
-
-    let doorItems = [];
-
-    doorItems = await Wrapper_OrdersApi.getDoorItems(initMasterId);
-    doorItems = doorItems.filter((a) => !TEMPORARY_DISPLAY_FILTER[a.System]);
-    setDoorItems(_.orderBy(doorItems, ["Item"]));
-
-    setInitDataItems([
-      ...doorItems?.map((a) => ({
-        ...a,
-        itemType: "di",
-      })),
-      ...windowItems?.map((a) => ({
-        ...a,
-        itemType: "wi",
-      })),
-    ]);
-  });
-
-  const initGlassItems = async (mergedData) => {
-    const resGlassItems = await GlassApi.getGlassItems(
-      mergedData.m_WorkOrderNo,
-      mergedData.m_DBSource,
-    );
-
-    if (resGlassItems) {
-      setGlassItems(treateGlassItems(resGlassItems));
-    }
-  };
-
-  const initReturnTrips = useLoadingBar(async (initMasterId) => {
+  const initReturnTrips = useLoadingBar(async (initInvoiceId) => {
     let _returnTrips = await OrdersApi.getProductionsReturnTripByID({
-      MasterId: initMasterId,
+      MasterId: initInvoiceId,
     });
     _returnTrips = _returnTrips?.map((a) => ({
       ...a,
@@ -387,16 +282,6 @@ export const LocalDataProvider = ({
     setExistingAttachments(res);
   });
 
-  const initImageList = useLoadingBar(async (masterId) => {
-    // const res = await Wrapper_OrdersApi.getImages(masterId)
-
-    const res = await OrdersApi.getUploadImageByRecordIdAsync({
-      MasterId: masterId,
-      ProdTypeId: constants.PROD_TYPES.m,
-    });
-    setExistingImages(res);
-  });
-
   //
   const doUpdateStatus = async (newStatus, _kind) => {
     const payload = await getStatusPayload(data, newStatus, _kind);
@@ -404,7 +289,7 @@ export const LocalDataProvider = ({
     await doMove(payload);
 
     toast("Status updated", { type: "success" });
-    await doInit(initMasterId);
+    await doInit(initInvoiceId);
     onSave();
   };
 
@@ -478,7 +363,7 @@ export const LocalDataProvider = ({
       );
     }
 
-    await doInit(initMasterId);
+    await doInit(initInvoiceId);
     toast("Work order updated from WindowMaker", { type: "success" });
     onSave();
   });
@@ -493,7 +378,7 @@ export const LocalDataProvider = ({
       initData,
     );
 
-    await doInit(initMasterId);
+    await doInit(initInvoiceId);
     toast("Transferred location saved", { type: "success" });
     onSave();
   });
@@ -531,42 +416,6 @@ export const LocalDataProvider = ({
 
     toast("File deleted", { type: "success" });
     await initAttachmentList(data?.m_MasterId);
-  });
-
-  const doUploadImage = useLoadingBar(async (_files) => {
-    const awaitList = _files?.map((_f) => {
-      const { file, notes } = _f;
-      return OrdersApi.uploadImageAsync(
-        null,
-        {
-          masterId: data?.m_MasterId,
-          prodTypeId: constants.PROD_TYPES.m,
-          uploadingFile: file,
-          notes,
-        },
-        initData,
-      );
-    });
-
-    await Promise.all(awaitList);
-
-    toast("Image updated", { type: "success" });
-    await initImageList(data?.m_MasterId);
-  });
-
-  const doDeleteImage = useLoadingBar(async (_file) => {
-    if (!confirm(`Delete ${_file.fileName}?`)) return null;
-    await OrdersApi.deleteUploadImageByIdAsync(
-      {
-        id: _file.id,
-        masterId: data?.m_MasterId,
-      },
-      null,
-      initData,
-    );
-
-    toast("Image deleted", { type: "success" });
-    await initImageList(data?.m_MasterId);
   });
 
   const doDeleteReturnTrip = useLoadingBar(async (_rt) => {
@@ -631,109 +480,13 @@ export const LocalDataProvider = ({
 
       await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData);
       toast("Work order saved", { type: "success" });
-      await doInitWo(initMasterId, stillEditingData);
+      await doInitWo(initInvoiceId, stillEditingData);
       onSave();
     },
     () => setIsSaving(false), // callback function
   );
-
-  const doUnlinkAddOn = useLoadingBar(
-    async () => {
-      const _parentWorkOrder = addonGroup?.parent?.m_WorkOrderNo;
-      // note: to prevent accdentally detach
-      if (
-        !window.confirm(
-          `Do you want to unlink ${initData.m_WorkOrderNo} from ${_parentWorkOrder}?`,
-        )
-      ) {
-        return null;
-      }
-
-      // return 
-      setIsSaving(true);
-
-      const _changedData = {
-        m_AddOnLinked: ADDON_STATUS.detached,
-      };
-
-      await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData);
-
-      toast(`Add-on Work order unlinked from ${_parentWorkOrder}`, {
-        type: "success",
-      });
-
-      await doInit(initMasterId);
-      onSave();
-    },
-    () => setIsSaving(false), // callback function
-  );
-
-  const doLinkAddOn = useLoadingBar(
-    async () => {
-      const _parentWorkOrder = addonGroup?.parent?.m_WorkOrderNo;
-      // note: to prevent accdentally detach
-      if (
-        !window.confirm(
-          `Do you want to link ${initData.m_WorkOrderNo} with ${_parentWorkOrder}?`,
-        )
-      ) {
-        return null;
-      }
-
-      // return 
-      setIsSaving(true);
-
-      const _changedData = {
-        m_AddOnLinked: ADDON_STATUS.attached,
-      };
-
-      await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData);
-
-      toast(`Add-on Work order linked from ${_parentWorkOrder}`, {
-        type: "success",
-      });
-
-      await doInit(initMasterId);
-      onSave();
-    },
-    () => setIsSaving(false), // callback function
-  );
-
-  const doBatchUpdateItems = useLoadingBar(async (updateList, kind) => {
-    if (_.isEmpty(updateList)) return null;
-    await Wrapper_OrdersApi.updateItemList(
-      data?.m_MasterId,
-      updateList,
-      kind,
-      initData,
-      initDataItems,
-    );
-
-    await External_WebCalApi.bulkUpdateItemTrackingList(
-      updateList,
-      initData,
-      initDataItems,
-    );
-
-    toast("Items saved", { type: "success" });
-    await initItems(initMasterId);
-    return;
-  });
 
   // calculations
-  const glassTotal =
-    glassItems?.reduce(
-      (prev, curr) => {
-        return {
-          qty: prev.qty + parseInt(curr.qty) || 0,
-          glassQty: prev.glassQty + parseInt(curr.glassQty) || 0,
-        };
-      },
-      {
-        qty: 0,
-        glassQty: 0,
-      },
-    ) || {};
 
   const uIstatusObj =
     ORDER_STATUS?.find((a) => a.key === data?.[STATUS[kind]]) || {};
@@ -745,7 +498,7 @@ export const LocalDataProvider = ({
         id: if editable of fields (order level)
         -- for permission or status
 
-        group: usually for external tables that cant be identified by id. Like files, items. 
+        group: usually for external tables that cant be identified by id. Like files. 
         -- mostly for permission purpose
       */
       const { id, group } = params;
@@ -758,55 +511,16 @@ export const LocalDataProvider = ({
           _pass && checkEditableByGroup({ group, data, permissions, initKind });
       }
 
-      /* if its addon workorder, check if field is addonField
-          logic to check if split addon*/
-      const { isAddOnEditable } = checkAddOnField(params) || {};
-      _pass = _pass && isAddOnEditable;
-
       return _pass;
     },
     [
       isEditable,
-      initMasterId,
+      initInvoiceId,
       data?.m_Status,
       data?.w_Status,
       data?.d_Status,
       permissions,
       dictionary,
-      isInAddOnGroup,
-      addonGroup?.parent?.m_MasterId,
-    ],
-  );
-
-  // called by each single input
-  const checkAddOnField = useCallback(
-    (params = {}) => {
-      let result = {
-        isAddOnEditable: true,
-        isSyncedFromParent: false,
-      };
-
-      // if not addon or its addon parent
-      if (!isInAddOnGroup) return result;
-      if (addonGroup?.parent?.m_MasterId === initMasterId) return result;
-
-      // if split(dettached)
-      const { id } = params;
-      if (id) {
-        const { workOrderFields } = dictionary;
-        return checkAddOnFieldById({ id, data, workOrderFields, initKind });
-      }
-      return result;
-    },
-    [
-      isEditable,
-      initMasterId,
-      data?.m_Status,
-      data?.w_Status,
-      data?.d_Status,
-      dictionary?.workOrderFields,
-      isInAddOnGroup,
-      addonGroup?.parent?.m_MasterId,
     ],
   );
 
@@ -821,7 +535,7 @@ export const LocalDataProvider = ({
     ...props,
     isLoading,
     isSaving,
-    initMasterId,
+    initInvoiceId,
     data,
     kind,
     initKind,
@@ -831,10 +545,6 @@ export const LocalDataProvider = ({
     setNewAttachments,
     existingAttachments,
     setExistingAttachments,
-    newImages,
-    setNewImages,
-    existingImages,
-    setExistingImages,
     setReturnTrips,
     onChange: handleChange,
     onUpdateStatus: doUpdateStatus,
@@ -842,43 +552,30 @@ export const LocalDataProvider = ({
     onAnchor: handleAnchor,
     onUploadAttachment: doUploadAttachment,
     onDeleteAttachment: doDeleteAttachment,
-    onUploadImage: doUploadImage,
-    onDeleteImage: doDeleteImage,
     onDeleteReturnTrip: doDeleteReturnTrip,
     onAddReturnTrip: doAddReturnTrip,
     onEditReturnTrip: doEditReturnTrip,
-    onBatchUpdateItems: doBatchUpdateItems,
     onHide: handleHide,
     onSave: doSave,
-    onUnlinkAddOn: doUnlinkAddOn,
-    onLinkAddOn: doLinkAddOn,
     onRestore: doRestore,
     onGetWindowMaker: doGetWindowMaker,
     editedGroup,
     setEditedGroup,
 
     LbrBreakDowns,
-    windowItems,
-    doorItems,
     returnTrips,
-    glassItems,
     expands,
     setExpands,
     isEditable,
     setIsEditable,
     checkEditable,
-    checkAddOnField,
     uiOrderType,
     uiShowMore,
     setUiShowMore,
-    glassTotal,
     uIstatusObj,
     initData,
-    initDataSiteLockout,
     isDeleted: initData?.m_IsActive === false,
     validationResult,
-    addonGroup,
-    isInAddOnGroup,
   };
   return (
     <LocalDataContext.Provider value={context}>

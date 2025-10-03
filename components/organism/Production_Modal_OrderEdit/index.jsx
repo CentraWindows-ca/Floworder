@@ -28,7 +28,7 @@ import Toggle_ReturnTrips from "./Toggle_ReturnTrips";
 import { DisplayBlock } from "./Com";
 import constants, { ADDON_STATUS, WORKORDER_STATUS_MAPPING } from "lib/constants";
 
-import Modal_OrderHistory from "components/organism/Modal_OrderHistory";
+import Modal_OrderHistory from "components/organism/Production_Modal_OrderHistory";
 // styles
 import styles from "./styles.module.scss";
 

@@ -6,15 +6,13 @@ import constants from "lib/constants";
 
 // components
 import Pagination from "components/atom/Pagination";
-import PrimaryList_Production from "components/organism/PrimaryList_Production";
-import Editable from "components/molecule/Editable";
+import PrimaryList_Invoice from "components/organism/Invoice_PrimaryList";
 import PermissionBlock from "components/atom/PermissionBlock";
 
-import Modal_OrderEdit from "components/organism/Modal_OrderEdit";
-import Modal_OrderCreate from "components/organism/Modal_OrderCreate";
-import Modal_OrderHistory from "components/organism/Modal_OrderHistory";
+import Modal_Edit from "components/organism/Invoice_Modal_Edit";
+import Modal_History from "components/organism/Production_Modal_OrderHistory";
 
-import { ORDER_STATUS } from "lib/constants";
+import { INVOICE_STATUS_MAPPING } from "lib/constants";
 
 // styles
 import styles from "./styles.module.scss";
@@ -30,9 +28,7 @@ const Com = ({
 }) => {
   const router = useRouter();
   const {
-    facility,
-    tab = "m",
-    masterId,
+    invoiceId,
     modalType,
     subModalType,
     sort,
@@ -41,46 +37,32 @@ const Com = ({
   } = router?.query || {};
 
   const [treatedData, setTreatedData] = useState({});
-  const [isShowCreate, setIsShowCreate] = useState(false);
 
-  const [editingOrderMasterId, setEditingOrderMasterId] = useState(null);
+  const [editingInvoiceId, setEditingId] = useState(null);
   const [isEditable, setIsEditable] = useState(false);
-
-  const [historyOrderMasterId, setHistoryOrderMasterId] = useState(null);
-
-  const [uiIsShowWindow, setUiIsShowWindow] = useState(true);
-  const [uiIsShowDoor, setUiIsShowDoor] = useState(true);
-  const [uiIsShowBreakdown, setUiIsShowBreakdown] = useState(false);
+  const [historyInvoiceId, setHistoryInvoiceId] = useState(null);
 
   useEffect(() => {
     switch (modalType) {
       case "edit":
-        setEditingOrderMasterId(masterId);
+        setEditingId(invoiceId);
         setIsEditable(true);
-        break;
-      case "editPending":
-        setEditingOrderMasterId(masterId);
-        setIsEditable(true);
-        break;
-      case "view":
-        setEditingOrderMasterId(masterId);
-        setIsEditable(false);
         break;
       default:
-        setEditingOrderMasterId(null);
+        setEditingId(null);
         setIsEditable(false);
         break;
     }
 
     switch (subModalType) {
       case "history":
-        setHistoryOrderMasterId(masterId);
+        setHistoryInvoiceId(invoiceId);
         break;
       default:
-        setHistoryOrderMasterId(null);
+        setHistoryInvoiceId(null);
         break;
     }
-  }, [masterId, modalType, subModalType]);
+  }, [invoiceId, modalType, subModalType]);
 
   useEffect(() => {
     if (data) {
@@ -92,17 +74,19 @@ const Com = ({
     return data;
   };
 
-  const handleEdit = (masterId, modalType = "edit", activeOnly = false) => {
+  const handleEdit = (invoiceId, modalType = "edit", activeOnly = false) => {
     const pathname = router?.asPath?.split("?")?.[0];
+
+    console.log("???", invoiceId)
 
     const query = {
       ...router.query,
-      masterId,
+      invoiceId,
       modalType,
     };
 
-    if (!masterId) {
-      delete query.masterId;
+    if (!invoiceId) {
+      delete query.invoiceId;
       delete query.modalType;
     }
 
@@ -121,16 +105,16 @@ const Com = ({
     );
   };
 
-  const handleHistory = (masterId) => {
+  const handleHistory = (invoiceId) => {
     const pathname = router?.asPath?.split("?")?.[0];
 
     const query = {
       ...router.query,
-      masterId,
+      invoiceId,
       subModalType: "history",
     };
-    if (!masterId) {
-      delete query.masterId;
+    if (!invoiceId) {
+      delete query.invoiceId;
       delete query.subModalType;
     }
 
@@ -146,9 +130,6 @@ const Com = ({
 
   const handleSortChange = (newSortObj) => {
     const pathname = router?.asPath?.split("?")?.[0];
-    // const newSortObj = {};
-    // only 1 sorting field currently
-    // JSON.parse(JSON.stringify(sortObj || {}))
 
     // assemble to like--- "w_Id:desc,m_WorkOrderNo:asc"
     let newSort = undefined;
@@ -168,17 +149,6 @@ const Com = ({
       undefined,
       { shallow: true },
     );
-  };
-
-  const handleCreate = () => {
-    setIsShowCreate(true);
-  };
-
-  const handleCreateDone = async (masterId) => {
-    // jump to the masterId and not deleted
-    handleEdit(masterId, "edit", true);
-    mutate(null);
-    // endPoint
   };
 
   const handleSaveDone = async () => {
@@ -207,9 +177,13 @@ const Com = ({
     );
   };
 
+  const handleRefresh = () => {
+    mutate(null);
+  };
+
   const [sortBy, dir] = sort?.split(":") || [];
   const statusDisplay =
-    ORDER_STATUS?.find((a) => status?.trim() === a.key?.trim()) || null;
+    _.values(INVOICE_STATUS_MAPPING)?.find((a) => status?.trim() === a.key?.trim()) || null;
 
   const jsxStatus = (
     <label className="align-items-center me-3 flex">
@@ -256,91 +230,22 @@ const Com = ({
     <div className={cn("w-full", styles.root)}>
       <div className={cn(styles.topBar)} style={{ paddingLeft: "25px" }}>
         <div className="align-items-center justify-content-between flex gap-2">
-          {isDeleted == 1 ? jsxTrash : statusDisplay && jsxStatus}
-
-          <PermissionBlock
-            featureCode={constants.FEATURE_CODES["om.prod.wo"]}
-            op="canAdd"
-          >
-            <button
-              className="btn btn-success me-2 px-2"
-              onClick={handleCreate}
-            >
-              <i className="fa-solid fa-circle-plus me-2"></i>
-              Create
-            </button>
-          </PermissionBlock>
-
-          {tab === "m" && (
-            <>
-              <div className="align-items-center flex gap-2">
-                <div>
-                  <Editable.EF_Checkbox
-                    id={"ui_window"}
-                    value={uiIsShowWindow}
-                    onChange={(v) => setUiIsShowWindow(v)}
-                  />
-                </div>
-                <label
-                  htmlFor={"ui_window"}
-                  className="align-items-center flex gap-1"
-                >
-                  Windows Info
-                </label>
-              </div>
-              <div className="align-items-center flex gap-2">
-                <div>
-                  <Editable.EF_Checkbox
-                    id={"ui_door"}
-                    value={uiIsShowDoor}
-                    onChange={(v) => setUiIsShowDoor(v)}
-                  />
-                </div>
-                <label
-                  htmlFor={"ui_door"}
-                  className="align-items-center flex gap-1"
-                >
-                  Doors Info
-                </label>
-              </div>
-            </>
-          )}
-          <div className="align-items-center flex gap-2">
-            <div>
-              <Editable.EF_Checkbox
-                id={"ui_breakdown"}
-                value={uiIsShowBreakdown}
-                onChange={(v) => setUiIsShowBreakdown(v)}
-              />
-            </div>
-            <label
-              htmlFor={"ui_breakdown"}
-              className="align-items-center flex gap-1"
-            >
-              Split by System
-            </label>
-          </div>
+          {isDeleted == 1 ? jsxTrash : statusDisplay && jsxStatus}       
         </div>
         <div>
           <Pagination count={treatedData?.total} basepath={"/"} />
         </div>
       </div>
       <div className={cn(styles.detail)}>
-        <PrimaryList_Production
-          kind={tab}
-          onEdit={(woMasterId) => handleEdit(woMasterId, "edit")}
-          onEditPending={(woMasterId) => handleEdit(woMasterId, "editPending")}
-          onView={(woMasterId) => handleEdit(woMasterId, "view")}
-          onHistory={(woMasterId) => handleHistory(woMasterId)}
+        <PrimaryList_Invoice
+          onEdit={(_invoiceId) => handleEdit(_invoiceId, "edit")}
+          onHistory={(_invoiceId) => handleHistory(_invoiceId)}
           onUpdate={handleSaveDone}
           isLoading={!data}
           error={error}
           status={status}
           count={treatedData?.total}
           {...{
-            uiIsShowWindow,
-            uiIsShowDoor,
-            uiIsShowBreakdown,
             data: treatedData?.data,
             isEnableFilter,
             filters,
@@ -356,23 +261,16 @@ const Com = ({
         />
       </div>
 
-      <Modal_OrderEdit
+      <Modal_Edit
         onHide={() => handleEdit()}
         onSave={handleSaveDone}
         onRestore={handleRestoreDone}
-        initMasterId={editingOrderMasterId}
+        initInvoiceId={'b8e0f029-67b8-42e0-b43f-59c9b7f96350' || editingInvoiceId}
         isDeleted={isDeleted == 1}
-        kind={tab}
-        facility={facility}
         initIsEditable={isEditable}
       />
-      <Modal_OrderCreate
-        show={isShowCreate}
-        onCreate={handleCreateDone}
-        onHide={() => setIsShowCreate(false)}
-      />
-      <Modal_OrderHistory
-        initMasterId={historyOrderMasterId}
+      <Modal_History
+        initInvoiceId={historyInvoiceId}
         onHide={() => handleHistory()}
       />
     </div>

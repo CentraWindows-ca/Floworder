@@ -14,7 +14,6 @@ import Table_PrimaryList from "components/molecule/Table_PrimaryList";
 import styles from "./styles.module.scss";
 import Dropdown_WorkOrderActions from "./Dropdown_WorkOrderActions";
 import constants, {
-  WorkOrderSelectOptions,
   ORDER_STATUS,
   INVOICE_STATUS_MAPPING,
   WORKORDER_STATUS_MAPPING,
@@ -25,18 +24,11 @@ import utils from "lib/utils";
 
 import { COLUMN_SEQUENCE_FOR_STATUS } from "./_constants";
 
-const getValue = (k, arrName) => {
-  const arr = WorkOrderSelectOptions[arrName];
-  return arr.find((a) => a.key === k);
-};
-
 const today = format(new Date(), "yyyy-MM-dd");
 
 const Com = (props) => {
   const {
     onEdit,
-    onEditPending,
-    onView,
     onUpdate,
     onHistory,
     data,
@@ -82,7 +74,7 @@ const Com = (props) => {
   const columns = applyField(
     [
       {
-        key: "invoiceNumber",
+        key: "tmp_invoiceNumber",
         fixed: "left",
         render: (text, record) => {
           return (
@@ -91,14 +83,11 @@ const Com = (props) => {
                 data={record}
                 {...{
                   onEdit: () => onEdit(record?.id),
-                  onEditPending: () => onEditPending(record?.id),
-                  onView: () => onView(record?.id),
                   onHistory: () => onHistory(record?.id),
                   onUpdate,
                 }}
               />
-
-              {copied === record?.invoiceNumber ? (
+              {copied === record?.tmp_invoiceNumber ? (
                 <i
                   title="copy invoice number"
                   className={cn("fa-solid fa-check ms-1", styles.notCopiedIcon)}
@@ -107,7 +96,7 @@ const Com = (props) => {
                 <i
                   title="copy invoice number"
                   className={cn("fa-solid fa-copy ms-1", styles.copiedIcon)}
-                  onClick={() => copyToClipboard(record?.invoiceNumber)}
+                  onClick={() => copyToClipboard(record?.tmp_invoiceNumber)}
                 />
               )}
             </div>
@@ -147,7 +136,7 @@ const Com = (props) => {
       {
         key: "invoiceStatus_display",
         title: "Invoice Status",
-        initKey: "invoiceStatus",
+        initKey: "tmp_invoiceStatus",
         display: !isDeleted,
         onCell: (record) => ({
           style: {
@@ -190,7 +179,7 @@ const Com = (props) => {
     _data = _data?.map((a) => {
       if (!a) return null;
       const merged = { ...a };
-      const { invoiceStatus, m_Status, createdAt } = a;
+      const { tmp_invoiceStatus, m_Status, createdAt } = a;
 
       const orderStatusList = _.values(ORDER_STATUS);
       merged.m_Status_display = m_Status
@@ -201,9 +190,9 @@ const Com = (props) => {
 
       const invoiceStatusList = _.values(INVOICE_STATUS_MAPPING);
 
-      merged.invoiceStatus_display = invoiceStatus
+      merged.invoiceStatus_display = tmp_invoiceStatus
         ? invoiceStatusList?.find(
-            (a) => a.key.toString() === invoiceStatus?.toString(),
+            (a) => a.key.toString() === tmp_invoiceStatus?.toString(),
           )
         : null;
 
@@ -228,7 +217,7 @@ const Com = (props) => {
         sort,
         setSort,
         onEnableFilter,
-        keyField: 'invoiceNumber'
+        keyField: 'tmp_invoiceNumber'
       }}
     />
   );
