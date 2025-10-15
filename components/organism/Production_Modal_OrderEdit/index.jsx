@@ -322,7 +322,7 @@ const Com = ({}) => {
               {/* if it has parent */}
               {isInAddOnGroup && (
                 <PermissionBlock
-                  featureCodeGroup={
+                  featureCode={
                     constants.FEATURE_CODES["om.prod.woUnlinkAddOn"]
                   }
                   isValidationInactive={false}
