@@ -19,9 +19,10 @@ import Editable from "components/molecule/Editable";
 import { GeneralContext } from "lib/provider/GeneralProvider";
 import constants, { WORKORDER_STATUS_MAPPING } from "lib/constants";
 import PermissionBlock from "components/atom/PermissionBlock";
+import Sec_LockoutOrService from "./Sec_LockoutOrService";
 
 // const DEFAULT_WINDOW_FACILITY = 'Langley'
-const DEFAULT_DOOR_FACILITY = 'Calgary'
+const DEFAULT_DOOR_FACILITY = "Calgary";
 
 const Com = (props) => {
   const { show, onHide, onCreate } = props;
@@ -251,6 +252,10 @@ const Screen2 = ({
   const [windowManufacturingFacility, setWindowManufacturingFacility] =
     useState(constants.ManufacturingFacilities.Langley);
 
+  const [isLockoutOrService, setIsLockoutOrService] = useState("No");
+  const [lockoutOrder, setLockoutOrder] = useState(null);
+  const [serviceOrder, setServiceOrder] = useState(null);
+
   const isWindow = !!(
     windowMakerData?.wmWindows || windowMakerData?.wmPatioDoors
   );
@@ -277,9 +282,9 @@ const Screen2 = ({
 
   const disabled =
     (isWindow && !initValues?.winStartDate) ||
-    (isDoor && !initValues?.doorStartDate) || 
+    (isDoor && !initValues?.doorStartDate) ||
     (isWindow && !windowManufacturingFacility) ||
-    (isDoor && !doorManufacturingFacility)
+    (isDoor && !doorManufacturingFacility);
 
   const doFetch = async (newStatus = "", isReservationWorkOrder = false) => {
     setIsLoading(true);
@@ -305,6 +310,18 @@ const Screen2 = ({
       }
     }
 
+    // if toggle on lockout or service and has selected from lookup
+    if (isLockoutOrService === "Yes") {
+      if (serviceOrder) {
+        // "can be split by comma". it only accept id, not the "serviceId"
+        updateValues.serviceIds = serviceOrder?.id?.toString()
+      }
+      if (lockoutOrder) {
+        // "can be split by comma"
+        updateValues.siteLockoutIds = lockoutOrder?.siteLockoutId?.toString()
+      }
+    }
+
     let res = null;
 
     const _updatingBody = {
@@ -316,6 +333,8 @@ const Screen2 = ({
       isReservationWorkOrder,
       ...updateValues,
     };
+
+
 
     // fetch from WM
     if (dbSource === "WM_AB") {
@@ -331,7 +350,7 @@ const Screen2 = ({
         existingWorkOrder,
       );
     }
-
+ 
     // update init values
     setInitValues({});
     setIsLoading(false);
@@ -343,8 +362,8 @@ const Screen2 = ({
     <div className="flex-column flex gap-2">
       {isWindow && (
         <div className="form-group row">
-          <label className="col-lg-3">Windows Production Date</label>
-          <div className="col-lg-3 justify-content-center flex">
+          <label className="col-lg-4">Windows Production Date</label>
+          <div className="col-lg-8 flex justify-start">
             <Editable.EF_DateOnly
               id="winStartDate"
               value={initValues?.winStartDate || null}
@@ -360,8 +379,8 @@ const Screen2 = ({
       )}
       {isDoor && (
         <div className="form-group row">
-          <label className="col-lg-3">Doors Production Date</label>
-          <div className="col-lg-3 justify-content-center flex">
+          <label className="col-lg-4">Doors Production Date</label>
+          <div className="col-lg-8 flex justify-start">
             <Editable.EF_DateOnly
               id="doorStartDate "
               value={initValues?.doorStartDate || null}
@@ -378,8 +397,8 @@ const Screen2 = ({
 
       {isWindow && (
         <div className="form-group row">
-          <label className="col-lg-3">Window Manufacturing Facility</label>
-          <div className="col-lg-3 justify-content-center flex">
+          <label className="col-lg-4">Window Manufacturing Facility</label>
+          <div className="col-lg-8 flex justify-start">
             <Editable.EF_SelectWithLabel
               id="windowManufacturingFacility"
               value={windowManufacturingFacility}
@@ -398,8 +417,8 @@ const Screen2 = ({
 
       {isDoor && (
         <div className="form-group row">
-          <label className="col-lg-3">Door Manufacturing Facility</label>
-          <div className="col-lg-3 justify-content-center flex">
+          <label className="col-lg-4">Door Manufacturing Facility</label>
+          <div className="col-lg-8 flex justify-start">
             <Editable.EF_SelectWithLabel
               id="doorManufacturingFacility"
               value={doorManufacturingFacility}
@@ -507,6 +526,19 @@ const Screen2 = ({
           {windowMakerData?.workType || "--"}
         </div>
       </div>
+      {!constants.DEV_HOLDING_FEATURES.v20251006_createWithLockoutOrService && (
+        <Sec_LockoutOrService
+          {...{
+            lockoutOrder,
+            setLockoutOrder,
+            serviceOrder,
+            setServiceOrder,
+            isLockoutOrService,
+            setIsLockoutOrService,
+          }}
+        />
+      )}
+
       <hr />
       {existingWorkOrder ? (
         <div className="p-4">

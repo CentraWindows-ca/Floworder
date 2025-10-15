@@ -24,6 +24,8 @@ const Com = (props) => {
     headerClassName,
     isLockFirstColumn = true,
     trParams = () => {},
+    renderInfoBefore,
+    renderInfoAfter,  
     ...rest
   } = props;
 
@@ -48,6 +50,13 @@ const Com = (props) => {
           }}
         />
         <tbody>
+          {renderInfoBefore ? (
+            <>
+              <tr>
+                <td colSpan={columns?.length}>{renderInfoBefore()}</td>
+              </tr>
+            </>
+          ) : null}
           {data?.map((a, i) => {
             const _trParams = trParams(a);
 
@@ -96,6 +105,13 @@ const Com = (props) => {
               </tr>
             );
           })}
+          {renderInfoAfter ? (
+            <>
+              <tr>
+                <td colSpan={columns?.length}>{renderInfoAfter()}</td>
+              </tr>
+            </>
+          ) : null}
         </tbody>
       </TableWrapper>
     </>

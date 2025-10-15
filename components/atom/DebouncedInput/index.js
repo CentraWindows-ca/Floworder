@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Input } from "antd";
 import debounce from "lodash.debounce";
 
-const DebouncedInput = ({ value: externalValue, onChange, delay = 300, ...props }) => {
+const DebouncedInput = ({ value: externalValue, placeholder, onChange, delay = 500, ...props }) => {
   const [internalValue, setInternalValue] = useState(externalValue);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const DebouncedInput = ({ value: externalValue, onChange, delay = 300, ...props 
     debouncedOnChange(e);
   };
 
-  return <input {...props} value={internalValue} onChange={handleChange} />;
+  return <input {...props} value={internalValue} placeholder = {placeholder} onChange={handleChange} />;
 };
 
 export default DebouncedInput;

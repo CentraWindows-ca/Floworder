@@ -353,6 +353,7 @@ export const EF_InputDebounce = React.memo(
     errorMessage,
     className,
     disabled,
+    placeholder,
     ...props
   }) => {
     const handleChange = (e) => {
@@ -371,6 +372,7 @@ export const EF_InputDebounce = React.memo(
         onChange={handleChange}
         value={value || ""}
         disabled={disabled}
+        placeholder = {placeholder}
         {...props}
       />
     );

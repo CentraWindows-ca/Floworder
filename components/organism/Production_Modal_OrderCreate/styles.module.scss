@@ -1,0 +1,22 @@
+@use "styles/theme" as *;
+
+.root {}
+
+.link {
+    color: $color_centraBlue;
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+        color: $color_centraBlue_hover;
+    }
+
+    &.noValue {
+        color: $color_gray_dark;
+    }
+}
+
+.icon_close {
+    color: $color_red;
+    cursor: pointer;
+}

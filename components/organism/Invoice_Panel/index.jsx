@@ -77,8 +77,6 @@ const Com = ({
   const handleEdit = (invoiceId, modalType = "edit", activeOnly = false) => {
     const pathname = router?.asPath?.split("?")?.[0];
 
-    console.log("???", invoiceId)
-
     const query = {
       ...router.query,
       invoiceId,
