@@ -325,7 +325,7 @@ const Com = ({}) => {
                   featureCode={
                     constants.FEATURE_CODES["om.prod.woUnlinkAddOn"]
                   }
-                  isValidationInactive={false}
+                  // isValidationInactive={false}
                 >
                   {data?.m_ParentMasterId ? (
                     <>
