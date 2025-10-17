@@ -237,7 +237,7 @@ const Com = ({}) => {
               </CollapseContainer>
               {!constants.DEV_HOLDING_FEATURES.v20251016_invoice ? (
                 <PermissionBlock
-                  featureCodeGroup={constants.FEATURE_CODES["om.prod.wo.invoice"]}
+                  featureCode={constants.FEATURE_CODES["om.prod.wo.invoice"]}
                   op="canView"
                 >
                   <div className={cn(styles.sectionTitle)}>Invoice</div>
