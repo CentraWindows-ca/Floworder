@@ -236,12 +236,15 @@ const Com = ({}) => {
                 <Sec_OrderBasic />
               </CollapseContainer>
               {!constants.DEV_HOLDING_FEATURES.v20251016_invoice ? (
-                <>
+                <PermissionBlock
+                  featureCodeGroup={constants.FEATURE_CODES["om.prod.wo.invoice"]}
+                  op="canView"
+                >
                   <div className={cn(styles.sectionTitle)}>Invoice</div>
                   <CollapseContainer id="invoice">
                     <Sec_OrderInvoice />
                   </CollapseContainer>
-                </>
+                </PermissionBlock>
               ) : null}
             </div>
             <div className={cn(styles.mainItem, styles["grid-2"])}>
