@@ -16,6 +16,7 @@ import Sec_OrderOptions from "./Sec_OrderOptions";
 import Sec_Schedule from "./Sec_Schedule";
 import Sec_Summary from "./Sec_Summary";
 import Sec_SiteLockout from "./Sec_SiteLockout";
+import Sec_OrderInvoice from "./Sec_OrderInvoice";
 import Sec_AddonSelector from "./Sec_AddOnSelector";
 
 import Toggle_Notes from "./Toggle_Notes";
@@ -26,7 +27,10 @@ import Toggle_Files from "./Toggle_Files";
 import Toggle_ReturnTrips from "./Toggle_ReturnTrips";
 
 import { DisplayBlock } from "./Com";
-import constants, { ADDON_STATUS, WORKORDER_STATUS_MAPPING } from "lib/constants";
+import constants, {
+  ADDON_STATUS,
+  WORKORDER_STATUS_MAPPING,
+} from "lib/constants";
 
 import Modal_OrderHistory from "components/organism/Production_Modal_OrderHistory";
 // styles
@@ -75,9 +79,9 @@ const Com = ({}) => {
   };
 
   /* NOTE: <rule 250912_cancel_editable> */
-  const isOnStatusAllowToEdit = ![WORKORDER_STATUS_MAPPING.Cancelled.key].includes(
-    data?.[`${kind}_Status`],
-  );
+  const isOnStatusAllowToEdit = ![
+    WORKORDER_STATUS_MAPPING.Cancelled.key,
+  ].includes(data?.[`${kind}_Status`]);
   const uiClass_withLockout = true;
 
   const jsxTitle = (
@@ -231,6 +235,14 @@ const Com = ({}) => {
               <CollapseContainer id="basicInformation">
                 <Sec_OrderBasic />
               </CollapseContainer>
+              {!constants.DEV_HOLDING_FEATURES.v20251016_invoice ? (
+                <>
+                  <div className={cn(styles.sectionTitle)}>Invoice</div>
+                  <CollapseContainer id="invoice">
+                    <Sec_OrderInvoice />
+                  </CollapseContainer>
+                </>
+              ) : null}
             </div>
             <div className={cn(styles.mainItem, styles["grid-2"])}>
               <div className={cn(styles.sectionTitle)}>Order Information</div>
@@ -322,9 +334,7 @@ const Com = ({}) => {
               {/* if it has parent */}
               {isInAddOnGroup && (
                 <PermissionBlock
-                  featureCode={
-                    constants.FEATURE_CODES["om.prod.woUnlinkAddOn"]
-                  }
+                  featureCode={constants.FEATURE_CODES["om.prod.woUnlinkAddOn"]}
                   // isValidationInactive={false}
                 >
                   {data?.m_ParentMasterId ? (
@@ -335,13 +345,16 @@ const Com = ({}) => {
                           disabled={!data?.m_WorkOrderNo || isSaving}
                           onClick={onUnlinkAddOn}
                         >
-                          <img src="/unlinked.svg" className={styles.addonIcon} />
+                          <img
+                            src="/unlinked.svg"
+                            className={styles.addonIcon}
+                          />
                           Unlink Add-on
                         </button>
                       ) : (
                         <button
                           className="btn btn-outline-success align-items-center flex gap-2 px-3"
-                          disabled={!data?.m_WorkOrderNo ||isSaving}
+                          disabled={!data?.m_WorkOrderNo || isSaving}
                           onClick={onLinkAddOn}
                         >
                           <img src="/linked.svg" className={styles.addonIcon} />

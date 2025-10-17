@@ -6,6 +6,7 @@ import _ from "lodash";
 import constants, { WORKORDER_STATUS_MAPPING } from "lib/constants";
 
 import OrdersApi from "lib/api/OrdersApi";
+import InvoiceApi from "lib/api/InvoiceApi";
 
 import Framework_Invoice from "components/organism/Invoice_Framework";
 import Panel_Invoice from "components/organism/Invoice_Panel";
@@ -13,29 +14,12 @@ import Panel_Invoice from "components/organism/Invoice_Panel";
 // hooks
 import useDataInit from "lib/hooks/useDataInit";
 import useOrderListPermission from "lib/permissions/useOrderListPermission";
-import DUMMY from "./dummy"
+import DUMMY from "./dummy";
 
 // styles
 import styles from "./styles.module.scss";
 
-
-const DEFAULT_SORT = (status) => {
-  if (status === WORKORDER_STATUS_MAPPING.Scheduled.key) {
-    return [
-      {
-        field: "m_LastModifiedAt",
-        isDescending: true,
-      },
-    ];
-  }
-
-  return [
-    {
-      field: "m_CreatedAt",
-      isDescending: true,
-    },
-  ];
-};
+const DEFAULT_SORT = "createdAt";
 
 const Com = ({}) => {
   const router = useRouter();
@@ -80,25 +64,35 @@ const Com = ({}) => {
     }));
   }
 
-  const endPoint = "";
+  const endPoint = InvoiceApi.initReadInvoicesByPage(null, {
+    page: (parseInt(p) || 0) + 1,
+    pageSize: 50,
+    sortOrder: {
+      columnName: _.isEmpty(sortArr) ? DEFAULT_SORT : sortArr[0]?.field,
+      descending: _.isEmpty(sortArr) ? true : sortArr[0]?.isDescending,
+    },
+  });
+
   // use swr
   const { data, error, mutate } = useDataInit(endPoint);
+
+  console.log(data)
 
   // ====== consts
   return (
     <Framework_Invoice>
-      <Panel_Invoice
+      {/* <Panel_Invoice
         {...{
           filters,
           setFilters,
           isEnableFilter,
           setIsEnableFilter,
-          data: {data: DUMMY},
+          data, //: { data: DUMMY },
           error,
           mutate,
           sortObj,
         }}
-      />
+      /> */}
     </Framework_Invoice>
   );
 };

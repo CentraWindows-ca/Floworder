@@ -263,7 +263,8 @@ const Com = ({
         onHide={() => handleEdit()}
         onSave={handleSaveDone}
         onRestore={handleRestoreDone}
-        initInvoiceId={'b8e0f029-67b8-42e0-b43f-59c9b7f96350' || editingInvoiceId}
+      //  initInvoiceId={'b8e0f029-67b8-42e0-b43f-59c9b7f96350' || editingInvoiceId}
+        initInvoiceId={editingInvoiceId}
         isDeleted={isDeleted == 1}
         initIsEditable={isEditable}
       />
