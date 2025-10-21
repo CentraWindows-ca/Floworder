@@ -21,7 +21,6 @@ const Com = ({}) => {
     checkEditable,
     onUpdateTransferredLocation,
     onChange,
-    kind,
   } = useContext(LocalDataContext);
 
   const uIstatusObj =
@@ -37,25 +36,17 @@ const Com = ({}) => {
 
   return (
     <>
-      {kind === "m" && (
-        <div
-          className={cn(styles.statesContainer, "font-normal")}
-          style={{
-            color: textColor,
-            backgroundColor: color,
-            opacity: 0.6, // to follow the style of dropdowns
-          }}
-        >
-          <span>{label}</span>
-        </div>
-      )}
+      <div
+        className={cn(styles.statesContainer, "font-normal")}
+        style={{
+          color: textColor,
+          backgroundColor: color,
+          opacity: 0.6, // to follow the style of dropdowns
+        }}
+      >
+        <span>{label}</span>
+      </div>
 
-      {(kind === "w" || kind === "m") && (
-        <StatusUpdate statusLabel="Windows" currentKind="w" />
-      )}
-      {(kind === "d" || kind === "m") && (
-        <StatusUpdate statusLabel="Doors" currentKind="d" />
-      )}
       {/* 
         either window or door in transfered status, allow to input location
       */}

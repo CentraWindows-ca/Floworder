@@ -13,83 +13,31 @@ import constants, {
 import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
 import utils from "lib/utils";
-import { uiWoFieldEditGroupMapping as gmp } from "lib/constants/production_constants_labelMapping";
+import { uiWoFieldEditGroupMapping as gmp } from "lib/constants/invoice_constants_labelMapping";
 
 export const getIfFieldDisplayAsProductType = (
-  { kind, uiOrderType, id, displayAs, permissions },
+  { uiOrderType, id, permissions },
   data,
 ) => {
-  let currentKind = "m";
-  if (id?.startsWith("m_")) currentKind = "m";
-  else if (id?.startsWith("w_")) currentKind = "w";
-  else if (id?.startsWith("d_")) currentKind = "d";
-  currentKind = displayAs || currentKind;
-
-  // dont show fields if its not certain type of order
-  if (!uiOrderType?.m && currentKind === "m") return null;
-  if (!uiOrderType?.w && currentKind === "w") return null;
-  if (!uiOrderType?.d && currentKind === "d") return null;
-
   let _isDisplay = true;
 
   // data conditions ======================
-  if (id === "m_Community") {
-    //
-    _isDisplay &=
-      data?.m_JobType === "SO" &&
-      constants.checkProvince(data?.m_Branch) === "AB";
-  }
-
-  if (id === "m_ShippedDate") {
-    _isDisplay &= [WORKORDER_STATUS_MAPPING.Shipped.key].includes(data?.m_Status);
-  }
-
-  if (
-    id === "m_TransferredLocation_display" ||
-    id === "m_TransferredDate_display"
-  ) {
-    const _windowShow =
-      data?.w_ManufacturingFacility &&
-      data?.m_Branch !== data?.w_ManufacturingFacility;
-    const _doorShow =
-      data?.d_ManufacturingFacility &&
-      data?.m_Branch !== data?.d_ManufacturingFacility;
-    const _hasBranch = data?.m_Branch && data?.m_Branch !== "-";
-    _isDisplay &= _hasBranch && (_windowShow || _doorShow);
-  }
 
   // user permissions ======================
   const checkPermission = (pc, op = "canEdit") => {
     return _.get(permissions, [pc, op], false);
   };
 
-  if (id === "m_PriceBeforeTax") {
-    _isDisplay &= checkPermission(
-      FEATURE_CODES["om.prod.wo.informationPriceBeforeTax"],
-      "canView",
-    );
-  }
-
-  // order kind ======================
-  if (currentKind === kind || currentKind === "m" || kind === "m") {
-    _isDisplay &= true;
-  } else {
-    _isDisplay &= false;
-  }
-
   return _isDisplay;
 };
 
-export const displayFilter = (itemList, { kind, uiOrderType, permissions }) => {
+export const displayFilter = (itemList, { uiOrderType, permissions }) => {
   return itemList?.filter((a) => {
-    const { id = "m", displayAs } = a;
-    // currentKind is data kind
+    const { id = "m" } = a;
     return getIfFieldDisplayAsProductType(
       {
-        kind,
         uiOrderType,
         id,
-        displayAs,
         permissions,
       },
       a,
@@ -155,15 +103,12 @@ export const Block = ({ className_input, inputData }) => {
 };
 
 export const DisplayBlock = ({ children, id = "m", displayAs, ...props }) => {
-  // kind is UI selected kind
-  const { uiOrderType, kind, data, permissions } = useContext(LocalDataContext);
+  const { uiOrderType, data, permissions } = useContext(LocalDataContext);
 
   const display = getIfFieldDisplayAsProductType(
     {
-      kind,
       uiOrderType,
       id,
-      displayAs,
       permissions,
     },
     data,
@@ -348,149 +293,35 @@ export const treateGlassItems = (list) => {
   return _newItems;
 };
 
-export const checkEditableById = ({ id, permissions, data, initKind }) => {
+export const checkEditableById = ({ id, permissions }) => {
   let isEnable = false;
 
   // ============ permission checking: "enable" rules ============
-  const isWindowField = id?.startsWith("w_") || id?.startsWith("m_");
-  const isDoorField = id?.startsWith("d_") || id?.startsWith("m_");
   const checkPermission = (pc, op = "canEdit") => {
     return _.get(permissions, [pc, op], false);
   };
   const checkGroup = (group) => {
     return gmp[group][id];
   };
+
   if (checkPermission(FEATURE_CODES["om.prod.wo.basic"])) {
     isEnable = isEnable || checkGroup("basic");
   }
-  if (checkPermission(FEATURE_CODES["om.prod.wo.information.window"])) {
-    isEnable = isEnable || (checkGroup("information") && isWindowField);
-  }
-  if (checkPermission(FEATURE_CODES["om.prod.wo.information.door"])) {
-    isEnable = isEnable || (checkGroup("information") && isDoorField);
-  }
-  if (checkPermission(FEATURE_CODES["om.prod.wo.options.window"])) {
-    isEnable = isEnable || (checkGroup("options") && isWindowField);
-  }
-  if (checkPermission(FEATURE_CODES["om.prod.wo.options.door"])) {
-    isEnable = isEnable || (checkGroup("options") && isDoorField);
-  }
-
-  if (checkPermission(FEATURE_CODES["om.prod.wo.status.window"])) {
-    isEnable = isEnable || (checkGroup("status") && isWindowField);
-  }
-  if (checkPermission(FEATURE_CODES["om.prod.wo.status.door"])) {
-    isEnable = isEnable || (checkGroup("status") && isDoorField);
-  }
-
-  // ============ [VK]NOTE 250424: "Shipping guys can change shipping schedule... but not production schedule"
-  if (
-    checkPermission(
-      FEATURE_CODES["om.prod.wo.scheduleWithoutProduction.window"],
-    )
-  ) {
-    // schedule fileds in window type but not start date
-    isEnable =
-      isEnable ||
-      (checkGroup("schedule") &&
-        id !== "w_ProductionStartDate" &&
-        isWindowField);
-  }
-  if (
-    checkPermission(FEATURE_CODES["om.prod.wo.scheduleWithoutProduction.door"])
-  ) {
-    isEnable =
-      isEnable ||
-      (checkGroup("schedule") && id !== "d_ProductionStartDate" && isDoorField);
-  }
-  if (
-    checkPermission(FEATURE_CODES["om.prod.wo.scheduleWithProduction.window"])
-  ) {
-    isEnable = isEnable || id === "w_ProductionStartDate";
-  }
-  if (
-    checkPermission(FEATURE_CODES["om.prod.wo.scheduleWithProduction.door"])
-  ) {
-    isEnable = isEnable || id === "d_ProductionStartDate";
-  }
-  if (checkPermission(FEATURE_CODES["om.prod.wo.scheduleShippedDate"])) {
-    isEnable = isEnable || id === "m_ShippedDate";
-  }
-  if (checkPermission(FEATURE_CODES["om.prod.wo.notes"])) {
-    isEnable = isEnable || checkGroup("notes");
-  }
-
-  // ============ functional checking: "disable" rules ============
-  /* 
-  [VK]NOTE 20250523
-  pending rule is rely on "where they open the modal". not on "what modal" they open
-  here "where" means which tab (master, window, door) they search the order from
-  */
-  let status_ForPendingRule = data?.[`${initKind}_Status`];
-  if (status_ForPendingRule === WORKORDER_STATUS_MAPPING.Pending.key) {
-    // check from group 'schedule', but still from field level (in case we dont pass group)
-    if (!checkGroup("schedule")) {
-      isEnable = false;
-    }
-  }
-
-  /*
-  NOTE 20250729
-  AddOn inheritates from parent fields doesnt allow to edit
-  */
-  if (data?.m_isAddOn) {
-    if (checkGroup("basic")) {
-      isEnable = false;
-    }
-
-    if (checkGroup("information") && id?.startsWith("m_")) {
-      isEnable = false;
-    }
-
-    if (
-      [
-        "m_ShippingStartDate",
-        "m_RevisedDeliveryDate",
-        "w_CustomerDate",
-        "d_CustomerDate",
-      ].includes(id)
-    ) {
-      isEnable = false;
-    }
+  if (checkPermission(FEATURE_CODES["om.prod.wo.invoice"])) {
+    isEnable = isEnable || checkGroup("invoice");
   }
 
   return isEnable;
 };
 
 export const checkEditableByGroup = ({ group, permissions, data }) => {
-  /*
-    usually for external tables that cant be identified by id. like files, items
-  */
-  const isAllowWindow = _.get(
-    permissions,
-    [`om.prod.wo.${group}.window`, `canEdit`],
-    false,
-  );
-  const isAllowDoor = _.get(
-    permissions,
-    [`om.prod.wo.${group}.door`, `canEdit`],
-    false,
-  );
   const isAllowBoth = _.get(
     permissions,
     [`om.prod.wo.${group}`, `canEdit`],
     false,
   );
 
-  let isAllowAny = isAllowWindow || isAllowDoor || isAllowBoth;
-
-  // ============ functional checking: "disable" rules ============
-  // if (data?.m_Status === WORKORDER_STATUS_MAPPING.Pending.key) {
-  //   // check from group 'schedule', but still from field level (in case we dont pass group)
-  //   if (group !== "schedule") {
-  //     return false
-  //   }
-  // }
+  let isAllowAny = isAllowBoth;
 
   return isAllowAny;
 };
@@ -499,7 +330,6 @@ export const checkAddOnFieldById = ({
   id,
   data,
   workOrderFields,
-  initKind,
 }) => {
   let result = { isAddOnEditable: true, isSyncedFromParent: false };
 

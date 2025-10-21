@@ -74,7 +74,7 @@ const Com = (props) => {
   const columns = applyField(
     [
       {
-        key: "tmp_invoiceNumber",
+        key: "invoiceId",
         fixed: "left",
         render: (text, record) => {
           return (
@@ -82,12 +82,12 @@ const Com = (props) => {
               <Dropdown_WorkOrderActions
                 data={record}
                 {...{
-                  onEdit: () => onEdit(record?.id),
-                  onHistory: () => onHistory(record?.id),
+                  onEdit: () => onEdit(record?.invoiceId),
+                  onHistory: () => onHistory(record?.invoiceId),
                   onUpdate,
                 }}
               />
-              {copied === record?.tmp_invoiceNumber ? (
+              {copied === record?.invoiceId ? (
                 <i
                   title="copy invoice number"
                   className={cn("fa-solid fa-check ms-1", styles.notCopiedIcon)}
@@ -96,47 +96,21 @@ const Com = (props) => {
                 <i
                   title="copy invoice number"
                   className={cn("fa-solid fa-copy ms-1", styles.copiedIcon)}
-                  onClick={() => copyToClipboard(record?.tmp_invoiceNumber)}
+                  onClick={() => copyToClipboard(record?.invoiceId)}
                 />
               )}
             </div>
           );
         },
       },
-
-      // ========= status ========
       {
-        key: "m_Status_display",
-        title: "Work Order Status",
-        initKey: "m_Status",
-        display: !isDeleted,
-        onCell: (record) => ({
-          style: {
-            position: "relative",
-            padding: 0,
-          },
-        }),
-        onWrapper: () => ({
-          className: styles.tableStatusBlock,
-        }),
-        render: (text, record) => {
-          return (
-            <div
-              className={cn(styles.tableStatusColor)}
-              style={{
-                color: record?.m_Status_display?.textColor,
-                backgroundColor: record?.m_Status_display?.color,
-              }}
-            >
-              <LabelDisplay>{record?.m_Status_display?.label}</LabelDisplay>
-            </div>
-          );
-        },
+        key: "workOrderNo",
       },
+      // ========= status ========
       {
         key: "invoiceStatus_display",
         title: "Invoice Status",
-        initKey: "tmp_invoiceStatus",
+        initKey: "invoiceStatus",
         display: !isDeleted,
         onCell: (record) => ({
           style: {
@@ -156,19 +130,52 @@ const Com = (props) => {
                 backgroundColor: record?.invoiceStatus_display?.color,
               }}
             >
-              <LabelDisplay>{record?.invoiceStatus_display?.label}</LabelDisplay>
+              <LabelDisplay>
+                {record?.invoiceStatus_display?.label}
+              </LabelDisplay>
             </div>
           );
         },
       },
       {
+        key: "customerName",
+      },
+      {
+        key: "branch",
+      },
+      {
+        key: "email",
+      },
+      {
+        key: "phoneNumber",
+      },
+      {
+        key: "address",
+      },
+      {
+        key: "city",
+      },
+      {
+        key: "completeDate_display",
+        title: "Complete Date",
+        initKey: "completeDate",
+        width: 145,
+      },  
+      {
+        key: "invoiceAmount",
+        className: "text-right",
+      },
+      {
+        key: "salesRep",
+      },
+      {
         key: "createdAt_display",
         title: "Created At",
         initKey: "createdAt",
-        width: 125,
+        width: 145,
       },
       {
-        key: "createdBy",
+        key: "lastModifiedBy",
       },
     ]?.filter((a) => a.display === undefined || a.display),
   );
@@ -179,24 +186,27 @@ const Com = (props) => {
     _data = _data?.map((a) => {
       if (!a) return null;
       const merged = { ...a };
-      const { tmp_invoiceStatus, m_Status, createdAt } = a;
+      const { invoiceStatus, createdAt, completeDate, orderObj } = a;
+      const { WOStatus, WorkOrderNo } = orderObj || {};
 
       const orderStatusList = _.values(ORDER_STATUS);
-      merged.m_Status_display = m_Status
+      merged.m_Status_display = WOStatus
         ? orderStatusList?.find(
-            (a) => a.key.toString() === m_Status?.toString(),
+            (a) => a.key.toString() === WOStatus?.toString(),
           )
         : null;
 
       const invoiceStatusList = _.values(INVOICE_STATUS_MAPPING);
 
-      merged.invoiceStatus_display = tmp_invoiceStatus
+   
+      merged.invoiceStatus_display = invoiceStatus
         ? invoiceStatusList?.find(
-            (a) => a.key.toString() === tmp_invoiceStatus?.toString(),
+            (a) => a.key.toString() === invoiceStatus?.toString(),
           )
         : null;
 
       merged.createdAt_display = utils.formatDate(createdAt);
+      merged.completeDate_display = utils.formatDate(completeDate);
 
       return merged;
     });
@@ -217,7 +227,7 @@ const Com = (props) => {
         sort,
         setSort,
         onEnableFilter,
-        keyField: 'tmp_invoiceNumber'
+        keyField: "tmp_invoiceNumber",
       }}
     />
   );

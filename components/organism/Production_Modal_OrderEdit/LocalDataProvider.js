@@ -304,7 +304,7 @@ export const LocalDataProvider = ({
       })
       ?.filter((a) => !a.isParent);
 
-      // if there is only a parent
+    // if there is only a parent
     setAddOnGroup({
       parent,
       addons,
@@ -377,8 +377,6 @@ export const LocalDataProvider = ({
   });
 
   const initAttachmentList = useLoadingBar(async (masterId) => {
-    // const res = await Wrapper_OrdersApi.getFiles(masterId)
-
     const res = await OrdersApi.getUploadFileByRecordIdAsync({
       MasterId: masterId,
       ProdTypeId: constants.PROD_TYPES.m,
@@ -388,8 +386,6 @@ export const LocalDataProvider = ({
   });
 
   const initImageList = useLoadingBar(async (masterId) => {
-    // const res = await Wrapper_OrdersApi.getImages(masterId)
-
     const res = await OrdersApi.getUploadImageByRecordIdAsync({
       MasterId: masterId,
       ProdTypeId: constants.PROD_TYPES.m,
@@ -649,7 +645,7 @@ export const LocalDataProvider = ({
         return null;
       }
 
-      // return 
+      // return
       setIsSaving(true);
 
       const _changedData = {
@@ -680,7 +676,7 @@ export const LocalDataProvider = ({
         return null;
       }
 
-      // return 
+      // return
       setIsSaving(true);
 
       const _changedData = {
@@ -750,7 +746,7 @@ export const LocalDataProvider = ({
       */
       const { id, group } = params;
       let _pass = isEditable;
-      if (id) { 
+      if (id) {
         _pass = _pass && checkEditableById({ id, data, permissions, initKind });
       }
       if (group) {

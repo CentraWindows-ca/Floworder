@@ -39,15 +39,15 @@ const Com = ({}) => {
     isDeleted,
   } = router?.query || {};
 
-  const filtersObj = {};
+  const filtersObj = {...filters};
   const sortObj = {};
   let sortArr = [];
 
   const status = statusFromParam === "All" ? "" : statusFromParam;
 
   if (status) {
-    filtersObj[tab + "_Status"] = {
-      operator: constants.FILTER_OPERATOR.Equals,
+    filtersObj["invoiceStatus"] = {
+      operator: constants.VICTOR_FILTER_OPERATOR.Equals,
       value: status,
     };
   }
@@ -64,7 +64,31 @@ const Com = ({}) => {
     }));
   }
 
+  // Victor convention (different from OM)
   const endPoint = InvoiceApi.initReadInvoicesByPage(null, {
+    filters: _.keys(filtersObj)?.map(k => {
+      const {operator = constants.VICTOR_FILTER_OPERATOR.Contains, value} = filtersObj[k]
+      return {
+        field: k,
+        operator,
+        values: [value],
+        logic: "AND"
+      }
+    }),
+    // filters: [
+    //   {
+    //     field: "DisplayName",
+    //     operator: "like",
+    //     values: ["LO_10"],
+    //     logic: "AND",
+    //   },
+    //   {
+    //     field: "CustomerName",
+    //     operator: "=",
+    //     values: ["BROADVIEW"],
+    //     logic: "AND",
+    //   },
+    // ],
     page: (parseInt(p) || 0) + 1,
     pageSize: 50,
     sortOrder: {
@@ -76,23 +100,21 @@ const Com = ({}) => {
   // use swr
   const { data, error, mutate } = useDataInit(endPoint);
 
-  console.log(data)
-
   // ====== consts
   return (
     <Framework_Invoice>
-      {/* <Panel_Invoice
+      <Panel_Invoice
         {...{
           filters,
           setFilters,
           isEnableFilter,
           setIsEnableFilter,
-          data, //: { data: DUMMY },
+          data: data?.data, //: { data: DUMMY },
           error,
           mutate,
           sortObj,
         }}
-      /> */}
+      />
     </Framework_Invoice>
   );
 };

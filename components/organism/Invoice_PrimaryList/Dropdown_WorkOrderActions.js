@@ -33,7 +33,7 @@ import styles from "./styles.module.scss";
 
 const getStatusName = (statusCode) =>
   _.values(INVOICE_STATUS_MAPPING).find(
-    (a) => a.key?.trim() === statusCode?.trim(),
+    (a) => a.key?.trim() === statusCode?.toString()?.trim(),
   )?.systemName;
 
 const WorkOrderActions = ({
@@ -42,7 +42,7 @@ const WorkOrderActions = ({
   onEdit,
   onUpdate,
 }) => {
-  const { tmp_invoiceNumber, tmp_invoiceStatus } = data;
+  const { invoiceId, invoiceStatus } = data;
   const { toast, permissions } = useContext(GeneralContext);
 
   const { requestData } = useInterrupt();
@@ -52,15 +52,15 @@ const WorkOrderActions = ({
 
   // statusIndex
   let allowedStatus = [];
-  allowedStatus = INVOICE_WORKFLOW[getStatusName(tmp_invoiceStatus)] || [];
+  allowedStatus = INVOICE_WORKFLOW[getStatusName(invoiceStatus)] || [];
 
   const getStatusPayload = async (data, newStatus, _kind) => {
-    const { tmp_invoiceNumber } = data;
+    const { invoiceId } = data;
     const payload = {
-      tmp_invoiceNumber,
+      invoiceId,
       newStatus,
     };
-    payload["oldStatus"] = data.tmp_invoiceStatus
+    payload["oldStatus"] = data.invoiceStatus
 
     // different target has different required fields
     const missingFields = INVOICE_TRANSFER_FIELDS?.[newStatus] || {};
@@ -78,7 +78,7 @@ const WorkOrderActions = ({
     if (payload === null) return null;
     if (
       !window.confirm(
-        `For invoice [${data?.tmp_invoiceNumber}], are you sure to update Status to ${newStatus}?`,
+        `For invoice [${data?.invoiceId}], are you sure to update Status to ${newStatus}?`,
       )
     ) {
       return null;
@@ -115,7 +115,7 @@ const WorkOrderActions = ({
             type="text"
             icon={<ArrowRightOutlined />}
             onClick={() => handleMoveTo(key, "w")}
-            key={`${tmp_invoiceNumber}_${key}`}
+            key={`${invoiceId}_${key}`}
           >
             Move To:{" "}
             <span
@@ -150,7 +150,7 @@ const WorkOrderActions = ({
         renderTrigger={(onClick) => {
           return (
             <span style={{ cursor: "pointer" }} onClick={onClick}>
-              {tmp_invoiceNumber}
+              {invoiceId}
             </span>
           );
         }}

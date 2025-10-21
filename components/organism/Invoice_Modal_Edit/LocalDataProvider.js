@@ -18,45 +18,32 @@ import External_WebCalApi from "lib/api/External_WebCalApi";
 import External_ServiceApi from "lib/api/External_ServiceApi";
 
 import useLoadingBar from "lib/hooks/useLoadingBar";
-import constants, {
-  ORDER_STATUS,
-  ORDER_TRANSFER_FIELDS,
-} from "lib/constants";
+import constants, { ORDER_STATUS, ORDER_TRANSFER_FIELDS } from "lib/constants";
 import { uiWoFieldEditGroupMapping } from "lib/constants/production_constants_labelMapping";
 import { getOrderKind } from "lib/utils";
 
 import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
+import InvoiceApi from "lib/api/InvoiceApi";
 
-import {
-  checkEditableById,
-  checkEditableByGroup,
-} from "./Com";
+import { checkEditableById, checkEditableByGroup } from "./Com";
 import useLocalValidation from "./hooks/useLocalValidation";
-import { TEMPORARY_DISPLAY_FILTER } from "../Production_PrimaryList/_constants";
 
 export const LocalDataContext = createContext(null);
-
-const STATUS = {
-  m: "m_Status",
-  w: "w_Status",
-  d: "d_Status",
-};
 
 export const LocalDataProvider = ({
   children,
   initInvoiceId,
 
   // the tab we are open from. we need some logic rely on the path they open the modal
-  kind: initKind,
   facility,
   onSave,
   onHide,
   onRestore,
-  initIsEditable,
+  initIsEditable = true,
   isDeleted,
   ...props
 }) => {
-  console.log(initInvoiceId)
+  console.log("initInvoiceId", initInvoiceId);
   const generalContext = useContext(GeneralContext);
   const { toast, permissions, dictionary } = generalContext;
   const { requestData } = useInterrupt();
@@ -82,8 +69,6 @@ export const LocalDataProvider = ({
 
   const [initData, setInitData] = useState(null);
   const [initDataReturnTrips, setInitDataReturnTrips] = useState(null);
-
-  const [kind, setKind] = useState(initKind || "m");
 
   // UI purpose
   const [expands, setExpands] = useState({});
@@ -176,82 +161,33 @@ export const LocalDataProvider = ({
     setIsEditable(initIsEditable);
     setValidationResult(null);
 
-    const mergedData = await doInitWo(initInvoiceId);
+    const mergedData = await doInitInvoice(initInvoiceId);
 
     if (mergedData) {
-      if (initKind === "w" || getOrderKind(mergedData) === "w") {
-        setKind("w");
-      } else if (initKind === "d" || getOrderKind(mergedData) === "d") {
-        setKind("d");
-      } else {
-        setKind("m");
-      }
-
       initAttachmentList(mergedData?.m_MasterId);
       await initReturnTrips(mergedData?.m_MasterId);
-
     }
 
     setIsLoading(false);
   };
 
-  const doInitWo = useLoadingBar(
+  const doInitInvoice = useLoadingBar(
     async (initInvoiceId, stillEditingData = {}) => {
-      setEditedGroup({});
-      const [res] = await Wrapper_OrdersApi.getWorkOrder(
-        initInvoiceId,
-        isDeleted ? 0 : 1,
-      );
+      const res = await InvoiceApi.wrapper_queryOneInvoice(initInvoiceId);
+
       let mergedData = {};
       if (typeof res === "object") {
         // re-assemble data to easier to edit
-
-        const { value } = res;
-
-        mergedData = { ...value?.d, ...value?.m, ...value?.w };
+        mergedData = res;
 
         // set init fields from newest wo
         setInitData(JSON.parse(JSON.stringify(mergedData)));
 
         // if use has pending edits
         setData({ ...mergedData, ...stillEditingData });
-
-        // if we need to keep saveButton available for groups
-        const _editingGroup = {};
-        _.keys(uiWoFieldEditGroupMapping)?.map((group) => {
-          _.keys(stillEditingData)?.map((k) => {
-            if (uiWoFieldEditGroupMapping[group]?.[k]) {
-              _editingGroup[group] = true;
-            }
-          });
-        });
-        setEditedGroup(_editingGroup);
-
-        setUiOrderType({
-          m: !!value?.m,
-          d: !!value?.d,
-          w: !!value?.w,
-        });
-
-        // search lbr breakdowns
-        const _lbrs = [];
-        _.keys(mergedData)?.map((k) => {
-          // matches "<n>__"
-          if (/^[a-zA-Z]__.*$/.test(k) && k?.endsWith("Min")) {
-            const lbr_title = k.split("__")?.[1]?.replace("Min", "");
-            const lbr_qty = mergedData[k?.replace("Min", "")];
-            const lbr_min = mergedData[k];
-
-            _lbrs.push({
-              title: lbr_title,
-              qty: lbr_qty,
-              lbr: lbr_min,
-            });
-          }
-        });
-        setLbrBreakDowns(_lbrs);
       }
 
+      console.log("res", res);
       return mergedData;
     },
   );
@@ -272,8 +208,6 @@ export const LocalDataProvider = ({
   });
 
   const initAttachmentList = useLoadingBar(async (masterId) => {
-    // const res = await Wrapper_OrdersApi.getFiles(masterId)
-
     const res = await OrdersApi.getUploadFileByRecordIdAsync({
       MasterId: masterId,
       ProdTypeId: constants.PROD_TYPES.m,
@@ -330,42 +264,6 @@ export const LocalDataProvider = ({
 
     toast("Work order restored", { type: "success" });
     onRestore();
-  });
-
-  const doGetWindowMaker = useLoadingBar(async () => {
-    if (
-      !window.confirm(
-        `Are you sure to get WindowMaker data for [${data?.m_WorkOrderNo}]?`,
-      )
-    ) {
-      return null;
-    }
-
-    const dbSource = data.m_DBSource;
-    // fetch from WM
-    if (dbSource === "WM_AB") {
-      await WM2CWProdApi.updateOnly_AB_WMByWorkOrderAsync(
-        null,
-        {
-          masterId: data?.m_MasterId,
-          workOrderNo: data?.m_WorkOrderNo,
-        },
-        initData,
-      );
-    } else {
-      await WM2CWProdApi.updateOnly_BC_WMByWorkOrderAsync(
-        null,
-        {
-          masterId: data?.m_MasterId,
-          workOrderNo: data?.m_WorkOrderNo,
-        },
-        initData,
-      );
-    }
-
-    await doInit(initInvoiceId);
-    toast("Work order updated from WindowMaker", { type: "success" });
-    onSave();
   });
 
   const doUpdateTransferredLocation = useLoadingBar(async () => {
@@ -438,7 +336,7 @@ export const LocalDataProvider = ({
 
   const doSave = useLoadingBar(
     async (group) => {
-      const validateResult = onValidate({ initData, data, kind, uiOrderType });
+      const validateResult = onValidate({ initData, data, uiOrderType });
       if (!_.isEmpty(validateResult)) {
         const _errorMessages = _.uniq(_.values(validateResult));
         toast(
@@ -480,7 +378,7 @@ export const LocalDataProvider = ({
 
       await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData);
       toast("Work order saved", { type: "success" });
-      await doInitWo(initInvoiceId, stillEditingData);
+      await doInitInvoice(initInvoiceId, stillEditingData);
       onSave();
     },
     () => setIsSaving(false), // callback function
@@ -488,8 +386,7 @@ export const LocalDataProvider = ({
 
   // calculations
 
-  const uIstatusObj =
-    ORDER_STATUS?.find((a) => a.key === data?.[STATUS[kind]]) || {};
+  const uIstatusObj = {};
 
   // called by each single input
   const checkEditable = useCallback(
@@ -503,25 +400,16 @@ export const LocalDataProvider = ({
       */
       const { id, group } = params;
       let _pass = isEditable;
-      if (id) { 
-        _pass = _pass && checkEditableById({ id, data, permissions, initKind });
+      if (id) {
+        _pass = _pass && checkEditableById({ id, data, permissions });
       }
       if (group) {
-        _pass =
-          _pass && checkEditableByGroup({ group, data, permissions, initKind });
+        _pass = _pass && checkEditableByGroup({ group, data, permissions });
       }
 
       return _pass;
     },
-    [
-      isEditable,
-      initInvoiceId,
-      data?.m_Status,
-      data?.w_Status,
-      data?.d_Status,
-      permissions,
-      dictionary,
-    ],
+    [isEditable, initInvoiceId, data?.m_Status, permissions, dictionary],
   );
 
   const { onValidate } = useLocalValidation({
@@ -537,8 +425,6 @@ export const LocalDataProvider = ({
     isSaving,
     initInvoiceId,
     data,
-    kind,
-    initKind,
     facility,
     setData,
     newAttachments,
@@ -558,7 +444,6 @@ export const LocalDataProvider = ({
     onHide: handleHide,
     onSave: doSave,
     onRestore: doRestore,
-    onGetWindowMaker: doGetWindowMaker,
     editedGroup,
     setEditedGroup,
 

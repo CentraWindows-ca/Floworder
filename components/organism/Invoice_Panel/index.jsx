@@ -71,7 +71,20 @@ const Com = ({
   }, [data]);
 
   const runTreatment = (data) => {
-    return data;
+    return {
+      count: data?.totalCount,
+      data: data?.items?.map((a) => {
+        const { orderJSON } = a;
+        let orderObj = null;
+        try {
+          orderObj = JSON.parse(orderJSON);
+        } catch (error) {
+          // noop
+        }
+
+        return { ...a, orderObj };
+      }),
+    };
   };
 
   const handleEdit = (invoiceId, modalType = "edit", activeOnly = false) => {
@@ -181,7 +194,9 @@ const Com = ({
 
   const [sortBy, dir] = sort?.split(":") || [];
   const statusDisplay =
-    _.values(INVOICE_STATUS_MAPPING)?.find((a) => status?.trim() === a.key?.trim()) || null;
+    _.values(INVOICE_STATUS_MAPPING)?.find(
+      (a) => status?.trim() === a.key?.trim(),
+    ) || null;
 
   const jsxStatus = (
     <label className="align-items-center me-3 flex">
@@ -228,7 +243,7 @@ const Com = ({
     <div className={cn("w-full", styles.root)}>
       <div className={cn(styles.topBar)} style={{ paddingLeft: "25px" }}>
         <div className="align-items-center justify-content-between flex gap-2">
-          {isDeleted == 1 ? jsxTrash : statusDisplay && jsxStatus}       
+          {isDeleted == 1 ? jsxTrash : statusDisplay && jsxStatus}
         </div>
         <div>
           <Pagination count={treatedData?.total} basepath={"/"} />
@@ -263,7 +278,7 @@ const Com = ({
         onHide={() => handleEdit()}
         onSave={handleSaveDone}
         onRestore={handleRestoreDone}
-      //  initInvoiceId={'b8e0f029-67b8-42e0-b43f-59c9b7f96350' || editingInvoiceId}
+        //  initInvoiceId={'b8e0f029-67b8-42e0-b43f-59c9b7f96350' || editingInvoiceId}
         initInvoiceId={editingInvoiceId}
         isDeleted={isDeleted == 1}
         initIsEditable={isEditable}

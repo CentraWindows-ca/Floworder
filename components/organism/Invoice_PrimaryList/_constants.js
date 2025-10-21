@@ -5,18 +5,26 @@ import constants, {
   WORKORDER_STATUS_MAPPING,
 } from "lib/constants";
 
-
 export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
   let sequence = [];
   switch (status) {
     case WORKORDER_STATUS_MAPPING.Pending.key:
     default: // all
       sequence = [
-        "tmp_invoiceNumber",
-        "m_Status_display",
+        "invoiceId",
+        "workOrderNo",
         "invoiceStatus_display",
+        "customerName",
+        "branch",
+        "email",
+        "phoneNumber",
+        "address",
+        "city",
+        "completeDate_display",
+        "invoiceAmount",
+        "salesRep",
         "createdAt_display",
-        "createdBy"
+        "lastModifiedBy"
       ];
       break;
   }
@@ -36,4 +44,3 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
 
   return orderedColumns;
 };
-

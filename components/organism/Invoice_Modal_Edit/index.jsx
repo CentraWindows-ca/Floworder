@@ -11,12 +11,16 @@ import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 import OverlayWrapper from "components/atom/OverlayWrapper";
 import Sec_OrderBasic from "./Sec_OrderBasic";
+import Sec_InvoiceBasic from "./Sec_InvoiceBasic";
 
 import Toggle_Files from "./Toggle_Files";
 import Toggle_ReturnTrips from "./Toggle_ReturnTrips";
 
 import { DisplayBlock } from "./Com";
-import constants, { ADDON_STATUS, WORKORDER_STATUS_MAPPING } from "lib/constants";
+import constants, {
+  ADDON_STATUS,
+  WORKORDER_STATUS_MAPPING,
+} from "lib/constants";
 
 import Modal_OrderHistory from "components/organism/Production_Modal_OrderHistory";
 // styles
@@ -47,9 +51,9 @@ const Com = ({}) => {
   const [historyOrderMasterId, setHistoryInvoiceId] = useState(null);
 
   /* NOTE: <rule 250912_cancel_editable> */
-  const isOnStatusAllowToEdit = ![WORKORDER_STATUS_MAPPING.Cancelled.key].includes(
-    data?.[`status`],
-  );
+  const isOnStatusAllowToEdit = ![
+    WORKORDER_STATUS_MAPPING.Cancelled.key,
+  ].includes(data?.[`status`]);
   const uiClass_withLockout = true;
 
   const jsxTitle = (
@@ -65,7 +69,7 @@ const Com = ({}) => {
               onClick={() => setIsEditable(true)}
             >
               <i className="fa-solid fa-pen-to-square me-2" />
-              Edit Work Order
+              Edit Invoice
             </button>
           )}
         </PermissionBlock>
@@ -79,13 +83,12 @@ const Com = ({}) => {
               onClick={() => onRestore()}
             >
               <i className="fa-solid fa-trash-can-arrow-up me-2" />
-              Undo Order Deletion
+              Undo Invoice Deletion
             </button>
           )}
         </PermissionBlock>
         Invoice # {data?.m_WorkOrderNo}
         {/* Add-on info */}
-
         {isDeleted && (
           <div className="align-items-center flex gap-2 text-red-400">
             [DELETED]
@@ -163,10 +166,12 @@ const Com = ({}) => {
             })}
           >
             <div className={cn(styles.mainItem, styles["grid-1"])}>
-              <div className={cn(styles.sectionTitle)}>Basic Information</div>
-              <CollapseContainer id="basicInformation">
-                <Sec_OrderBasic />
-              </CollapseContainer>
+              <div className={cn(styles.sectionTitle)}>Invoice Information</div>
+              <Sec_InvoiceBasic />
+            </div>
+            <div className={cn(styles.mainItem, styles["grid-1"])}>
+              <div className={cn(styles.sectionTitle)}>Order Information</div>
+              <Sec_OrderBasic />
             </div>
           </div>
           <div
@@ -226,23 +231,6 @@ const Com = ({}) => {
         layer={1}
       />
     </Modal>
-  );
-};
-
-const CollapseContainer = ({ id, children }) => {
-  const { uiShowMore, setUiShowMore } = useContext(LocalDataContext);
-
-  return (
-    <>
-      <div
-        className={cn(
-          styles.collapseContainer,
-          uiShowMore ? styles.showingContainer : styles.hiddingContainer,
-        )}
-      >
-        {children}
-      </div>
-    </>
   );
 };
 
