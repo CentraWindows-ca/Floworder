@@ -8,7 +8,7 @@ import OrdersApi from "lib/api/OrdersApi";
 import Editable from "components/molecule/Editable";
 
 import LabelDisplay from "components/atom/LabelDisplay";
-import Table_PrimaryList from "components/molecule/Table_PrimaryList"
+import Table_PrimaryList from "components/molecule/Table_PrimaryList";
 
 // styles
 import styles from "./styles.module.scss";
@@ -18,11 +18,26 @@ import constants, {
   ORDER_STATUS,
   WORKORDER_STATUS_MAPPING,
 } from "lib/constants";
-import {labelMapping, applyField} from "lib/constants/production_constants_labelMapping";
+import {
+  labelMapping,
+  applyField,
+} from "lib/constants/production_constants_labelMapping";
 
 import utils from "lib/utils";
 
 import { COLUMN_SEQUENCE_FOR_STATUS } from "./_constants";
+
+const ADDON_LISTICON_MAPPING = {
+  p: {
+    title: "Addon Parent",
+    icon: <img src="/images/addon/parent_icon.png" />,
+  },
+  a: {
+    title: "Addon Child",
+    icon: <img src="/images/addon/addon_icon.png" />,
+  },
+  "": null,
+};
 
 const getValue = (k, arrName) => {
   const arr = WorkOrderSelectOptions[arrName];
@@ -79,7 +94,7 @@ const Com = (props) => {
         </div>,
         {
           type: "info",
-          autoClose: 500
+          autoClose: 500,
         },
       );
     } catch (err) {}
@@ -256,6 +271,16 @@ const Com = (props) => {
         render: (text, record) => {
           return (
             <div className={cn(styles.orderNumber)}>
+              {!constants.DEV_HOLDING_FEATURES.v20250815_addon && (
+                <div
+                  className={cn(styles.addonListIcon)}
+                  title={
+                    ADDON_LISTICON_MAPPING[record?.m_AddonIcon_display]?.title
+                  }
+                >
+                  {ADDON_LISTICON_MAPPING[record?.m_AddonIcon_display]?.icon}
+                </div>
+              )}
               <Dropdown_WorkOrderActions
                 data={record}
                 {...{
@@ -283,7 +308,7 @@ const Com = (props) => {
             </div>
           );
         },
-        width: 115,
+        width: 125,
       },
 
       // ========= status ========
@@ -632,7 +657,21 @@ const Com = (props) => {
         d_CustomerDate,
         w_ProductionStartDate,
         d_ProductionStartDate,
+
+        // addon
+        m_ParentMasterId,
+        m_AddOnsCount,
       } = merged;
+
+      // ======== if has parent then its addon child; if has count then its addon parent; otherwise its not addon ========
+      merged.m_AddonIcon_display = "";
+      if (m_ParentMasterId) {
+        merged.m_AddonIcon_display = "a";
+      }
+      if (m_AddOnsCount) {
+        merged.m_AddonIcon_display = "p";
+      }
+      // ========>
 
       merged.m_Status_display = m_Status
         ? ORDER_STATUS?.find((a) => a.key.toString() === m_Status?.toString())
