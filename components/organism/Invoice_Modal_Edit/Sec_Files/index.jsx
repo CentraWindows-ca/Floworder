@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import cn from "classnames"
 import _ from "lodash";
 import constants from "lib/constants";
 
@@ -51,16 +52,14 @@ const Com = ({ title, id }) => {
   };
 
   const jsxTitle = (
-    <div className="flex gap-2">
-      {title}
-      <div className="text-primary font-normal">
-        ({existingAttachments?.length || 0})
-      </div>
+    <div className={cn(styles.sectionTitle, styles.sectionTitleGrayYellow)}>
+      Attachments
     </div>
   );
 
   return (
-    <ToggleBlock title={jsxTitle} id={id}>
+    <>
+      {jsxTitle}
       <div className={styles.togglePadding}>
         {checkEditable({ group: "attachments" }) && (
           <div className="justify-content-between align-items-center mb-2 flex border-b border-gray-200 pb-2">
@@ -184,7 +183,7 @@ const Com = ({ title, id }) => {
           </div>
         </div>
       </Modal>
-    </ToggleBlock>
+    </>
   );
 };
 

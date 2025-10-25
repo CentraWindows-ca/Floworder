@@ -72,9 +72,10 @@ const Com = ({
 
   const runTreatment = (data) => {
     return {
-      count: data?.totalCount,
+      total: data?.totalCount,
       data: data?.items?.map((a) => {
-        const { orderJSON } = a;
+        const { invoice, header } = a;
+        const { orderJSON } = invoice || {};
         let orderObj = null;
         try {
           orderObj = JSON.parse(orderJSON);
@@ -82,7 +83,7 @@ const Com = ({
           // noop
         }
 
-        return { ...a, orderObj };
+        return { ...invoice, ...header, ...orderObj };
       }),
     };
   };
@@ -278,7 +279,6 @@ const Com = ({
         onHide={() => handleEdit()}
         onSave={handleSaveDone}
         onRestore={handleRestoreDone}
-        //  initInvoiceId={'b8e0f029-67b8-42e0-b43f-59c9b7f96350' || editingInvoiceId}
         initInvoiceId={editingInvoiceId}
         isDeleted={isDeleted == 1}
         initIsEditable={isEditable}

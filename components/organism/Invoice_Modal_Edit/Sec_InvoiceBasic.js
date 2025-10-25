@@ -12,21 +12,27 @@ import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
 
 import { DisplayBlock } from "./Com";
+import labelMapping from "lib/constants/invoice_constants_labelMapping";
 
 const COMMON_FIELDS = applyField([
   {
     Component: Editable.EF_Input,
-    id: "m_DepositValue",
+    id: "m_InvoiceAmount",
+    className: "text-right",
+  },
+  {
+    Component: Editable.EF_Input,
+    id: "invh_bcInvoiceNo",
+  },
+  {
+    Component: Editable.EF_Text,
+    id: "invh_rejectReason",
     rows: 1,
   },
-  {
-    Component: Editable.EF_Input,
-    id: "m_Commission",
-  },
-
-  {
-    Component: Editable.EF_Input,
-    id: "m_PaymentType",
+    {
+    Component: Editable.EF_Text,
+    id: "invh_rejectNotes",
+    rows: 1
   },
 ]);
 
@@ -38,9 +44,10 @@ const Com = ({}) => {
     <div className={cn(styles.columnInputsContainer)}>
       {COMMON_FIELDS?.map((a, i) => {
         const { id, Component, title, overrideOnChange, ...rest } = a;
+        const _defaultTitle = labelMapping[id]?.title;
         return (
           <DisplayBlock id={id} key={id}>
-            <label>{title}</label>
+            <label>{_defaultTitle || title}</label>
             <div>
               <Component
                 id={id}

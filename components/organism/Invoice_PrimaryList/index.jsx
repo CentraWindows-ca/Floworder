@@ -75,6 +75,7 @@ const Com = (props) => {
     [
       {
         key: "invoiceId",
+        title: "Invoice Id",
         fixed: "left",
         render: (text, record) => {
           return (
@@ -96,7 +97,7 @@ const Com = (props) => {
                 <i
                   title="copy invoice number"
                   className={cn("fa-solid fa-copy ms-1", styles.copiedIcon)}
-                  onClick={() => copyToClipboard(record?.invoiceId)}
+                  onClick={() => copyToClipboard(record?.invoiceHeaderId)}
                 />
               )}
             </div>
@@ -105,6 +106,7 @@ const Com = (props) => {
       },
       {
         key: "workOrderNo",
+        title: "Work Order#",
       },
       // ========= status ========
       {
@@ -139,43 +141,52 @@ const Com = (props) => {
       },
       {
         key: "customerName",
+        title: "Customer Name",
       },
       {
         key: "branch",
+        title: "Branch",
       },
       {
         key: "email",
+        title: "Email",
       },
       {
         key: "phoneNumber",
+        title: "Phone",
       },
       {
         key: "address",
+        title: "Address",
       },
       {
         key: "city",
+        title: "City"
       },
       {
         key: "completeDate_display",
         title: "Complete Date",
         initKey: "completeDate",
         width: 145,
-      },  
+      },
       {
         key: "invoiceAmount",
+        title: "Invoice Amount",
         className: "text-right",
       },
       {
         key: "salesRep",
+        title: "Sales Rep",
       },
       {
         key: "createdAt_display",
-        title: "Created At",
+        title: "Created",
         initKey: "createdAt",
         width: 145,
       },
       {
         key: "lastModifiedBy",
+        title: "Modified By",
       },
     ]?.filter((a) => a.display === undefined || a.display),
   );
@@ -198,7 +209,6 @@ const Com = (props) => {
 
       const invoiceStatusList = _.values(INVOICE_STATUS_MAPPING);
 
-   
       merged.invoiceStatus_display = invoiceStatus
         ? invoiceStatusList?.find(
             (a) => a.key.toString() === invoiceStatus?.toString(),

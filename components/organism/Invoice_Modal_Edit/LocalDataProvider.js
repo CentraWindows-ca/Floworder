@@ -13,26 +13,24 @@ import { useInterrupt } from "lib/provider/InterruptProvider";
 import utils from "lib/utils";
 
 import OrdersApi from "lib/api/OrdersApi";
-import WM2CWProdApi from "lib/api/WM2CWProdApi";
-import External_WebCalApi from "lib/api/External_WebCalApi";
-import External_ServiceApi from "lib/api/External_ServiceApi";
+import InvoiceApi from "lib/api/InvoiceApi";
 
 import useLoadingBar from "lib/hooks/useLoadingBar";
 import constants, { ORDER_STATUS, ORDER_TRANSFER_FIELDS } from "lib/constants";
-import { uiWoFieldEditGroupMapping } from "lib/constants/production_constants_labelMapping";
+import { uiWoFieldEditGroupMapping } from "lib/constants/invoice_constants_labelMapping";
 import { getOrderKind } from "lib/utils";
 
 import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
-import InvoiceApi from "lib/api/InvoiceApi";
 
 import { checkEditableById, checkEditableByGroup } from "./Com";
 import useLocalValidation from "./hooks/useLocalValidation";
+import invoice_utils, { flattenObjWithPrefix } from "lib/utils/invoice_utils";
 
 export const LocalDataContext = createContext(null);
 
 export const LocalDataProvider = ({
   children,
-  initInvoiceId,
+  initInvoiceId = "1",
 
   // the tab we are open from. we need some logic rely on the path they open the modal
   facility,
@@ -61,14 +59,14 @@ export const LocalDataProvider = ({
   const [existingAttachments, setExistingAttachments] = useState(null);
   const [newAttachments, setNewAttachments] = useState(null);
 
-  const [returnTrips, setReturnTrips] = useState(null);
+  const [invoiceNotes, setInvoiceNotes] = useState(null);
 
   const [uiOrderType, setUiOrderType] = useState({});
   const [uiShowMore, setUiShowMore] = useState(true);
   const [validationResult, setValidationResult] = useState(null);
 
   const [initData, setInitData] = useState(null);
-  const [initDataReturnTrips, setInitDataReturnTrips] = useState(null);
+  const [initDataInvoiceNotes, setInitInvoiceNotes] = useState(null);
 
   // UI purpose
   const [expands, setExpands] = useState({});
@@ -145,11 +143,11 @@ export const LocalDataProvider = ({
   // ====== api calls
   const clear = () => {
     setData(null);
-    setReturnTrips(null);
+    setInvoiceNotes(null);
     setExistingAttachments(null);
     setNewAttachments(null);
     setInitData(null);
-    setInitDataReturnTrips(null);
+    setInitInvoiceNotes(null);
     setEditedGroup({});
     setValidationResult(null);
   };
@@ -165,7 +163,7 @@ export const LocalDataProvider = ({
 
     if (mergedData) {
       initAttachmentList(mergedData?.m_MasterId);
-      await initReturnTrips(mergedData?.m_MasterId);
+      await initInvoiceNotes(mergedData?.m_MasterId);
     }
 
     setIsLoading(false);
@@ -173,12 +171,13 @@ export const LocalDataProvider = ({
 
   const doInitInvoice = useLoadingBar(
     async (initInvoiceId, stillEditingData = {}) => {
-      const res = await InvoiceApi.wrapper_queryOneInvoice(initInvoiceId);
+      console.log("???", initInvoiceId)
+      const res = await InvoiceApi.getInvoiceOrderDetails(initInvoiceId);
 
       let mergedData = {};
       if (typeof res === "object") {
-        // re-assemble data to easier to edit
-        mergedData = res;
+        // ==== assemble, add prefix
+        mergedData = invoice_utils.flattenResWithPrefix(res)
 
         // set init fields from newest wo
         setInitData(JSON.parse(JSON.stringify(mergedData)));
@@ -187,24 +186,23 @@ export const LocalDataProvider = ({
         setData({ ...mergedData, ...stillEditingData });
       }
 
-      console.log("res", res);
+      console.log(mergedData)
+
       return mergedData;
     },
   );
 
-  const initReturnTrips = useLoadingBar(async (initInvoiceId) => {
-    let _returnTrips = await OrdersApi.getProductionsReturnTripByID({
-      MasterId: initInvoiceId,
-    });
-    _returnTrips = _returnTrips?.map((a) => ({
-      ...a,
-      returnTripDate: utils.formatDateForMorganLegacy(a.returnTripDate),
-    }));
-
-    _returnTrips = _.orderBy(_returnTrips, ["returnTripDate"], ["ASC"]);
-
-    setReturnTrips(_returnTrips);
-    setInitDataReturnTrips(JSON.parse(JSON.stringify(_returnTrips)));
+  const initInvoiceNotes = useLoadingBar(async (initInvoiceId) => {
+    // let _returnTrips = await OrdersApi.getProductionsReturnTripByID({
+    //   MasterId: initInvoiceId,
+    // });
+    // _returnTrips = _returnTrips?.map((a) => ({
+    //   ...a,
+    //   returnTripDate: utils.formatDateForMorganLegacy(a.returnTripDate),
+    // }));
+    // _returnTrips = _.orderBy(_returnTrips, ["returnTripDate"], ["ASC"]);
+    // setInvoiceNotes(_returnTrips);
+    // setInitInvoiceNotes(JSON.parse(JSON.stringify(_returnTrips)));
   });
 
   const initAttachmentList = useLoadingBar(async (masterId) => {
@@ -217,8 +215,8 @@ export const LocalDataProvider = ({
   });
 
   //
-  const doUpdateStatus = async (newStatus, _kind) => {
-    const payload = await getStatusPayload(data, newStatus, _kind);
+  const doUpdateStatus = async (newStatus) => {
+    const payload = await getStatusPayload(data, newStatus);
     if (payload === null) return null;
     await doMove(payload);
 
@@ -227,16 +225,15 @@ export const LocalDataProvider = ({
     onSave();
   };
 
-  const getStatusPayload = async (data, newStatus, _kind) => {
+  const getStatusPayload = async (data, newStatus) => {
     const { m_WorkOrderNo, m_MasterId } = data;
     const payload = {
       m_WorkOrderNo,
       m_MasterId,
       newStatus,
     };
-    const updatingStatusField = `${_kind}_Status`;
-    payload["oldStatus"] = data[updatingStatusField];
-    payload["isWindow"] = _kind === "w";
+
+    payload["oldStatus"] = data[`invoiceStatus`];
 
     // different target has different required fields
     const missingFields = ORDER_TRANSFER_FIELDS?.[newStatus] || {};
@@ -264,21 +261,6 @@ export const LocalDataProvider = ({
 
     toast("Work order restored", { type: "success" });
     onRestore();
-  });
-
-  const doUpdateTransferredLocation = useLoadingBar(async () => {
-    const m_TransferredLocation = data?.m_TransferredLocation;
-    await Wrapper_OrdersApi.updateWorkOrder(
-      data,
-      {
-        m_TransferredLocation,
-      },
-      initData,
-    );
-
-    await doInit(initInvoiceId);
-    toast("Transferred location saved", { type: "success" });
-    onSave();
   });
 
   const doUploadAttachment = useLoadingBar(async (_files) => {
@@ -316,22 +298,22 @@ export const LocalDataProvider = ({
     await initAttachmentList(data?.m_MasterId);
   });
 
-  const doDeleteReturnTrip = useLoadingBar(async (_rt) => {
-    await OrdersApi.hardDeleteProductionsReturnTrip({}, _rt, initData);
-    await initReturnTrips(data?.m_MasterId);
+  const doDeleteInvoiceNotes = useLoadingBar(async (_rt) => {
+    // await OrdersApi.hardDeleteProductionsReturnTrip({}, _rt, initData);
+    // await initInvoiceNotes(data?.m_MasterId);
   });
-  const doAddReturnTrip = useLoadingBar(async (_rt) => {
-    await OrdersApi.addProductionsReturnTrip({}, _rt, initData);
-    await initReturnTrips(data?.m_MasterId);
+  const doAddInvoiceNotes = useLoadingBar(async (_rt) => {
+    // await OrdersApi.addProductionsReturnTrip({}, _rt, initData);
+    // await initInvoiceNotes(data?.m_MasterId);
   });
-  const doEditReturnTrip = useLoadingBar(async (_rt) => {
-    await OrdersApi.updateProductionsReturnTrip(
-      {},
-      _rt,
-      initData,
-      initDataReturnTrips?.find((a) => a.id === _rt?.id),
-    );
-    await initReturnTrips(data?.m_MasterId);
+  const doEditInvoiceNotes = useLoadingBar(async (_rt) => {
+    // await OrdersApi.updateProductionsReturnTrip(
+    //   {},
+    //   _rt,
+    //   initData,
+    //   initDataInvoiceNotes?.find((a) => a.id === _rt?.id),
+    // );
+    // await initInvoiceNotes(data?.m_MasterId);
   });
 
   const doSave = useLoadingBar(
@@ -356,15 +338,6 @@ export const LocalDataProvider = ({
       // identify changed data:
       const _changedData = utils.findChanges(initData, data);
 
-      // process customized
-      if (_changedData.w_ProductionStartDate) {
-        _changedData.w_ProductionEndDate = _changedData.w_ProductionStartDate;
-      }
-
-      if (_changedData.d_ProductionStartDate) {
-        _changedData.d_ProductionEndDate = _changedData.d_ProductionStartDate;
-      }
-
       let stillEditingData = {};
       if (group && uiWoFieldEditGroupMapping?.[group]) {
         // only save group fields
@@ -376,8 +349,10 @@ export const LocalDataProvider = ({
         });
       }
 
-      await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData);
-      toast("Work order saved", { type: "success" });
+      const _payload = invoice_utils.assemblePrefixedObjToPayload(_changedData, initData)
+
+      await InvoiceApi.updateInvoiceById({}, _payload, initData);
+      toast("Invoice saved", { type: "success" });
       await doInitInvoice(initInvoiceId, stillEditingData);
       onSave();
     },
@@ -431,16 +406,14 @@ export const LocalDataProvider = ({
     setNewAttachments,
     existingAttachments,
     setExistingAttachments,
-    setReturnTrips,
     onChange: handleChange,
     onUpdateStatus: doUpdateStatus,
-    onUpdateTransferredLocation: doUpdateTransferredLocation,
     onAnchor: handleAnchor,
     onUploadAttachment: doUploadAttachment,
     onDeleteAttachment: doDeleteAttachment,
-    onDeleteReturnTrip: doDeleteReturnTrip,
-    onAddReturnTrip: doAddReturnTrip,
-    onEditReturnTrip: doEditReturnTrip,
+    onDeleteInvoiceNotes: doDeleteInvoiceNotes,
+    onAddInvoiceNotes: doAddInvoiceNotes,
+    onEditInvoiceNotes: doEditInvoiceNotes,
     onHide: handleHide,
     onSave: doSave,
     onRestore: doRestore,
@@ -448,7 +421,7 @@ export const LocalDataProvider = ({
     setEditedGroup,
 
     LbrBreakDowns,
-    returnTrips,
+    invoiceNotes,
     expands,
     setExpands,
     isEditable,

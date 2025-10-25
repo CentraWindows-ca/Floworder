@@ -308,13 +308,15 @@ export const checkEditableById = ({ id, permissions }) => {
     isEnable = isEnable || checkGroup("basic");
   }
   if (checkPermission(FEATURE_CODES["om.prod.wo.invoice"])) {
-    isEnable = isEnable || checkGroup("invoice");
+    isEnable = isEnable || checkGroup("invoice") ||  checkGroup("invoiceBilling") ;
   }
 
   return isEnable;
 };
 
 export const checkEditableByGroup = ({ group, permissions, data }) => {
+
+  return true
   const isAllowBoth = _.get(
     permissions,
     [`om.prod.wo.${group}`, `canEdit`],

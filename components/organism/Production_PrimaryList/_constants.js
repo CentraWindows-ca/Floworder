@@ -226,7 +226,6 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
       break;
     default: // all
       sequence = [
-        "m_Addon_display",
         "m_WorkOrderNo",
         "m_FormStatus",
         "m_Status_display",

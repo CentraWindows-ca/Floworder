@@ -36,8 +36,12 @@
 .gridsOfMainInfo {
     display: grid;
     gap: 10px;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     margin-bottom: 10px;
+
+    @include breakpoint-up(mobile) {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 
@@ -66,7 +70,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
 
+.sectionTitleGrayYellow {
+    background-color: $color_background_grayYellow;
 }
 
 .subTitle {
@@ -478,7 +485,7 @@
 
         &.addonListContainer_parent {
             .addonItem {
-                
+
                 padding-right: 40px;
 
                 .addonBadge {

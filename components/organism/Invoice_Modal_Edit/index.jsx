@@ -12,9 +12,11 @@ import Tab from "react-bootstrap/Tab";
 import OverlayWrapper from "components/atom/OverlayWrapper";
 import Sec_OrderBasic from "./Sec_OrderBasic";
 import Sec_InvoiceBasic from "./Sec_InvoiceBasic";
+import Sec_InvoiceBilling from "./Sec_InvoiceBilling";
 
-import Toggle_Files from "./Toggle_Files";
-import Toggle_ReturnTrips from "./Toggle_ReturnTrips";
+import Sec_Files from "./Sec_Files";
+import Sec_InvoiceNotes from "./Sec_InvoiceNotes";
+import Sec_CallLogs from "./Sec_CallLogs";
 
 import { DisplayBlock } from "./Com";
 import constants, {
@@ -43,7 +45,7 @@ const Com = ({}) => {
     setIsEditable,
     editedGroup,
     existingAttachments,
-    returnTrips,
+    invoiceNotes,
     uIstatusObj,
     isDeleted = false,
   } = useContext(LocalDataContext);
@@ -87,8 +89,7 @@ const Com = ({}) => {
             </button>
           )}
         </PermissionBlock>
-        Invoice # {data?.m_WorkOrderNo}
-        {/* Add-on info */}
+        Invoice # {data?.inv_invoiceId}
         {isDeleted && (
           <div className="align-items-center flex gap-2 text-red-400">
             [DELETED]
@@ -96,19 +97,6 @@ const Com = ({}) => {
         )}
         <div className="align-items-center ms-2 flex gap-2">
           <Sec_Status />
-          {["Shipped"].includes(uIstatusObj?.key) &&
-            data?.m_TransferredLocation && (
-              <DisplayBlock id="m_TransferredLocation">
-                <label className="text-base font-normal">
-                  Transferred to:{" "}
-                </label>
-                <div className="text-base">
-                  {constants.WorkOrderSelectOptions.branches?.find(
-                    (a) => a.key === data?.m_TransferredLocation,
-                  )?.label || "--"}
-                </div>
-              </DisplayBlock>
-            )}
         </div>
       </div>
       <div>
@@ -119,15 +107,7 @@ const Com = ({}) => {
           )}
         >
           <div className={cn(styles.anchors)}>
-            <span onClick={() => onAnchor("basic", true)}>Basic</span> |
-            <span onClick={() => onAnchor("returnTrips", true)}>
-              Return Trips ({returnTrips?.length || 0})
-            </span>{" "}
-            |
-            <span onClick={() => onAnchor("files", true)}>
-              Attachments ({existingAttachments?.length || 0})
-            </span>
-            <PermissionBlock
+            {/* <PermissionBlock
               featureCodeGroup={constants.FEATURE_CODES["om.prod.history"]}
               op="canView"
             >
@@ -139,16 +119,18 @@ const Com = ({}) => {
                   <i className="fa-solid fa-clock-rotate-left"></i>
                 </button>
               </div>
-            </PermissionBlock>
+            </PermissionBlock> */}
           </div>
         </div>
       </div>
     </div>
   );
 
+  console.log(editedGroup)
+
   return (
     <Modal
-      show={initInvoiceId}
+      show={!!initInvoiceId}
       title={jsxTitle}
       size="xl"
       onHide={onHide}
@@ -168,17 +150,30 @@ const Com = ({}) => {
             <div className={cn(styles.mainItem, styles["grid-1"])}>
               <div className={cn(styles.sectionTitle)}>Invoice Information</div>
               <Sec_InvoiceBasic />
+              <hr />
+              <Sec_InvoiceBilling />
             </div>
             <div className={cn(styles.mainItem, styles["grid-1"])}>
               <div className={cn(styles.sectionTitle)}>Order Information</div>
               <Sec_OrderBasic />
             </div>
-          </div>
-          <div
-            className="flex-column flex"
-            style={{ marginTop: "10px", marginBottom: "10px" }}
-          >
-            <Toggle_ReturnTrips title={"Return Trips"} id={"returnTrips"} />
+            <div
+              className={cn(styles.mainItem, styles["grid-1"])}
+              style={{
+                maxHeight: 600,
+              }}
+            >
+              <Sec_InvoiceNotes />
+              <Sec_CallLogs />
+            </div>
+            <div
+              className={cn(styles.mainItem, styles["grid-1"])}
+              style={{
+                maxHeight: 600,
+              }}
+            >
+              <Sec_Files />
+            </div>
           </div>
 
           {checkEditable() && (
@@ -198,7 +193,7 @@ const Com = ({}) => {
               <button
                 className="btn btn-primary align-items-center flex gap-2 px-3"
                 disabled={
-                  !data?.m_WorkOrderNo || isSaving || _.isEmpty(editedGroup) // if there is any unsaved update
+                  isSaving || _.isEmpty(editedGroup) // if there is any unsaved update
                 }
                 onClick={onSave}
               >
@@ -216,12 +211,6 @@ const Com = ({}) => {
               </button>
             </div>
           )}
-
-          <hr />
-
-          <div className="flex-column flex" style={{ gap: "10px" }}>
-            <Toggle_Files title={"Attachments"} id={"files"} />
-          </div>
         </div>
       </LoadingBlock>
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
+import labelMapping, { applyField } from "lib/constants/invoice_constants_labelMapping";
 
 import Editable from "components/molecule/Editable";
 
@@ -11,78 +12,73 @@ import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
 
 import { DisplayBlock } from "./Com";
-import labelMapping, { applyField } from "lib/constants/invoice_constants_labelMapping";
 
 const COMMON_FIELDS = applyField([
   {
     Component: Editable.EF_Input,
-    id: "m_WorkOrderNo",
-    disabled: true,
-    // TODO: change to jump WC
+    id: "m_DepositValue",
+    className: "text-right",
   },
   {
     Component: Editable.EF_Input,
-    id: "m_CustomerNo",
-    disabled: true
-  },
-  {
-    Component: Editable.EF_Text,
-    id: "m_CustomerName",
-    rows: 1,
+    id: "m_ListPrice",
+    className: "text-right",
   },
   {
     Component: Editable.EF_Input,
-    id: "m_Branch",
-    disabled: true
+    id: "m_Commission",
+    className: "text-right",
   },
   {
     Component: Editable.EF_Input,
-    id: "m_JobType",
-    disabled: true
+    id: "m_PaymentType",
   },
   {
     Component: Editable.EF_Input,
-    id: "m_Address",
+    id: "m_Discount",
+    className: "text-right",
+  },
+  {
+    Component: Editable.EF_SelectWithLabel,
+    id: "m_Tax",
+    placeholder: "-",
+    options: _.keys(constants.InvoiceTax)?.map((k) => ({
+      label: k,
+      value: k,
+      key: k,
+    })),
   },
   {
     Component: Editable.EF_Input,
-    id: "m_City",
+    id: "m_PSTExemptionNumber",
+    onIsDisplay: (item, data) => {
+      return [
+        constants.InvoiceTax["GST+PST"],
+        constants.InvoiceTax["PST Exempt"],
+      ].includes(data?.m_Tax);
+    },
+    className: "text-right",
   },
   {
     Component: Editable.EF_Input,
-    id: "m_SalesRep",
-    disabled: true
-  },
-  {
-    Component: Editable.EF_Input,
-    id: "m_Email",
-  },
-  {
-    Component: Editable.EF_Input,
-    id: "m_PhoneNumber",
-  },
-  {
-    Component: Editable.EF_Input,
-    id: "m_CompleteDate",
-    disabled: true
-  },
-  {
-    Component: Editable.EF_Input,
-    id: "inv_createdAt",
-    disabled: true
+    id: "m_PO",
   },
 ]);
 
 const Com = ({}) => {
-  const { data, initData, onChange, checkEditable, validationResult } =
+  const { data, initData, onChange, checkEditable, validationResult, } =
     useContext(LocalDataContext);
 
   return (
     <div className={cn(styles.columnInputsContainer)}>
       {COMMON_FIELDS?.map((a, i) => {
-        const { id, Component, title, overrideOnChange, ...rest } = a;
-        const _defaultTitle = labelMapping[id]?.title
-        
+        const { id, Component, title, overrideOnChange, onIsDisplay, ...rest } = a;
+        const _defaultTitle = labelMapping[id]?.title;
+        if (typeof onIsDisplay === "function") {
+          const _isDisplay = onIsDisplay(a, data);
+          if (!_isDisplay) return null;
+        }
+
         return (
           <DisplayBlock id={id} key={id}>
             <label>{_defaultTitle || title}</label>

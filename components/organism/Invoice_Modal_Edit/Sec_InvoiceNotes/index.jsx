@@ -2,7 +2,10 @@ import React, { useContext, useState } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
-import {labelMapping, applyField} from "lib/constants/production_constants_labelMapping";
+import {
+  labelMapping,
+  applyField,
+} from "lib/constants/production_constants_labelMapping";
 
 import Modal from "components/molecule/Modal";
 // styles
@@ -26,39 +29,36 @@ const COMMON_FIELDS = applyField([
 
 const Com = ({ title, id }) => {
   const {
-    onDeleteReturnTrip,
-    onAddReturnTrip,
-    onEditReturnTrip,
-    returnTrips,
+    onDeleteInvoiceNotes,
+    onAddInvoiceNotes,
+    onEditInvoiceNotes,
+    invoiceNotes,
     checkEditable,
-    setReturnTrips,
   } = useContext(LocalDataContext);
 
   const [editingRow, setEditingRow] = useState(null);
 
   const handleSave = async () => {
     if (editingRow?.id) {
-      await onEditReturnTrip(_.cloneDeep(editingRow));
+      await onEditInvoiceNotes(_.cloneDeep(editingRow));
     } else {
-      await onAddReturnTrip(_.cloneDeep(editingRow));
+      await onAddInvoiceNotes(_.cloneDeep(editingRow));
     }
 
     setEditingRow(null);
   };
 
   const jsxTitle = (
-    <div className="flex gap-2">
-      {title}
-      <div className="text-primary font-normal">
-        ({returnTrips?.length || 0})
-      </div>
+    <div className={cn(styles.sectionTitle, styles.sectionTitleGrayYellow)}>
+      Call Logs
     </div>
   );
 
   return (
-    <ToggleBlock title={jsxTitle} id={id}>
-      <div className={styles.togglePadding}>
-        {checkEditable({ group: "returnTrips" }) && (
+    <>
+      {jsxTitle}
+      <div className={styles.togglePadding} style={{overflowY: "auto"}}>
+        {checkEditable({ group: "invoiceNotes" }) && (
           <div className="justify-content-between align-items-center mb-2 flex border-b border-gray-200 pb-2">
             <div>
               <button
@@ -70,7 +70,7 @@ const Com = ({ title, id }) => {
             </div>
           </div>
         )}
-        {!_.isEmpty(returnTrips) ? (
+        {!_.isEmpty(invoiceNotes) ? (
           <table className="table-xs table-bordered table-hover mb-0 table border">
             <thead>
               <tr>
@@ -80,7 +80,8 @@ const Com = ({ title, id }) => {
                 <th style={{ width: "140px" }}></th>
               </tr>
             </thead>
-            <tbody>{returnTrips?.map((a) => {
+            <tbody>
+              {invoiceNotes?.map((a) => {
                 const {
                   returnTripDate,
                   returnTripNotes,
@@ -107,22 +108,23 @@ const Com = ({ title, id }) => {
                     <td>
                       <button
                         className="btn btn-sm btn-outline-primary me-2"
-                        disabled={!checkEditable({ group: "returnTrips" })}
+                        disabled={!checkEditable({ group: "invoiceNotes" })}
                         onClick={() => setEditingRow(a)}
                       >
                         edit
                       </button>
                       <button
                         className="btn btn-sm btn-danger"
-                        disabled={!checkEditable({ group: "returnTrips" })}
-                        onClick={() => onDeleteReturnTrip(a)}
+                        disabled={!checkEditable({ group: "invoiceNotes" })}
+                        onClick={() => onDeleteInvoiceNotes(a)}
                       >
                         delete
                       </button>
                     </td>
                   </tr>
                 );
-              })}</tbody>
+              })}
+            </tbody>
           </table>
         ) : (
           <NoData />
@@ -143,7 +145,7 @@ const Com = ({ title, id }) => {
                 setItem={setEditingRow}
                 key={`returntrip_${a.id}`}
                 inputData={a}
-                isEditable={checkEditable({ group: "returnTrips" })}
+                isEditable={checkEditable({ group: "invoiceNotes" })}
               />
             );
           })}
@@ -154,7 +156,7 @@ const Com = ({ title, id }) => {
           </button>
         </div>
       </Modal>
-    </ToggleBlock>
+    </>
   );
 };
 

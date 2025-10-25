@@ -10,8 +10,8 @@ const Com = ({ missingFields, onSubmit, onCancel, isPaused, data }) => {
     if (isPaused && data) {
       const _values = {};
       const mapping = {
-        tmp_rejectReason: data["tmp_rejectReason"],
-        tmp_rejectNotes: data["tmp_rejectNotes"],
+        rejectReason: data["rejectReason"],
+        rejectNotes: data["rejectNotes"],
       };
 
       // get init values
@@ -52,18 +52,18 @@ const Com = ({ missingFields, onSubmit, onCancel, isPaused, data }) => {
     >
       <div className="flex-column flex gap-2">
 
-        {missingFields?.tmp_rejectReason && (
+        {missingFields?.rejectReason && (
           <div className="form-group row">
             <label className="col-lg-3">
               Reject Reason
-              {missingFields?.tmp_rejectReason?.required && " *"}
+              {missingFields?.rejectReason?.required && " *"}
             </label>
             <div className="col-lg-9">
               <Editable.EF_SelectWithLabel
-                k="tmp_rejectReason"
-                value={values?.tmp_rejectReason || ""}
+                k="rejectReason"
+                value={values?.rejectReason || ""}
                 onChange={(v) =>
-                  setValues((prev) => ({ ...prev, ["tmp_rejectReason"]: v }))
+                  setValues((prev) => ({ ...prev, ["rejectReason"]: v }))
                 }
                 placeholder={"Reject Reason"}
                 options={constants.InvoiceSelectOptions.rejectReasonList}
@@ -72,15 +72,15 @@ const Com = ({ missingFields, onSubmit, onCancel, isPaused, data }) => {
           </div>
         )}
 
-        {missingFields?.tmp_rejectNotes && (
+        {missingFields?.rejectNotes && (
           <div className="form-group row">
             <label className="col-lg-3">Notes</label>
             <div className="col-lg-9">
               <Editable.EF_Text
-                k="tmp_rejectNotes"
-                value={values?.tmp_rejectNotes}
+                k="rejectNotes"
+                value={values?.rejectNotes}
                 onChange={(v) =>
-                  setValues((prev) => ({ ...prev, ["tmp_rejectNotes"]: v }))
+                  setValues((prev) => ({ ...prev, ["rejectNotes"]: v }))
                 }
               />
             </div>

@@ -66,7 +66,7 @@ const Com = ({}) => {
 
   // Victor convention (different from OM)
   const endPoint = InvoiceApi.initReadInvoicesByPage(null, {
-    filters: _.keys(filtersObj)?.map(k => {
+    filters: !_.isEmpty(filtersObj) ? _.keys(filtersObj)?.map(k => {
       const {operator = constants.VICTOR_FILTER_OPERATOR.Contains, value} = filtersObj[k]
       return {
         field: k,
@@ -74,27 +74,13 @@ const Com = ({}) => {
         values: [value],
         logic: "AND"
       }
-    }),
-    // filters: [
-    //   {
-    //     field: "DisplayName",
-    //     operator: "like",
-    //     values: ["LO_10"],
-    //     logic: "AND",
-    //   },
-    //   {
-    //     field: "CustomerName",
-    //     operator: "=",
-    //     values: ["BROADVIEW"],
-    //     logic: "AND",
-    //   },
-    // ],
+    }) : undefined,
     page: (parseInt(p) || 0) + 1,
     pageSize: 50,
-    sortOrder: {
+    sortOrders: [{
       columnName: _.isEmpty(sortArr) ? DEFAULT_SORT : sortArr[0]?.field,
       descending: _.isEmpty(sortArr) ? true : sortArr[0]?.isDescending,
-    },
+    }],
   });
 
   // use swr
@@ -109,7 +95,8 @@ const Com = ({}) => {
           setFilters,
           isEnableFilter,
           setIsEnableFilter,
-          data: data?.data, //: { data: DUMMY },
+          //data: { data: DUMMY },
+          data: data?.data, 
           error,
           mutate,
           sortObj,

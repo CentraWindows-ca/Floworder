@@ -2,9 +2,9 @@ import React, { useState, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants, {
-  ORDER_STATUS,
-  WORKORDER_WORKFLOW,
-  WORKORDER_STATUS_MAPPING,
+  INVOICE_STATUS,
+  INVOICE_WORKFLOW,
+  INVOICE_STATUS_MAPPING,
 } from "lib/constants";
 
 import OverlayWrapper from "components/atom/OverlayWrapper";
@@ -24,69 +24,24 @@ const Com = ({}) => {
   } = useContext(LocalDataContext);
 
   const uIstatusObj =
-    ORDER_STATUS?.find((a) => a.key === data?.[`m_Status`]) || {};
+    INVOICE_STATUS?.find((a) => a.key === data?.[`invh_invoiceStatus`]) || {};
   const { color, label, textColor } = uIstatusObj;
 
-  const isTransferred_w = [WORKORDER_STATUS_MAPPING.Transferred.key].includes(
-    data?.w_Status,
-  );
-  const isTransferred_d = [WORKORDER_STATUS_MAPPING.Transferred.key].includes(
-    data?.d_Status,
-  );
 
   return (
     <>
-      <div
-        className={cn(styles.statesContainer, "font-normal")}
-        style={{
-          color: textColor,
-          backgroundColor: color,
-          opacity: 0.6, // to follow the style of dropdowns
-        }}
-      >
-        <span>{label}</span>
-      </div>
-
-      {/* 
-        either window or door in transfered status, allow to input location
-      */}
-      {(isTransferred_w || isTransferred_d) && (
-        <div>
-          <div className="input-group">
-            <Editable.EF_SelectWithLabel
-              k="m_TransferredLocation"
-              value={data?.m_TransferredLocation || ""}
-              onChange={(v) => onChange(v, "m_TransferredLocation")}
-              placeholder={"Transferred Location"}
-              options={constants.WorkOrderSelectOptions.branches}
-              disabled={!checkEditable({ id: "m_TransferredLocation" })}
-            />
-
-            <button
-              className="btn btn-primary"
-              disabled={
-                initData?.m_TransferredLocation ===
-                  data?.m_TransferredLocation ||
-                !checkEditable({ id: "m_TransferredLocation" })
-              }
-              onClick={onUpdateTransferredLocation}
-            >
-              Save
-            </button>
-          </div>
-        </div>
-      )}
+      <StatusUpdate/>
     </>
   );
 };
 
-const StatusUpdate = ({ statusLabel, currentKind }) => {
+const StatusUpdate = () => {
   const { data, onUpdateStatus, checkEditable } =
     useContext(LocalDataContext);
 
-  const id = `${currentKind}_Status`;
+  const id = `invh_invoiceStatus`;
 
-  const uIstatusObj = ORDER_STATUS?.find((a) => a.key === data?.[id]) || {};
+  const uIstatusObj = INVOICE_STATUS?.find((a) => a.key === data?.[id]) || {};
   const { color, label, textColor } = uIstatusObj;
   const [toggle, setToggle] = useState(false);
 
@@ -108,7 +63,7 @@ const StatusUpdate = ({ statusLabel, currentKind }) => {
               style={{ color: textColor, backgroundColor: color }}
             >
               <span>
-                {statusLabel}: {label}
+                {label}
               </span>
               {checkEditable({ id }) && (
                 <div>
@@ -121,11 +76,10 @@ const StatusUpdate = ({ statusLabel, currentKind }) => {
         >
           <PopoverEdit
             onChange={(v) => {
-              onUpdateStatus(v, currentKind);
+              onUpdateStatus(v);
               setToggle((prev) => !prev);
             }}
             uIstatusObj={uIstatusObj}
-            statusLabel={statusLabel}
           />
         </OverlayWrapper>
       </div>
@@ -134,10 +88,10 @@ const StatusUpdate = ({ statusLabel, currentKind }) => {
 };
 
 const PopoverEdit = ({ onChange, uIstatusObj, statusLabel }) => {
-  const allowedStatusNames = WORKORDER_WORKFLOW[uIstatusObj?.systemName];
+  const allowedStatusNames = INVOICE_WORKFLOW[uIstatusObj?.systemName];
   const allowedStatus =
-    allowedStatusNames?.map((n) => WORKORDER_STATUS_MAPPING[n]) ||
-    ORDER_STATUS.filter((a) => a.key);
+    allowedStatusNames?.map((n) => INVOICE_STATUS_MAPPING[n]) ||
+    INVOICE_STATUS.filter((a) => a.key);
 
   return (
     <div
