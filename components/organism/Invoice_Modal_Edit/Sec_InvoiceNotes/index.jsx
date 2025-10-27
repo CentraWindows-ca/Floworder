@@ -50,26 +50,19 @@ const Com = ({ title, id }) => {
 
   const jsxTitle = (
     <div className={cn(styles.sectionTitle, styles.sectionTitleGrayYellow)}>
-      Call Logs
+      <span>Notes</span>
+      <div>
+        {checkEditable({ group: "invoiceNotes" }) && (
+          <button onClick={() => setEditingRow({})}>Add</button>
+        )}
+      </div>
     </div>
   );
 
   return (
     <>
       {jsxTitle}
-      <div className={styles.togglePadding} style={{overflowY: "auto"}}>
-        {checkEditable({ group: "invoiceNotes" }) && (
-          <div className="justify-content-between align-items-center mb-2 flex border-b border-gray-200 pb-2">
-            <div>
-              <button
-                className="btn btn-success"
-                onClick={() => setEditingRow({})}
-              >
-                Add
-              </button>
-            </div>
-          </div>
-        )}
+      <div className={styles.togglePadding} style={{ overflowY: "auto" }}>
         {!_.isEmpty(invoiceNotes) ? (
           <table className="table-xs table-bordered table-hover mb-0 table border">
             <thead>

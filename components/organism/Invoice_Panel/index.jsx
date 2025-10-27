@@ -16,6 +16,7 @@ import { INVOICE_STATUS_MAPPING } from "lib/constants";
 
 // styles
 import styles from "./styles.module.scss";
+import invoice_utils from "lib/utils/invoice_utils";
 
 const Com = ({
   data,
@@ -43,6 +44,16 @@ const Com = ({
   const [historyInvoiceId, setHistoryInvoiceId] = useState(null);
 
   useEffect(() => {
+    ueModal(invoiceId, modalType, subModalType);
+  }, [invoiceId, modalType, subModalType]);
+
+  useEffect(() => {
+    if (data) {
+      setTreatedData(runTreatment(data));
+    }
+  }, [data]);
+
+  const ueModal = (invoiceId, modalType, subModalType) => {
     switch (modalType) {
       case "edit":
         setEditingId(invoiceId);
@@ -62,34 +73,24 @@ const Com = ({
         setHistoryInvoiceId(null);
         break;
     }
-  }, [invoiceId, modalType, subModalType]);
-
-  useEffect(() => {
-    if (data) {
-      setTreatedData(runTreatment(data));
-    }
-  }, [data]);
+  };
 
   const runTreatment = (data) => {
     return {
       total: data?.totalCount,
       data: data?.items?.map((a) => {
-        const { invoice, header } = a;
-        const { orderJSON } = invoice || {};
-        let orderObj = null;
-        try {
-          orderObj = JSON.parse(orderJSON);
-        } catch (error) {
-          // noop
-        }
-
-        return { ...invoice, ...header, ...orderObj };
+        const mergedData = invoice_utils.flattenResWithPrefix(a);
+        return { ...mergedData };
       }),
     };
   };
 
   const handleEdit = (invoiceId, modalType = "edit", activeOnly = false) => {
     const pathname = router?.asPath?.split("?")?.[0];
+
+    // redundant. to increas speed of click ===
+    ueModal(invoiceId, modalType)
+    // ===
 
     const query = {
       ...router.query,

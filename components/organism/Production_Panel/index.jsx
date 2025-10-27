@@ -53,6 +53,16 @@ const Com = ({
   const [uiIsShowBreakdown, setUiIsShowBreakdown] = useState(false);
 
   useEffect(() => {
+    ueModal(masterId, modalType, subModalType);
+  }, [masterId, modalType, subModalType]);
+
+  useEffect(() => {
+    if (data) {
+      setTreatedData(runTreatment(data));
+    }
+  }, [data]);
+
+  const ueModal = (masterId, modalType, subModalType) => {
     switch (modalType) {
       case "edit":
         setEditingOrderMasterId(masterId);
@@ -80,13 +90,7 @@ const Com = ({
         setHistoryOrderMasterId(null);
         break;
     }
-  }, [masterId, modalType, subModalType]);
-
-  useEffect(() => {
-    if (data) {
-      setTreatedData(runTreatment(data));
-    }
-  }, [data]);
+  };
 
   const runTreatment = (data) => {
     return data;
@@ -94,6 +98,10 @@ const Com = ({
 
   const handleEdit = (masterId, modalType = "edit", activeOnly = false) => {
     const pathname = router?.asPath?.split("?")?.[0];
+    
+    // redundant. to increas speed of click ===
+    ueModal(masterId, modalType);
+    // ===
 
     const query = {
       ...router.query,

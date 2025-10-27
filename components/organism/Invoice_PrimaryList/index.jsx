@@ -74,7 +74,7 @@ const Com = (props) => {
   const columns = applyField(
     [
       {
-        key: "invoiceId",
+        key: "inv_invoiceId",
         title: "Invoice Id",
         fixed: "left",
         render: (text, record) => {
@@ -83,12 +83,12 @@ const Com = (props) => {
               <Dropdown_WorkOrderActions
                 data={record}
                 {...{
-                  onEdit: () => onEdit(record?.invoiceId),
-                  onHistory: () => onHistory(record?.invoiceId),
+                  onEdit: () => onEdit(record?.inv_invoiceId),
+                  onHistory: () => onHistory(record?.inv_invoiceId),
                   onUpdate,
                 }}
               />
-              {copied === record?.invoiceId ? (
+              {copied === record?.inv_invoiceId ? (
                 <i
                   title="copy invoice number"
                   className={cn("fa-solid fa-check ms-1", styles.notCopiedIcon)}
@@ -105,7 +105,7 @@ const Com = (props) => {
         },
       },
       {
-        key: "workOrderNo",
+        key: "inv_workOrderNo",
         title: "Work Order#",
       },
       // ========= status ========
@@ -140,42 +140,42 @@ const Com = (props) => {
         },
       },
       {
-        key: "customerName",
+        key: "m_CustomerName",
         title: "Customer Name",
       },
       {
-        key: "branch",
+        key: "m_Branch",
         title: "Branch",
       },
       {
-        key: "email",
+        key: "m_Email",
         title: "Email",
       },
       {
-        key: "phoneNumber",
+        key: "m_PhoneNumber",
         title: "Phone",
       },
       {
-        key: "address",
+        key: "m_Address",
         title: "Address",
       },
       {
-        key: "city",
+        key: "m_City",
         title: "City"
       },
       {
         key: "completeDate_display",
-        title: "Complete Date",
+        title: "Actual Shipped Date",
         initKey: "completeDate",
-        width: 145,
+        width: 170,
       },
       {
-        key: "invoiceAmount",
+        key: "m_InvoiceAmount",
         title: "Invoice Amount",
         className: "text-right",
       },
       {
-        key: "salesRep",
+        key: "m_SalesRep",
         title: "Sales Rep",
       },
       {
@@ -185,11 +185,13 @@ const Com = (props) => {
         width: 145,
       },
       {
-        key: "lastModifiedBy",
+        key: "invh_lastModifiedBy",
         title: "Modified By",
       },
     ]?.filter((a) => a.display === undefined || a.display),
   );
+
+  console.log(data)
 
   const runTreatement = async (data) => {
     let _data = JSON.parse(JSON.stringify(data));
@@ -197,26 +199,25 @@ const Com = (props) => {
     _data = _data?.map((a) => {
       if (!a) return null;
       const merged = { ...a };
-      const { invoiceStatus, createdAt, completeDate, orderObj } = a;
-      const { WOStatus, WorkOrderNo } = orderObj || {};
+      const { invh_invoiceStatus, invh_createdAt, m_CompleteDate, m_WOStatus } = a;
 
       const orderStatusList = _.values(ORDER_STATUS);
-      merged.m_Status_display = WOStatus
+      merged.m_Status_display = m_WOStatus
         ? orderStatusList?.find(
-            (a) => a.key.toString() === WOStatus?.toString(),
+            (a) => a.key.toString() === m_WOStatus?.toString(),
           )
         : null;
 
       const invoiceStatusList = _.values(INVOICE_STATUS_MAPPING);
 
-      merged.invoiceStatus_display = invoiceStatus
+      merged.invoiceStatus_display = invh_invoiceStatus
         ? invoiceStatusList?.find(
-            (a) => a.key.toString() === invoiceStatus?.toString(),
+            (a) => a.key.toString() === invh_invoiceStatus?.toString(),
           )
         : null;
 
-      merged.createdAt_display = utils.formatDate(createdAt);
-      merged.completeDate_display = utils.formatDate(completeDate);
+      merged.createdAt_display = utils.formatDate(invh_createdAt);
+      merged.completeDate_display = utils.formatDateForMorganLegacy(m_CompleteDate);
 
       return merged;
     });

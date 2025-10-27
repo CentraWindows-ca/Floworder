@@ -30,6 +30,8 @@ import useLoadingBar from "lib/hooks/useLoadingBar";
 
 // styles
 import styles from "./styles.module.scss";
+import invoice_utils from "lib/utils/invoice_utils";
+import InvoiceApi from "lib/api/InvoiceApi";
 
 const getStatusName = (statusCode) =>
   _.values(INVOICE_STATUS_MAPPING).find(
@@ -42,7 +44,7 @@ const WorkOrderActions = ({
   onEdit,
   onUpdate,
 }) => {
-  const { invoiceId, invoiceStatus } = data;
+  const { inv_invoiceId, invh_invoiceStatus } = data;
   const { toast, permissions } = useContext(GeneralContext);
 
   const { requestData } = useInterrupt();
@@ -52,48 +54,25 @@ const WorkOrderActions = ({
 
   // statusIndex
   let allowedStatus = [];
-  allowedStatus = INVOICE_WORKFLOW[getStatusName(invoiceStatus)] || [];
+  allowedStatus = INVOICE_WORKFLOW[getStatusName(invh_invoiceStatus)] || [];
 
-  const getStatusPayload = async (data, newStatus, _kind) => {
-    const { invoiceId } = data;
-    const payload = {
-      invoiceId,
-      newStatus,
-    };
-    payload["oldStatus"] = data.invoiceStatus
-
-    // different target has different required fields
-    const missingFields = INVOICE_TRANSFER_FIELDS?.[newStatus] || {};
-    if (!_.isEmpty(missingFields)) {
-      const moreFields = await requestData(missingFields, data);
-      // cancel
-      if (moreFields === null) return null;
-      payload = { ...payload, ...moreFields };
-    }
-    return payload;
-  };
-
-  const handleMoveTo = async (newStatus, _kind) => {
-    const payload = await getStatusPayload(data, newStatus, _kind);
+  const handleMoveTo = async (newStatus) => {
+    const initData = data
+    const payload = await invoice_utils.getStatusPayload({}, newStatus, initData, requestData);
     if (payload === null) return null;
     if (
       !window.confirm(
-        `For invoice [${data?.invoiceId}], are you sure to update Status to ${newStatus}?`,
+        `For invoice [${data?.inv_invoiceId}], are you sure to update Status to ${newStatus}?`,
       )
     ) {
       return null;
     }
 
-    await doMove(payload);
-
+    await InvoiceApi.wrapper_updateInvoiceStatus(payload, initData);
     toast("Status updated", { type: "success" });
     setCloseToggle((p) => !p);
     onUpdate();
   };
-
-  const doMove = useLoadingBar(async (payload) => {
-    await OrdersApi.updateWorkOrderStatus(null, payload, data);
-  });
 
   const actionsActive = (
     <div className={cn(styles.workorderActionsContainer)}>
@@ -115,7 +94,7 @@ const WorkOrderActions = ({
             type="text"
             icon={<ArrowRightOutlined />}
             onClick={() => handleMoveTo(key, "w")}
-            key={`${invoiceId}_${key}`}
+            key={`${inv_invoiceId}_${key}`}
           >
             Move To:{" "}
             <span
@@ -130,17 +109,6 @@ const WorkOrderActions = ({
           </Button>
         );
       })}
-
-      <Button
-        type="text"
-        icon={<i className="fa-solid fa-clock-rotate-left"></i>}
-        onClick={() => {
-          setCloseToggle((p) => !p);
-          onHistory();
-        }}
-      >
-        View Invoice History
-      </Button>
     </div>
   );
 
@@ -150,7 +118,7 @@ const WorkOrderActions = ({
         renderTrigger={(onClick) => {
           return (
             <span style={{ cursor: "pointer" }} onClick={onClick}>
-              {invoiceId}
+              {inv_invoiceId}
             </span>
           );
         }}

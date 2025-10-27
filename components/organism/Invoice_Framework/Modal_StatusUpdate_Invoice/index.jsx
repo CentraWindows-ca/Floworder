@@ -10,8 +10,8 @@ const Com = ({ missingFields, onSubmit, onCancel, isPaused, data }) => {
     if (isPaused && data) {
       const _values = {};
       const mapping = {
-        rejectReason: data["rejectReason"],
-        rejectNotes: data["rejectNotes"],
+        invh_invh_rejectReason: data["invh_invh_rejectReason"],
+        invh_invh_rejectNotes: data["invh_invh_rejectNotes"],
       };
 
       // get init values
@@ -52,18 +52,18 @@ const Com = ({ missingFields, onSubmit, onCancel, isPaused, data }) => {
     >
       <div className="flex-column flex gap-2">
 
-        {missingFields?.rejectReason && (
+        {missingFields?.invh_rejectReason && (
           <div className="form-group row">
             <label className="col-lg-3">
               Reject Reason
-              {missingFields?.rejectReason?.required && " *"}
+              {missingFields?.invh_rejectReason?.required && " *"}
             </label>
             <div className="col-lg-9">
               <Editable.EF_SelectWithLabel
-                k="rejectReason"
-                value={values?.rejectReason || ""}
+                k="invh_rejectReason"
+                value={values?.invh_rejectReason || ""}
                 onChange={(v) =>
-                  setValues((prev) => ({ ...prev, ["rejectReason"]: v }))
+                  setValues((prev) => ({ ...prev, ["invh_rejectReason"]: v }))
                 }
                 placeholder={"Reject Reason"}
                 options={constants.InvoiceSelectOptions.rejectReasonList}
@@ -72,15 +72,15 @@ const Com = ({ missingFields, onSubmit, onCancel, isPaused, data }) => {
           </div>
         )}
 
-        {missingFields?.rejectNotes && (
+        {missingFields?.invh_rejectNotes && (
           <div className="form-group row">
             <label className="col-lg-3">Notes</label>
             <div className="col-lg-9">
               <Editable.EF_Text
-                k="rejectNotes"
-                value={values?.rejectNotes}
+                k="invh_rejectNotes"
+                value={values?.invh_rejectNotes}
                 onChange={(v) =>
-                  setValues((prev) => ({ ...prev, ["rejectNotes"]: v }))
+                  setValues((prev) => ({ ...prev, ["invh_rejectNotes"]: v }))
                 }
               />
             </div>

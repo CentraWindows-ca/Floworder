@@ -11,20 +11,20 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
     case WORKORDER_STATUS_MAPPING.Pending.key:
     default: // all
       sequence = [
-        "invoiceId",
-        "workOrderNo",
+        "inv_invoiceId",
+        "inv_workOrderNo",
         "invoiceStatus_display",
-        "customerName",
-        "branch",
-        "email",
-        "phoneNumber",
-        "address",
-        "city",
+        "m_CustomerName",
+        "m_Branch",
+        "m_Email",
+        "m_PhoneNumber",
+        "m_Address",
+        "m_City",
         "completeDate_display",
-        "invoiceAmount",
-        "salesRep",
+        "m_InvoiceAmount",
+        "m_SalesRep",
         "createdAt_display",
-        "lastModifiedBy"
+        "invh_lastModifiedBy"
       ];
       break;
   }

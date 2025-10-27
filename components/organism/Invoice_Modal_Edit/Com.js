@@ -45,7 +45,7 @@ export const displayFilter = (itemList, { uiOrderType, permissions }) => {
   });
 };
 export const Block = ({ className_input, inputData }) => {
-  const localContext =  useContext(LocalDataContext);
+  const localContext = useContext(LocalDataContext);
   const {
     data,
     initData,
@@ -54,7 +54,7 @@ export const Block = ({ className_input, inputData }) => {
     checkAddOnField,
     validationResult,
     dictionary,
-  } = localContext
+  } = localContext;
   let {
     Component,
     title,
@@ -71,7 +71,9 @@ export const Block = ({ className_input, inputData }) => {
   }
   const className_required = getIsRequired(initData, id) && "required";
 
-  const _value = renderValue ? renderValue(data?.[id], data, localContext) : data?.[id];
+  const _value = renderValue
+    ? renderValue(data?.[id], data, localContext)
+    : data?.[id];
   const addon = checkAddOnField({ id });
   const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
 
@@ -304,19 +306,20 @@ export const checkEditableById = ({ id, permissions }) => {
     return gmp[group][id];
   };
 
-  if (checkPermission(FEATURE_CODES["om.prod.wo.basic"])) {
-    isEnable = isEnable || checkGroup("basic");
-  }
   if (checkPermission(FEATURE_CODES["om.prod.wo.invoice"])) {
-    isEnable = isEnable || checkGroup("invoice") ||  checkGroup("invoiceBilling") ;
+    isEnable =
+      isEnable ||
+      checkGroup("basic") ||
+      checkGroup("invoice") ||
+      checkGroup("invoiceBilling") ||
+      checkGroup("status")
   }
 
   return isEnable;
 };
 
 export const checkEditableByGroup = ({ group, permissions, data }) => {
-
-  return true
+  return true;
   const isAllowBoth = _.get(
     permissions,
     [`om.prod.wo.${group}`, `canEdit`],
@@ -328,32 +331,27 @@ export const checkEditableByGroup = ({ group, permissions, data }) => {
   return isAllowAny;
 };
 
-export const checkAddOnFieldById = ({
-  id,
-  data,
-  workOrderFields,
-}) => {
+export const checkAddOnFieldById = ({ id, data, workOrderFields }) => {
   let result = { isAddOnEditable: true, isSyncedFromParent: false };
 
   // if data?.m_AddOnLinked === 'SPLIT', isAddOnEditable is true
   const isOrderUnlink = data?.m_AddOnLinked === ADDON_STATUS.detached;
 
   if (workOrderFields?.[id]) {
-    let { 
+    let {
       isReadOnly, // default
-      isSplitNotSync,  // functional purpose
-      isSyncedFromParent // visual color purpose
-    } =
-      workOrderFields[id];
+      isSplitNotSync, // functional purpose
+      isSyncedFromParent, // visual color purpose
+    } = workOrderFields[id];
 
     let _editable = !isReadOnly;
-    let _syncFromParent = isSyncedFromParent
+    let _syncFromParent = isSyncedFromParent;
 
-    // detach has higher priority. if that happens 
+    // detach has higher priority. if that happens
     if (isSplitNotSync) {
-      _editable = isOrderUnlink
-      _syncFromParent = !isOrderUnlink
-    } 
+      _editable = isOrderUnlink;
+      _syncFromParent = !isOrderUnlink;
+    }
 
     result = {
       isAddOnEditable: _editable,

@@ -38,7 +38,6 @@ const Com = ({}) => {
     isLoading,
     initInvoiceId,
     onHide,
-    onAnchor,
     onRestore,
     data,
     checkEditable,

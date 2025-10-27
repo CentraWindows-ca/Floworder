@@ -16,7 +16,11 @@ import OrdersApi from "lib/api/OrdersApi";
 import InvoiceApi from "lib/api/InvoiceApi";
 
 import useLoadingBar from "lib/hooks/useLoadingBar";
-import constants, { ORDER_STATUS, ORDER_TRANSFER_FIELDS } from "lib/constants";
+import constants, {
+  INVOICE_TRANSFER_FIELDS,
+  ORDER_STATUS,
+  ORDER_TRANSFER_FIELDS,
+} from "lib/constants";
 import { uiWoFieldEditGroupMapping } from "lib/constants/invoice_constants_labelMapping";
 import { getOrderKind } from "lib/utils";
 
@@ -30,7 +34,7 @@ export const LocalDataContext = createContext(null);
 
 export const LocalDataProvider = ({
   children,
-  initInvoiceId = "1",
+  initInvoiceId,
 
   // the tab we are open from. we need some logic rely on the path they open the modal
   facility,
@@ -41,7 +45,6 @@ export const LocalDataProvider = ({
   isDeleted,
   ...props
 }) => {
-  console.log("initInvoiceId", initInvoiceId);
   const generalContext = useContext(GeneralContext);
   const { toast, permissions, dictionary } = generalContext;
   const { requestData } = useInterrupt();
@@ -60,6 +63,7 @@ export const LocalDataProvider = ({
   const [newAttachments, setNewAttachments] = useState(null);
 
   const [invoiceNotes, setInvoiceNotes] = useState(null);
+  const [invoiceCallLogs, setInvoiceCallLogs] = useState(null);
 
   const [uiOrderType, setUiOrderType] = useState({});
   const [uiShowMore, setUiShowMore] = useState(true);
@@ -67,6 +71,7 @@ export const LocalDataProvider = ({
 
   const [initData, setInitData] = useState(null);
   const [initDataInvoiceNotes, setInitInvoiceNotes] = useState(null);
+  const [initDataInvoiceCallLogs, setInitInvoiceCallLogs] = useState(null);
 
   // UI purpose
   const [expands, setExpands] = useState({});
@@ -136,18 +141,20 @@ export const LocalDataProvider = ({
         return null;
       }
     }
-    clear();
     onHide();
+    clear();
   };
 
   // ====== api calls
   const clear = () => {
     setData(null);
     setInvoiceNotes(null);
+    setInvoiceCallLogs(null);
     setExistingAttachments(null);
     setNewAttachments(null);
     setInitData(null);
     setInitInvoiceNotes(null);
+    setInitInvoiceCallLogs(null);
     setEditedGroup({});
     setValidationResult(null);
   };
@@ -162,8 +169,9 @@ export const LocalDataProvider = ({
     const mergedData = await doInitInvoice(initInvoiceId);
 
     if (mergedData) {
-      initAttachmentList(mergedData?.m_MasterId);
-      await initInvoiceNotes(mergedData?.m_MasterId);
+      initAttachmentList(mergedData?.inv_invoiceId);
+      await initInvoiceNotes(mergedData?.inv_invoiceId);
+      await initInvoiceCallLogs(mergedData?.inv_invoiceId);
     }
 
     setIsLoading(false);
@@ -171,13 +179,12 @@ export const LocalDataProvider = ({
 
   const doInitInvoice = useLoadingBar(
     async (initInvoiceId, stillEditingData = {}) => {
-      console.log("???", initInvoiceId)
       const res = await InvoiceApi.getInvoiceOrderDetails(initInvoiceId);
 
       let mergedData = {};
       if (typeof res === "object") {
         // ==== assemble, add prefix
-        mergedData = invoice_utils.flattenResWithPrefix(res)
+        mergedData = invoice_utils.flattenResWithPrefix(res);
 
         // set init fields from newest wo
         setInitData(JSON.parse(JSON.stringify(mergedData)));
@@ -186,7 +193,7 @@ export const LocalDataProvider = ({
         setData({ ...mergedData, ...stillEditingData });
       }
 
-      console.log(mergedData)
+      console.log(mergedData);
 
       return mergedData;
     },
@@ -205,51 +212,39 @@ export const LocalDataProvider = ({
     // setInitInvoiceNotes(JSON.parse(JSON.stringify(_returnTrips)));
   });
 
-  const initAttachmentList = useLoadingBar(async (masterId) => {
-    const res = await OrdersApi.getUploadFileByRecordIdAsync({
-      MasterId: masterId,
-      ProdTypeId: constants.PROD_TYPES.m,
-    });
+  const initInvoiceCallLogs = useLoadingBar(async (_invoiceId) => {
+    let _list = await InvoiceApi.getInvoiceCallLogs(_invoiceId);
+    _list = _list?.map((a) => ({
+      ...a,
+      dateCalled: utils.formatDateForMorganLegacy(a.dateCalled),
+    }));
 
+    _list = _.orderBy(_list, ["dateCalled"], ["DESC"]);
+    setInvoiceCallLogs(_list);
+    setInitInvoiceCallLogs(JSON.parse(JSON.stringify(_list)));
+  });
+
+  const initAttachmentList = useLoadingBar(async (_invoiceId) => {
+    const res = await InvoiceApi.getInvoiceUploadFiles(_invoiceId);
     setExistingAttachments(res);
   });
 
   //
   const doUpdateStatus = async (newStatus) => {
-    const payload = await getStatusPayload(data, newStatus);
+    const payload = await invoice_utils.getStatusPayload(
+      data,
+      newStatus,
+      initData,
+      requestData,
+    );
     if (payload === null) return null;
-    await doMove(payload);
+
+    await InvoiceApi.wrapper_updateInvoiceStatus(payload, initData);
 
     toast("Status updated", { type: "success" });
     await doInit(initInvoiceId);
     onSave();
   };
-
-  const getStatusPayload = async (data, newStatus) => {
-    const { m_WorkOrderNo, m_MasterId } = data;
-    const payload = {
-      m_WorkOrderNo,
-      m_MasterId,
-      newStatus,
-    };
-
-    payload["oldStatus"] = data[`invoiceStatus`];
-
-    // different target has different required fields
-    const missingFields = ORDER_TRANSFER_FIELDS?.[newStatus] || {};
-
-    if (!_.isEmpty(missingFields)) {
-      const moreFields = await requestData(missingFields);
-      // cancel
-      if (moreFields === null) return null;
-      payload = { ...payload, ...moreFields };
-    }
-    return payload;
-  };
-
-  const doMove = useLoadingBar(async (payload) => {
-    await OrdersApi.updateWorkOrderStatus(null, payload, initData);
-  });
 
   const doRestore = useLoadingBar(async () => {
     if (!window.confirm(`Are you sure to delete [${data?.m_WorkOrderNo}]?`)) {
@@ -316,6 +311,19 @@ export const LocalDataProvider = ({
     // await initInvoiceNotes(data?.m_MasterId);
   });
 
+  const doDeleteInvoiceCallLogs = useLoadingBar(async (_rt) => {
+    await InvoiceApi.deleteCallLogsById(_rt);
+    await initInvoiceCallLogs(data?.inv_invoiceId);
+  });
+  const doAddInvoiceCallLogs = useLoadingBar(async (_rt) => {
+    await InvoiceApi.addInvoiceCallLog({}, _rt, initData);
+    await initInvoiceCallLogs(data?.inv_invoiceId);
+  });
+  const doEditInvoiceCallLogs = useLoadingBar(async (_rt) => {
+    await InvoiceApi.updateInvoiceCallLog({}, _rt, initData);
+    await initInvoiceCallLogs(data?.inv_invoiceId);
+  });
+
   const doSave = useLoadingBar(
     async (group) => {
       const validateResult = onValidate({ initData, data, uiOrderType });
@@ -349,7 +357,10 @@ export const LocalDataProvider = ({
         });
       }
 
-      const _payload = invoice_utils.assemblePrefixedObjToPayload(_changedData, initData)
+      const _payload = invoice_utils.assemblePrefixedObjToPayload(
+        _changedData,
+        initData,
+      );
 
       await InvoiceApi.updateInvoiceById({}, _payload, initData);
       toast("Invoice saved", { type: "success" });
@@ -411,9 +422,15 @@ export const LocalDataProvider = ({
     onAnchor: handleAnchor,
     onUploadAttachment: doUploadAttachment,
     onDeleteAttachment: doDeleteAttachment,
+
     onDeleteInvoiceNotes: doDeleteInvoiceNotes,
     onAddInvoiceNotes: doAddInvoiceNotes,
     onEditInvoiceNotes: doEditInvoiceNotes,
+
+    onDeleteInvoiceCallLogs: doDeleteInvoiceCallLogs,
+    onAddInvoiceCallLogs: doAddInvoiceCallLogs,
+    onEditInvoiceCallLogs: doEditInvoiceCallLogs,
+
     onHide: handleHide,
     onSave: doSave,
     onRestore: doRestore,
@@ -422,6 +439,7 @@ export const LocalDataProvider = ({
 
     LbrBreakDowns,
     invoiceNotes,
+    invoiceCallLogs,
     expands,
     setExpands,
     isEditable,
@@ -441,5 +459,7 @@ export const LocalDataProvider = ({
     </LocalDataContext.Provider>
   );
 };
+
+// ======= utils
 
 export default LocalDataProvider;

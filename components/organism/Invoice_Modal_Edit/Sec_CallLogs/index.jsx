@@ -19,20 +19,33 @@ import Editable from "components/molecule/Editable";
 const COMMON_FIELDS = applyField([
   {
     Component: Editable.EF_DateOnly,
-    id: "returnTripDate",
+    id: "dateCalled",
+    title: "Date",
   },
   {
     Component: Editable.EF_Text,
-    id: "returnTripNotes",
+    id: "notes",
+    title: "Notes",
+  },
+  {
+    Component: Editable.EF_Text,
+    id: "calledMessage",
+    title: "Called Message",
+  },
+  {
+    Component: Editable.EF_Input,
+    id: "submittedBy",
+    title: "Submitted By",
+    disabled: true,
   },
 ]);
 
 const Com = ({ title, id }) => {
   const {
-    onDeleteInvoiceNotes,
-    onAddInvoiceNotes,
-    onEditInvoiceNotes,
-    invoiceNotes,
+    onDeleteInvoiceCallLogs,
+    onAddInvoiceCallLogs,
+    onEditInvoiceCallLogs,
+    invoiceCallLogs,
     checkEditable,
   } = useContext(LocalDataContext);
 
@@ -40,9 +53,9 @@ const Com = ({ title, id }) => {
 
   const handleSave = async () => {
     if (editingRow?.id) {
-      await onEditInvoiceNotes(_.cloneDeep(editingRow));
+      await onEditInvoiceCallLogs(_.cloneDeep(editingRow));
     } else {
-      await onAddInvoiceNotes(_.cloneDeep(editingRow));
+      await onAddInvoiceCallLogs(_.cloneDeep(editingRow));
     }
 
     setEditingRow(null);
@@ -50,82 +63,108 @@ const Com = ({ title, id }) => {
 
   const jsxTitle = (
     <div className={cn(styles.sectionTitle, styles.sectionTitleGrayYellow)}>
-      Notes
+      Call Logs
+      <div>
+        <button onClick={() => setEditingRow({})}>Add</button>
+      </div>
     </div>
   );
 
   return (
     <>
       {jsxTitle}
-      <div className={styles.togglePadding} style={{overflowY: "auto"}}>
-        {checkEditable({ group: "invoiceNotes" }) && (
-          <div className="justify-content-between align-items-center mb-2 flex border-b border-gray-200 pb-2">
-            <div>
-              <button
-                className="btn btn-success"
-                onClick={() => setEditingRow({})}
-              >
-                Add
-              </button>
-            </div>
-          </div>
-        )}
-        {!_.isEmpty(invoiceNotes) ? (
-          <table className="table-xs table-bordered table-hover mb-0 table border">
-            <thead>
-              <tr>
-                <th style={{ width: "180px" }}>Return Trip Date</th>
-                <th>Notes</th>
-                <th style={{ width: "200px" }}>Submitted At</th>
-                <th style={{ width: "140px" }}></th>
-              </tr>
-            </thead>
-            <tbody>
-              {invoiceNotes?.map((a) => {
-                const {
-                  returnTripDate,
-                  returnTripNotes,
-                  submittedBy,
-                  submittedAt,
-                  id,
-                } = a;
-                const submittedAt_display = utils.formatDate(
-                  utils.formatDatetimeForMorganLegacy(submittedAt),
-                );
-                return (
-                  <tr key={`${title}_${id}`}>
-                    <td>{returnTripDate}</td>
-                    <td className="text-left">
-                      {submittedBy ? (
-                        <>
-                          <b>[{submittedBy}]:</b>
-                          <br />
-                        </>
-                      ) : null}
-                      {returnTripNotes || "--"}
-                    </td>
-                    <td>{submittedAt_display}</td>
-                    <td>
-                      <button
-                        className="btn btn-sm btn-outline-primary me-2"
-                        disabled={!checkEditable({ group: "invoiceNotes" })}
-                        onClick={() => setEditingRow(a)}
-                      >
-                        edit
-                      </button>
-                      <button
-                        className="btn btn-sm btn-danger"
-                        disabled={!checkEditable({ group: "invoiceNotes" })}
-                        onClick={() => onDeleteInvoiceNotes(a)}
-                      >
-                        delete
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+      <div className={styles.togglePadding} style={{ overflowY: "auto" }}>
+        {!_.isEmpty(invoiceCallLogs) ? (
+          <>
+            {invoiceCallLogs?.map((a) => {
+              const {
+                dateCalled,
+                notes,
+                calledMessage,
+                submittedBy,
+                submittedAt,
+                id,
+              } = a;
+                  const submittedAt_display = utils.formatDate(
+                    utils.formatDatetimeForMorganLegacy(submittedAt),
+                  );
+
+              return (
+                <div key={id}>
+                  <div className="d-flex justify-content-between">
+                    <div>
+                      {dateCalled}
+                      {submittedBy}
+                    </div>
+                    <div>{calledMessage}</div>
+                  </div>
+                  <div className="text-left">{notes}</div>
+                </div>
+              );
+            })}
+            <table className="table-xs table-bordered table-hover mb-0 table border">
+              <thead>
+                <tr>
+                  <th style={{ width: "180px" }}>Return Trip Date</th>
+                  <th>Notes</th>
+                  <th style={{ width: "200px" }}>Submitted At</th>
+                  <th style={{ width: "140px" }}></th>
+                </tr>
+              </thead>
+              <tbody>
+                {invoiceCallLogs?.map((a) => {
+                  const {
+                    returnTripDate,
+                    returnTripNotes,
+                    dateCalled,
+                    notes,
+                    calledMessage,
+                    submittedBy,
+                    submittedAt,
+                    id,
+                  } = a;
+                  const submittedAt_display = utils.formatDate(
+                    utils.formatDatetimeForMorganLegacy(submittedAt),
+                  );
+                  return (
+                    <tr key={`${title}_${id}`}>
+                      <td>{returnTripDate}</td>
+                      <td className="text-left">
+                        {submittedBy ? (
+                          <>
+                            <b>[{submittedBy}]:</b>
+                            <br />
+                          </>
+                        ) : null}
+                        {returnTripNotes || "--"}
+                      </td>
+                      <td>{submittedAt_display}</td>
+                      <td>
+                        <button
+                          className="btn btn-sm btn-outline-primary me-2"
+                          disabled={
+                            !checkEditable({ group: "invoiceCallLogs" })
+                          }
+                          onClick={() => setEditingRow(a)}
+                        >
+                          edit
+                        </button>
+                        <button
+                          className="btn btn-sm btn-danger"
+                          disabled={
+                            !checkEditable({ group: "invoiceCallLogs" })
+                          }
+                          onClick={() => onDeleteInvoiceCallLogs(a)}
+                        >
+                          delete
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </>
         ) : (
           <NoData />
         )}
@@ -145,7 +184,7 @@ const Com = ({ title, id }) => {
                 setItem={setEditingRow}
                 key={`returntrip_${a.id}`}
                 inputData={a}
-                isEditable={checkEditable({ group: "invoiceNotes" })}
+                isEditable={checkEditable({ group: "invoiceCallLogs" })}
               />
             );
           })}

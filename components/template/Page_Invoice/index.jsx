@@ -21,10 +21,14 @@ import styles from "./styles.module.scss";
 
 const DEFAULT_SORT = "createdAt";
 
+const stripPrefix = (field) => {
+  if (typeof field !== 'string') return field; // keep non-strings unchanged
+  const i = field.indexOf('_');
+  return i === -1 ? field : field.slice(i + 1);
+};
+
 const Com = ({}) => {
   const router = useRouter();
-
-  const { applyPermissionsToExcludeStatuses } = useOrderListPermission();
 
   // ====== search
   const [filters, setFilters] = useState({});
@@ -33,8 +37,6 @@ const Com = ({}) => {
   const {
     status: statusFromParam,
     p = 0,
-    facility: facilityFromParam,
-    tab = "m",
     sort,
     isDeleted,
   } = router?.query || {};
@@ -46,7 +48,7 @@ const Com = ({}) => {
   const status = statusFromParam === "All" ? "" : statusFromParam;
 
   if (status) {
-    filtersObj["invoiceStatus"] = {
+    filtersObj["invh_invoiceStatus"] = {
       operator: constants.VICTOR_FILTER_OPERATOR.Equals,
       value: status,
     };
@@ -68,8 +70,15 @@ const Com = ({}) => {
   const endPoint = InvoiceApi.initReadInvoicesByPage(null, {
     filters: !_.isEmpty(filtersObj) ? _.keys(filtersObj)?.map(k => {
       const {operator = constants.VICTOR_FILTER_OPERATOR.Contains, value} = filtersObj[k]
+
+      /* 
+        because its disassembled fields. need to remove prefix before search
+        backend has its magic to find corresponding fields
+      */
+
+      const field = stripPrefix(k)
       return {
-        field: k,
+        field,
         operator,
         values: [value],
         logic: "AND"
