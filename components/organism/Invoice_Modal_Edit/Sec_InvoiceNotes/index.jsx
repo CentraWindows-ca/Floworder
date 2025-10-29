@@ -18,12 +18,10 @@ import Editable from "components/molecule/Editable";
 
 const COMMON_FIELDS = applyField([
   {
-    Component: Editable.EF_DateOnly,
-    id: "returnTripDate",
-  },
-  {
     Component: Editable.EF_Text,
-    id: "returnTripNotes",
+    id: "notes",
+    title: "Notes",
+    rows: 6,
   },
 ]);
 
@@ -53,7 +51,13 @@ const Com = ({ title, id }) => {
       <span>Notes</span>
       <div>
         {checkEditable({ group: "invoiceNotes" }) && (
-          <button onClick={() => setEditingRow({})}>Add</button>
+          <button
+            className="btn btn-xs btn-success"
+            onClick={() => setEditingRow({})}
+          >
+            <i className="fa-solid fa-plus me-2"></i>
+            Add
+          </button>
         )}
       </div>
     </div>
@@ -62,63 +66,63 @@ const Com = ({ title, id }) => {
   return (
     <>
       {jsxTitle}
-      <div className={styles.togglePadding} style={{ overflowY: "auto" }}>
+      <div className={cn("d-flex flex-column")} style={{ overflowY: "auto" }}>
         {!_.isEmpty(invoiceNotes) ? (
-          <table className="table-xs table-bordered table-hover mb-0 table border">
-            <thead>
-              <tr>
-                <th style={{ width: "180px" }}>Return Trip Date</th>
-                <th>Notes</th>
-                <th style={{ width: "200px" }}>Submitted At</th>
-                <th style={{ width: "140px" }}></th>
-              </tr>
-            </thead>
-            <tbody>
-              {invoiceNotes?.map((a) => {
-                const {
-                  returnTripDate,
-                  returnTripNotes,
-                  submittedBy,
-                  submittedAt,
-                  id,
-                } = a;
-                const submittedAt_display = utils.formatDate(
-                  utils.formatDatetimeForMorganLegacy(submittedAt),
-                );
-                return (
-                  <tr key={`${title}_${id}`}>
-                    <td>{returnTripDate}</td>
-                    <td className="text-left">
-                      {submittedBy ? (
-                        <>
-                          <b>[{submittedBy}]:</b>
-                          <br />
-                        </>
-                      ) : null}
-                      {returnTripNotes || "--"}
-                    </td>
-                    <td>{submittedAt_display}</td>
-                    <td>
-                      <button
-                        className="btn btn-sm btn-outline-primary me-2"
-                        disabled={!checkEditable({ group: "invoiceNotes" })}
-                        onClick={() => setEditingRow(a)}
-                      >
-                        edit
-                      </button>
-                      <button
-                        className="btn btn-sm btn-danger"
-                        disabled={!checkEditable({ group: "invoiceNotes" })}
-                        onClick={() => onDeleteInvoiceNotes(a)}
-                      >
-                        delete
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <>
+            {invoiceNotes?.map((a) => {
+              const { notes, submittedBy, submittedAt, id } = a;
+              const submittedAt_display = utils.formatDate(
+                utils.formatDatetimeForMorganLegacy(submittedAt),
+              );
+
+              return (
+                <div
+                  key={id}
+                  className={cn(
+                    styles.listCard,
+                    styles.listCardEditable,
+                    "pb-2",
+                  )}
+                  
+                >
+                  <div className="d-flex justify-content-between gap-2">
+                    <div className="d-flex gap-2">
+                      <div className={cn(styles.listCardTag, styles.tagDark)}>
+                        {submittedBy}
+                      </div>
+                    </div>
+                    <div className={cn(styles.listCardTag, styles.tagWhite)}>
+                      {submittedAt_display}
+                    </div>
+                  </div>
+                  <div className="pt-2">
+                    <p className="text-left" style={{ whiteSpace: "pre-wrap" }}>{notes}</p>
+                  </div>
+                  <div
+                    className={cn(
+                      styles.iconPen,
+                      "align-items-center justify-content-between py-2",
+                    )}
+                  >
+                    <button
+                      className="btn btn-sm btn-outline-primary me-2"
+                      disabled={!checkEditable({ group: "invoiceNotes" })}
+                      onClick={() => setEditingRow(a)}
+                    >
+                      edit
+                    </button>
+                    <button
+                      className="btn btn-sm btn-danger"
+                      disabled={!checkEditable({ group: "invoiceNotes" })}
+                      onClick={() => onDeleteInvoiceNotes(a)}
+                    >
+                      delete
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </>
         ) : (
           <NoData />
         )}
@@ -143,9 +147,16 @@ const Com = ({ title, id }) => {
             );
           })}
         </div>
-        <div className="justify-content-end flex gap-2">
+        <div className="justify-content-center flex gap-2">
           <button className="btn btn-sm btn-primary" onClick={handleSave}>
             Save
+          </button>
+          <button
+            className="btn btn-sm btn-danger"
+            disabled={!checkEditable({ group: "invoiceNotes" })}
+            onClick={() => onDeleteInvoiceNotes(editingRow)}
+          >
+            Delete
           </button>
         </div>
       </Modal>

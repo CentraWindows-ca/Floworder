@@ -317,279 +317,45 @@
     margin-top: auto;
 }
 
-.summaryContainer {
-    display: grid;
-    gap: 20px;
-    grid-template-columns: repeat(2, 1fr);
-    padding: 5px;
 
-    table {
-        td {
-            text-align: right;
-        }
-    }
-
-    .summaryLaborsTitle {
-        height: 38px;
-        line-height: 38px;
-        font-weight: bold;
-        border-bottom: 1px solid $color_border_table;
-        text-align: center;
-        // padding-left: 10px;
-    }
-
-    .summaryLaborsContainer {
-        display: flex;
-        justify-content: center;
-        gap: 5px;
-        flex-wrap: wrap;
-        // font-size: .8em;
-
-        padding: 12px 0px;
-
-        .summaryLabor {
-            color: $color_dark;
-            border-radius: 4px;
-            border: 1px solid $color_border_table;
-            overflow: hidden;
-            min-width: 100px;
-
-            .summaryLaborSubtitle {
-                // background-color: $color_gray;
-                line-height: 30px;
-                border-bottom: 1px solid $color_border_table;
-                color: black;
-                font-weight: bold;
-                // padding: 5px;
-            }
-
-            .summaryLaborNumbers {
-                padding: 10px;
-                // font-weight: bold;
-
-                .summaryLaborNumberSpan {
-                    // color: $color_red;
-                    color: black;
-                    font-weight: bold;
-                }
-            }
-
-            i {
-                color: $color_gray_dark;
-                font-size: .8.5em;
-            }
-        }
-    }
-}
-
-// ====== AddOns
-// .addonContainer {
-//     padding: 10px;
-//     padding-bottom: 0px;
-//     border-bottom: 1px solid $color_border_table;
-//     background-color: $color_white;
-//     display: flex;
-//     align-items: center;
-//     justify-content: space-between;
-
-//     .addonMainContainer {
-//         width: auto;
-//         border-collapse: collapse;
-//         margin-bottom: -1px;
-//     }
-//     .addonCell {
-//         padding: 4px 15px;
-//         // min-width: 10px;
-//     }
-
-//     .addonLabel {
-//         color: $color_gray_dark;
-//         display: flex;
-//         align-items: center;
-//         gap: 6px;
-//     }
-
-//     .addonParent,
-//     .addonItem {
-//         cursor: pointer;
-//         border: 1px solid $color_border_table;
-//         border-radius: 4px 4px 0px 0px;
-//         // border-bottom: none;
-//         &:hover {
-//             background-color: $color_background;
-//         }
-
-//         &.active {
-//             background-color: $color_background_modal;
-//             border-bottom: 1px solid $color_background_modal;
-//         }
-//     }
-// }
-
-.addonContainer {
+.listCard {
+    border-bottom: 1px solid $color_gray;
     padding: 10px;
-    padding-bottom: 0px;
-    border-bottom: 1px solid $color_border_table;
-    background-color: $color_white;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
 
-    .addonMainContainer {
-        display: flex;
-        align-items: center;
-        margin-bottom: -1px;
+    .listCardTag {
+        font-size: .7rem;
+        padding: 2px 4px;
+        border-width: 1px;
+        border-style: solid;
+        border-radius: 4px;
     }
 
-    .addonListContainer {
-        display: flex;
-
-        .addonItem {
-            cursor: pointer;
-            border: 1px solid $color_border_table;
-            border-radius: 4px 4px 0px 0px;
-            // border-bottom: none;
-            padding: 6px 14px;
-            display: flex;
-            align-items: center;
-            background-color: white;
-
-            &:hover {
-                background-color: $color_background_addonsync;
-            }
-
-            &.active {
-                font-weight: bold;
-                background-color: $color_background_modal;
-                border-bottom: none !important;
-            }
-
-            .addonBadge {
-                color: #999;
-                font-size: .6rem;
-                font-weight: bold;
-                margin-left: 5px;
-                border: 1px solid #999;
-                background-color: $color_addonsync;
-                color: white;
-                padding: 2px 6px;
-                border-radius: 10px;
-            }
-
-            position: relative;
-
-            .addonHoverPopover {
-                font-weight: normal;
-            }
-        }
-
-        &.addonListContainer_parent {
-            .addonItem {
-
-                padding-right: 40px;
-
-                .addonBadge {
-                    background-color: $primary;
-                }
-            }
-        }
-
-        &.addonListContainer_addon {
-            .addonItem {
-                // border-left: 4px solid $color_addonsync;
-                border-top-left-radius: 16px;
-                margin-left: -10px;
-            }
-
-            .addonItem:not(:last-child) {
-                padding-right: 24px;
-                border-right: none;
-            }
-
-        }
-
-        &.addonListContainer_unlinked {
-            gap: 6px;
-            margin-left: 6px;
-
-            .addonItem {
-                border-top-style: dashed;
-                border-left-style: dashed;
-                border-right-style: dashed;
-
-                .addonBadge {
-                    background-color: white;
-                    color: $color_addonsync;
-                }
-            }
-
-            .addonLabel {
-                color: $color_addon_unlink;
-            }
-        }
+    .tagTransparent {
+        @include tagTransparent;
     }
 
-    .addonInfoContainer {
-        display: flex;
-        align-items: center;
-        align-self: self-start;
+    .tagDark {
+        @include tagDark;
     }
-
 }
 
-.addonIconInfo {
-    color: $color_addonsync;
+.listCardEditable {
     cursor: pointer;
-    font-size: .8em;
-}
 
-.addonBgIcon {
-    border: 1px solid $color_addonsync;
-    background-color: $color_background_addonsync;
-    display: inline-block;
-    height: 10px;
-    width: 20px;
-    margin: 0px 5px;
-}
-
-.addonSync_option {
-    background-color: $color_background_addonsync;
-}
-
-.addonSync_status {
-    .statesContainer {
-        outline: 3px double $color_addonsync;
-    }
-}
-
-.addonSync_input {
-    background-color: $color_background_addonsync !important;
-
-    :global(.rbt-input-main) {
-        // background-color: $color_background_edited;
-        background-color: $color_background_addonsync !important;
+    .iconPen {
+        color: $color_border_table;
+        margin-left: 5px;
+        display: none;
     }
 
-    &[type=checkbox]:checked {
-        background-color: $color_addonsync !important;
+    &:hover {
+        color: $color_centraBlue_hover;
+        .iconPen {
+            display: block;
+        }
     }
-}
 
-img.addonIcon {
-    height: 14px;
-    width: 14px;
-    vertical-align: middle;
-    display: inline-block;
 }
-
-.addonParentIcon {
-    color: $color_gray;
-}
-
-.addonChildIcon {
-    color: $color_gray;
-}
-
 
 // ============= UI switch ===========
 .uiClass_withLockout {

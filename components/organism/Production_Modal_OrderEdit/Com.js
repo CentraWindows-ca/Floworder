@@ -279,7 +279,7 @@ export const ToggleFull = ({
 
 export const NoData = ({ title = "No Data", className }) => {
   return (
-    <div className={cn("text-center text-slate-400", className)}>
+    <div className={cn("text-center text-slate-400 p-2", className)}>
       -- {title} --
     </div>
   );

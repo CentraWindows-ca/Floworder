@@ -21,7 +21,7 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
         "m_Address",
         "m_City",
         "completeDate_display",
-        "m_InvoiceAmount",
+        "invoiceAmount_display",
         "m_SalesRep",
         "createdAt_display",
         "invh_lastModifiedBy"

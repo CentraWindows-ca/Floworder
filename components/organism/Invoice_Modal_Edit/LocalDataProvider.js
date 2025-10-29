@@ -34,7 +34,7 @@ export const LocalDataContext = createContext(null);
 
 export const LocalDataProvider = ({
   children,
-  initInvoiceId,
+  initInvoiceHeaderId,
 
   // the tab we are open from. we need some logic rely on the path they open the modal
   facility,
@@ -62,6 +62,8 @@ export const LocalDataProvider = ({
   const [existingAttachments, setExistingAttachments] = useState(null);
   const [newAttachments, setNewAttachments] = useState(null);
 
+  const [salesAttachments, setSalesAttachments] = useState(null)
+
   const [invoiceNotes, setInvoiceNotes] = useState(null);
   const [invoiceCallLogs, setInvoiceCallLogs] = useState(null);
 
@@ -70,17 +72,17 @@ export const LocalDataProvider = ({
   const [validationResult, setValidationResult] = useState(null);
 
   const [initData, setInitData] = useState(null);
-  const [initDataInvoiceNotes, setInitInvoiceNotes] = useState(null);
-  const [initDataInvoiceCallLogs, setInitInvoiceCallLogs] = useState(null);
 
   // UI purpose
   const [expands, setExpands] = useState({});
 
   useEffect(() => {
-    if (initInvoiceId) {
-      doInit(initInvoiceId);
+    if (initInvoiceHeaderId) {
+      console.log(initInvoiceHeaderId, isDeleted);
+
+      doInit(initInvoiceHeaderId);
     }
-  }, [initInvoiceId, isDeleted]);
+  }, [initInvoiceHeaderId, isDeleted]);
 
   const handleChange = (v, k) => {
     setData((prev) => {
@@ -153,20 +155,18 @@ export const LocalDataProvider = ({
     setExistingAttachments(null);
     setNewAttachments(null);
     setInitData(null);
-    setInitInvoiceNotes(null);
-    setInitInvoiceCallLogs(null);
     setEditedGroup({});
     setValidationResult(null);
   };
 
-  const doInit = async (initInvoiceId) => {
+  const doInit = async (initInvoiceHeaderId) => {
     setIsLoading(true);
     setData(null);
     setEditedGroup({});
     setIsEditable(initIsEditable);
     setValidationResult(null);
 
-    const mergedData = await doInitInvoice(initInvoiceId);
+    const mergedData = await doInitInvoice(initInvoiceHeaderId);
 
     if (mergedData) {
       initAttachmentList(mergedData?.inv_invoiceId);
@@ -178,8 +178,8 @@ export const LocalDataProvider = ({
   };
 
   const doInitInvoice = useLoadingBar(
-    async (initInvoiceId, stillEditingData = {}) => {
-      const res = await InvoiceApi.getInvoiceOrderDetails(initInvoiceId);
+    async (initInvoiceHeaderId, stillEditingData = {}) => {
+      const res = await InvoiceApi.getInvoiceOrderDetails(initInvoiceHeaderId);
 
       let mergedData = {};
       if (typeof res === "object") {
@@ -199,17 +199,10 @@ export const LocalDataProvider = ({
     },
   );
 
-  const initInvoiceNotes = useLoadingBar(async (initInvoiceId) => {
-    // let _returnTrips = await OrdersApi.getProductionsReturnTripByID({
-    //   MasterId: initInvoiceId,
-    // });
-    // _returnTrips = _returnTrips?.map((a) => ({
-    //   ...a,
-    //   returnTripDate: utils.formatDateForMorganLegacy(a.returnTripDate),
-    // }));
-    // _returnTrips = _.orderBy(_returnTrips, ["returnTripDate"], ["ASC"]);
-    // setInvoiceNotes(_returnTrips);
-    // setInitInvoiceNotes(JSON.parse(JSON.stringify(_returnTrips)));
+  const initInvoiceNotes = useLoadingBar(async (_invoiceId) => {
+    let _list = await InvoiceApi.getInvoiceNotes(_invoiceId);
+    _list = _.orderBy(_list, ["submittedAt"], ["DESC"]);
+    setInvoiceNotes(_list);
   });
 
   const initInvoiceCallLogs = useLoadingBar(async (_invoiceId) => {
@@ -221,12 +214,15 @@ export const LocalDataProvider = ({
 
     _list = _.orderBy(_list, ["dateCalled"], ["DESC"]);
     setInvoiceCallLogs(_list);
-    setInitInvoiceCallLogs(JSON.parse(JSON.stringify(_list)));
   });
 
   const initAttachmentList = useLoadingBar(async (_invoiceId) => {
     const res = await InvoiceApi.getInvoiceUploadFiles(_invoiceId);
     setExistingAttachments(res);
+
+
+    const resSalesAttachments = await InvoiceApi.getSalesUploadFiles(initInvoiceHeaderId)
+    setSalesAttachments(resSalesAttachments)
   });
 
   //
@@ -242,7 +238,7 @@ export const LocalDataProvider = ({
     await InvoiceApi.wrapper_updateInvoiceStatus(payload, initData);
 
     toast("Status updated", { type: "success" });
-    await doInit(initInvoiceId);
+    await doInit(initInvoiceHeaderId);
     onSave();
   };
 
@@ -261,11 +257,10 @@ export const LocalDataProvider = ({
   const doUploadAttachment = useLoadingBar(async (_files) => {
     const awaitList = _files?.map((_f) => {
       const { file, notes } = _f;
-      return OrdersApi.uploadFileAsync(
+      return InvoiceApi.uploadFileAsync(
         null,
         {
-          masterId: data?.m_MasterId,
-          prodTypeId: constants.PROD_TYPES.m,
+          invoiceId: data?.inv_invoiceId,
           uploadingFile: file,
           notes,
         },
@@ -275,7 +270,7 @@ export const LocalDataProvider = ({
 
     await Promise.all(awaitList);
     toast("Attachment updated", { type: "success" });
-    await initAttachmentList(data?.m_MasterId);
+    await initAttachmentList(data?.inv_invoiceId);
   });
 
   const doDeleteAttachment = useLoadingBar(async (_file) => {
@@ -283,32 +278,28 @@ export const LocalDataProvider = ({
     await OrdersApi.deleteUploadFileByIdAsync(
       {
         id: _file.id,
-        masterId: data?.m_MasterId,
+        masterId: data?.inv_invoiceId,
       },
       null,
       initData,
     );
 
     toast("File deleted", { type: "success" });
-    await initAttachmentList(data?.m_MasterId);
+    await initAttachmentList(data?.inv_invoiceId);
   });
 
   const doDeleteInvoiceNotes = useLoadingBar(async (_rt) => {
-    // await OrdersApi.hardDeleteProductionsReturnTrip({}, _rt, initData);
-    // await initInvoiceNotes(data?.m_MasterId);
+    if (!confirm(`Delete the notes?`)) return null;
+    await InvoiceApi.deleteNotesById(_rt);
+    await initInvoiceNotes(data?.inv_invoiceId);
   });
   const doAddInvoiceNotes = useLoadingBar(async (_rt) => {
-    // await OrdersApi.addProductionsReturnTrip({}, _rt, initData);
-    // await initInvoiceNotes(data?.m_MasterId);
+    await InvoiceApi.addInvoiceNotes({}, _rt, initData);
+    await initInvoiceNotes(data?.inv_invoiceId);
   });
   const doEditInvoiceNotes = useLoadingBar(async (_rt) => {
-    // await OrdersApi.updateProductionsReturnTrip(
-    //   {},
-    //   _rt,
-    //   initData,
-    //   initDataInvoiceNotes?.find((a) => a.id === _rt?.id),
-    // );
-    // await initInvoiceNotes(data?.m_MasterId);
+    await InvoiceApi.updateInvoiceNotes({}, _rt, initData);
+    await initInvoiceNotes(data?.inv_invoiceId);
   });
 
   const doDeleteInvoiceCallLogs = useLoadingBar(async (_rt) => {
@@ -364,7 +355,7 @@ export const LocalDataProvider = ({
 
       await InvoiceApi.updateInvoiceById({}, _payload, initData);
       toast("Invoice saved", { type: "success" });
-      await doInitInvoice(initInvoiceId, stillEditingData);
+      await doInitInvoice(initInvoiceHeaderId, stillEditingData);
       onSave();
     },
     () => setIsSaving(false), // callback function
@@ -395,7 +386,7 @@ export const LocalDataProvider = ({
 
       return _pass;
     },
-    [isEditable, initInvoiceId, data?.m_Status, permissions, dictionary],
+    [isEditable, initInvoiceHeaderId, data?.m_Status, permissions, dictionary],
   );
 
   const { onValidate } = useLocalValidation({
@@ -409,7 +400,7 @@ export const LocalDataProvider = ({
     ...props,
     isLoading,
     isSaving,
-    initInvoiceId,
+    initInvoiceHeaderId,
     data,
     facility,
     setData,
@@ -417,6 +408,7 @@ export const LocalDataProvider = ({
     setNewAttachments,
     existingAttachments,
     setExistingAttachments,
+    salesAttachments,
     onChange: handleChange,
     onUpdateStatus: doUpdateStatus,
     onAnchor: handleAnchor,

@@ -36,7 +36,7 @@ const Com = ({}) => {
     isSaving,
     onSave,
     isLoading,
-    initInvoiceId,
+    initInvoiceHeaderId,
     onHide,
     onRestore,
     data,
@@ -44,7 +44,6 @@ const Com = ({}) => {
     setIsEditable,
     editedGroup,
     existingAttachments,
-    invoiceNotes,
     uIstatusObj,
     isDeleted = false,
   } = useContext(LocalDataContext);
@@ -113,7 +112,7 @@ const Com = ({}) => {
               <div>
                 <button
                   className="btn btn-sm btn-outline-secondary ms-2"
-                  onClick={() => setHistoryInvoiceId(initInvoiceId)}
+                  onClick={() => setHistoryInvoiceId(initInvoiceHeaderId)}
                 >
                   <i className="fa-solid fa-clock-rotate-left"></i>
                 </button>
@@ -125,11 +124,9 @@ const Com = ({}) => {
     </div>
   );
 
-  console.log(editedGroup)
-
   return (
     <Modal
-      show={!!initInvoiceId}
+      show={!!initInvoiceHeaderId}
       title={jsxTitle}
       size="xl"
       onHide={onHide}
@@ -159,7 +156,7 @@ const Com = ({}) => {
             <div
               className={cn(styles.mainItem, styles["grid-1"])}
               style={{
-                maxHeight: 600,
+                maxHeight: 700,
               }}
             >
               <Sec_InvoiceNotes />
@@ -168,7 +165,7 @@ const Com = ({}) => {
             <div
               className={cn(styles.mainItem, styles["grid-1"])}
               style={{
-                maxHeight: 600,
+                maxHeight: 700,
               }}
             >
               <Sec_Files />
@@ -214,7 +211,7 @@ const Com = ({}) => {
       </LoadingBlock>
 
       <Modal_OrderHistory
-        initInvoiceId={historyOrderMasterId}
+        initInvoiceHeaderId={historyOrderMasterId}
         onHide={() => setHistoryInvoiceId(null)}
         layer={1}
       />

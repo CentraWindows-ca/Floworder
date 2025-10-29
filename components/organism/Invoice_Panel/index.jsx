@@ -29,7 +29,7 @@ const Com = ({
 }) => {
   const router = useRouter();
   const {
-    invoiceId,
+    invoiceHeaderId,
     modalType,
     subModalType,
     sort,
@@ -39,13 +39,13 @@ const Com = ({
 
   const [treatedData, setTreatedData] = useState({});
 
-  const [editingInvoiceId, setEditingId] = useState(null);
+  const [editingId, setEditingId] = useState(null);
   const [isEditable, setIsEditable] = useState(false);
   const [historyInvoiceId, setHistoryInvoiceId] = useState(null);
 
   useEffect(() => {
-    ueModal(invoiceId, modalType, subModalType);
-  }, [invoiceId, modalType, subModalType]);
+    ueModal(invoiceHeaderId, modalType, subModalType);
+  }, [invoiceHeaderId, modalType, subModalType]);
 
   useEffect(() => {
     if (data) {
@@ -53,10 +53,10 @@ const Com = ({
     }
   }, [data]);
 
-  const ueModal = (invoiceId, modalType, subModalType) => {
+  const ueModal = (invoiceHeaderId, modalType, subModalType) => {
     switch (modalType) {
       case "edit":
-        setEditingId(invoiceId);
+        setEditingId(invoiceHeaderId);
         setIsEditable(true);
         break;
       default:
@@ -67,7 +67,7 @@ const Com = ({
 
     switch (subModalType) {
       case "history":
-        setHistoryInvoiceId(invoiceId);
+        setHistoryInvoiceId(invoiceHeaderId);
         break;
       default:
         setHistoryInvoiceId(null);
@@ -85,21 +85,21 @@ const Com = ({
     };
   };
 
-  const handleEdit = (invoiceId, modalType = "edit", activeOnly = false) => {
+  const handleEdit = (invoiceHeaderId, modalType = "edit", activeOnly = false) => {
     const pathname = router?.asPath?.split("?")?.[0];
 
     // redundant. to increas speed of click ===
-    ueModal(invoiceId, modalType)
+    // ueModal(invoiceHeaderId, modalType)
     // ===
 
     const query = {
       ...router.query,
-      invoiceId,
+      invoiceHeaderId,
       modalType,
     };
 
-    if (!invoiceId) {
-      delete query.invoiceId;
+    if (!invoiceHeaderId) {
+      delete query.invoiceHeaderId;
       delete query.modalType;
     }
 
@@ -118,16 +118,16 @@ const Com = ({
     );
   };
 
-  const handleHistory = (invoiceId) => {
+  const handleHistory = (invoiceHeaderId) => {
     const pathname = router?.asPath?.split("?")?.[0];
 
     const query = {
       ...router.query,
-      invoiceId,
+      invoiceHeaderId,
       subModalType: "history",
     };
-    if (!invoiceId) {
-      delete query.invoiceId;
+    if (!invoiceHeaderId) {
+      delete query.invoiceHeaderId;
       delete query.subModalType;
     }
 
@@ -280,7 +280,7 @@ const Com = ({
         onHide={() => handleEdit()}
         onSave={handleSaveDone}
         onRestore={handleRestoreDone}
-        initInvoiceId={editingInvoiceId}
+        initInvoiceHeaderId={editingId}
         isDeleted={isDeleted == 1}
         initIsEditable={isEditable}
       />

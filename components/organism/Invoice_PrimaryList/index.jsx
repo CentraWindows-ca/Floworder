@@ -170,7 +170,7 @@ const Com = (props) => {
         width: 170,
       },
       {
-        key: "m_InvoiceAmount",
+        key: "invoiceAmount_display",
         title: "Invoice Amount",
         className: "text-right",
       },
@@ -191,15 +191,13 @@ const Com = (props) => {
     ]?.filter((a) => a.display === undefined || a.display),
   );
 
-  console.log(data)
-
   const runTreatement = async (data) => {
     let _data = JSON.parse(JSON.stringify(data));
 
     _data = _data?.map((a) => {
       if (!a) return null;
       const merged = { ...a };
-      const { invh_invoiceStatus, invh_createdAt, m_CompleteDate, m_WOStatus } = a;
+      const { invh_invoiceStatus, invh_createdAt, m_InvoiceAmount, m_CompleteDate, m_WOStatus } = a;
 
       const orderStatusList = _.values(ORDER_STATUS);
       merged.m_Status_display = m_WOStatus
@@ -215,6 +213,7 @@ const Com = (props) => {
             (a) => a.key.toString() === invh_invoiceStatus?.toString(),
           )
         : null;
+      merged.invoiceAmount_display = utils.formatCurrency2Decimal(m_InvoiceAmount)
 
       merged.createdAt_display = utils.formatDate(invh_createdAt);
       merged.completeDate_display = utils.formatDateForMorganLegacy(m_CompleteDate);

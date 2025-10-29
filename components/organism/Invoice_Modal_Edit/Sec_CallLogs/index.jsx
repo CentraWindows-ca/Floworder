@@ -8,13 +8,21 @@ import {
 } from "lib/constants/production_constants_labelMapping";
 
 import Modal from "components/molecule/Modal";
-// styles
-import styles from "../styles.module.scss";
+
 import utils from "lib/utils";
 
 import { LocalDataContext } from "../LocalDataProvider";
 import { ToggleBlock, NoData } from "../Com";
 import Editable from "components/molecule/Editable";
+
+import { CalledMessageTypes } from "lib/constants";
+
+// styles
+import stylesRoot from "../styles.module.scss";
+import stylesCurrent from "./styles.module.scss";
+const styles = { ...stylesRoot, ...stylesCurrent };
+
+const _calledMessageTypesList = _.values(CalledMessageTypes);
 
 const COMMON_FIELDS = applyField([
   {
@@ -28,9 +36,10 @@ const COMMON_FIELDS = applyField([
     title: "Notes",
   },
   {
-    Component: Editable.EF_Text,
+    Component: Editable.EF_SelectWithLabel,
     id: "calledMessage",
     title: "Called Message",
+    options: _calledMessageTypesList,
   },
   {
     Component: Editable.EF_Input,
@@ -47,6 +56,7 @@ const Com = ({ title, id }) => {
     onEditInvoiceCallLogs,
     invoiceCallLogs,
     checkEditable,
+    dictionary,
   } = useContext(LocalDataContext);
 
   const [editingRow, setEditingRow] = useState(null);
@@ -64,16 +74,19 @@ const Com = ({ title, id }) => {
   const jsxTitle = (
     <div className={cn(styles.sectionTitle, styles.sectionTitleGrayYellow)}>
       Call Logs
-      <div>
+      {/* <div>
         <button onClick={() => setEditingRow({})}>Add</button>
-      </div>
+      </div> */}
     </div>
   );
 
   return (
     <>
       {jsxTitle}
-      <div className={styles.togglePadding} style={{ overflowY: "auto" }}>
+      <div
+        className={cn("d-flex flex-column")}
+        style={{ overflowY: "auto" }}
+      >
         {!_.isEmpty(invoiceCallLogs) ? (
           <>
             {invoiceCallLogs?.map((a) => {
@@ -85,85 +98,55 @@ const Com = ({ title, id }) => {
                 submittedAt,
                 id,
               } = a;
-                  const submittedAt_display = utils.formatDate(
-                    utils.formatDatetimeForMorganLegacy(submittedAt),
-                  );
+              const submittedAt_display = utils.formatDate(
+                utils.formatDatetimeForMorganLegacy(submittedAt),
+              );
+              const calledMessageObj = _calledMessageTypesList?.find(
+                (a) => a.label === calledMessage,
+              );
+
+              const { color, borderColor, background, icon, label } =
+                calledMessageObj || {};
 
               return (
-                <div key={id}>
-                  <div className="d-flex justify-content-between">
-                    <div>
-                      {dateCalled}
-                      {submittedBy}
+                <div key={id} className={cn(styles.listCard, "pb-2")}>
+                  <div className="d-flex justify-content-between gap-2">
+                    <div className="d-flex gap-2">
+                      <div className={cn(styles.listCardTag, styles.tagWhite)}>
+                        {dateCalled}
+                      </div>
+                      <div className={cn(styles.listCardTag, styles.tagDark)}>
+                        {submittedBy}
+                      </div>
                     </div>
-                    <div>{calledMessage}</div>
+                    <div
+                      className={cn(styles.listCardTag)}
+                      style={{ background, borderColor, color }}
+                    >
+                      <i className={icon} />
+                      {label}
+                    </div>
                   </div>
-                  <div className="text-left">{notes}</div>
+                  <div className="pt-2 text-left">{notes}</div>
+                  {/* <div className="align-items-center justify-content-between py-2">
+                    <button
+                      className="btn btn-sm btn-outline-primary me-2"
+                      disabled={!checkEditable({ group: "invoiceCallLogs" })}
+                      onClick={() => setEditingRow(a)}
+                    >
+                      edit
+                    </button>
+                    <button
+                      className="btn btn-sm btn-danger"
+                      disabled={!checkEditable({ group: "invoiceCallLogs" })}
+                      onClick={() => onDeleteInvoiceCallLogs(a)}
+                    >
+                      delete
+                    </button>
+                  </div> */}
                 </div>
               );
             })}
-            <table className="table-xs table-bordered table-hover mb-0 table border">
-              <thead>
-                <tr>
-                  <th style={{ width: "180px" }}>Return Trip Date</th>
-                  <th>Notes</th>
-                  <th style={{ width: "200px" }}>Submitted At</th>
-                  <th style={{ width: "140px" }}></th>
-                </tr>
-              </thead>
-              <tbody>
-                {invoiceCallLogs?.map((a) => {
-                  const {
-                    returnTripDate,
-                    returnTripNotes,
-                    dateCalled,
-                    notes,
-                    calledMessage,
-                    submittedBy,
-                    submittedAt,
-                    id,
-                  } = a;
-                  const submittedAt_display = utils.formatDate(
-                    utils.formatDatetimeForMorganLegacy(submittedAt),
-                  );
-                  return (
-                    <tr key={`${title}_${id}`}>
-                      <td>{returnTripDate}</td>
-                      <td className="text-left">
-                        {submittedBy ? (
-                          <>
-                            <b>[{submittedBy}]:</b>
-                            <br />
-                          </>
-                        ) : null}
-                        {returnTripNotes || "--"}
-                      </td>
-                      <td>{submittedAt_display}</td>
-                      <td>
-                        <button
-                          className="btn btn-sm btn-outline-primary me-2"
-                          disabled={
-                            !checkEditable({ group: "invoiceCallLogs" })
-                          }
-                          onClick={() => setEditingRow(a)}
-                        >
-                          edit
-                        </button>
-                        <button
-                          className="btn btn-sm btn-danger"
-                          disabled={
-                            !checkEditable({ group: "invoiceCallLogs" })
-                          }
-                          onClick={() => onDeleteInvoiceCallLogs(a)}
-                        >
-                          delete
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
           </>
         ) : (
           <NoData />

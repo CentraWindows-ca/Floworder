@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import cn from "classnames"
+import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
 
@@ -17,6 +17,7 @@ const Com = ({ title, id }) => {
     newAttachments,
     setNewAttachments,
     existingAttachments,
+    salesAttachments,
     onUploadAttachment,
     onDeleteAttachment,
     checkEditable,
@@ -54,6 +55,21 @@ const Com = ({ title, id }) => {
   const jsxTitle = (
     <div className={cn(styles.sectionTitle, styles.sectionTitleGrayYellow)}>
       Attachments
+      <div>
+        {checkEditable({ group: "attachments" }) && (
+          <label className="btn btn-xs btn-success" htmlFor="file-upload">
+            <i className="fa-solid fa-plus me-2"></i>
+            Upload
+            <input
+              id="file-upload"
+              type="file"
+              multiple
+              className="d-none"
+              onChange={handleFileChange}
+            />
+          </label>
+        )}
+      </div>
     </div>
   );
 
@@ -61,23 +77,6 @@ const Com = ({ title, id }) => {
     <>
       {jsxTitle}
       <div className={styles.togglePadding}>
-        {checkEditable({ group: "attachments" }) && (
-          <div className="justify-content-between align-items-center mb-2 flex border-b border-gray-200 pb-2">
-            <div>
-              <label htmlFor="file-upload" className="btn btn-success">
-                Upload Files
-              </label>
-
-              <input
-                id="file-upload"
-                type="file"
-                multiple
-                className="d-none"
-                onChange={handleFileChange}
-              />
-            </div>
-          </div>
-        )}
         {!_.isEmpty(existingAttachments) ? (
           <table className="table-xs table-bordered table-hover mb-0 table border">
             <tbody>

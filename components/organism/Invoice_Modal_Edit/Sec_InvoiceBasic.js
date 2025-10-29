@@ -25,8 +25,9 @@ const COMMON_FIELDS = applyField([
     id: "invh_bcInvoiceNo",
   },
   {
-    Component: Editable.EF_Text,
+    Component: Editable.EF_SelectWithLabel,
     id: "invh_rejectReason",
+    options: constants.InvoiceSelectOptions.rejectReasonList,
     rows: 1,
   },
     {
