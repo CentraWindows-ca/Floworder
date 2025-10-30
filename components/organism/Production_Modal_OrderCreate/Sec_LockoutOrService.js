@@ -6,11 +6,12 @@ import Modal from "components/molecule/Modal";
 // styles
 import Editable, { EF_Checkbox } from "components/molecule/Editable";
 
-import Lookup_Lockout from "./Lookup_Lockout"
+import Lookup_Lockout from "./Lookup_Lockout";
 import Lookup_Service from "./Lookup_Service";
 
 // styles
 import styles from "./styles.module.scss";
+import constants from "lib/constants";
 
 export default ({
   lockoutOrder,
@@ -20,7 +21,6 @@ export default ({
   isLockoutOrService,
   setIsLockoutOrService,
 }) => {
-
   const [showLockoutLookup, setShowLockoutLookup] = useState(false);
   const [showServiceLookup, setShowServiceLookup] = useState(false);
 
@@ -56,7 +56,10 @@ export default ({
       <div className="p-4">
         <div className="alert alert-light mb-0 font-bold" role="alert">
           <div className="justify-content-center align-items-center flex">
-            Is this work order Lockout or Service?
+            Is this work order Lockout{" "}
+            {constants.DEV_HOLDING_FEATURES.v20251030_createWithService &&
+              "or Service"}
+            ?
             <div className="ms-2">
               <Editable.EF_SelectWithLabel
                 id={"lockoutOrService"}
@@ -114,43 +117,45 @@ export default ({
                   </>
                 )}
               </div>
-              <div className="d-flex align-items-center gap-1 py-2">
-                <span>
-                  <EF_Checkbox
-                    id={"enableService"}
-                    value={isEnableService}
-                    onChange={handleEnableService}
-                  />
-                  <label htmlFor="enableService" className="ps-2">
-                    This is a Service order.
-                  </label>
-                </span>
+              {constants.DEV_HOLDING_FEATURES.v20251030_createWithService && (
+                <div className="d-flex align-items-center gap-1 py-2">
+                  <span>
+                    <EF_Checkbox
+                      id={"enableService"}
+                      value={isEnableService}
+                      onChange={handleEnableService}
+                    />
+                    <label htmlFor="enableService" className="ps-2">
+                      This is a Service order.
+                    </label>
+                  </span>
 
-                {isEnableService && (
-                  <>
-                    <span
-                      className={cn(
-                        styles.link,
-                        serviceOrder ? "" : styles.noValue,
-                      )}
-                      onClick={() => setShowServiceLookup(true)}
-                    >
-                      {serviceOrder
-                        ? `[Service Order: ${serviceOrder?.serviceId}]`
-                        : "[Select...]"}
-                    </span>
-                    {serviceOrder ? (
-                      <i
+                  {isEnableService && (
+                    <>
+                      <span
                         className={cn(
-                          "fa-solid fa-circle-xmark",
-                          styles.icon_close,
+                          styles.link,
+                          serviceOrder ? "" : styles.noValue,
                         )}
-                        onClick={() => setServiceOrder(null)}
-                      ></i>
-                    ) : null}
-                  </>
-                )}
-              </div>
+                        onClick={() => setShowServiceLookup(true)}
+                      >
+                        {serviceOrder
+                          ? `[Service Order: ${serviceOrder?.serviceId}]`
+                          : "[Select...]"}
+                      </span>
+                      {serviceOrder ? (
+                        <i
+                          className={cn(
+                            "fa-solid fa-circle-xmark",
+                            styles.icon_close,
+                          )}
+                          onClick={() => setServiceOrder(null)}
+                        ></i>
+                      ) : null}
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -177,4 +182,3 @@ export default ({
     </>
   );
 };
-
