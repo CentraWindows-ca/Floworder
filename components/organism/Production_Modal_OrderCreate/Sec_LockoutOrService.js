@@ -57,7 +57,7 @@ export default ({
         <div className="alert alert-light mb-0 font-bold" role="alert">
           <div className="justify-content-center align-items-center flex">
             Is this work order Lockout{" "}
-            {constants.DEV_HOLDING_FEATURES.v20251030_createWithService &&
+            {!constants.DEV_HOLDING_FEATURES.v20251030_createWithService &&
               "or Service"}
             ?
             <div className="ms-2">
@@ -117,7 +117,7 @@ export default ({
                   </>
                 )}
               </div>
-              {constants.DEV_HOLDING_FEATURES.v20251030_createWithService && (
+              {!constants.DEV_HOLDING_FEATURES.v20251030_createWithService && (
                 <div className="d-flex align-items-center gap-1 py-2">
                   <span>
                     <EF_Checkbox
