@@ -334,8 +334,6 @@ const Screen2 = ({
       ...updateValues,
     };
 
-
-
     // fetch from WM
     if (dbSource === "WM_AB") {
       res = await WM2CWProdApi.sync_AB_WindowMakerByWorkOrderAsync(
