@@ -322,7 +322,7 @@ export const LocalDataProvider = ({
     });
 
     // if there is only a parent
-    setInitDataSiteLockout(_siteLockOut?.[0]);
+    setInitDataSiteLockout(_siteLockOut);
   });
 
   const initItems = useLoadingBar(async (initMasterId) => {
