@@ -314,7 +314,7 @@ export const LocalDataProvider = ({
   const doInitSiteLockOut = useLoadingBar(async (initMasterId) => {
     if (constants.DEV_HOLDING_FEATURES.v20250815_sitelockout_display) return;
 
-    const _siteLockOut = await External_ServiceApi.getSiteLockoutByMasterId({
+    const _siteLockOut = await OrdersApi.getSiteLockoutByMasterId({
       masterId: initMasterId,
     });
 
