@@ -170,6 +170,7 @@ export const LocalDataProvider = ({
 
     if (mergedData) {
       initAttachmentList(mergedData?.inv_invoiceId);
+      initSalesAttachmentList(mergedData?.invh_masterId);
       await initInvoiceNotes(mergedData?.inv_invoiceId);
       await initInvoiceCallLogs(mergedData?.inv_invoiceId);
     }
@@ -219,11 +220,16 @@ export const LocalDataProvider = ({
   const initAttachmentList = useLoadingBar(async (_invoiceId) => {
     const res = await InvoiceApi.getInvoiceUploadFiles(_invoiceId);
     setExistingAttachments(res);
+  });
 
-
-    const resSalesAttachments = await InvoiceApi.getSalesUploadFiles(initInvoiceHeaderId)
+  const initSalesAttachmentList = useLoadingBar(async (_masterId) => {
+    const resSalesAttachments = await OrdersApi.getUploadFileByRecordIdAsync({
+      MasterId: _masterId,
+      ProdTypeId: constants.PROD_TYPES.m
+    })
     setSalesAttachments(resSalesAttachments)
   });
+  
 
   //
   const doUpdateStatus = async (newStatus) => {

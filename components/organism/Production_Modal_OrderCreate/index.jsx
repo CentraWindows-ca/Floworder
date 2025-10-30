@@ -267,9 +267,9 @@ const Screen2 = ({
         winStartDate: existingWorkOrder.w_ProductionStartDate,
         doorStartDate: existingWorkOrder.d_ProductionStartDate,
       });
-      setManufacturingFacility(existingWorkOrder.m_ManufacturingFacility);
-      setDoorManufacturingFacility(existingWorkOrder.d_ManufacturingFacility);
-      setWindowManufacturingFacility(existingWorkOrder.w_ManufacturingFacility);
+      setManufacturingFacility(existingWorkOrder.m_ManufacturingFacility || FACILITY_MAPPING[dbSource]);
+      setDoorManufacturingFacility(existingWorkOrder.d_ManufacturingFacility || DEFAULT_DOOR_FACILITY);
+      setWindowManufacturingFacility(existingWorkOrder.w_ManufacturingFacility || FACILITY_MAPPING[dbSource]);
     } else {
       setInitValues({});
       setManufacturingFacility(FACILITY_MAPPING[dbSource]);

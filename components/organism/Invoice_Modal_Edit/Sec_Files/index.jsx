@@ -11,6 +11,7 @@ import utils from "lib/utils";
 import { LocalDataContext } from "../LocalDataProvider";
 import { ToggleBlock, NoData } from "../Com";
 import OrdersApi from "lib/api/OrdersApi";
+import HoverPopover from "components/atom/HoverPopover";
 
 const Com = ({ title, id }) => {
   const {
@@ -78,8 +79,7 @@ const Com = ({ title, id }) => {
       {jsxTitle}
       <div className={styles.togglePadding}>
         {!_.isEmpty(existingAttachments) ? (
-          <table className="table-xs table-bordered table-hover mb-0 table border">
-            <tbody>
+          <div>
               {existingAttachments?.map((a) => {
                 const {
                   submittedBy,
@@ -91,47 +91,85 @@ const Com = ({ title, id }) => {
                   id,
                 } = a;
                 const size = utils.formatNumber(fileSize / 1024 || 0);
-                const submittedAt_display = utils.formatDate(
-                  utils.formatDatetimeForMorganLegacy(submittedAt),
-                );
+                const submittedAt_display = utils.formatDate(submittedAt);
                 return (
-                  <tr key={`${title}_${id}`}>
-                    <td className="text-left">
-                      <a
-                        className="text-blue-500 hover:text-blue-400"
-                        href={`${OrdersApi.urlGetFile({ id })}`}
-                        target="_blank"
+                  <div
+                    className="text-left"
+                    key={`${fileName}_${id}`}
+                    title={`${submittedAt_display}`}
+                  >
+                    <a
+                      className="text-blue-500 hover:text-blue-400"
+                      href={`${OrdersApi.urlGetFile({ id })}`}
+                      target="_blank"
+                    >
+                      <b>{fileName}</b> [{size} KB]
+                    </a>
+                    {notes ? (
+                      <HoverPopover
+                        trigger={
+                          <>
+                            <i className="fa-solid fa-book ms-2 text-slate-400"></i>
+                          </>
+                        }
                       >
-                        {fileName}
-                      </a>
-                    </td>
-                    <td className="text-right" style={{ width: 120 }}>
-                      {size} KB
-                    </td>
-                    <td>{submittedAt_display}</td>
-                    <td className="text-left">
-                      {submittedBy ? (
-                        <>
-                          <b>[{submittedBy}]:</b>
-                          <br />
-                        </>
-                      ) : null}
-                      {notes || "--"}
-                    </td>
-                    <td style={{ width: 60 }}>
-                      <button
-                        className="btn btn-sm btn-danger"
-                        disabled={!checkEditable({ group: "attachments" })}
-                        onClick={() => onDeleteAttachment(a)}
-                      >
-                        delete
-                      </button>
-                    </td>
-                  </tr>
+                        <div style={{ whiteSpace: "pre-wrap" }}>{notes}</div>
+                      </HoverPopover>
+                    ) : null}
+                  </div>
                 );
               })}
-            </tbody>
-          </table>
+            </div>
+        ) : (
+          <NoData />
+        )}
+
+        <hr />
+
+        {!_.isEmpty(salesAttachments) ? (
+          <div>
+            {salesAttachments?.map((a) => {
+              const {
+                submittedBy,
+                submittedAt,
+                fileName,
+                fileType,
+                fileSize,
+                notes,
+                id,
+              } = a;
+              const size = utils.formatNumber(fileSize / 1024 || 0);
+              const submittedAt_display = utils.formatDate(
+                utils.formatDatetimeForMorganLegacy(submittedAt),
+              );
+              return (
+                <div
+                  className="text-left"
+                  key={`${fileName}_${id}`}
+                  title={`${submittedAt_display}`}
+                >
+                  <a
+                    className="text-blue-500 hover:text-blue-400"
+                    href={`${OrdersApi.urlGetFile({ id })}`}
+                    target="_blank"
+                  >
+                    <b>{fileName}</b> [{size} KB]
+                  </a>
+                  {notes ? (
+                    <HoverPopover
+                      trigger={
+                        <>
+                          <i className="fa-solid fa-book ms-2 text-slate-400"></i>
+                        </>
+                      }
+                    >
+                      <div style={{ whiteSpace: "pre-wrap" }}>{notes}</div>
+                    </HoverPopover>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
         ) : (
           <NoData />
         )}
