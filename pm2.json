@@ -9,7 +9,7 @@
       "interpreter": "/root/.nvm/versions/node/v18.18.0/bin/node",
       "env": {
         "NODE_ENV": "production",
-        "PORT": 1720
+        "PORT": 1740
       }
     }
   ]
