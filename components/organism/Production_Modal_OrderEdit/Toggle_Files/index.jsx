@@ -59,6 +59,21 @@ const Com = ({ title, id }) => {
     </div>
   );
 
+  const ATTACHMENT_CATEGORIES = {
+    Sales: { sortId: 0 },
+    Production: { sortId: 1 },
+    Other: { sortId: 2 },
+  };
+
+  const _list = existingAttachments?.map((a) => {
+    const obj = { ...a };
+
+    obj.category = a.category || "Production";
+    obj.sortId = ATTACHMENT_CATEGORIES[obj.category]?.sortId;
+
+    return obj;
+  });
+
   return (
     <ToggleBlock title={jsxTitle} id={id}>
       <div className={styles.togglePadding}>
@@ -79,59 +94,68 @@ const Com = ({ title, id }) => {
             </div>
           </div>
         )}
-        {!_.isEmpty(existingAttachments) ? (
+        {!_.isEmpty(_list) ? (
           <table className="table-xs table-bordered table-hover mb-0 table border">
             <tbody>
-              {existingAttachments?.map((a) => {
-                const {
-                  submittedBy,
-                  submittedAt,
-                  fileName,
-                  fileType,
-                  fileSize,
-                  notes,
-                  id,
-                } = a;
-                const size = utils.formatNumber(fileSize / 1024 || 0);
-                const submittedAt_display = utils.formatDate(
-                  utils.formatDatetimeForMorganLegacy(submittedAt),
-                );
-                return (
-                  <tr key={`${title}_${id}`}>
-                    <td className="text-left">
-                      <a
-                        className="text-blue-500 hover:text-blue-400"
-                        href={`${OrdersApi.urlGetFile({ id })}`}
-                        target="_blank"
-                      >
-                        {fileName}
-                      </a>
-                    </td>
-                    <td className="text-right" style={{ width: 120 }}>
-                      {size} KB
-                    </td>
-                    <td>{submittedAt_display}</td>
-                    <td className="text-left">
-                      {submittedBy ? (
-                        <>
-                          <b>[{submittedBy}]:</b>
-                          <br />
-                        </>
-                      ) : null}
-                      {notes || "--"}
-                    </td>
-                    <td style={{ width: 60 }}>
-                      <button
-                        className="btn btn-sm btn-danger"
-                        disabled={!checkEditable({ group: "attachments" })}
-                        onClick={() => onDeleteAttachment(a)}
-                      >
-                        delete
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
+              {_list
+                ?.sort((a, b) => {
+                  return b.sortId - a.sortId;
+                })
+                ?.map((a) => {
+                  const {
+                    submittedBy,
+                    submittedAt,
+                    fileName,
+                    fileType,
+                    fileSize,
+                    notes,
+                    category, // Production, Sales, Other
+                    id,
+                  } = a;
+                  const size = utils.formatNumber(fileSize / 1024 || 0);
+                  const submittedAt_display = utils.formatDate(
+                    utils.formatDatetimeForMorganLegacy(submittedAt),
+                  );
+                  return (
+                    <tr key={`${title}_${id}`}>
+                      <td>{category}</td>
+                      <td className="text-left">
+                        <a
+                          className="text-blue-500 hover:text-blue-400"
+                          href={`${OrdersApi.urlGetFile({ id })}`}
+                          target="_blank"
+                        >
+                          {fileName}
+                        </a>
+                      </td>
+                      <td className="text-right" style={{ width: 120 }}>
+                        {size} KB
+                      </td>
+                      <td>{submittedAt_display}</td>
+                      <td className="text-left">
+                        {submittedBy ? (
+                          <>
+                            <b>[{submittedBy}]:</b>
+                            <br />
+                          </>
+                        ) : null}
+                        {notes || "--"}
+                      </td>
+                      <td style={{ width: 60 }}>
+                        <button
+                          className="btn btn-sm btn-danger"
+                          disabled={
+                            !checkEditable({ group: "attachments" }) ||
+                            category !== "Production"
+                          }
+                          onClick={() => onDeleteAttachment(a)}
+                        >
+                          delete
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         ) : (
