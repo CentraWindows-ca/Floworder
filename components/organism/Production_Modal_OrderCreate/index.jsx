@@ -80,7 +80,6 @@ const Com = (props) => {
             setWindowMakerData,
             onCreate: handleCreate,
             existingWorkOrder,
-            setExistingWorkOrder,
           }}
         />
       )}
@@ -125,7 +124,6 @@ const Screen1 = ({
       _wo = { ..._wo?.value?.d, ..._wo?.value?.m, ..._wo?.value?.w };
 
       setExistingWorkOrder(_wo);
-
       setDbSource(existingRecord.dbSource);
       const res = await External_FromApi.getWindowMakerWorkerOrder(
         workOrderNo,
@@ -524,7 +522,7 @@ const Screen2 = ({
           {windowMakerData?.workType || "--"}
         </div>
       </div>
-      {!constants.DEV_HOLDING_FEATURES.v20251006_createWithLockoutOrService && (
+      {!constants.DEV_HOLDING_FEATURES.v20251006_createWithLockoutOrService && !existingWorkOrder && (
         <Sec_LockoutOrService
           {...{
             lockoutOrder,
@@ -533,6 +531,7 @@ const Screen2 = ({
             setServiceOrder,
             isLockoutOrService,
             setIsLockoutOrService,
+            existingWorkOrder
           }}
         />
       )}
