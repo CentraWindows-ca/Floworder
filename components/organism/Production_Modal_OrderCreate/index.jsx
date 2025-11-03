@@ -522,7 +522,7 @@ const Screen2 = ({
           {windowMakerData?.workType || "--"}
         </div>
       </div>
-      {!constants.DEV_HOLDING_FEATURES.v20251006_createWithLockoutOrService && !existingWorkOrder && (
+      {!existingWorkOrder && (
         <Sec_LockoutOrService
           {...{
             lockoutOrder,

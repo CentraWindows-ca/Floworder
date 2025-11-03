@@ -117,7 +117,7 @@ const WorkOrderActions = ({
       <Dropdown_Custom
         renderTrigger={(onClick) => {
           return (
-            <span style={{ cursor: "pointer" }} onClick={onClick}>
+            <span className="d-flex" style={{ cursor: "pointer" }} onClick={onClick}>
               {inv_invoiceId}
             </span>
           );

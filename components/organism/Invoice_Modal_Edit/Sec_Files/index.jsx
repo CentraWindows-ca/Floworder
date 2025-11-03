@@ -1,17 +1,21 @@
 import React, { useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
-import constants from "lib/constants";
 
 import Modal from "components/molecule/Modal";
-// styles
-import styles from "../styles.module.scss";
 import utils from "lib/utils";
 
 import { LocalDataContext } from "../LocalDataProvider";
 import { ToggleBlock, NoData } from "../Com";
+import Divider_Hortizontal from "components/atom/Divider_Hortizontal";
 import OrdersApi from "lib/api/OrdersApi";
 import HoverPopover from "components/atom/HoverPopover";
+import FileDownload from "components/atom/FileDownload";
+// styles
+import stylesRoot from "../styles.module.scss";
+import stylesCurrent from "./styles.module.scss";
+import InvoiceApi from "lib/api/InvoiceApi";
+const styles = { ...stylesRoot, ...stylesCurrent };
 
 const Com = ({ title, id }) => {
   const {
@@ -38,6 +42,10 @@ const Com = ({ title, id }) => {
     }
 
     e.target.value = "";
+  };
+
+  const handleDelete = (a) => {
+    onDeleteAttachment(a);
   };
 
   const handleSave = async () => {
@@ -78,56 +86,56 @@ const Com = ({ title, id }) => {
     <>
       {jsxTitle}
       <div className={styles.togglePadding}>
+        <Divider_Hortizontal>Invoice Attachments</Divider_Hortizontal>
         {!_.isEmpty(existingAttachments) ? (
-          <div>
-              {existingAttachments?.map((a) => {
-                const {
-                  submittedBy,
-                  submittedAt,
-                  fileName,
-                  fileType,
-                  fileSize,
-                  notes,
-                  id,
-                } = a;
-                const size = utils.formatNumber(fileSize / 1024 || 0);
-                const submittedAt_display = utils.formatDate(submittedAt);
-                return (
-                  <div
-                    className="text-left"
-                    key={`${fileName}_${id}`}
-                    title={`${submittedAt_display}`}
-                  >
-                    <a
-                      className="text-blue-500 hover:text-blue-400"
-                      href={`${OrdersApi.urlGetFile({ id })}`}
-                      target="_blank"
+          <div className="d-flex flex-col gap-2">
+            {existingAttachments?.map((a) => {
+              const {
+                submittedBy,
+                submittedAt,
+                fileName,
+                fileType,
+                fileSize,
+                notes,
+                id,
+              } = a;
+              const submittedAt_display = utils.formatDate(submittedAt);
+              const href = InvoiceApi.urlGetFile({ id });
+              return (
+                <div
+                  className="d-flex align-items-center justify-content-between gap-2"
+                  key={`${fileName}_${id}`}
+                >
+                  <FileDownload
+                    {...{
+                      ...a,
+                      href,
+                      submittedAt: submittedAt_display,
+                    }}
+                  />
+
+                  <div>
+                    <button
+                      className="btn btn-xs btn-danger"
+                      onClick={() => handleDelete(a)}
                     >
-                      <b>{fileName}</b> [{size} KB]
-                    </a>
-                    {notes ? (
-                      <HoverPopover
-                        trigger={
-                          <>
-                            <i className="fa-solid fa-book ms-2 text-slate-400"></i>
-                          </>
-                        }
-                      >
-                        <div style={{ whiteSpace: "pre-wrap" }}>{notes}</div>
-                      </HoverPopover>
-                    ) : null}
+                      delete
+                    </button>
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              );
+            })}
+          </div>
         ) : (
           <NoData />
         )}
 
-        <hr />
+        <Divider_Hortizontal className={"pt-3"}>
+          Sales Attachments
+        </Divider_Hortizontal>
 
         {!_.isEmpty(salesAttachments) ? (
-          <div>
+          <div className="d-flex flex-col gap-2">
             {salesAttachments?.map((a) => {
               const {
                 submittedBy,
@@ -138,34 +146,31 @@ const Com = ({ title, id }) => {
                 notes,
                 id,
               } = a;
-              const size = utils.formatNumber(fileSize / 1024 || 0);
-              const submittedAt_display = utils.formatDate(
+               const submittedAt_display = utils.formatDate(
                 utils.formatDatetimeForMorganLegacy(submittedAt),
               );
+              const href = InvoiceApi.urlGetFile({ id });
               return (
                 <div
-                  className="text-left"
+                  className="d-flex align-items-center justify-content-between gap-2"
                   key={`${fileName}_${id}`}
-                  title={`${submittedAt_display}`}
                 >
-                  <a
-                    className="text-blue-500 hover:text-blue-400"
-                    href={`${OrdersApi.urlGetFile({ id })}`}
-                    target="_blank"
-                  >
-                    <b>{fileName}</b> [{size} KB]
-                  </a>
-                  {notes ? (
-                    <HoverPopover
-                      trigger={
-                        <>
-                          <i className="fa-solid fa-book ms-2 text-slate-400"></i>
-                        </>
-                      }
+                  <FileDownload
+                    {...{
+                      ...a,
+                      href,
+                      submittedAt: submittedAt_display,
+                    }}
+                  />
+
+                  <div>
+                    <button
+                      className="btn btn-xs btn-danger"
+                      onClick={() => handleDelete(a)}
                     >
-                      <div style={{ whiteSpace: "pre-wrap" }}>{notes}</div>
-                    </HoverPopover>
-                  ) : null}
+                      delete
+                    </button>
+                  </div>
                 </div>
               );
             })}
@@ -221,6 +226,19 @@ const Com = ({ title, id }) => {
         </div>
       </Modal>
     </>
+  );
+};
+
+const PopoverDiv = ({ notes, fileName, submittedBy, submittedAt }) => {
+  return (
+    <div>
+      <div>
+        <b>{submittedBy}</b> [{submittedAt}]
+      </div>
+      <div className={cn(styles.fileNotes)} style={{ whiteSpace: "pre-wrap" }}>
+        {notes}
+      </div>
+    </div>
   );
 };
 

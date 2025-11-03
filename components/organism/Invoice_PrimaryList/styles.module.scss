@@ -27,11 +27,14 @@
 
 
 .orderNumber {
+    display: flex;
+    align-items: center;
     span {
         cursor: pointer;
         color: $color_centraBlack;
         font-weight: 600;
         text-decoration: underline;
+        flex-grow: 1;
 
         &:hover {
             color: $color_centraBlue_hover;

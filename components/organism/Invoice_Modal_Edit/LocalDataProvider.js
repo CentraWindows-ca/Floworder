@@ -62,7 +62,7 @@ export const LocalDataProvider = ({
   const [existingAttachments, setExistingAttachments] = useState(null);
   const [newAttachments, setNewAttachments] = useState(null);
 
-  const [salesAttachments, setSalesAttachments] = useState(null)
+  const [salesAttachments, setSalesAttachments] = useState(null);
 
   const [invoiceNotes, setInvoiceNotes] = useState(null);
   const [invoiceCallLogs, setInvoiceCallLogs] = useState(null);
@@ -225,11 +225,10 @@ export const LocalDataProvider = ({
   const initSalesAttachmentList = useLoadingBar(async (_masterId) => {
     const resSalesAttachments = await OrdersApi.getUploadFileByRecordIdAsync({
       MasterId: _masterId,
-      ProdTypeId: constants.PROD_TYPES.m
-    })
-    setSalesAttachments(resSalesAttachments)
+      ProdTypeId: constants.PROD_TYPES.m,
+    });
+    setSalesAttachments(resSalesAttachments);
   });
-  
 
   //
   const doUpdateStatus = async (newStatus) => {
@@ -281,14 +280,9 @@ export const LocalDataProvider = ({
 
   const doDeleteAttachment = useLoadingBar(async (_file) => {
     if (!confirm(`Delete ${_file.fileName}?`)) return null;
-    await OrdersApi.deleteUploadFileByIdAsync(
-      {
-        id: _file.id,
-        masterId: data?.inv_invoiceId,
-      },
-      null,
-      initData,
-    );
+    await InvoiceApi.deleteUploadFileByIdAsync({
+      id: _file.id,
+    });
 
     toast("File deleted", { type: "success" });
     await initAttachmentList(data?.inv_invoiceId);

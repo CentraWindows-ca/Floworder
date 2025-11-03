@@ -183,8 +183,7 @@ const Com = ({ className, ...props }) => {
               <th>Qty</th>
               <th>Glass Qty</th>
               <th>Box Qty</th>
-              {!constants.DEV_HOLDING_FEATURES
-                .v20250815_screen_number_display && <th>Screen Qty</th>}
+              <th>Screen Qty</th>
 
               <th>LBR Min.</th>
             </tr>
@@ -199,11 +198,7 @@ const Com = ({ className, ...props }) => {
                 <td>{utils.formatNumber(totalNumber)}</td>
                 <td>{utils.formatNumber(totalGlassQty)} </td>
                 <td>{utils.formatNumber(totalBoxQty)}</td>
-                {!constants.DEV_HOLDING_FEATURES
-                  .v20250815_screen_number_display && (
-                  <td>{utils.formatNumber(totalScreens)}</td>
-                )}
-
+                <td>{utils.formatNumber(totalScreens)}</td>
                 <td>{utils.formatNumber(data["m_TotalLBRMin"])}</td>
               </tr>
             ) : null}
@@ -243,15 +238,11 @@ const Com = ({ className, ...props }) => {
                             <td rowSpan={colSpan}>
                               {utils.formatNumber(prd.otherFields?.TotalBoxQty)}
                             </td>
-                            {!constants.DEV_HOLDING_FEATURES
-                              .v20250815_screen_number_display && (
-                              <td rowSpan={colSpan}>
-                                {utils.formatNumber(
-                                  prd.otherFields?.TotalScreens,
-                                )}
-                              </td>
-                            )}
-
+                            <td rowSpan={colSpan}>
+                              {utils.formatNumber(
+                                prd.otherFields?.TotalScreens,
+                              )}
+                            </td>
                             <td rowSpan={colSpan}>
                               {utils.formatNumber(prd.otherFields?.TotalLBRMin)}
                             </td>

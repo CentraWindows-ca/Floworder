@@ -1,0 +1,7 @@
+@use "styles/theme" as *;
+
+.fileNotes {
+    text-align: left;
+    border-top: 1px solid $color_border_table;
+    padding-top: 5px;
+}

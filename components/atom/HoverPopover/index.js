@@ -22,6 +22,7 @@ const HoverPopover = ({
   panelClassName,
   className,
   placement = "bottom-start",
+  // "top-start" | "top-end" | "right-start" | "right-end" | "bottom-start" | "bottom-end" | "left-start" | "left-end"
   offsetPx = 8,
   // Accessible name for icon-only trigger; override from parent if needed
   ariaLabel = "Open menu",

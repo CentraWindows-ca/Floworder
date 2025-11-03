@@ -264,8 +264,7 @@ const Com = ({}) => {
               <CollapseContainer id="schedule">
                 <Sec_Schedule />
               </CollapseContainer>
-              {!constants.DEV_HOLDING_FEATURES.v20250815_sitelockout_display &&
-              initDataSiteLockout ? (
+              {initDataSiteLockout ? (
                 <>
                   <div className={cn(styles.sectionTitle)}>Site Lockout</div>
                   <CollapseContainer id="sitelockout">
