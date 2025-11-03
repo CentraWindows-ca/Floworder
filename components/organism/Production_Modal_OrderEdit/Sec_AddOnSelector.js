@@ -72,10 +72,10 @@ const AddOnSelector = ({}) => {
         >
           <div className={styles.addonHoverPopover} style={{ width: 380 }}>
             <img src="/linked.svg" className={styles.addonIcon} />{" "}
-            <b>Linking Add-on</b>
+            <b>Linked Add-on</b>
             <hr />
-            This add-on ({m_WorkOrderNo}) <b>is linking</b> with the parent
-            order ({parent?.m_WorkOrderNo})
+            This Add-on ({m_WorkOrderNo}) is linked with the Parent order (
+            {parent?.m_WorkOrderNo})
             <hr />
             <div className={cn(styles.addonBgIcon)} aria-hidden="true" />{" "}
             <b>Fields with light green background: </b>
