@@ -149,7 +149,7 @@ const Com = ({ title, id }) => {
                const submittedAt_display = utils.formatDate(
                 utils.formatDatetimeForMorganLegacy(submittedAt),
               );
-              const href = InvoiceApi.urlGetFile({ id });
+              const href = OrdersApi.urlGetFile({ id })
               return (
                 <div
                   className="d-flex align-items-center justify-content-between gap-2"
