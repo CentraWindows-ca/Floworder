@@ -42,6 +42,7 @@ const WorkOrderActions = ({
   data,
   onHistory,
   onEdit,
+  onView,
   onUpdate,
 }) => {
   const { inv_invoiceId, invh_invoiceStatus } = data;
@@ -76,6 +77,16 @@ const WorkOrderActions = ({
 
   const actionsActive = (
     <div className={cn(styles.workorderActionsContainer)}>
+      <Button
+        type="text"
+        icon={<EyeOutlined />}
+        onClick={() => {
+          onView();
+          setCloseToggle((p) => !p);
+        }}
+      >
+        View Invoice
+      </Button>
       <Button
         type="text"
         icon={<EditOutlined />}

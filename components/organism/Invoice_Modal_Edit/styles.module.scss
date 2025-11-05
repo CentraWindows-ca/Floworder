@@ -340,9 +340,7 @@
 }
 
 .listCardEditable {
-    cursor: pointer;
-
-    .iconPen {
+    .editTool {
         color: $color_border_table;
         margin-left: 5px;
         display: none;
@@ -350,7 +348,7 @@
 
     &:hover {
         color: $color_centraBlue_hover;
-        .iconPen {
+        .editTool {
             display: block;
         }
     }

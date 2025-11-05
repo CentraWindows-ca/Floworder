@@ -59,6 +59,10 @@ const Com = ({
         setEditingId(invoiceHeaderId);
         setIsEditable(true);
         break;
+      case "view":
+        setEditingId(invoiceHeaderId);
+        setIsEditable(false);
+        break;
       default:
         setEditingId(null);
         setIsEditable(false);
@@ -253,8 +257,9 @@ const Com = ({
       </div>
       <div className={cn(styles.detail)}>
         <PrimaryList_Invoice
-          onEdit={(_invoiceId) => handleEdit(_invoiceId, "edit")}
-          onHistory={(_invoiceId) => handleHistory(_invoiceId)}
+          onEdit={(_invoiceHeaderId) => handleEdit(_invoiceHeaderId, "edit")}
+          onView={(_invoiceHeaderId) => handleEdit(_invoiceHeaderId, "view")}
+          onHistory={(_invoiceHeaderId) => handleHistory(_invoiceHeaderId)}
           onUpdate={handleSaveDone}
           isLoading={!data}
           error={error}

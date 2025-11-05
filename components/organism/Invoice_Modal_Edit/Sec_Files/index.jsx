@@ -118,6 +118,7 @@ const Com = ({ title, id }) => {
                     <button
                       className="btn btn-xs btn-danger"
                       onClick={() => handleDelete(a)}
+                      disabled={!checkEditable({ group: "attachments" })}
                     >
                       delete
                     </button>

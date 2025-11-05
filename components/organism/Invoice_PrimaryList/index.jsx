@@ -29,6 +29,7 @@ const today = format(new Date(), "yyyy-MM-dd");
 const Com = (props) => {
   const {
     onEdit,
+    onView,
     onUpdate,
     onHistory,
     data,
@@ -83,12 +84,13 @@ const Com = (props) => {
               <Dropdown_WorkOrderActions
                 data={record}
                 {...{
-                  onEdit: () => onEdit(record?.inv_invoiceId),
-                  onHistory: () => onHistory(record?.inv_invoiceId),
+                  onEdit: () => onEdit(record?.invh_invoiceHeaderId),
+                  onView: () => onView(record?.invh_invoiceHeaderId),
+                  onHistory: () => onHistory(record?.invh_invoiceHeaderId),
                   onUpdate,
                 }}
               />
-              {copied === record?.inv_invoiceId ? (
+              {copied === record?.invh_invoiceHeaderId ? (
                 <i
                   title="copy invoice number"
                   className={cn("fa-solid fa-check ms-1", styles.notCopiedIcon)}
@@ -97,7 +99,7 @@ const Com = (props) => {
                 <i
                   title="copy invoice number"
                   className={cn("fa-solid fa-copy ms-1", styles.copiedIcon)}
-                  onClick={() => copyToClipboard(record?.invoiceHeaderId)}
+                  onClick={() => copyToClipboard(record?.invh_invoiceHeaderId)}
                 />
               )}
             </div>

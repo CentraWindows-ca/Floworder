@@ -80,10 +80,10 @@ const Com = ({ title, id }) => {
                   key={id}
                   className={cn(
                     styles.listCard,
-                    styles.listCardEditable,
+                    checkEditable({ group: "invoiceNotes" }) ?
+                      styles.listCardEditable : "",
                     "pb-2",
                   )}
-                  
                 >
                   <div className="d-flex justify-content-between gap-2">
                     <div className="d-flex gap-2">
@@ -96,29 +96,31 @@ const Com = ({ title, id }) => {
                     </div>
                   </div>
                   <div className="pt-2">
-                    <p className="text-left" style={{ whiteSpace: "pre-wrap" }}>{notes}</p>
+                    <p className="text-left" style={{ whiteSpace: "pre-wrap" }}>
+                      {notes}
+                    </p>
                   </div>
-                  <div
-                    className={cn(
-                      styles.iconPen,
-                      "align-items-center justify-content-between py-2",
-                    )}
-                  >
-                    <button
-                      className="btn btn-sm btn-outline-primary me-2"
-                      disabled={!checkEditable({ group: "invoiceNotes" })}
-                      onClick={() => setEditingRow(a)}
+                  {checkEditable({ group: "invoiceNotes" }) && (
+                    <div
+                      className={cn(
+                        styles.editTool,
+                        "align-items-center justify-content-between py-2",
+                      )}
                     >
-                      edit
-                    </button>
-                    <button
-                      className="btn btn-sm btn-danger"
-                      disabled={!checkEditable({ group: "invoiceNotes" })}
-                      onClick={() => onDeleteInvoiceNotes(a)}
-                    >
-                      delete
-                    </button>
-                  </div>
+                      <button
+                        className="btn btn-sm btn-outline-primary me-2"
+                        onClick={() => setEditingRow(a)}
+                      >
+                        edit
+                      </button>
+                      <button
+                        className="btn btn-sm btn-danger"
+                        onClick={() => onDeleteInvoiceNotes(a)}
+                      >
+                        delete
+                      </button>
+                    </div>
+                  )}
                 </div>
               );
             })}
