@@ -518,10 +518,16 @@ export const checkAddOnFieldById = ({
       isReadOnly, // default
       isSplitNotSync, // functional purpose
       isSyncedFromParent, // visual color purpose
+      addonChildCopyParentDataWhenCreated // additional param for visual color
     } = workOrderFields[id];
 
     let _editable = !isReadOnly;
     let _syncFromParent = isSyncedFromParent;
+
+    // if we only copy parent data when created, then we should't show green color
+    if (_syncFromParent && addonChildCopyParentDataWhenCreated) {
+      _syncFromParent = false
+    }
 
     // detach has higher priority. if that happens
     if (isSplitNotSync) {
