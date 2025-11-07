@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import _ from "lodash";
 import { GeneralContext } from "lib/provider/GeneralProvider";
 
-import utils from "lib/utils";
+import utils, { tryParse } from "lib/utils";
 
 import OrdersApi from "lib/api/OrdersApi";
 import GlassApi from "lib/api/GlassApi";
@@ -22,8 +22,6 @@ export const LocalDataProvider = ({
 }) => {
   const generalContext = useContext(GeneralContext);
   const [data, setData] = useState(null);
-
-  const [workOrderInfo, setWorkOrderInfo] = useState(null)
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -47,9 +45,13 @@ export const LocalDataProvider = ({
     if (res?.items) {
       setData(
         res?.items.map((a) => {
+          const { jsonData } = a
+          const jsonDataObj = tryParse(jsonData)
+
           return {
             ...a,
             CreatedAt: utils.formatDate(a.CreatedAt, "yyyy-MM-dd HH:mm:ss"),
+            jsonDataObj
           };
         }),
       );
@@ -63,7 +65,6 @@ export const LocalDataProvider = ({
     isLoading,
     initInvoiceHeaderId,
     data,
-    workOrderInfo,
     setData,
     onHide
   };

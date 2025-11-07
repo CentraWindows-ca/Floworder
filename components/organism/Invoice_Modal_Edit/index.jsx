@@ -87,7 +87,7 @@ const Com = ({}) => {
             </button>
           )}
         </PermissionBlock>
-        Invoice # {data?.inv_invoiceId}
+        Invoice# {data?.invh_invoiceNumber}
         {isDeleted && (
           <div className="align-items-center flex gap-2 text-red-400">
             [DELETED]

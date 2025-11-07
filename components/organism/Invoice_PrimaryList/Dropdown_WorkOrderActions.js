@@ -45,7 +45,7 @@ const WorkOrderActions = ({
   onView,
   onUpdate,
 }) => {
-  const { inv_invoiceId, invh_invoiceStatus } = data;
+  const { invh_invoiceNumber, inv_invoiceId, invh_invoiceStatus } = data;
   const { toast, permissions } = useContext(GeneralContext);
 
   const { requestData } = useInterrupt();
@@ -129,7 +129,7 @@ const WorkOrderActions = ({
         renderTrigger={(onClick) => {
           return (
             <span className="d-flex" style={{ cursor: "pointer" }} onClick={onClick}>
-              {inv_invoiceId}
+              {invh_invoiceNumber}
             </span>
           );
         }}

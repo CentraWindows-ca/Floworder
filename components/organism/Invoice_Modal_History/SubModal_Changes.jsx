@@ -31,7 +31,8 @@ const Com = ({ data, layer, onHide }) => {
   // ======
 
   const doInit = (data) => {
-    let ChangedData = JSON.parse(data.ChangedData);
+    console.log(data)
+    let ChangedData = data.jsonDataObj;
 
     const ChangedData_Order = ChangedData?.OrderLevelChanges?.reduce(
       (prev, curr) => {

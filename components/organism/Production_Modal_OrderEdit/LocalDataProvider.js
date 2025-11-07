@@ -623,8 +623,15 @@ export const LocalDataProvider = ({
         });
       }
 
-      await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData);
+      const res = await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData);
+
+      if (res?.message) {
+        // log hidden message for devs
+        console.log(res?.message)
+      }
+
       toast("Work order saved", { type: "success" });
+
       await doInitWo(initMasterId, stillEditingData);
       onSave();
     },

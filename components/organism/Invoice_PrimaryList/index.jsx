@@ -76,7 +76,7 @@ const Com = (props) => {
     [
       {
         key: "inv_invoiceId",
-        title: "Invoice Id",
+        title: "Invoice#",
         fixed: "left",
         render: (text, record) => {
           return (

@@ -301,7 +301,6 @@ export const LocalDataProvider = ({
     await InvoiceApi.updateInvoiceNotes({}, _rt, initData);
     await initInvoiceNotes(initInvoiceHeaderId);
   });
-
   const doDeleteInvoiceCallLogs = useLoadingBar(async (_rt) => {
     await InvoiceApi.deleteCallLogsById(_rt);
     await initInvoiceCallLogs(initInvoiceHeaderId);

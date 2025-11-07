@@ -60,7 +60,7 @@ const codeToTitleMap = {
 };
 
 const Com = ({ layer = 1 }) => {
-  const { isLoading, initInvoiceHeaderId, onHide, data, workOrderInfo } =
+  const { isLoading, initInvoiceHeaderId, onHide, data } =
     useContext(LocalDataContext);
 
   const [idChanges, setIdChanges] = useState(null);
@@ -73,9 +73,9 @@ const Com = ({ layer = 1 }) => {
     },
     {
       title: "Operation",
-      key: "Operation",
+      key: "OperationName",
       render: (v, record) => {
-        return `${codeToTitleMap[record?.Operation] || record?.Operation}`;
+        return `${codeToTitleMap[record?.OperationName] || record?.OperationName}`;
       },
     },
     {
@@ -84,7 +84,7 @@ const Com = ({ layer = 1 }) => {
     },
     {
       title: "Changed by",
-      key: "ChangedBy",
+      key: "CreatedBy",
     },
     {
       title: "",
@@ -112,7 +112,7 @@ const Com = ({ layer = 1 }) => {
   const jsxTitle = (
     <div className="justify-content-between align-items-center flex-grow-1 flex">
       <div className="align-items-center flex gap-2">
-        Work Order # {workOrderInfo?.workOrderNo}
+        Invoice# {123}
       </div>
     </div>
   );

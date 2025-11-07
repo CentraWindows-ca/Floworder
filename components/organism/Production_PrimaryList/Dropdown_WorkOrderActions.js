@@ -108,7 +108,11 @@ const WorkOrderActions = ({
       return null;
     }
 
-    await doMove(payload, isReservation);
+    const res = await doMove(payload, isReservation);
+    if (res?.message) {
+      // log hidden message for devs
+      console.log(res?.message)
+    }
 
     toast("Status updated", { type: "success" });
     setCloseToggle((p) => !p);
@@ -190,7 +194,7 @@ const WorkOrderActions = ({
   });
 
   const doMove = useLoadingBar(async (payload, isReservation) => {
-    await OrdersApi.updateWorkOrderStatus(null, payload, data);
+    return await OrdersApi.updateWorkOrderStatus(null, payload, data);
   });
 
   const actionsActive = (
