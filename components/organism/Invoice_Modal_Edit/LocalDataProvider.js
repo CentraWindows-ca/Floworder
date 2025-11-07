@@ -169,10 +169,10 @@ export const LocalDataProvider = ({
     const mergedData = await doInitInvoice(initInvoiceHeaderId);
 
     if (mergedData) {
-      initAttachmentList(mergedData?.inv_invoiceId);
+      initAttachmentList(initInvoiceHeaderId);
       initSalesAttachmentList(mergedData?.invh_masterId);
-      await initInvoiceNotes(mergedData?.inv_invoiceId);
-      await initInvoiceCallLogs(mergedData?.inv_invoiceId);
+      initInvoiceNotes(initInvoiceHeaderId);
+      initInvoiceCallLogs(initInvoiceHeaderId);
     }
 
     setIsLoading(false);
@@ -200,14 +200,14 @@ export const LocalDataProvider = ({
     },
   );
 
-  const initInvoiceNotes = useLoadingBar(async (_invoiceId) => {
-    let _list = await InvoiceApi.getInvoiceNotes(_invoiceId);
+  const initInvoiceNotes = useLoadingBar(async (_invoiceHeaderId) => {
+    let _list = await InvoiceApi.getInvoiceNotes(_invoiceHeaderId);
     _list = _.orderBy(_list, ["submittedAt"], ["DESC"]);
     setInvoiceNotes(_list);
   });
 
-  const initInvoiceCallLogs = useLoadingBar(async (_invoiceId) => {
-    let _list = await InvoiceApi.getInvoiceCallLogs(_invoiceId);
+  const initInvoiceCallLogs = useLoadingBar(async (_invoiceHeaderId) => {
+    let _list = await InvoiceApi.getInvoiceCallLogs(_invoiceHeaderId);
     _list = _list?.map((a) => ({
       ...a,
       dateCalled: utils.formatDateForMorganLegacy(a.dateCalled),
@@ -217,8 +217,8 @@ export const LocalDataProvider = ({
     setInvoiceCallLogs(_list);
   });
 
-  const initAttachmentList = useLoadingBar(async (_invoiceId) => {
-    const res = await InvoiceApi.getInvoiceUploadFiles(_invoiceId);
+  const initAttachmentList = useLoadingBar(async (_invoiceHeaderId) => {
+    const res = await InvoiceApi.getInvoiceUploadFiles(_invoiceHeaderId);
     setExistingAttachments(res);
   });
 
@@ -265,7 +265,7 @@ export const LocalDataProvider = ({
       return InvoiceApi.uploadFileAsync(
         null,
         {
-          invoiceId: data?.inv_invoiceId,
+          invoiceHeaderId: initInvoiceHeaderId,
           uploadingFile: file,
           notes,
         },
@@ -275,7 +275,7 @@ export const LocalDataProvider = ({
 
     await Promise.all(awaitList);
     toast("Attachment updated", { type: "success" });
-    await initAttachmentList(data?.inv_invoiceId);
+    await initAttachmentList(initInvoiceHeaderId);
   });
 
   const doDeleteAttachment = useLoadingBar(async (_file) => {
@@ -285,34 +285,34 @@ export const LocalDataProvider = ({
     });
 
     toast("File deleted", { type: "success" });
-    await initAttachmentList(data?.inv_invoiceId);
+    await initAttachmentList(initInvoiceHeaderId);
   });
 
   const doDeleteInvoiceNotes = useLoadingBar(async (_rt) => {
     if (!confirm(`Delete the notes?`)) return null;
     await InvoiceApi.deleteNotesById(_rt);
-    await initInvoiceNotes(data?.inv_invoiceId);
+    await initInvoiceNotes(initInvoiceHeaderId);
   });
   const doAddInvoiceNotes = useLoadingBar(async (_rt) => {
     await InvoiceApi.addInvoiceNotes({}, _rt, initData);
-    await initInvoiceNotes(data?.inv_invoiceId);
+    await initInvoiceNotes(initInvoiceHeaderId);
   });
   const doEditInvoiceNotes = useLoadingBar(async (_rt) => {
     await InvoiceApi.updateInvoiceNotes({}, _rt, initData);
-    await initInvoiceNotes(data?.inv_invoiceId);
+    await initInvoiceNotes(initInvoiceHeaderId);
   });
 
   const doDeleteInvoiceCallLogs = useLoadingBar(async (_rt) => {
     await InvoiceApi.deleteCallLogsById(_rt);
-    await initInvoiceCallLogs(data?.inv_invoiceId);
+    await initInvoiceCallLogs(initInvoiceHeaderId);
   });
   const doAddInvoiceCallLogs = useLoadingBar(async (_rt) => {
     await InvoiceApi.addInvoiceCallLog({}, _rt, initData);
-    await initInvoiceCallLogs(data?.inv_invoiceId);
+    await initInvoiceCallLogs(initInvoiceHeaderId);
   });
   const doEditInvoiceCallLogs = useLoadingBar(async (_rt) => {
     await InvoiceApi.updateInvoiceCallLog({}, _rt, initData);
-    await initInvoiceCallLogs(data?.inv_invoiceId);
+    await initInvoiceCallLogs(initInvoiceHeaderId);
   });
 
   const doSave = useLoadingBar(

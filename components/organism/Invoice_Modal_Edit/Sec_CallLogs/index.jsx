@@ -98,9 +98,9 @@ const Com = ({ title, id }) => {
                 submittedAt,
                 id,
               } = a;
-              const submittedAt_display = utils.formatDate(
-                utils.formatDatetimeForMorganLegacy(submittedAt),
-              );
+              // const submittedAt_display = utils.formatDate(
+              //   utils.formatDatetimeForMorganLegacy(submittedAt),
+              // );
               const calledMessageObj = _calledMessageTypesList?.find(
                 (a) => a.label === calledMessage,
               );

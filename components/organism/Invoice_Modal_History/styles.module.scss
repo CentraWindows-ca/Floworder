@@ -1,0 +1,53 @@
+@use "styles/theme" as *;
+
+.root {
+    overflow: auto;
+    height: 100%;
+}
+
+.changesList {
+    border: 1px solid $color_border_table;
+    border-top: 2px solid $color_centraBlack;
+
+    .changesRow {
+        border-bottom: 1px solid $color_border_table;
+        display: flex;
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        .changesField {
+            flex: 20%;
+            border-right: 1px solid $color_border_table;
+            padding: 5px;
+        }
+
+        .changesOld {
+            flex: 40%;
+            border-right: 1px solid $color_border_table;
+            padding: 5px;
+            background-color: #ffeeee;
+        }
+
+        .changesNew {
+            flex: 40%;
+            padding: 5px;
+            
+            background-color: #ebfaeb;
+        }
+        .changesCurrent {
+            flex: 80%;
+            padding: 5px;  
+        }
+    }
+
+}
+.itemInfoRow {
+    margin-bottom: 10px;
+    border-bottom: 2px solid $color_border_table;
+}
+.changedItemRow {
+    padding: 5px;   
+    border-bottom: 1px solid $color_border_table;
+}

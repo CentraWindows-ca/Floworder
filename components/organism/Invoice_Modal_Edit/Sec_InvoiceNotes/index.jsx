@@ -72,7 +72,7 @@ const Com = ({ title, id }) => {
             {invoiceNotes?.map((a) => {
               const { notes, submittedBy, submittedAt, id } = a;
               const submittedAt_display = utils.formatDate(
-                utils.formatDatetimeForMorganLegacy(submittedAt),
+                utils.formatDate(submittedAt),
               );
 
               return (

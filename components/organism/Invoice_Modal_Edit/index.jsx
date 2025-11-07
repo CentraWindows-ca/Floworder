@@ -24,7 +24,7 @@ import constants, {
   WORKORDER_STATUS_MAPPING,
 } from "lib/constants";
 
-import Modal_OrderHistory from "components/organism/Production_Modal_OrderHistory";
+import Modal_History from "components/organism/Invoice_Modal_History";
 // styles
 import styles from "./styles.module.scss";
 
@@ -105,7 +105,7 @@ const Com = ({}) => {
           )}
         >
           <div className={cn(styles.anchors)}>
-            {/* <PermissionBlock
+            <PermissionBlock
               featureCodeGroup={constants.FEATURE_CODES["om.prod.history"]}
               op="canView"
             >
@@ -117,7 +117,7 @@ const Com = ({}) => {
                   <i className="fa-solid fa-clock-rotate-left"></i>
                 </button>
               </div>
-            </PermissionBlock> */}
+            </PermissionBlock>
           </div>
         </div>
       </div>
@@ -210,7 +210,7 @@ const Com = ({}) => {
         </div>
       </LoadingBlock>
 
-      <Modal_OrderHistory
+      <Modal_History
         initInvoiceHeaderId={historyOrderMasterId}
         onHide={() => setHistoryInvoiceId(null)}
         layer={1}
