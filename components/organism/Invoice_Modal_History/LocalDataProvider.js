@@ -14,6 +14,11 @@ import InvoiceApi from "lib/api/InvoiceApi";
 
 export const LocalDataContext = createContext(null);
 
+const codeToTitleMap = {
+  CreateInvoiceHeader: "Create Invoice",
+  UpdateInvoiceHeader: "Update Invoice"
+};
+
 export const LocalDataProvider = ({
   children,
   initInvoiceHeaderId,
@@ -42,16 +47,17 @@ export const LocalDataProvider = ({
     setData(null);
     // fetch data
     const res =  await InvoiceApi.getInvoiceHistory(initInvoiceHeaderId);
-    if (res?.items) {
+    if (res) {
       setData(
-        res?.items.map((a) => {
-          const { jsonData } = a
+        res?.map((a) => {
+          const { jsonData, operationName } = a
           const jsonDataObj = tryParse(jsonData)
-
           return {
             ...a,
+            jsonDataObj,
             CreatedAt: utils.formatDate(a.CreatedAt, "yyyy-MM-dd HH:mm:ss"),
-            jsonDataObj
+            SourceModule: jsonDataObj.sourceModule,
+            operation_display: codeToTitleMap[operationName] || operationName
           };
         }),
       );

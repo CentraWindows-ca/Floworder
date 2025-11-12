@@ -163,15 +163,6 @@ const Com = ({ title, id }) => {
                       submittedAt: submittedAt_display,
                     }}
                   />
-
-                  <div>
-                    <button
-                      className="btn btn-xs btn-danger"
-                      onClick={() => handleDelete(a)}
-                    >
-                      delete
-                    </button>
-                  </div>
                 </div>
               );
             })}

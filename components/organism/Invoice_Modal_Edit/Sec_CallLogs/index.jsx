@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useCallback, useState } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
@@ -29,23 +29,20 @@ const COMMON_FIELDS = applyField([
     Component: Editable.EF_DateOnly,
     id: "dateCalled",
     title: "Date",
-  },
-  {
-    Component: Editable.EF_Text,
-    id: "notes",
-    title: "Notes",
+    required: true
   },
   {
     Component: Editable.EF_SelectWithLabel,
     id: "calledMessage",
     title: "Called Message",
+    placeholder: "-",
     options: _calledMessageTypesList,
+    required: true
   },
   {
-    Component: Editable.EF_Input,
-    id: "submittedBy",
-    title: "Submitted By",
-    disabled: true,
+    Component: Editable.EF_Text,
+    id: "notes",
+    title: "Notes",
   },
 ]);
 
@@ -57,6 +54,7 @@ const Com = ({ title, id }) => {
     invoiceCallLogs,
     checkEditable,
     dictionary,
+    rawAuth,
   } = useContext(LocalDataContext);
 
   const [editingRow, setEditingRow] = useState(null);
@@ -74,19 +72,33 @@ const Com = ({ title, id }) => {
   const jsxTitle = (
     <div className={cn(styles.sectionTitle, styles.sectionTitleGrayYellow)}>
       Call Logs
-      {/* <div>
-        <button onClick={() => setEditingRow({})}>Add</button>
-      </div> */}
+      <div>
+        {checkEditable({ group: "invoiceCallLogs" }) && (
+          <button
+            className="btn btn-xs btn-success"
+            onClick={() => setEditingRow({})}
+          >
+            <i className="fa-solid fa-plus me-2"></i>
+            Add
+          </button>
+        )}
+      </div>
     </div>
   );
+
+  // check all items for required field
+  const _checkDisabled = (record) => !COMMON_FIELDS?.every((a) => {
+    if (a.required) {
+      return record?.[a.id];
+    }
+
+    return true;
+  });  
 
   return (
     <>
       {jsxTitle}
-      <div
-        className={cn("d-flex flex-column")}
-        style={{ overflowY: "auto" }}
-      >
+      <div className={cn("d-flex flex-column")} style={{ overflowY: "auto" }}>
         {!_.isEmpty(invoiceCallLogs) ? (
           <>
             {invoiceCallLogs?.map((a) => {
@@ -109,7 +121,16 @@ const Com = ({ title, id }) => {
                 calledMessageObj || {};
 
               return (
-                <div key={id} className={cn(styles.listCard, "pb-2")}>
+                <div
+                  key={id}
+                  className={cn(
+                    styles.listCard,
+                    checkEditable({ group: "invoiceNotes" })
+                      ? styles.listCardEditable
+                      : "",
+                    "pb-2",
+                  )}
+                >
                   <div className="d-flex justify-content-between gap-2">
                     <div className="d-flex gap-2">
                       <div className={cn(styles.listCardTag, styles.tagWhite)}>
@@ -127,23 +148,32 @@ const Com = ({ title, id }) => {
                       {label}
                     </div>
                   </div>
-                  <div className="pt-2 text-left">{notes}</div>
-                  {/* <div className="align-items-center justify-content-between py-2">
-                    <button
-                      className="btn btn-sm btn-outline-primary me-2"
-                      disabled={!checkEditable({ group: "invoiceCallLogs" })}
-                      onClick={() => setEditingRow(a)}
+                  <div className="pt-2 text-left">
+                    <p className="text-left" style={{ whiteSpace: "pre-wrap" }}>
+                      {notes}
+                    </p>
+                  </div>
+                  {checkEditable({ group: "invoiceCallLogs" }) && (
+                    <div
+                      className={cn(
+                        styles.editTool,
+                        "align-items-center justify-content-between py-2",
+                      )}
                     >
-                      edit
-                    </button>
-                    <button
-                      className="btn btn-sm btn-danger"
-                      disabled={!checkEditable({ group: "invoiceCallLogs" })}
-                      onClick={() => onDeleteInvoiceCallLogs(a)}
-                    >
-                      delete
-                    </button>
-                  </div> */}
+                      <button
+                        className="btn btn-sm btn-outline-primary me-2"
+                        onClick={() => setEditingRow(a)}
+                      >
+                        edit
+                      </button>
+                      <button
+                        className="btn btn-sm btn-danger"
+                        onClick={() => onDeleteInvoiceCallLogs(a)}
+                      >
+                        delete
+                      </button>
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -158,6 +188,7 @@ const Com = ({ title, id }) => {
         size="md"
         onHide={() => setEditingRow(null)}
         layer={2}
+        title="Call Logs"
       >
         <div className={cn(styles.columnItemInputsContainer)}>
           {COMMON_FIELDS?.map((a) => {
@@ -171,9 +202,27 @@ const Com = ({ title, id }) => {
               />
             );
           })}
+
+          {/*  */}
+          <Block
+            item={editingRow}
+            setItem={setEditingRow}
+            inputData={{
+              Component: Editable.EF_Input,
+              id: "submittedBy",
+              title: "Submitted By",
+              disabled: true,
+              placeholder: rawAuth?.email,
+            }}
+            isEditable={false}
+          />
         </div>
         <div className="justify-content-end flex gap-2">
-          <button className="btn btn-sm btn-primary" onClick={handleSave}>
+          <button
+            className="btn btn-sm btn-primary"
+            onClick={handleSave}
+            disabled={_checkDisabled(editingRow)}
+          >
             Save
           </button>
         </div>

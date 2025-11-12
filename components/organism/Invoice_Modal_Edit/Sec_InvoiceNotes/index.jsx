@@ -22,6 +22,7 @@ const COMMON_FIELDS = applyField([
     id: "notes",
     title: "Notes",
     rows: 6,
+    required: true,
   },
 ]);
 
@@ -63,6 +64,15 @@ const Com = ({ title, id }) => {
     </div>
   );
 
+  // check all items for required field
+  const _checkDisabled = (record) => !COMMON_FIELDS?.every((a) => {
+    if (a.required) {
+      return record?.[a.id];
+    }
+
+    return true;
+  }); 
+
   return (
     <>
       {jsxTitle}
@@ -80,8 +90,9 @@ const Com = ({ title, id }) => {
                   key={id}
                   className={cn(
                     styles.listCard,
-                    checkEditable({ group: "invoiceNotes" }) ?
-                      styles.listCardEditable : "",
+                    checkEditable({ group: "invoiceNotes" })
+                      ? styles.listCardEditable
+                      : "",
                     "pb-2",
                   )}
                 >
@@ -135,6 +146,7 @@ const Com = ({ title, id }) => {
         size="md"
         onHide={() => setEditingRow(null)}
         layer={2}
+        title="Invoice Notes"
       >
         <div className={cn(styles.columnItemInputsContainer)}>
           {COMMON_FIELDS?.map((a) => {
@@ -150,15 +162,12 @@ const Com = ({ title, id }) => {
           })}
         </div>
         <div className="justify-content-center flex gap-2">
-          <button className="btn btn-sm btn-primary" onClick={handleSave}>
-            Save
-          </button>
           <button
-            className="btn btn-sm btn-danger"
-            disabled={!checkEditable({ group: "invoiceNotes" })}
-            onClick={() => onDeleteInvoiceNotes(editingRow)}
+            className="btn btn-sm btn-primary"
+            onClick={handleSave}
+            disabled={_checkDisabled(editingRow)}
           >
-            Delete
+            Save
           </button>
         </div>
       </Modal>

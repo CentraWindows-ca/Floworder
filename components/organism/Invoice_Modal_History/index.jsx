@@ -14,51 +14,6 @@ import styles from "./styles.module.scss";
 import { LocalDataContext, LocalDataProvider } from "./LocalDataProvider";
 import LoadingBlock from "components/atom/LoadingBlock";
 
-const codeToTitleMap = {
-  ScheduleOrder: "Schedule Order",
-  AddRecord: "Add Record",
-  AddRecordCalgary: "Add Record (Calgary)",
-  UploadAttachments: "Upload Attachments",
-  EditRecord2: "Edit Record",
-  StartJob: "Start Job",
-  MovedToDraft: "Moved to Draft",
-  MovetoOnHold: "Move to On Hold",
-  Create: "Create",
-  EditRecord: "Edit Record",
-  SyncPSQLData: "Sync PostgreSQL Data",
-  MoveToTransferred: "Move to Transferred",
-  SoftDelete: "Soft Delete",
-  Update: "Update",
-  MoveShipped: "Move to Shipped",
-  CompleteReservation: "Complete Reservation",
-  MarkReadyToShip: "Mark Ready to Ship",
-  AddWOSupreme: "Add Work Order Supreme",
-  AddWMWOBC: "Add WM Work Order BC",
-  MovetoInProgress: "Move to In Progress",
-  BackToInProgress: "Back to In Progress",
-  BackToScheduled: "Back to Scheduled",
-  DeleteAttachments: "Delete Attachments",
-  MovebacktoDraftScheduled: "Move back to Draft (Scheduled)",
-  MoveToTrash: "Move to Trash",
-  AddWMWOAB: "Add WM Work Order AB",
-  MoveToScheduled: "Move to Scheduled",
-  RestoreFromTrash: "Restore from Trash",
-  ScheduleOrder1: "Schedule Order (Alt)",
-  MoveToScheduled1: "Move to Scheduled (Alt)",
-  BackToReadytoShip: "Back to Ready to Ship",
-  UndoSoftDelete: "Undo Soft Delete",
-  Transit: "Transit",
-  UpdateWorkOrder: "Update Work Order",
-  UpdateWindowMakerData: "Update Window Maker Data",
-  BacktoDraft: "Back to Draft",
-  DeleteReturnTrip: "Delete Return Trip",
-  UpdateReturnTrip: "Update Return Trip",
-  CreateReturnTrip: "Create Return Trip",
-  CreateShippingCallLog: "Create Shipping CallLog",
-  UpdateShippingCallLog: "Update Shipping CallLog",
-  GetWindowMaker: "Get WindowMaker"
-};
-
 const Com = ({ layer = 1 }) => {
   const { isLoading, initInvoiceHeaderId, onHide, data } =
     useContext(LocalDataContext);
@@ -69,22 +24,19 @@ const Com = ({ layer = 1 }) => {
   const columns = [
     {
       title: "Source App.",
-      key: "Source",
+      key: "SourceModule",
     },
     {
       title: "Operation",
-      key: "OperationName",
-      render: (v, record) => {
-        return `${codeToTitleMap[record?.OperationName] || record?.OperationName}`;
-      },
+      key: "operation_display",
     },
     {
       title: "Operation time",
-      key: "CreatedAt",
+      key: "createdAt",
     },
     {
       title: "Changed by",
-      key: "CreatedBy",
+      key: "createdBy",
     },
     {
       title: "",
@@ -132,9 +84,9 @@ const Com = ({ layer = 1 }) => {
           <div className="p-2">
             <TableSortable
               {...{
-                data: _.orderBy(data, ["CreatedAt", "Id"], ["desc", "desc"]),
+                data: _.orderBy(data, ["createdAt", "recordId"], ["desc", "desc"]),
                 columns,
-                keyField: "Id",
+                keyField: "recordId",
                 keyFieldPrefix: `history_${initInvoiceHeaderId}`,
                 isLockFirstColumn: false,
               }}

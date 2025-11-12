@@ -38,13 +38,7 @@ const getStatusName = (statusCode) =>
     (a) => a.key?.trim() === statusCode?.toString()?.trim(),
   )?.systemName;
 
-const WorkOrderActions = ({
-  data,
-  onHistory,
-  onEdit,
-  onView,
-  onUpdate,
-}) => {
+const WorkOrderActions = ({ data, onHistory, onEdit, onView, onUpdate }) => {
   const { invh_invoiceNumber, inv_invoiceId, invh_invoiceStatus } = data;
   const { toast, permissions } = useContext(GeneralContext);
 
@@ -58,8 +52,13 @@ const WorkOrderActions = ({
   allowedStatus = INVOICE_WORKFLOW[getStatusName(invh_invoiceStatus)] || [];
 
   const handleMoveTo = async (newStatus) => {
-    const initData = data
-    const payload = await invoice_utils.getStatusPayload({}, newStatus, initData, requestData);
+    const initData = data;
+    const payload = await invoice_utils.getStatusPayload(
+      {},
+      newStatus,
+      initData,
+      requestData,
+    );
     if (payload === null) return null;
     if (
       !window.confirm(
@@ -74,6 +73,17 @@ const WorkOrderActions = ({
     setCloseToggle((p) => !p);
     onUpdate();
   };
+
+  // const handleDelete = useLoadingBar(async () => {
+  //   if (!window.confirm(`Are you sure to delete [${data?.invh_invoiceNumber}]?`)) {
+  //     return null;
+  //   }
+
+  //   await InvoiceApi.hardDeleteInvoice(null, null, data);
+  //   toast("Invoice deleted", { type: "success" });
+  //   setCloseToggle((p) => !p);
+  //   onUpdate();
+  // });
 
   const actionsActive = (
     <div className={cn(styles.workorderActionsContainer)}>
@@ -120,6 +130,33 @@ const WorkOrderActions = ({
           </Button>
         );
       })}
+
+      {/* <PermissionBlock
+        featureCode={[
+          constants.FEATURE_CODES["invoice.admin"],
+        ]}
+        op="canDelete"
+      >
+        <Button
+          type="text"
+          icon={<DeleteOutlined />}
+          onClick={handleDelete}
+          // disabled={true}
+        >
+          Permenantly Delete
+        </Button>
+      </PermissionBlock> */}
+
+      <Button
+        type="text"
+        icon={<i className="fa-solid fa-clock-rotate-left"></i>}
+        onClick={() => {
+          setCloseToggle((p) => !p);
+          onHistory();
+        }}
+      >
+        View Invoice History
+      </Button>
     </div>
   );
 
@@ -128,7 +165,11 @@ const WorkOrderActions = ({
       <Dropdown_Custom
         renderTrigger={(onClick) => {
           return (
-            <span className="d-flex" style={{ cursor: "pointer" }} onClick={onClick}>
+            <span
+              className="d-flex"
+              style={{ cursor: "pointer" }}
+              onClick={onClick}
+            >
               {invh_invoiceNumber}
             </span>
           );

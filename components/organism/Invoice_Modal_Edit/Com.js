@@ -7,12 +7,16 @@ import constants, {
   WORKORDER_STATUS_MAPPING,
   GlassRowStates,
   FEATURE_CODES,
+  INVOICE_STATUS_MAPPING,
 } from "lib/constants";
 // styles
 import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
 import utils from "lib/utils";
-import { uiWoFieldEditGroupMapping as gmp } from "lib/constants/invoice_constants_labelMapping";
+import {
+  uiWoFieldEditGroupMapping as gmp,
+  uiWoFieldEditGroupMapping,
+} from "lib/constants/invoice_constants_labelMapping";
 
 export const getIfFieldDisplayAsProductType = (
   { uiOrderType, id, permissions },
@@ -21,11 +25,21 @@ export const getIfFieldDisplayAsProductType = (
   let _isDisplay = true;
 
   // data conditions ======================
+  if (
+    [
+      uiWoFieldEditGroupMapping.invoice.invh_rejectNotes,
+      uiWoFieldEditGroupMapping.invoice.invh_rejectReason,
+    ].includes(id)
+  ) {
+    _isDisplay =
+      _isDisplay &&
+      data?.invh_invoiceStatus === INVOICE_STATUS_MAPPING.OnHoldInvoice.key;
+  }
 
   // user permissions ======================
-  const checkPermission = (pc, op = "canEdit") => {
-    return _.get(permissions, [pc, op], false);
-  };
+  // const checkPermission = (pc, op = "canEdit") => {
+  //   return _.get(permissions, [pc, op], false);
+  // };
 
   return _isDisplay;
 };
@@ -218,7 +232,7 @@ export const ToggleFull = ({
 
 export const NoData = ({ title = "No Data", className }) => {
   return (
-    <div className={cn("text-center text-slate-400 p-2", className)}>
+    <div className={cn("p-2 text-center text-slate-400", className)}>
       -- {title} --
     </div>
   );
@@ -308,7 +322,7 @@ export const checkEditableById = ({ id, permissions }) => {
       checkGroup("basic") ||
       checkGroup("invoice") ||
       checkGroup("invoiceBilling") ||
-      checkGroup("status")
+      checkGroup("status");
   }
 
   return isEnable;

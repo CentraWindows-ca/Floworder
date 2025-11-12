@@ -480,10 +480,10 @@ export const EF_Checkbox_Yesno = React.memo(
 );
 
 export const EF_Label = React.memo(
-  ({ value, id, className, style, ...props }) => {
+  ({ value, id, className, style, placeholder = "", ...props }) => {
     return (
       <label className={className} style={style}>
-        {value}
+        {value || placeholder}
       </label>
     );
   },

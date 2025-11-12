@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
-import { applyField } from "lib/constants/production_constants_labelMapping";
+import { applyField } from "lib/constants/invoice_constants_labelMapping";
 
 import Editable from "components/molecule/Editable";
 
@@ -19,6 +19,7 @@ const COMMON_FIELDS = applyField([
     Component: Editable.EF_Input,
     id: "m_InvoiceAmount",
     className: "text-right",
+    placeholder: "$"
   },
   {
     Component: Editable.EF_Input,
@@ -28,12 +29,11 @@ const COMMON_FIELDS = applyField([
     Component: Editable.EF_SelectWithLabel,
     id: "invh_rejectReason",
     options: constants.InvoiceSelectOptions.rejectReasonList,
-    rows: 1,
   },
-    {
+  {
     Component: Editable.EF_Text,
     id: "invh_rejectNotes",
-    rows: 1
+    rows: 1,
   },
 ]);
 
@@ -44,8 +44,9 @@ const Com = ({}) => {
   return (
     <div className={cn(styles.columnInputsContainer)}>
       {COMMON_FIELDS?.map((a, i) => {
-        const { id, Component, title, overrideOnChange, ...rest } = a;
+        const { id, Component, title, overrideOnChange, onIsDisplay, ...rest } = a;
         const _defaultTitle = labelMapping[id]?.title;
+
         return (
           <DisplayBlock id={id} key={id}>
             <label>{_defaultTitle || title}</label>

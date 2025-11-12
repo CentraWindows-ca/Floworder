@@ -85,6 +85,7 @@ const COMMON_FIELDS = applyField([
     renderValue: (v, data) => {
       return utils.formatDateForMorganLegacy(v);
     },
+    placeholder: "-"
   },
   {
     Component: Editable.EF_Label,
@@ -94,6 +95,7 @@ const COMMON_FIELDS = applyField([
     renderValue: (v, data) => {
       return utils.formatDate(v);
     },
+    placeholder: "-"
   },
 ]);
 

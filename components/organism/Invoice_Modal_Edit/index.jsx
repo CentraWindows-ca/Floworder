@@ -21,7 +21,6 @@ import Sec_CallLogs from "./Sec_CallLogs";
 import { DisplayBlock } from "./Com";
 import constants, {
   ADDON_STATUS,
-  WORKORDER_STATUS_MAPPING,
 } from "lib/constants";
 
 import Modal_History from "components/organism/Invoice_Modal_History";
@@ -50,10 +49,7 @@ const Com = ({}) => {
 
   const [historyOrderMasterId, setHistoryInvoiceId] = useState(null);
 
-  /* NOTE: <rule 250912_cancel_editable> */
-  const isOnStatusAllowToEdit = ![
-    WORKORDER_STATUS_MAPPING.Cancelled.key,
-  ].includes(data?.[`status`]);
+  const isOnStatusAllowToEdit = true
   const uiClass_withLockout = true;
 
   const jsxTitle = (

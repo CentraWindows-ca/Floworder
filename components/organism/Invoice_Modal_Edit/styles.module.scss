@@ -223,6 +223,10 @@
             // border-bottom: 1px solid $color_gray;
 
         }
+
+        &:first-child {
+            padding-top: 0px;
+        }
     }
 }
 

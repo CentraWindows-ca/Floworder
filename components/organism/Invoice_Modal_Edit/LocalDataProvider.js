@@ -194,8 +194,6 @@ export const LocalDataProvider = ({
         setData({ ...mergedData, ...stillEditingData });
       }
 
-      console.log(mergedData);
-
       return mergedData;
     },
   );

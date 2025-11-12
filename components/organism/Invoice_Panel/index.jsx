@@ -10,7 +10,7 @@ import PrimaryList_Invoice from "components/organism/Invoice_PrimaryList";
 import PermissionBlock from "components/atom/PermissionBlock";
 
 import Modal_Edit from "components/organism/Invoice_Modal_Edit";
-import Modal_History from "components/organism/Production_Modal_OrderHistory";
+import Modal_History from "components/organism/Invoice_Modal_History";
 
 import { INVOICE_STATUS_MAPPING } from "lib/constants";
 
@@ -41,7 +41,7 @@ const Com = ({
 
   const [editingId, setEditingId] = useState(null);
   const [isEditable, setIsEditable] = useState(false);
-  const [historyInvoiceId, setHistoryInvoiceId] = useState(null);
+  const [historyInvoiceHeaderId, setHistoryInvoiceHeaderId] = useState(null);
 
   useEffect(() => {
     ueModal(invoiceHeaderId, modalType, subModalType);
@@ -71,10 +71,10 @@ const Com = ({
 
     switch (subModalType) {
       case "history":
-        setHistoryInvoiceId(invoiceHeaderId);
+        setHistoryInvoiceHeaderId(invoiceHeaderId);
         break;
       default:
-        setHistoryInvoiceId(null);
+        setHistoryInvoiceHeaderId(null);
         break;
     }
   };
@@ -290,7 +290,7 @@ const Com = ({
         initIsEditable={isEditable}
       />
       <Modal_History
-        initInvoiceId={historyInvoiceId}
+        initInvoiceHeaderId={historyInvoiceHeaderId}
         onHide={() => handleHistory()}
       />
     </div>

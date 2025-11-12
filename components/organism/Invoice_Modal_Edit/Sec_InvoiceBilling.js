@@ -18,16 +18,19 @@ const COMMON_FIELDS = applyField([
     Component: Editable.EF_Input,
     id: "m_DepositValue",
     className: "text-right",
+    placeholder: "$"
   },
   {
     Component: Editable.EF_Input,
     id: "m_ListPrice",
     className: "text-right",
+    placeholder: "$"
   },
   {
     Component: Editable.EF_Input,
     id: "m_Commission",
     className: "text-right",
+    placeholder: "%",
   },
   {
     Component: Editable.EF_Input,
@@ -37,6 +40,7 @@ const COMMON_FIELDS = applyField([
     Component: Editable.EF_Input,
     id: "m_Discount",
     className: "text-right",
+    placeholder: "%",
   },
   {
     Component: Editable.EF_SelectWithLabel,
@@ -58,6 +62,7 @@ const COMMON_FIELDS = applyField([
       ].includes(data?.m_Tax);
     },
     className: "text-right",
+    placeholder: "$"
   },
   {
     Component: Editable.EF_Input,

@@ -31,45 +31,25 @@ const Com = ({ data, layer, onHide }) => {
   // ======
 
   const doInit = (data) => {
-    console.log(data)
     let ChangedData = data.jsonDataObj;
 
-    const ChangedData_Order = ChangedData?.OrderLevelChanges?.reduce(
+    console.log(ChangedData)
+
+    const ChangedData_Main = ChangedData?.OrderLevelChanges?.reduce(
       (prev, curr) => {
         return { ...prev, [curr.Field]: curr };
       },
       {},
     );
 
-    const ChangedData_ItemList = ChangedData?.ItemChanges?.map((a) => {
-      const ChangedData_Item = a.Changes?.reduce((prev, curr) => {
-        return { ...prev, [curr.Field]: curr };
-      }, {});
-      return {
-        ...a,
-        ChangedData_Item,
-      };
-    });
-
     const ChangedData_AttachmentList = ChangedData?.Attachments?.filter(
       (a) => a.Type === "file",
     );
-    const ChangedData_ImageList = ChangedData?.Attachments?.filter(
-      (a) => a.Type === "image",
-    );
-
-    const ChangedData_ReturnTripList = ChangedData?.ReturnTrips;
-
-    const changedData_ShippingCallLogList = ChangedData?.ShippingCallLogs;
 
     const _data = {
       ...data,
-      ChangedData_Order,
-      ChangedData_ItemList,
+      ChangedData_Main,
       ChangedData_AttachmentList,
-      ChangedData_ImageList,
-      ChangedData_ReturnTripList,
-      changedData_ShippingCallLogList,
     };
 
     setHistoryData(_data);
@@ -81,8 +61,8 @@ const Com = ({ data, layer, onHide }) => {
         show={!!data}
         title={
           <>
-            Plant Production History / {historyData?.WorkOrderNo} /{" "}
-            {historyData?.Operation}
+            Invoice History / {historyData?.WorkOrderNo} /{" "}
+            {historyData?.operation_display}
           </>
         }
         size="lg"
@@ -93,10 +73,10 @@ const Com = ({ data, layer, onHide }) => {
       >
         <LoadingBlock isLoading={false}>
           <div className="mb-2">
-            Record has been modified by <b>{historyData?.ChangedBy || "--"}</b>{" "}
-            at <b>{historyData?.CreatedAt}</b>
+            Record has been modified by <b>{historyData?.createdBy || "--"}</b>{" "}
+            at <b>{historyData?.createdAt}</b>
             <br />
-            Source App. : {historyData?.Source}{historyData?.DBSource ? ` | Window Maker: ${historyData?.DBSource}`:null}
+            Source App. : {historyData?.SourceModule}
           </div>
           <Tabs
             activeKey={tab}
@@ -107,13 +87,6 @@ const Com = ({ data, layer, onHide }) => {
             <Tab eventKey="changesOnly" title={"Changes Only"} className="pt-2">
               <ChangesOnly {...{ historyData }} />
             </Tab>
-            {/* <Tab
-              eventKey="allFields"
-              title={"All operation fields"}
-              className="pt-2"
-            >
-              <AllFields {...{ historyData }} />
-            </Tab> */}
           </Tabs>
         </LoadingBlock>
       </Modal>
@@ -121,7 +94,7 @@ const Com = ({ data, layer, onHide }) => {
   );
 };
 
-const prefixOrder = { m: 0, w: 1, d: 2, wi: 3, di: 4 };
+const prefixOrder = { inv: 0, invh: 1, m: 2 };
 
 const ChangesOnly = ({ historyData }) => {
   return (
@@ -142,133 +115,13 @@ const ChangesOnly = ({ historyData }) => {
             </div>
           );
         })}
-      {/* items */}
-      <Items
-        {...{
-          list: historyData?.ChangedData_ItemList,
-          type: "wi",
-          label: "Windows Items",
-        }}
-      />
-      <Items
-        {...{
-          list: historyData?.ChangedData_ItemList,
-          type: "di",
-          label: "Doors Items",
-        }}
-      />
-      <ReturnTrips
-        {...{
-          list: historyData?.ChangedData_ReturnTripList,
-          label: "Return Trips",
-        }}
-      />
 
-      <MultiLines
-        {...{
-          list: historyData?.changedData_ShippingCallLogList,
-          label: "Shipping Calllogs",
-        }}
-      />
-
-      {/* <Files
-        {...{
-          list: historyData?.ChangedData_ImageList,
-          label: "Images",
-        }}
-      />
       <Files
         {...{
           list: historyData?.ChangedData_AttachmentList,
           label: "Attachments",
         }}
-      /> */}
-    </div>
-  );
-};
-
-const Items = ({ list, type, label }) => {
-  const displayList = list?.filter((a) => a.ItemInfo?.ItemType === type);
-  if (_.isEmpty(displayList)) return null;
-
-  return (
-    <div className={cn(styles.changesRow)}>
-      <div className={cn(styles.changesField)}>{label}</div>
-      <div className={cn(styles.changesCurrent)}>
-        <div className={cn(styles.changedItemList)}>
-          {displayList?.map((a) => {
-            const { ItemId, ItemNo, System, SubQty } = a?.ItemInfo;
-            return (
-              <div key={ItemId} className={cn(styles.itemInfoRow)}>
-                <div className={cn(styles.changedItemRow)}>
-                  Item: [{System}] {ItemNo}: {SubQty}{" "}
-                </div>
-                {a?.Changes?.map((b) => {
-                  const { Field, OldValue, NewValue } = b;
-                  const displayField = Field;
-                  return (
-                    <div
-                      key={`item_changed_${Field}`}
-                      className={cn(styles.changesRow)}
-                    >
-                      <div className={cn(styles.changesField)} title={Field}>
-                        {labelMapping[displayField]
-                          ?.title || displayField}
-                      </div>
-                      <div className={cn(styles.changesOld)}>{OldValue}</div>
-                      <div className={cn(styles.changesNew)}>{NewValue}</div>
-                    </div>
-                  );
-                })}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const ReturnTrips = ({ list, label }) => {
-  const displayList = list;
-  if (_.isEmpty(displayList)) return null;
-
-  return (
-    <div className={cn(styles.changesRow)}>
-      <div className={cn(styles.changesField)}>{label}</div>
-      <div className={cn(styles.changesCurrent)}>
-        <div className={cn(styles.changedItemList)}>
-          {displayList?.map((a) => {
-            const { Id, DateChange, NotesChange } = a;
-            const Changes = [DateChange, NotesChange]?.filter((a) => a);
-            return (
-              <div key={Id} className={cn(styles.itemInfoRow)}>
-                {Changes?.length > 0 ? (
-                  Changes.map((b) => {
-                    const { Field, OldValue, NewValue } = b;
-                    const displayField = Field;
-                    return (
-                      <div
-                        key={`returntrip_changed_${Field}`}
-                        className={cn(styles.changesRow)}
-                      >
-                        <div className={cn(styles.changesField)} title={Field}>
-                          {labelMapping[displayField]
-                            ?.title || displayField}
-                        </div>
-                        <div className={cn(styles.changesOld)}>{OldValue}</div>
-                        <div className={cn(styles.changesNew)}>{NewValue}</div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div>Deleted</div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
+      />
     </div>
   );
 };
@@ -316,6 +169,7 @@ const MultiLines = ({ list, label }) => {
     </div>
   );
 };
+
 const Files = ({ list, label }) => {
   const displayList = list;
   if (_.isEmpty(displayList)) return null;
@@ -341,40 +195,6 @@ const Files = ({ list, label }) => {
     </div>
   );
 };
-
-// const AllFields = ({ historyData }) => {
-//   return (
-//     <div className={cn(styles.changesList)}>
-//       {_.keys(historyData?.PreData)
-//         ?.sort(sortByPrefix)
-//         ?.map((k) => {
-//           if (labelMapping[k] === false) return null;
-//           const value = historyData?.PreData[k];
-//           let jsxValue = <></>;
-//           if (historyData?.ChangedData_Order[k]) {
-//             const { OldValue, NewValue } = historyData?.ChangedData_Order[k];
-//             jsxValue = (
-//               <>
-//                 <div className={cn(styles.changesOld)}>{OldValue}</div>
-//                 <div className={cn(styles.changesNew)}>{NewValue}</div>
-//               </>
-//             );
-//           } else {
-//             jsxValue = <div className={cn(styles.changesCurrent)}>{value}</div>;
-//           }
-
-//           return (
-//             <div key={`changed_${k}`} className={cn(styles.changesRow)}>
-//               <div className={cn(styles.changesField)} title={k}>
-//                 {labelMapping[k]?.title || k}
-//               </div>
-//               {jsxValue}
-//             </div>
-//           );
-//         })}
-//     </div>
-//   );
-// };
 
 const sortByPrefix = (a, b) => {
   const prefixA = a?.split("_")?.[0];
