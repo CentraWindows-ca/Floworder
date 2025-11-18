@@ -191,9 +191,10 @@ const DFDatePicker = ({
           readOnly={disabled}
           customInput={<CustomInput />}
           renderCustomHeader={jsxCustomHeader}
-          {...otherProps}
-          {...props}
+          fixedHeight
           popperPlacement="top-end"
+          {...otherProps}
+          {...props}          
         />
       )}
     </>
