@@ -126,7 +126,10 @@ const DFDatePicker = ({
     nextMonthButtonDisabled,
   }) => {
     return (
-      <div className="input-group input-group-sm px-3" style={{width: "220px"}}>
+      <div
+        className="input-group input-group-sm px-3"
+        style={{ width: "220px" }}
+      >
         <button
           className="btn btn-sm btn-outline-secondary"
           onClick={decreaseMonth}
@@ -194,12 +197,11 @@ const DFDatePicker = ({
           fixedHeight
           popperPlacement="top-end"
           {...otherProps}
-          {...props}          
+          {...props}
         />
       )}
     </>
   );
 };
-
 
 export default DFDatePicker;
