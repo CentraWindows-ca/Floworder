@@ -107,35 +107,9 @@ const Com = ({}) => {
     <div className={cn(styles.columnInputsContainer)}>
       {COMMON_FIELDS?.map((a, i) => {
         const { id, Component, title, overrideOnChange, ...rest } = a;
-        const _defaultTitle = labelMapping[id]?.title;
-
         if (Component) {
-          return <Block inputData={a} />;
+          return <Block inputData={a} key={id}/>;
         }
-
-        // return (
-        //   <DisplayBlock id={id} key={id}>
-        //     <label>{_defaultTitle || title}</label>
-        //     <div>
-        //       <Component
-        //         id={id}
-        //         value={data?.[id] || ""}
-        //         initValue={initData?.[id] || ""}
-        //         isHighlightDiff
-        //         onChange={(v, ...o) => {
-        //           if (typeof overrideOnChange === "function") {
-        //             overrideOnChange(onChange, [v, ...o]);
-        //           } else {
-        //             onChange(v, id);
-        //           }
-        //         }}
-        //         errorMessage={validationResult?.[id]}
-        //         disabled={!checkEditable({ id })}
-        //         {...rest}
-        //       />
-        //     </div>
-        //   </DisplayBlock>
-        // );
       })}
     </div>
   );

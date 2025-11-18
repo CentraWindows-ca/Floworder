@@ -15,8 +15,11 @@ import InvoiceApi from "lib/api/InvoiceApi";
 export const LocalDataContext = createContext(null);
 
 const codeToTitleMap = {
+  DeleteInvoiceNote: "",
+  UpdateNotes: "",
+  AddNotes: "",
   CreateInvoiceHeader: "Create Invoice",
-  UpdateInvoiceHeader: "Update Invoice"
+  UpdateInvoiceHeader: "Update Invoice",
 };
 
 export const LocalDataProvider = ({
@@ -46,18 +49,19 @@ export const LocalDataProvider = ({
     setIsLoading(true);
     setData(null);
     // fetch data
-    const res =  await InvoiceApi.getInvoiceHistory(initInvoiceHeaderId);
-    if (res) {
+    const res = await InvoiceApi.getInvoiceHistory(initInvoiceHeaderId);
+    if (res.items) {
       setData(
-        res?.map((a) => {
-          const { jsonData, operationName } = a
-          const jsonDataObj = tryParse(jsonData)
+        res?.items?.map((a) => {
+          const { jsonData, operationName, createdAt, SourceModule } = a;
+          const jsonDataObj = tryParse(jsonData);
+
           return {
             ...a,
             jsonDataObj,
-            CreatedAt: utils.formatDate(a.CreatedAt, "yyyy-MM-dd HH:mm:ss"),
-            SourceModule: jsonDataObj.sourceModule,
-            operation_display: codeToTitleMap[operationName] || operationName
+            createdAt: utils.formatDate(createdAt, "yyyy-MM-dd HH:mm:ss"),
+            SourceModule: jsonDataObj?.SourceModule,
+            operation_display: codeToTitleMap[operationName] || operationName,
           };
         }),
       );
@@ -72,7 +76,7 @@ export const LocalDataProvider = ({
     initInvoiceHeaderId,
     data,
     setData,
-    onHide
+    onHide,
   };
   return (
     <LocalDataContext.Provider value={context}>

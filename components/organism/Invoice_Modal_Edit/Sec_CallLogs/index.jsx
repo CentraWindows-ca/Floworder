@@ -1,4 +1,5 @@
 import React, { useContext, useCallback, useState } from "react";
+import { format } from "date-fns";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
@@ -24,12 +25,17 @@ const styles = { ...stylesRoot, ...stylesCurrent };
 
 const _calledMessageTypesList = _.values(CalledMessageTypes);
 
+const today = format(new Date(), "yyyy-MM-dd");
+const INIT_VALUES = {
+  dateCalled: today,
+};
+
 const COMMON_FIELDS = applyField([
   {
     Component: Editable.EF_DateOnly,
     id: "dateCalled",
     title: "Date",
-    required: true
+    required: true,
   },
   {
     Component: Editable.EF_SelectWithLabel,
@@ -37,7 +43,7 @@ const COMMON_FIELDS = applyField([
     title: "Called Message",
     placeholder: "-",
     options: _calledMessageTypesList,
-    required: true
+    required: true,
   },
   {
     Component: Editable.EF_Text,
@@ -76,7 +82,11 @@ const Com = ({ title, id }) => {
         {checkEditable({ group: "invoiceCallLogs" }) && (
           <button
             className="btn btn-xs btn-success"
-            onClick={() => setEditingRow({})}
+            onClick={() =>
+              setEditingRow({
+                ...INIT_VALUES,
+              })
+            }
           >
             <i className="fa-solid fa-plus me-2"></i>
             Add
@@ -87,13 +97,14 @@ const Com = ({ title, id }) => {
   );
 
   // check all items for required field
-  const _checkDisabled = (record) => !COMMON_FIELDS?.every((a) => {
-    if (a.required) {
-      return record?.[a.id];
-    }
+  const _checkDisabled = (record) =>
+    !COMMON_FIELDS?.every((a) => {
+      if (a.required) {
+        return record?.[a.id];
+      }
 
-    return true;
-  });  
+      return true;
+    });
 
   return (
     <>

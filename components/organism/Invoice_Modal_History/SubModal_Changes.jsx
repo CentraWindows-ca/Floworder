@@ -33,8 +33,6 @@ const Com = ({ data, layer, onHide }) => {
   const doInit = (data) => {
     let ChangedData = data.jsonDataObj;
 
-    console.log(ChangedData)
-
     const ChangedData_Main = ChangedData?.OrderLevelChanges?.reduce(
       (prev, curr) => {
         return { ...prev, [curr.Field]: curr };
@@ -51,6 +49,8 @@ const Com = ({ data, layer, onHide }) => {
       ChangedData_Main,
       ChangedData_AttachmentList,
     };
+
+    console.log(ChangedData)
 
     setHistoryData(_data);
   };
