@@ -15,11 +15,15 @@ import InvoiceApi from "lib/api/InvoiceApi";
 export const LocalDataContext = createContext(null);
 
 const codeToTitleMap = {
-  DeleteInvoiceNote: "",
-  UpdateNotes: "",
-  AddNotes: "",
+  DeleteInvoiceNote: "Delete Note",
+  UpdateNotes: "Update Note",
+  AddNotes: "Add Note",
+  AddInvoiceCallLogs: "Add Call Log",
   CreateInvoiceHeader: "Create Invoice",
   UpdateInvoiceHeader: "Update Invoice",
+  UpdateInvoiceAndHeader: "Update Invoice",
+  CreateInvoice: "Create Invoice",
+  UploadingFile: "Upload File"
 };
 
 export const LocalDataProvider = ({

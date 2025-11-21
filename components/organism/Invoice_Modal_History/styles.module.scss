@@ -50,4 +50,9 @@
 .changedItemRow {
     padding: 5px;   
     border-bottom: 1px solid $color_border_table;
+    grid-template-columns: 1fr 2fr;
+    gap: 5px;
+    display: grid;
+
+
 }

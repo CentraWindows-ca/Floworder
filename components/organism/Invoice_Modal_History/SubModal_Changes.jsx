@@ -3,11 +3,11 @@ import cn from "classnames";
 import _ from "lodash";
 import Modal from "components/molecule/Modal";
 import constants from "lib/constants";
-import {labelMapping} from "lib/constants/production_constants_labelMapping"
+import { labelMapping } from "lib/constants/invoice_constants_labelMapping";
 
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
-import utils from "lib/utils";
+import utils, { tryParse } from "lib/utils";
 
 // styles
 import styles from "./styles.module.scss";
@@ -17,6 +17,7 @@ import LoadingBlock from "components/atom/LoadingBlock";
 
 const Com = ({ data, layer, onHide }) => {
   const [historyData, setHistoryData] = useState(null);
+  const [changedDataList, setChangedDataList] = useState(null);
   const [tab, setTab] = useState("changesOnly");
 
   // use swr later
@@ -31,28 +32,67 @@ const Com = ({ data, layer, onHide }) => {
   // ======
 
   const doInit = (data) => {
-    let ChangedData = data.jsonDataObj;
+    let ChangedTables = JSON.parse(JSON.stringify(data.jsonDataObj?.Data));
+    const _newChangedTables = ChangedTables?.map((tb) => {
+      let { TableName, Changes } = tb;
 
-    const ChangedData_Main = ChangedData?.OrderLevelChanges?.reduce(
-      (prev, curr) => {
-        return { ...prev, [curr.Field]: curr };
-      },
-      {},
-    );
+      let _distructure = [];
+      const _changesFromJson = [];
 
-    const ChangedData_AttachmentList = ChangedData?.Attachments?.filter(
-      (a) => a.Type === "file",
-    );
+      // find JSON, remove it
+      Changes?.forEach((ch, i) => {
+        const { Field, OldValue, NewValue } = ch;
+        // rename fields
+        switch (TableName) {
+          case "Invoice":
+            Changes[i].Field = `inv_${Field}`
+            break;
+          case "InvoiceHeader":
+            Changes[i].Field = `invh_${Field}`
+            break;
+          default:
+            break;
+        }
 
-    const _data = {
-      ...data,
-      ChangedData_Main,
-      ChangedData_AttachmentList,
-    };
+        if (Field === "orderJSON") {
+          // distructure
+          Changes[i] = null;
+          _distructure.push({
+            OldValue,
+            NewValue,
+          });
+        }
+      });
 
-    console.log(ChangedData)
+      // compare JSON
+      _distructure.forEach((a) => {
+        const { OldValue, NewValue } = a;
+        const objOldValue = tryParse(OldValue) || {};
+        const objNewValue = tryParse(NewValue) || {};
 
-    setHistoryData(_data);
+        _.keys(objNewValue)?.forEach((k) => {
+          const _newV = objNewValue[k]?.toString();
+          const _oldV = objOldValue[k]?.toString();
+          if (_newV !== _oldV) {
+            _changesFromJson.push({
+              Field: `m_${k}`,
+              OldValue: _oldV,
+              NewValue: _newV,
+            });
+          }
+        });
+      });
+
+      Changes = Changes?.filter(Boolean);
+      Changes = [...Changes, ..._changesFromJson];
+
+      return { ...tb, Changes };
+    });
+
+    console.log(_newChangedTables)
+
+    setChangedDataList(_newChangedTables);
+    setHistoryData(data);
   };
 
   return (
@@ -61,7 +101,7 @@ const Com = ({ data, layer, onHide }) => {
         show={!!data}
         title={
           <>
-            Invoice History / {historyData?.WorkOrderNo} /{" "}
+            Invoice History / {historyData?.jsonDataObj?.DisplayName} /{" "}
             {historyData?.operation_display}
           </>
         }
@@ -85,7 +125,24 @@ const Com = ({ data, layer, onHide }) => {
             onSelect={setTab}
           >
             <Tab eventKey="changesOnly" title={"Changes Only"} className="pt-2">
-              <ChangesOnly {...{ historyData }} />
+              {changedDataList?.map((a, i) => {
+                const { TableName, Changes } = a;
+
+                switch (TableName) {
+                  case "InvoiceUploadingFiles":
+                    return (
+                      <div key={i}>
+                        <Files {...{ Changes }} />
+                      </div>
+                    );
+                  default:
+                    return (
+                      <div key={i}>
+                        <ChangesOnly {...{ Changes }} />
+                      </div>
+                    );
+                }
+              })}
             </Tab>
           </Tabs>
         </LoadingBlock>
@@ -96,102 +153,109 @@ const Com = ({ data, layer, onHide }) => {
 
 const prefixOrder = { inv: 0, invh: 1, m: 2 };
 
-const ChangesOnly = ({ historyData }) => {
+const ChangesOnly = ({ Changes }) => {
   return (
     <div className={cn(styles.changesList)}>
       {/* order fields */}
-      {_.values(historyData?.ChangedData_Order)
-        ?.sort((a, b) => sortByPrefix(a.Field, b.Field))
-        ?.map((a) => {
-          const { Field, OldValue, NewValue } = a;
+      {Changes?.sort((a, b) => sortByPrefix(a.Field, b.Field))?.map((a, i) => {
+        const { Field, OldValue, NewValue } = a;
 
-          return (
-            <div key={`changed_${Field}`} className={cn(styles.changesRow)}>
-              <div className={cn(styles.changesField)} title={Field}>
-                {labelMapping[Field]?.title || Field}
-              </div>
-              <div className={cn(styles.changesOld)}>{OldValue}</div>
-              <div className={cn(styles.changesNew)}>{NewValue}</div>
+        return (
+          <div key={`changed_${i}`} className={cn(styles.changesRow)}>
+            <div className={cn(styles.changesField)} title={Field}>
+              {labelMapping[Field]?.title || Field}
             </div>
-          );
-        })}
-
-      <Files
-        {...{
-          list: historyData?.ChangedData_AttachmentList,
-          label: "Attachments",
-        }}
-      />
+            <div className={cn(styles.changesOld)}>{OldValue?.toString()}</div>
+            <div className={cn(styles.changesNew)}>{NewValue?.toString()}</div>
+          </div>
+        );
+      })}
     </div>
   );
 };
 
-const MultiLines = ({ list, label }) => {
-  const displayList = list;
-  if (_.isEmpty(displayList)) return null;
+// const MultiLines = ({ list, label }) => {
+//   const displayList = list;
+//   if (_.isEmpty(displayList)) return null;
 
+//   return (
+//     <div className={cn(styles.changesRow)}>
+//       <div className={cn(styles.changesField)}>{label}</div>
+//       <div className={cn(styles.changesCurrent)}>
+//         <div className={cn(styles.changedItemList)}>
+//           {displayList?.map((a) => {
+//             const { Id, ...Changes } = a;
+//             return (
+//               <div key={Id} className={cn(styles.itemInfoRow)}>
+//                 {!_.isEmpty(Changes) ? (
+//                   _.values(Changes)?.map((b) => {
+//                     const { Field, OldValue, NewValue } = b;
+//                     const displayField = Field;
+//                     if (OldValue === NewValue) return null;
+//                     return (
+//                       <div
+//                         key={`${label}_changed_${Field}`}
+//                         className={cn(styles.changesRow)}
+//                       >
+//                         <div className={cn(styles.changesField)} title={Field}>
+//                           {labelMapping[displayField]?.title || displayField}
+//                         </div>
+//                         <div className={cn(styles.changesOld)}>{OldValue}</div>
+//                         <div className={cn(styles.changesNew)}>{NewValue}</div>
+//                       </div>
+//                     );
+//                   })
+//                 ) : (
+//                   <div>Deleted</div>
+//                 )}
+//               </div>
+//             );
+//           })}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+const Files = ({ list, label, Changes }) => {
   return (
-    <div className={cn(styles.changesRow)}>
-      <div className={cn(styles.changesField)}>{label}</div>
-      <div className={cn(styles.changesCurrent)}>
-        <div className={cn(styles.changedItemList)}>
-          {displayList?.map((a) => {
-            const { Id, ...Changes } = a;
-            return (
-              <div key={Id} className={cn(styles.itemInfoRow)}>
-                {!_.isEmpty(Changes) ? (
-                  _.values(Changes)?.map((b) => {
-                    const { Field, OldValue, NewValue } = b;
-                    const displayField = Field;
-                    if (OldValue === NewValue) return null;
-                    return (
-                      <div
-                        key={`${label}_changed_${Field}`}
-                        className={cn(styles.changesRow)}
-                      >
-                        <div className={cn(styles.changesField)} title={Field}>
-                          {labelMapping[displayField]
-                            ?.title || displayField}
-                        </div>
-                        <div className={cn(styles.changesOld)}>{OldValue}</div>
-                        <div className={cn(styles.changesNew)}>{NewValue}</div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div>Deleted</div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-};
+    <div className={cn(styles.changesList)}>
+      {Changes?.sort((a, b) => sortByPrefix(a.Field, b.Field))?.map((a, i) => {
+        let { Field, OldValue, NewValue } = a;
 
-const Files = ({ list, label }) => {
-  const displayList = list;
-  if (_.isEmpty(displayList)) return null;
+        // if its a file
+        if (NewValue?.FileName) {
+          const { FileName, Length, ContentType } = NewValue;
+          const Size = Length
+            ? `${utils.formatNumber(Length / 1024)} KB`
+            : "--";
 
-  return (
-    <div className={cn(styles.changesRow)}>
-      <div className={cn(styles.changesField)}>{label}</div>
-      <div className={cn(styles.changesCurrent)}>
-        <div className={cn(styles.changedItemList)}>
-          {displayList?.map((a) => {
-            const { Id, Type, Notes } = a;
-            return (
-              <div key={`item_files_${Id}`} className={cn(styles.itemInfoRow)}>
-                <div className={cn(styles.changedItemRow)}>Id: [{Id}]</div>
-                <div className={cn(styles.changesRow)}>
-                  <div className={cn(styles.changesOld)}>{Notes}</div>
+          NewValue = (
+            <div>
+              <div className={cn(styles.itemInfoRow)}>
+                <div className={cn(styles.changedItemRow)}>
+                  <b>FileName</b>
+                  <span>{FileName}</span>
+                  <b>Size</b>
+                  <div>{Size}</div>
+                  {/* <b>ContentType</b>
+                  <div>{ContentType}</div> */}
                 </div>
               </div>
-            );
-          })}
-        </div>
-      </div>
+            </div>
+          );
+        }
+
+        return (
+          <div key={`changed_${i}`} className={cn(styles.changesRow)}>
+            <div className={cn(styles.changesField)} title={Field}>
+              {labelMapping[Field]?.title || Field}
+            </div>
+            <div className={cn(styles.changesOld)}>{OldValue}</div>
+            <div className={cn(styles.changesNew)}>{NewValue}</div>
+          </div>
+        );
+      })}
     </div>
   );
 };
