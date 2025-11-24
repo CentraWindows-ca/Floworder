@@ -122,13 +122,13 @@ const Modal_BusinessCentralLookup = ({ show, setShow }) => {
                   <div>Invoice Amount</div>
                   <div className={cn(styles.tableValue, "fw-bold text-right")}>
                     {bCData?.display_inv_invoiceAmount ?? (
-                      <span className="text-red-400">N/A</span>
+                      <span className="text-gray-400">N/A</span>
                     )}
                   </div>
                   <div>Business Central Invoice#</div>
-                  <div className={cn(styles.tableValue, "fw-bold")}>
+                  <div className={cn(styles.tableValue, "fw-bold text-right")}>
                     {bCData?.invh_bcInvoiceNo ?? (
-                      <span className="text-red-400">N/A</span>
+                      <span className="text-gray-400">N/A</span>
                     )}
                   </div>
                 </div>
