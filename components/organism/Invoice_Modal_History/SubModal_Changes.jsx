@@ -32,7 +32,7 @@ const Com = ({ data, layer, onHide }) => {
   // ======
 
   const doInit = (data) => {
-    let ChangedTables = JSON.parse(JSON.stringify(data.jsonDataObj?.Data));
+    let ChangedTables = JSON.parse(JSON.stringify(data.jsonDataObj?.Data || []));
     const _newChangedTables = ChangedTables?.map((tb) => {
       let { TableName, Changes } = tb;
 

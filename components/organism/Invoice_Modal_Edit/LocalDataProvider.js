@@ -180,6 +180,7 @@ export const LocalDataProvider = ({
 
   const doInitInvoice = useLoadingBar(
     async (initInvoiceHeaderId, stillEditingData = {}) => {
+      setEditedGroup({});
       const res = await InvoiceApi.getInvoiceOrderDetails(initInvoiceHeaderId);
 
       let mergedData = {};
