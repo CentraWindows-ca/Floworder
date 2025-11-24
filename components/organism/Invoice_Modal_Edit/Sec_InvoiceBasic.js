@@ -18,8 +18,8 @@ const COMMON_FIELDS = applyField([
   {
     Component: Editable.EF_Input,
     id: "inv_invoiceAmount",
-    className: "text-right",
-    placeholder: "$"
+    className: "text-right",  
+    placeholder: "0.00",
   },
   {
     Component: Editable.EF_Input,
