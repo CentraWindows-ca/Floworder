@@ -17,7 +17,7 @@ import labelMapping from "lib/constants/invoice_constants_labelMapping";
 const COMMON_FIELDS = applyField([
   {
     Component: Editable.EF_Input,
-    id: "m_InvoiceAmount",
+    id: "inv_invoiceAmount",
     className: "text-right",
     placeholder: "$"
   },

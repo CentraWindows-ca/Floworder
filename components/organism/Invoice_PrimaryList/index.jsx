@@ -199,7 +199,7 @@ const Com = (props) => {
     _data = _data?.map((a) => {
       if (!a) return null;
       const merged = { ...a };
-      const { invh_invoiceStatus, invh_createdAt, m_InvoiceAmount, m_CompleteDate, m_WOStatus } = a;
+      const { invh_invoiceStatus, invh_createdAt, inv_invoiceAmount, m_CompleteDate, m_WOStatus } = a;
 
       const orderStatusList = _.values(ORDER_STATUS);
       merged.m_Status_display = m_WOStatus
@@ -215,7 +215,7 @@ const Com = (props) => {
             (a) => a.key.toString() === invh_invoiceStatus?.toString(),
           )
         : null;
-      merged.invoiceAmount_display = utils.formatCurrency2Decimal(m_InvoiceAmount)
+      merged.invoiceAmount_display = utils.formatCurrency2Decimal(inv_invoiceAmount)
 
       merged.createdAt_display = utils.formatDate(invh_createdAt);
       merged.completeDate_display = utils.formatDateForMorganLegacy(m_CompleteDate);
