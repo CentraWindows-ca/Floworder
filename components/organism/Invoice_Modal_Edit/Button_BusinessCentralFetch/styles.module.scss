@@ -1,0 +1,27 @@
+@use "styles/theme" as *;
+
+
+.tableContainer {
+    margin-top: 10px;
+    border-top: 1px solid $color_border_table;
+    .tableLoading {
+        height: 100%;
+        width: 100%;
+        min-height: 80px;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .tableResult {
+        padding: 10px;
+        display: grid;
+        gap: 5px;
+        grid-template-columns: 1fr 1fr;
+
+        .tableValue {
+            border-bottom: 1px solid $color_gray;
+        }
+    }
+}

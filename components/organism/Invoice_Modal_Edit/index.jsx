@@ -19,9 +19,7 @@ import Sec_InvoiceNotes from "./Sec_InvoiceNotes";
 import Sec_CallLogs from "./Sec_CallLogs";
 
 import { DisplayBlock } from "./Com";
-import constants, {
-  ADDON_STATUS,
-} from "lib/constants";
+import constants, { ADDON_STATUS } from "lib/constants";
 
 import Modal_History from "components/organism/Invoice_Modal_History";
 // styles
@@ -29,6 +27,7 @@ import styles from "./styles.module.scss";
 
 import { LocalDataContext, LocalDataProvider } from "./LocalDataProvider";
 import LoadingBlock from "components/atom/LoadingBlock";
+import Button_BusinessCentralFetch from "./Button_BusinessCentralFetch";
 
 const Com = ({}) => {
   const {
@@ -38,6 +37,7 @@ const Com = ({}) => {
     initInvoiceHeaderId,
     onHide,
     onRestore,
+    onFetchBusinessCentral,
     data,
     checkEditable,
     setIsEditable,
@@ -49,7 +49,7 @@ const Com = ({}) => {
 
   const [historyOrderMasterId, setHistoryInvoiceId] = useState(null);
 
-  const isOnStatusAllowToEdit = true
+  const isOnStatusAllowToEdit = true;
   const uiClass_withLockout = true;
 
   const jsxTitle = (
@@ -140,7 +140,12 @@ const Com = ({}) => {
             })}
           >
             <div className={cn(styles.mainItem, styles["grid-1"])}>
-              <div className={cn(styles.sectionTitle)}>Invoice Information</div>
+              <div className={cn(styles.sectionTitle)}>
+                Invoice Information
+                <div>
+                  <Button_BusinessCentralFetch />
+                </div>
+              </div>
               <Sec_InvoiceBasic />
               <hr />
               <Sec_InvoiceBilling />

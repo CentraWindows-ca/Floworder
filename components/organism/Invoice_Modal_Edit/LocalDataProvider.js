@@ -29,6 +29,7 @@ import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
 import { checkEditableById, checkEditableByGroup } from "./Com";
 import useLocalValidation from "./hooks/useLocalValidation";
 import invoice_utils, { flattenObjWithPrefix } from "lib/utils/invoice_utils";
+import DragonFlyApi from "lib/api/DragonFlyApi";
 
 export const LocalDataContext = createContext(null);
 
@@ -258,6 +259,12 @@ export const LocalDataProvider = ({
     onRestore();
   });
 
+  const doFetchBusinessCentral = useLoadingBar(async (province) => {
+    const workOrderNo = data?.m_WorkOrderNo
+    const _invoiceFromBizC = await DragonFlyApi.getReportCleanBC(workOrderNo, province)
+    return _invoiceFromBizC
+  });
+
   const doUploadAttachment = useLoadingBar(async (_files) => {
     const awaitList = _files?.map((_f) => {
       const { file, notes } = _f;
@@ -407,6 +414,7 @@ export const LocalDataProvider = ({
     existingAttachments,
     setExistingAttachments,
     salesAttachments,
+    onFetchBusinessCentral: doFetchBusinessCentral,
     onChange: handleChange,
     onUpdateStatus: doUpdateStatus,
     onAnchor: handleAnchor,
