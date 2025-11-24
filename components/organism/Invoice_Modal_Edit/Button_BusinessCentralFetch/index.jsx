@@ -62,7 +62,7 @@ const Modal_BusinessCentralLookup = ({ show, setShow }) => {
 
     let inv_invoiceAmount = _bcData?.total;
 
-    if (typeof inv_invoiceAmount === 'string') {
+    if (typeof inv_invoiceAmount === "string") {
       inv_invoiceAmount = utils.formatCurrencyStringToNumber(inv_invoiceAmount);
     }
 
@@ -70,7 +70,9 @@ const Modal_BusinessCentralLookup = ({ show, setShow }) => {
       setBCData({
         invh_bcInvoiceNo: _bcData?.invoiceNo,
         inv_invoiceAmount,
-        display_inv_invoiceAmount: inv_invoiceAmount ? utils.formatCurrency2Decimal(inv_invoiceAmount, "$") : undefined
+        display_inv_invoiceAmount: inv_invoiceAmount
+          ? utils.formatCurrency2Decimal(inv_invoiceAmount, "$")
+          : undefined,
       });
     }
     setIsLoading(false);
@@ -79,8 +81,11 @@ const Modal_BusinessCentralLookup = ({ show, setShow }) => {
   const handleApply = () => {
     const { invh_bcInvoiceNo, inv_invoiceAmount } = bCData || {};
 
-    onChange(invh_bcInvoiceNo, "invh_bcInvoiceNo");
-    onChange(inv_invoiceAmount, "inv_invoiceAmount");
+    if (invh_bcInvoiceNo)
+      onChange(invh_bcInvoiceNo, "invh_bcInvoiceNo");
+
+    if (inv_invoiceAmount)
+      onChange(inv_invoiceAmount, "inv_invoiceAmount");
 
     setShow(false);
   };
@@ -132,12 +137,12 @@ const Modal_BusinessCentralLookup = ({ show, setShow }) => {
                     )}
                   </div>
                 </div>
-                <div className="justify-content-center flex p-2 mt-2">
+                <div className="justify-content-center mt-2 flex p-2">
                   <button
                     className="btn btn-outline-primary"
                     onClick={handleApply}
                   >
-                    Apply
+                    Fill in form
                   </button>
                 </div>
               </div>
