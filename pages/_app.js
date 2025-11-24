@@ -20,10 +20,16 @@ import "react-bootstrap-typeahead/css/Typeahead.css";
 import "react-tooltip/dist/react-tooltip.css";
 import "styles/custom_react-tooltip.css";
 import "styles/index.css";
+import { getCookie } from "lib/api/SERVER";
 
 const AuthNav = dynamic(() => import("@centrawindows-ca/authnav"), {
   ssr: false, // This will prevent server-side render
 });
+
+const APP_TITLE = {
+  "Invoice": "Invoice Management",
+  "Production": "Order Management"
+}
 
 /* ===== [ADDED] very small progress bar component (uses @tanem/react-nprogress) ===== */
 function TopProgressBar({ isAnimating }) {
@@ -113,6 +119,7 @@ export default class MyApp extends App {
     if (Component.getInitialProps) {
       pageProps = await Component.getInitialProps(ctx);
     }
+
     return { pageProps };
   }
 
@@ -121,6 +128,7 @@ export default class MyApp extends App {
       ...prevState,
       permissions: p,
       rawAuth,
+      APP_NAME: getCookie('APP_NAME')
     }));
   };
 
@@ -129,9 +137,9 @@ export default class MyApp extends App {
     const Layout = Component.layout || (({ children }) => children);
     const env = process.env.NEXT_PUBLIC_ENV || "";
     const title =
-      "Order Management" +
+      (APP_TITLE[this.state.APP_NAME] || "Order Management") +
       (env && env !== "production" ? ` (${env})` : "");
-
+    
     return (
       <React.Fragment>
         <Head>
