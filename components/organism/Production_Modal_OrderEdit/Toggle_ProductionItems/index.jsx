@@ -1,8 +1,17 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useMemo,
+  useCallback,
+} from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
-import {labelMapping, applyField} from "lib/constants/production_constants_labelMapping";
+import {
+  labelMapping,
+  applyField,
+} from "lib/constants/production_constants_labelMapping";
 
 import { ITEM_STATUS, ITEM_LITES, ITEM_DOOR_TYPES } from "lib/constants";
 import Editable from "components/molecule/Editable";
@@ -10,7 +19,7 @@ import TableSortable from "components/atom/TableSortable";
 import Tooltip from "components/atom/Tooltip";
 // styles
 
-import { LocalDataContext } from "../LocalDataProvider";
+import { LocalDataContext, LocalDataContext_items } from "../LocalDataProvider";
 import { ToggleBlock, DisplayBlock } from "../Com";
 import Modal_ItemEdit from "./Modal_ItemEdit";
 // styles
@@ -20,83 +29,86 @@ import stylesCurrent from "./styles.module.scss";
 const styles = { ...stylesRoot, ...stylesCurrent };
 
 // TODO: change to from remote
-const ITEM_CATEGORIES = [
-  {
-    label: "Windows",
-    dictKey: "windows_Windows",
-    labelCode: "W",
-    category: "Windows",
-    sortOrder: 10,
-  },
-  {
-    label: "Patio Doors",
-    dictKey: "windows_PatioDoor",
-    labelCode: "PD",
-    category: "Windows",
-    sortOrder: 20,
-  },
-  {
-    label: "Swing Doors",
-    dictKey: "windows_SwingDoor",
-    labelCode: "SD",
-    category: "Windows",
-    sortOrder: 30,
-  },
-  {
-    label: "Window NPD",
-    dictKey: "windows_NPD",
-    labelCode: "NPD",
-    category: "Windows",
-    sortOrder: 40,
-  },
-  {
-    label: "Exterior Doors",
-    dictKey: "doors_Doors",
-    labelCode: "ED",
-    category: "Doors",
-    sortOrder: 50,
-  },
-  {
-    label: "Window Glass",
-    dictKey: "windows_Glass",
-    labelCode: "WGL",
-    category: "Others",
-    sortOrder: 60,
-  },
-  {
-    label: "Door Glass",
-    dictKey: "doors_Glass",
-    labelCode: "DGL",
-    category: "Others",
-    sortOrder: 70,
-  },
-  {
-    label: "Door Others",
-    dictKey: "doors_Others",
-    labelCode: "Door others",
-    category: "Others",
-    sortOrder: 80,
-  },
-  {
-    label: "Others",
-    dictKey: "others_Others",
-    labelCode: "Others",
-    category: "Others",
-    sortOrder: 90,
-  },
-];
+// const ITEM_CATEGORIES = [
+//   {
+//     label: "Windows",
+//     dictKey: "windows_Windows",
+//     labelCode: "W",
+//     category: "Windows",
+//     sortOrder: 10,
+//   },
+//   {
+//     label: "Patio Doors",
+//     dictKey: "windows_PatioDoor",
+//     labelCode: "PD",
+//     category: "Windows",
+//     sortOrder: 20,
+//   },
+//   {
+//     label: "Swing Doors",
+//     dictKey: "windows_SwingDoor",
+//     labelCode: "SD",
+//     category: "Windows",
+//     sortOrder: 30,
+//   },
+//   {
+//     label: "Window NPD",
+//     dictKey: "windows_NPD",
+//     labelCode: "NPD",
+//     category: "Windows",
+//     sortOrder: 40,
+//   },
+//   {
+//     label: "Exterior Doors",
+//     dictKey: "doors_Doors",
+//     labelCode: "ED",
+//     category: "Doors",
+//     sortOrder: 50,
+//   },
+//   {
+//     label: "Window Glass",
+//     dictKey: "windows_Glass",
+//     labelCode: "WGL",
+//     category: "Others",
+//     sortOrder: 60,
+//   },
+//   {
+//     label: "Door Glass",
+//     dictKey: "doors_Glass",
+//     labelCode: "DGL",
+//     category: "Others",
+//     sortOrder: 70,
+//   },
+//   {
+//     label: "Door Others",
+//     dictKey: "doors_Others",
+//     labelCode: "Door others",
+//     category: "Others",
+//     sortOrder: 80,
+//   },
+//   {
+//     label: "Others",
+//     dictKey: "others_Others",
+//     labelCode: "Others",
+//     category: "Others",
+//     sortOrder: 90,
+//   },
+// ];
 
-const getCategoryBySystem = (system) => {};
+// const getCategoryBySystem = (system) => {};
 
 const Com = ({ title, id }) => {
   const {
-    windowItems,
-    doorItems,
-    onBatchUpdateItems,
+    setExpands,
     uiOrderType,
     dictionary,
-    setExpands,
   } = useContext(LocalDataContext);
+
+  const {
+    onBatchUpdateItems,
+    windowItems,
+    doorItems,
+  } = useContext(LocalDataContext_items);
 
   const ITEM_CATEGORIES = dictionary.uiItemLabels || [];
 
@@ -227,7 +239,7 @@ const Com = ({ title, id }) => {
                     list: grouppedItems,
                     stats,
                   }}
-                  key = {dictKey}
+                  key={dictKey}
                 />
               );
             case "Doors":
@@ -239,7 +251,7 @@ const Com = ({ title, id }) => {
                     list: grouppedItems,
                     stats,
                   }}
-                  key = {dictKey}
+                  key={dictKey}
                 />
               );
             case "Others":
@@ -252,7 +264,7 @@ const Com = ({ title, id }) => {
                     stats,
                     kind: dictKey.startsWith("doors") ? "d" : "w",
                   }}
-                  key = {dictKey}
+                  key={dictKey}
                 />
               );
             default:
@@ -270,29 +282,30 @@ const Com = ({ title, id }) => {
 };
 
 const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
-  const { onBatchUpdateItems, checkEditable } = useContext(LocalDataContext);
+  const { checkEditable } = useContext(LocalDataContext);
+  const {
+    onBatchUpdateItems,
+  } = useContext(LocalDataContext_items);
+
   const data = list?.[dictKey];
 
   const blockId = "WINDOW.windowItems";
   const group = "windowitems";
   const _isGroupEditable = checkEditable({ group });
 
-  const [updatingValues, setUpdatingValues] = useState({});
-  const handleUpdate = (id, v, k, initV) => {
-    setUpdatingValues((prev) => {
-      const _v = JSON.parse(JSON.stringify(prev));
-      if (v !== initV) {
-        _.set(_v, [id, k], v);
-      } else {
-        _.unset(_v, [id, k]);
-        if (_.isEmpty(_v[id])) {
-          _.unset(_v[id]);
-        }
-      }
-
-      return _v;
-    });
-  };
+  const {
+    updatingValues,
+    setUpdatingValues,
+    handleUpdate,
+    overridedList,
+    sort,
+    setSort,
+    filters,
+    setFilters,
+  } = useUpdatingValues({
+    data,
+    getRowId: (row) => row.Id,
+  });
 
   const handleSave = async () => {
     // treat updating items
@@ -304,223 +317,183 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
     setUpdatingValues({});
   };
 
-  const [filters, setFilters] = useState({});
-  const [sort, setSort] = useState({});
-
-  const columnsWindow = applyField([
-    {
-      key: "Item",
-      width: 80,
-    },
-    {
-      key: "Size",
-      width: 160,
-    },
-    {
-      title: "Qty",
-      key: "Quantity",
-      width: 60,
-    },
-    {
-      key: "SubQty",
-      width: 85,
-    },
-    {
-      key: "System",
-      width: 85,
-    },
-    {
-      key: "Description",
-    },
-    {
-      key: "HighRisk",
-      width: 120,
-      render: (t, record) => {
-        const updatingKey = "HighRisk";
-        const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
-
-        return (
-          <Editable.EF_Checkbox_Yesno
-            {...{
-              id: `wi_${updatingKey}_${record?.Id}`,
-              value:
-                overrideValue !== undefined
-                  ? overrideValue
-                  : record[updatingKey],
-              onChange: (v) =>
-                handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
-              disabled: !_isGroupEditable,
-            }}
-          />
-        );
+  const columnsWindow = useMemo(() => {
+    return applyField([
+      {
+        key: "Item",
+        width: 80,
       },
-    },
-    {
-      key: "Custom",
-      width: 90,
-      render: (t, record) => {
-        const updatingKey = "Custom";
-        const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
-
-        return (
-          <Editable.EF_Checkbox_Yesno
-            {...{
-              id: `wi_${updatingKey}_${record?.Id}`,
-              value:
-                overrideValue !== undefined
-                  ? overrideValue
-                  : record[updatingKey],
-              onChange: (v) =>
-                handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
-              disabled: !_isGroupEditable,
-            }}
-          />
-        );
+      {
+        key: "Size",
+        width: 160,
       },
-    },
-    {
-      key: "BTO",
-      width: 70,
-      render: (t, record) => {
-        const updatingKey = "BTO";
-        const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
-
-        return (
-          <Editable.EF_Checkbox_Yesno
-            {...{
-              id: `wi_${updatingKey}_${record?.Id}`,
-              value:
-                overrideValue !== undefined
-                  ? overrideValue
-                  : record[updatingKey],
-              onChange: (v) =>
-                handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
-              disabled: !_isGroupEditable,
-            }}
-          />
-        );
+      {
+        title: "Qty",
+        key: "Quantity",
+        width: 60,
       },
-    },
-    {
-      key: "Notes",
-      render: (t, record) => {
-        const updatingKey = "Notes";
-        const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
-        return (
-          <Editable.EF_Input
-            {...{
-              className: "form-control form-control-sm",
-              id: `wi_${updatingKey}_${record?.Id}`,
-              value:
-                overrideValue !== undefined
-                  ? overrideValue
-                  : record[updatingKey],
-              onChange: (v) => {
-                handleUpdate(record?.Id, v, updatingKey, record[updatingKey]);
-              },
-              disabled: !_isGroupEditable,
-              size: "sm",
-              placeholder: "--",
-            }}
-          />
-        );
+      {
+        key: "SubQty",
+        width: 85,
       },
-    },
-    {
-      title: "Location",
-      key: "RackLocationId",
-      width: 120,
-      render: (t, record) => {
-        const updatingKey = "RackLocationId";
-        const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
-        return (
-          <Editable.EF_Rack
-            {...{
-              value:
-                overrideValue !== undefined
-                  ? overrideValue
-                  : record[updatingKey],
-              onChange: (v, rid, o) => {
-                handleUpdate(
-                  record?.Id,
-                  o.RackNumber || null,
-                  "RackLocation",
-                  record["RackLocation"],
-                );
-                handleUpdate(
-                  record?.Id,
-                  o.RecordID || null,
-                  updatingKey,
-                  record[updatingKey],
-                );
-              },
-              id: `${record?.Id}_RackLocation`,
-              isDisplayAvilible: false,
-              size: "sm",
-              disabled: !_isGroupEditable,
-            }}
-          />
-        );
+      {
+        key: "System",
+        width: 85,
       },
-    },
-    {
-      key: "Status",
-      width: 150,
-      render: (t, record) => {
-        const updatingKey = "Status";
-        const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
-        return (
-          <Editable.EF_SelectWithLabel
-            {...{
-              value:
-                overrideValue !== undefined
-                  ? overrideValue
-                  : record[updatingKey],
-              onChange: (v) =>
-                handleUpdate(record?.Id, v || null, "Status", record["Status"]),
-              id: `Status_${record?.Id}`,
-              options: ITEM_STATUS,
-              className: "form-select form-select-sm",
-              disabled: !_isGroupEditable,
-            }}
-          />
-        );
+      {
+        key: "Description",
       },
-    },
-    {
-      title: "",
-      key: "",
-      render: (t, record) => {
-        return (
-          <button
-            className="btn btn-sm btn-outline-primary"
-            onClick={() => handleShowItem(record, "w")}
-          >
-            Detail
-          </button>
-        );
+      {
+        key: "HighRisk",
+        width: 120,
+        render: (t, record) => {
+          const updatingKey = "HighRisk";
+          return (
+            <Editable.EF_Checkbox_Yesno
+              {...{
+                id: `wi_${updatingKey}_${record?.Id}`,
+                value: record[updatingKey],
+                onChange: (v) =>
+                  handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
+                disabled: !_isGroupEditable,
+              }}
+            />
+          );
+        },
       },
-      width: 60,
-      isNotTitle: true,
-    },
-  ]);
-
-  // apply filter
-  const sortedList = _.orderBy(data, [sort?.sortBy], [sort?.dir])?.filter(
-    (a) => {
-      return _.every(
-        _.keys(filters)?.map((filterBy) => {
-          const filterValue = filters[filterBy]?.value;
-          if (!filterValue) {
-            return true;
-          }
-          return a[filterBy]
-            ?.toLowerCase()
-            ?.includes(filterValue?.toLowerCase());
-        }),
-      );
-    },
-  );
+      {
+        key: "Custom",
+        width: 90,
+        render: (t, record) => {
+          const updatingKey = "Custom";
+          return (
+            <Editable.EF_Checkbox_Yesno
+              {...{
+                id: `wi_${updatingKey}_${record?.Id}`,
+                value: record[updatingKey],
+                onChange: (v) =>
+                  handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
+                disabled: !_isGroupEditable,
+              }}
+            />
+          );
+        },
+      },
+      {
+        key: "BTO",
+        width: 70,
+        render: (t, record) => {
+          const updatingKey = "BTO";
+          return (
+            <Editable.EF_Checkbox_Yesno
+              {...{
+                id: `wi_${updatingKey}_${record?.Id}`,
+                value: record[updatingKey],
+                onChange: (v) =>
+                  handleUpdate(record?.Id, v, updatingKey, record[updatingKey]),
+                disabled: !_isGroupEditable,
+              }}
+            />
+          );
+        },
+      },
+      {
+        key: "Notes",
+        render: (t, record) => {
+          const updatingKey = "Notes";
+          return (
+            <Editable.EF_Input
+              {...{
+                className: "form-control form-control-sm",
+                id: `wi_${updatingKey}_${record?.Id}`,
+                value: record[updatingKey],
+                onChange: (v) => {
+                  handleUpdate(record?.Id, v, updatingKey, record[updatingKey]);
+                },
+                disabled: !_isGroupEditable,
+                size: "sm",
+                placeholder: "--",
+              }}
+            />
+          );
+        },
+      },
+      {
+        title: "Location",
+        key: "RackLocationId",
+        width: 120,
+        render: (t, record) => {
+          const updatingKey = "RackLocationId";
+          return (
+            <Editable.EF_Rack
+              {...{
+                value: record[updatingKey],
+                onChange: (v, rid, o) => {
+                  handleUpdate(
+                    record?.Id,
+                    o.RackNumber || null,
+                    "RackLocation",
+                    record["RackLocation"],
+                  );
+                  handleUpdate(
+                    record?.Id,
+                    o.RecordID || null,
+                    updatingKey,
+                    record[updatingKey],
+                  );
+                },
+                id: `${record?.Id}_RackLocation`,
+                isDisplayAvilible: false,
+                size: "sm",
+                disabled: !_isGroupEditable,
+              }}
+            />
+          );
+        },
+      },
+      {
+        key: "Status",
+        width: 150,
+        render: (t, record) => {
+          const updatingKey = "Status";
+          return (
+            <Editable.EF_SelectWithLabel
+              {...{
+                value: record[updatingKey],
+                onChange: (v) =>
+                  handleUpdate(
+                    record?.Id,
+                    v || null,
+                    "Status",
+                    record["Status"],
+                  ),
+                id: `Status_${record?.Id}`,
+                options: ITEM_STATUS,
+                className: "form-select form-select-sm",
+                disabled: !_isGroupEditable,
+              }}
+            />
+          );
+        },
+      },
+      {
+        title: "",
+        key: "",
+        render: (t, record) => {
+          return (
+            <button
+              className="btn btn-sm btn-outline-primary"
+              onClick={() => handleShowItem(record, "w")}
+            >
+              Detail
+            </button>
+          );
+        },
+        width: 60,
+        isNotTitle: true,
+      },
+    ]);
+  }, [_isGroupEditable]);
 
   return (
     !_.isEmpty(data) && (
@@ -549,7 +522,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
           </div>
           <TableSortable
             {...{
-              data: sortedList,
+              data: overridedList,
               columns: columnsWindow,
               sort,
               setSort,
@@ -568,29 +541,31 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
 };
 
 const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
-  const { onBatchUpdateItems, checkEditable } = useContext(LocalDataContext);
+  const { checkEditable } = useContext(LocalDataContext);
+  const {
+    onBatchUpdateItems,
+  } = useContext(LocalDataContext_items);
+
   const data = list?.[dictKey];
 
   const blockId = "DOOR.doorItems";
   const group = "dooritems";
   const _isGroupEditable = checkEditable({ group });
 
-  const [updatingValues, setUpdatingValues] = useState({});
-  const handleUpdate = (id, v, k, initV) => {
-    setUpdatingValues((prev) => {
-      const _v = JSON.parse(JSON.stringify(prev));
-      if (v !== initV) {
-        _.set(_v, [id, k], v);
-      } else {
-        _.unset(_v, [id, k]);
-        if (_.isEmpty(_v[id])) {
-          _.unset(_v, [id]);
-        }
-      }
+  const {
+    updatingValues,
+    setUpdatingValues,
+    handleUpdate,
+    overridedList,
+    sort,
+    setSort,
+    filters,
+    setFilters,
+  } = useUpdatingValues({
+    data,
+    getRowId: (row) => row.Id,
+  });
 
-      return _v;
-    });
-  };
   const handleSave = async () => {
     // treat updating items
     const updates = _.keys(updatingValues)?.map((k) => ({
@@ -601,8 +576,6 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
     setUpdatingValues({});
   };
 
-  const [filters, setFilters] = useState({});
-  const [sort, setSort] = useState({});
   const columns = applyField([
     {
       key: "Item",
@@ -759,23 +732,6 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
     },
   ]);
 
-  // apply filter
-  const sortedList = _.orderBy(data, [sort?.sortBy], [sort?.dir])?.filter(
-    (a) => {
-      return _.every(
-        _.keys(filters)?.map((filterBy) => {
-          const filterValue = filters[filterBy]?.value;
-          if (!filterValue) {
-            return true;
-          }
-          return a[filterBy]
-            ?.toLowerCase()
-            ?.includes(filterValue?.toLowerCase());
-        }),
-      );
-    },
-  );
-
   return (
     !_.isEmpty(data) && (
       <DisplayBlock id={blockId}>
@@ -803,7 +759,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
           </div>
           <TableSortable
             {...{
-              data: sortedList,
+              data: overridedList,
               columns,
               sort,
               setSort,
@@ -823,7 +779,11 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
 
 const initialValueOfStatus = ITEM_STATUS?.find((a) => a.sort === 0)?.key;
 const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
-  const { onBatchUpdateItems, checkEditable } = useContext(LocalDataContext);
+  const { checkEditable } = useContext(LocalDataContext);
+  const {
+    onBatchUpdateItems,
+  } = useContext(LocalDataContext_items);
+
   const data = list?.[dictKey];
 
   const blockId = kind === "w" ? "WINDOW.windowItems" : "DOOR.doorItems";
@@ -831,7 +791,19 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
   const _isGroupEditable = checkEditable({ group });
 
   const [isUpdatableMapping, setIsUpdatableMapping] = useState({});
-  const [updatingValues, setUpdatingValues] = useState({});
+  const {
+    updatingValues,
+    setUpdatingValues,
+    handleUpdate,
+    overridedList,
+    sort,
+    setSort,
+    filters,
+    setFilters,
+  } = useUpdatingValues({
+    data,
+    getRowId: (row) => row.Id,
+  });
 
   useEffect(() => {
     init(data);
@@ -858,24 +830,9 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
       setIsUpdatableMapping(_isUpdatableMappingInit);
     }
 
-    setUpdatingValues({})
+    setUpdatingValues({});
   };
 
-  const handleUpdate = (id, v, k, initV) => {
-    setUpdatingValues((prev) => {
-      const _v = JSON.parse(JSON.stringify(prev));
-      if (v !== initV) {
-        _.set(_v, [id, k], v);
-      } else {
-        _.unset(_v, [id, k]);
-        if (_.isEmpty(_v[id])) {
-          _.unset(_v, [id]);
-        }
-      }
-
-      return _v;
-    });
-  };
   const handleSave = async () => {
     // treat updating items
     const updates = _.keys(updatingValues)?.map((k) => ({
@@ -888,9 +845,6 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
     setIsUpdatableMapping({});
   };
 
-  const [filters, setFilters] = useState({});
-  const [sort, setSort] = useState({});
-
   // ====== updatable rule
   const handleChangeIsUpdatable = (v, record) => {
     setIsUpdatableMapping((prev) => {
@@ -902,11 +856,11 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
 
     if (!v) {
       setUpdatingValues((prev) => {
-        const _v = JSON.parse(JSON.stringify(prev));
-        
+        const _v = { ...prev };
+
         // NOTE: rack and status - if its updatable
-        _.set(_v, [record?.Id, 'RackLocationId'], '')
-        _.set(_v, [record?.Id, 'Status'], initialValueOfStatus)
+        _.set(_v, [record?.Id, "RackLocationId"], "");
+        _.set(_v, [record?.Id, "Status"], initialValueOfStatus);
 
         return _v;
       });
@@ -992,7 +946,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
 
         const value =
           overrideValue !== undefined ? overrideValue : record[updatingKey];
-          
+
         // NOTE 20250730: update/not update of others
         if (!isUpdatableMapping?.[record?.Id]) {
           return !value || value === "Not Started" ? "" : value;
@@ -1059,22 +1013,6 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
     },
   ]);
 
-  // apply filter
-  const sortedList = _.orderBy(data, [sort?.sortBy], [sort?.dir])?.filter(
-    (a) => {
-      return _.every(
-        _.keys(filters)?.map((filterBy) => {
-          const filterValue = filters[filterBy]?.value;
-          if (!filterValue) {
-            return true;
-          }
-          return a[filterBy]
-            ?.toLowerCase()
-            ?.includes(filterValue?.toLowerCase());
-        }),
-      );
-    },
-  );
 
   return (
     !_.isEmpty(data) && (
@@ -1103,7 +1041,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
           </div>
           <TableSortable
             {...{
-              data: sortedList,
+              data: overridedList,
               columns,
               sort,
               setSort,
@@ -1121,4 +1059,85 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
   );
 };
 
-export default Com;
+export default React.memo(Com);
+
+// === util hooks ======
+const useUpdatingValues = ({ data, getRowId }) => {
+  const [updatingValues, setUpdatingValues] = useState({});
+  const [sort, setSort] = useState({});
+  const [filters, setFilters] = useState({});
+  const handleUpdate = useCallback((id, v, k, initV) => {
+    setUpdatingValues((prev) => {
+      const _v = { ...prev };
+      if (v !== initV) {
+        _.set(_v, [id, k], v);
+      } else {
+        _.unset(_v, [id, k]);
+        if (_.isEmpty(_v[id])) {
+          _.unset(_v[id]);
+        }
+      }
+
+      return _v;
+    });
+  }, []);
+
+  const sortedList = useMemo(
+    () => buildSortedFilteredList(data, sort, filters),
+    [data, sort, filters],
+  );
+
+  const overridedList = useMemo(
+    () => applyOverrides(sortedList, updatingValues, getRowId),
+    [sortedList, updatingValues],
+  );
+
+  return {
+    updatingValues,
+    setUpdatingValues,
+    handleUpdate,
+    sortedList,
+    overridedList,
+    sort,
+    setSort,
+    filters,
+    setFilters,
+  };
+};
+
+const buildSortedFilteredList = (data, sort, filters) => {
+  if (!data) return data;
+
+  const sorted = _.orderBy(data, [sort?.sortBy], [sort?.dir]);
+
+  return sorted.filter((row) => {
+    return _.every(
+      _.keys(filters || {})?.map((filterBy) => {
+        const filterValue = filters[filterBy]?.value;
+        if (!filterValue) return true;
+
+        return row[filterBy]
+          ?.toLowerCase()
+          ?.includes(filterValue.toLowerCase());
+      }),
+    );
+  });
+};
+
+const applyOverrides = (list, updatingValues, getRowId) => {
+  if (!list || _.isEmpty(updatingValues)) return list;
+
+  return list.map((row) => {
+    const id = getRowId(row);
+    const overridingRow = updatingValues[id];
+    if (!overridingRow) return row;
+
+    const next = { ...row };
+    _.forOwn(overridingRow, (overrideValue, key) => {
+      if (overrideValue !== undefined && overrideValue !== next[key]) {
+        next[key] = overrideValue;
+      }
+    });
+    return next;
+  });
+};

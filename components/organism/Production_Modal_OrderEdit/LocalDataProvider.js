@@ -38,7 +38,9 @@ import {
 import useLocalValidation from "./hooks/useLocalValidation";
 import { TEMPORARY_DISPLAY_FILTER } from "../Production_PrimaryList/_constants";
 
-export const LocalDataContext = createContext(null);
+const LocalDataContext = createContext(null);
+const LocalDataContext_items = createContext(null);
+export { GeneralContext, LocalDataContext, LocalDataContext_items };
 
 const STATUS = {
   m: "m_Status",
@@ -96,7 +98,8 @@ export const LocalDataProvider = ({
   const [initData, setInitData] = useState(null);
   const [initDataItems, setInitDataItems] = useState(null);
   const [initDataReturnTrips, setInitDataReturnTrips] = useState(null);
-  const [initDataSiteLockout, setInitDataSiteLockout] = useState({});
+  const [initDataSiteLockout, setInitDataSiteLockout] = useState(null);
+  const [initDataService, setInitDataService] = useState(null);
 
   const [kind, setKind] = useState(initKind || "m");
 
@@ -183,12 +186,15 @@ export const LocalDataProvider = ({
     setExistingImages(null);
     setNewImages(null);
     setGlassItems(null);
-    setInitData(null);
-    setInitDataItems(null);
-    setInitDataReturnTrips(null);
     setEditedGroup({});
     setValidationResult(null);
     setAddOnGroup({});
+
+    setInitData(null);
+    setInitDataItems(null);
+    setInitDataReturnTrips(null);
+    setInitDataSiteLockout(null);
+    setInitDataService(null);
   };
 
   const doInit = async (initMasterId) => {
@@ -200,9 +206,7 @@ export const LocalDataProvider = ({
     setAddOnGroup({});
 
     const mergedData = await doInitWo(initMasterId);
-
     await doInitAddOn(initMasterId);
-    await doInitSiteLockOut(initMasterId);
 
     if (mergedData) {
       if (initKind === "w" || getOrderKind(mergedData) === "w") {
@@ -213,13 +217,19 @@ export const LocalDataProvider = ({
         setKind("m");
       }
 
-      await initItems(initMasterId);
-      initAttachmentList(mergedData?.m_MasterId);
-      initImageList(mergedData?.m_MasterId);
-      await initReturnTrips(mergedData?.m_MasterId);
+      // === no async for first load ===
+      initItems(initMasterId);
+      initAttachmentList(initMasterId);
+      initImageList(initMasterId);
+      initReturnTrips(initMasterId);
+      // === no async for first load===
 
+      // === no async aways ===
       // skip if error out
-      initGlassItems(mergedData);
+      doInitGlassItems_NoAsync(mergedData);
+      doInitSiteLockOut_NotAsync(initMasterId);
+      doInitService_NotAsync(initMasterId);
+      // === no async aways ===
     }
 
     setIsLoading(false);
@@ -287,8 +297,6 @@ export const LocalDataProvider = ({
   );
 
   const doInitAddOn = useLoadingBar(async (initMasterId) => {
-    if (constants.DEV_HOLDING_FEATURES.v20250815_addon) return;
-
     const _addonGroup = await OrdersApi.getAddsOnGroupByMasterId({
       masterId: initMasterId,
     });
@@ -311,13 +319,22 @@ export const LocalDataProvider = ({
     });
   });
 
-  const doInitSiteLockOut = useLoadingBar(async (initMasterId) => {
+  const doInitSiteLockOut_NotAsync = useLoadingBar(async (initMasterId) => {
     const _siteLockOut = await External_ServiceApi.getSiteLockoutByMasterId({
       masterId: initMasterId,
     });
 
     // if there is only a parent
     setInitDataSiteLockout(_siteLockOut);
+  });
+
+  const doInitService_NotAsync = useLoadingBar(async (initMasterId) => {
+    if (constants.DEV_HOLDING_FEATURES.v20251127_service) return;
+    const _service = await External_ServiceApi.getServicesPaginated({
+      masterId: initMasterId,
+    });
+
+    setInitDataService(_service);
   });
 
   const initItems = useLoadingBar(async (initMasterId) => {
@@ -348,7 +365,7 @@ export const LocalDataProvider = ({
     ]);
   });
 
-  const initGlassItems = async (mergedData) => {
+  const doInitGlassItems_NoAsync = async (mergedData) => {
     const resGlassItems = await GlassApi.getGlassItems(
       mergedData.m_WorkOrderNo,
       mergedData.m_DBSource,
@@ -623,11 +640,15 @@ export const LocalDataProvider = ({
         });
       }
 
-      const res = await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData);
+      const res = await Wrapper_OrdersApi.updateWorkOrder(
+        data,
+        _changedData,
+        initData,
+      );
 
       if (res?.message) {
         // log hidden message for devs
-        console.log(res?.message)
+        console.log(res?.message);
       }
 
       toast("Work order saved", { type: "success" });
@@ -817,6 +838,14 @@ export const LocalDataProvider = ({
     checkEditable,
   });
 
+  const _tabCounts = {
+    returnTrips: returnTrips?.length || 0,
+    existingImages: existingImages?.length || 0,
+    existingAttachments: existingAttachments?.length || 0,
+    items: (windowItems?.length || 0) + (doorItems?.length || 0),
+    glass: `${glassTotal?.qty || 0}/${glassTotal?.glassQty || 0}`
+  }
+
   const context = {
     ...generalContext,
     ...props,
@@ -848,7 +877,6 @@ export const LocalDataProvider = ({
     onDeleteReturnTrip: doDeleteReturnTrip,
     onAddReturnTrip: doAddReturnTrip,
     onEditReturnTrip: doEditReturnTrip,
-    onBatchUpdateItems: doBatchUpdateItems,
     onHide: handleHide,
     onSave: doSave,
     onUnlinkAddOn: doUnlinkAddOn,
@@ -858,9 +886,8 @@ export const LocalDataProvider = ({
     editedGroup,
     setEditedGroup,
 
+    tabCounts: _tabCounts,
     LbrBreakDowns,
-    windowItems,
-    doorItems,
     returnTrips,
     glassItems,
     expands,
@@ -876,14 +903,24 @@ export const LocalDataProvider = ({
     uIstatusObj,
     initData,
     initDataSiteLockout,
+    initDataService,
     isDeleted: initData?.m_IsActive === false,
     validationResult,
     addonGroup,
     isInAddOnGroup,
   };
+
+  const context_items = {
+    onBatchUpdateItems: doBatchUpdateItems,
+    windowItems,
+    doorItems,
+  };
+
   return (
     <LocalDataContext.Provider value={context}>
-      {children}
+      <LocalDataContext_items.Provider value={context_items}>
+        {children}
+      </LocalDataContext_items.Provider>
     </LocalDataContext.Provider>
   );
 };

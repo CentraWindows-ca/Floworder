@@ -23,11 +23,13 @@ const Com = (props) => {
     className,
     headerClassName,
     isLockFirstColumn = true,
-    trParams = () => {},
+    trParams, // () => {} render <tr/> properties
     renderInfoBefore,
-    renderInfoAfter,  
+    renderInfoAfter,
     ...rest
   } = props;
+
+  const _filteredColumns = useMemo(() => columns.filter(Boolean), [columns])
 
   return (
     <>
@@ -53,62 +55,29 @@ const Com = (props) => {
           {renderInfoBefore ? (
             <>
               <tr>
-                <td colSpan={columns?.length}>{renderInfoBefore()}</td>
+                <td colSpan={_filteredColumns?.length}>{renderInfoBefore()}</td>
               </tr>
             </>
           ) : null}
           {data?.map((a, i) => {
-            const _trParams = trParams(a);
-
+            const key = `table_${keyFieldPrefix}_${a[keyField] || i}`;
             return (
-              <tr
-                key={`table_${keyFieldPrefix}_${a[keyField]}_${i}`}
-                {..._trParams}
-              >
-                {columns
-                  ?.filter((a) => a)
-                  ?.map((b) => {
-                    const { key, render, onCell, onWrapper, className } = b;
-                    let cell = onCell ? onCell(a) : null;
-                    let wrapper = onWrapper ? onWrapper(a) : null;
-
-                    if (typeof render === "function") {
-                      return (
-                        <React.Fragment
-                          key={`${keyFieldPrefix}_${a[keyField]}_${key}`}
-                        >
-                          <td {...cell}>
-                            <div {...wrapper}>{render("", a, b)}</div>
-                          </td>
-                        </React.Fragment>
-                      );
-                    }
-
-                    return (
-                      <td
-                        className={cn(className)}
-                        key={`${keyFieldPrefix}_${a[keyField]}_${key}`}
-                        {...cell}
-                      >
-                        <div
-                          className={cn(
-                            styles.tableTdWrapper,
-                            wrapper?.className,
-                          )}
-                          {...wrapper}
-                        >
-                          <LabelDisplay>{a[key]}</LabelDisplay>
-                        </div>
-                      </td>
-                    );
-                  })}
-              </tr>
+              <TableRow
+                {...{
+                  trParams,
+                  keyFieldPrefix,
+                  keyField,
+                  _filteredColumns,
+                }}
+                data={a}
+                key={key}
+              />
             );
           })}
           {renderInfoAfter ? (
             <>
               <tr>
-                <td colSpan={columns?.length}>{renderInfoAfter()}</td>
+                <td colSpan={_filteredColumns?.length}>{renderInfoAfter()}</td>
               </tr>
             </>
           ) : null}
@@ -117,6 +86,48 @@ const Com = (props) => {
     </>
   );
 };
+
+const TableRow = React.memo(
+  ({ keyFieldPrefix, keyField, trParams, _filteredColumns, data }) => {
+    const _trParams = trParams ? trParams(data) : {};
+    return (
+      <tr {..._trParams}>
+        {_filteredColumns?.map((b) => {
+          const { key, render, onCell, onWrapper, className } = b;
+          let cell = onCell ? onCell(data) : null;
+          let wrapper = onWrapper ? onWrapper(data) : null;
+
+          if (typeof render === "function") {
+            return (
+              <React.Fragment
+                key={`${keyFieldPrefix}_${data[keyField]}_${key}`}
+              >
+                <td {...cell}>
+                  <div {...wrapper}>{render("", data, b)}</div>
+                </td>
+              </React.Fragment>
+            );
+          }
+
+          return (
+            <td
+              className={cn(className)}
+              key={`${keyFieldPrefix}_${data[keyField]}_${key}`}
+              {...cell}
+            >
+              <div
+                className={cn(styles.tableTdWrapper, wrapper?.className)}
+                {...wrapper}
+              >
+                <LabelDisplay>{data[key]}</LabelDisplay>
+              </div>
+            </td>
+          );
+        })}
+      </tr>
+    );
+  },
+);
 
 export const TableWrapper = ({
   children,
@@ -152,6 +163,7 @@ export const TableHeader = ({
   setFilters,
   className,
 }) => {
+  const _filteredColumns = useMemo(() => columns.filter(Boolean), [columns])
   const handleSortChange = (k) => {
     let newSortObj = null;
     // only 1 sorting field currently
@@ -198,79 +210,75 @@ export const TableHeader = ({
   return (
     <thead className={cn(styles.thead, className)}>
       <tr>
-        {columns
-          ?.filter((a) => a)
-          ?.map((a, i) => {
-            const { title, key, width, initKey, isNotTitle, isNotSortable } = a;
-            const sortKey = initKey || key;
-            return (
-              <th key={`${sortKey}_${i}`} style={{ width: width || "auto" }}>
-                {!isNotTitle ? (
-                  <div
-                    className={cn(
-                      styles.tableTitle,
-                      !!setSort && !isNotSortable && styles.sortableTitle,
-                    )}
-                  >
-                    <span className={cn(styles.sortTitle)}>{title}</span>
-                    {!isNotSortable && setSort ? (
-                      <OrderByIcon
-                        orderBy={sort}
-                        col={sortKey}
-                        onClick={() => handleSortChange(sortKey)}
-                        title={`sort this column`}
-                      />
-                    ) : null}
-                  </div>
-                ) : (
-                  <div className={cn(styles.tableTitle)}>
-                    <br />
-                  </div>
-                )}
-              </th>
-            );
-          })}
+        {_filteredColumns?.map((a, i) => {
+          const { title, key, width, initKey, isNotTitle, isNotSortable } = a;
+          const sortKey = initKey || key;
+          return (
+            <th key={`${sortKey}_${i}`} style={{ width: width || "auto" }}>
+              {!isNotTitle ? (
+                <div
+                  className={cn(
+                    styles.tableTitle,
+                    !!setSort && !isNotSortable && styles.sortableTitle,
+                  )}
+                >
+                  <span className={cn(styles.sortTitle)}>{title}</span>
+                  {!isNotSortable && setSort ? (
+                    <OrderByIcon
+                      orderBy={sort}
+                      col={sortKey}
+                      onClick={() => handleSortChange(sortKey)}
+                      title={`sort this column`}
+                    />
+                  ) : null}
+                </div>
+              ) : (
+                <div className={cn(styles.tableTitle)}>
+                  <br />
+                </div>
+              )}
+            </th>
+          );
+        })}
       </tr>
       {setFilters ? (
         <tr>
-          {columns
-            ?.filter((a) => a)
-            ?.map((a) => {
-              const {
-                key,
-                initKey,
-                isNotTitle,
-                isNotFilter,
-                renderFilter,
-                filterPlaceHolder = "--",
-              } = a;
+          {_filteredColumns?.map((a) => {
+            const {
+              key,
+              initKey,
+              isNotTitle,
+              isNotFilter,
+              renderFilter,
+              filterPlaceHolder = "--",
+            } = a;
 
-              if (renderFilter && typeof renderFilter !== undefined) {
-                return (
-                  <td key={`filter_${a.key}`}>
-                    <div style={{ padding: 2 }}>{renderFilter(a)}</div>
-                  </td>
-                );
-              }
-
+            if (renderFilter && typeof renderFilter !== undefined) {
               return (
                 <td key={`filter_${a.key}`}>
-                  <div style={{ padding: 2 }}>
-                    {!isNotTitle && !isNotFilter ? (
-                      <Editable.EF_InputDebounce
-                        value={filters?.[initKey || key]?.value}
-                        onChange={(v) => handleFilterChange(v, initKey || key)}
-                        style={{ width: "100%" }}
-                        placeholder={filterPlaceHolder}
-                        disabled={!isEnableFilter}
-                      />
-                    ) : (
-                      <br />
-                    )}
-                  </div>
+                  <div style={{ padding: 2 }}>{renderFilter(a)}</div>
                 </td>
               );
-            })}
+            }
+
+            return (
+              <td key={`filter_${a.key}`}>
+                <div style={{ padding: 2 }}>
+                  {!isNotTitle && !isNotFilter ? (
+                    <Editable.EF_InputDebounce
+                      value={filters?.[initKey || key]?.value}
+                      onChange={(v) => handleFilterChange(v, initKey || key)}
+                      style={{ width: "100%" }}
+                      placeholder={filterPlaceHolder}
+                      disabled={!isEnableFilter}
+                    />
+                  ) : (
+                    <br />
+                  )}
+                </div>
+              </td>
+            );
+          })}
         </tr>
       ) : null}
     </thead>

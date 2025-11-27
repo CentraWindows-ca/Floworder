@@ -6,10 +6,6 @@ import { LoadingOutlined, SaveOutlined } from "@ant-design/icons";
 import Modal from "components/molecule/Modal";
 import PermissionBlock from "components/atom/PermissionBlock";
 import Sec_Status from "./Sec_Status";
-import { GeneralContext } from "lib/provider/GeneralProvider";
-import Tabs from "react-bootstrap/Tabs";
-import Tab from "react-bootstrap/Tab";
-import OverlayWrapper from "components/atom/OverlayWrapper";
 import Sec_OrderInfo from "./Sec_OrderInfo";
 import Sec_OrderBasic from "./Sec_OrderBasic";
 import Sec_OrderOptions from "./Sec_OrderOptions";
@@ -53,6 +49,7 @@ const Com = ({}) => {
     onLinkAddOn,
     data,
     initDataSiteLockout,
+    initDataService,
     kind,
     checkEditable,
     setIsEditable,
@@ -65,7 +62,7 @@ const Com = ({}) => {
     glassTotal,
     uIstatusObj,
     isDeleted = false,
-
+    tabCounts,
     isInAddOnGroup,
     addonGroup,
   } = useContext(LocalDataContext);
@@ -171,23 +168,23 @@ const Com = ({}) => {
             <span onClick={() => onAnchor("basic", true)}>Basic</span> |
             <span onClick={() => onAnchor("notes", true)}>Notes</span> |
             <span onClick={() => onAnchor("returnTrips", true)}>
-              Return Trips ({returnTrips?.length || 0})
+              Return Trips ({tabCounts.returnTrips})
             </span>{" "}
             |
             <span onClick={() => onAnchor("images", true)}>
-              Images ({existingImages?.length || 0})
+              Images ({tabCounts.existingImages})
             </span>
             |
             <span onClick={() => onAnchor("files", true)}>
-              Attachments ({existingAttachments?.length || 0})
+              Attachments ({tabCounts.existingAttachments})
             </span>
             |
             <span onClick={() => onAnchor("productionItems", true)}>
-              Items ({(windowItems?.length || 0) + (doorItems?.length || 0)})
+              Items ({tabCounts.items})
             </span>
             |
             <span onClick={() => onAnchor("glassItems", true)}>
-              Glass ({glassTotal?.qty || 0}/{glassTotal?.glassQty || 0})
+              Glass ({tabCounts.glass})
             </span>
             <PermissionBlock
               featureCodeGroup={constants.FEATURE_CODES["om.prod.history"]}
@@ -271,6 +268,14 @@ const Com = ({}) => {
                     <CollapseContainer id="sitelockout">
                       <Sec_SiteLockout />
                     </CollapseContainer>
+                  </CollapseContainer>
+                </>
+              ) : null}
+              {initDataService ? (
+                <>
+                  <div className={cn(styles.sectionTitle)}>Service</div>
+                  <CollapseContainer id="service">
+                    <CollapseContainer id="service"></CollapseContainer>
                   </CollapseContainer>
                 </>
               ) : null}

@@ -1,13 +1,12 @@
 import React, { useContext, useState } from "react";
 import cn from "classnames";
 import _ from "lodash";
-import { GeneralContext } from "lib/provider/GeneralProvider";
 import HoverPopover from "components/atom/HoverPopover";
 
 // styles
 import styles from "./styles.module.scss";
 
-import { LocalDataContext } from "./LocalDataProvider";
+import { LocalDataContext, GeneralContext } from "./LocalDataProvider";
 
 const AddOnSelector = ({}) => {
   const { data, addonGroup, isInAddOnGroup } = useContext(LocalDataContext);
@@ -15,7 +14,6 @@ const AddOnSelector = ({}) => {
   if (!isInAddOnGroup || !addonGroup.parent) {
     return null;
   }
-
   const { onRoute } = useContext(GeneralContext);
 
   const handleSwitch = (masterId) => {
