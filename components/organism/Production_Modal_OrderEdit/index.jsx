@@ -11,7 +11,7 @@ import Sec_OrderBasic from "./Sec_OrderBasic";
 import Sec_OrderOptions from "./Sec_OrderOptions";
 import Sec_Schedule from "./Sec_Schedule";
 import Sec_Summary from "./Sec_Summary";
-import Sec_SiteLockout from "./Sec_SiteLockout";
+import Sec_LinkedService from "./Sec_LinkedService";
 import Sec_OrderInvoice from "./Sec_OrderInvoice";
 import Sec_AddonSelector from "./Sec_AddOnSelector";
 
@@ -260,25 +260,8 @@ const Com = ({}) => {
               <div className={cn(styles.sectionTitle)}>Schedule</div>
               <CollapseContainer id="schedule">
                 <Sec_Schedule />
+                <Sec_LinkedService />
               </CollapseContainer>
-              {initDataSiteLockout ? (
-                <>
-                  <div className={cn(styles.sectionTitle)}>Site Lockout</div>
-                  <CollapseContainer id="sitelockout">
-                    <CollapseContainer id="sitelockout">
-                      <Sec_SiteLockout />
-                    </CollapseContainer>
-                  </CollapseContainer>
-                </>
-              ) : null}
-              {initDataService ? (
-                <>
-                  <div className={cn(styles.sectionTitle)}>Service</div>
-                  <CollapseContainer id="service">
-                    <CollapseContainer id="service"></CollapseContainer>
-                  </CollapseContainer>
-                </>
-              ) : null}
             </div>
           </div>
           <div>

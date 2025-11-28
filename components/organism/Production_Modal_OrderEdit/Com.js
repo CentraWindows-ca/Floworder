@@ -98,10 +98,10 @@ export const displayFilter = (itemList, { kind, uiOrderType, permissions }) => {
     );
   });
 };
-export const Block = ({ className_input, inputData }) => {
+export const Block = ({ className_input, inputData, data: overridingData }) => {
   const localContext = useContext(LocalDataContext);
   const {
-    data,
+    data: contextData,
     initData,
     onChange,
     checkEditable,
@@ -109,6 +109,9 @@ export const Block = ({ className_input, inputData }) => {
     validationResult,
     dictionary,
   } = localContext;
+
+  const data = overridingData || contextData;
+
   let {
     Component,
     title,
@@ -279,7 +282,7 @@ export const ToggleFull = ({
 
 export const NoData = ({ title = "No Data", className }) => {
   return (
-    <div className={cn("text-center text-slate-400 p-2", className)}>
+    <div className={cn("p-2 text-center text-slate-400", className)}>
       -- {title} --
     </div>
   );
@@ -518,7 +521,7 @@ export const checkAddOnFieldById = ({
       isReadOnly, // default
       isSplitNotSync, // functional purpose
       isSyncedFromParent, // visual color purpose
-      addonChildCopyParentDataWhenCreated // additional param for visual color
+      addonChildCopyParentDataWhenCreated, // additional param for visual color
     } = workOrderFields[id];
 
     let _editable = !isReadOnly;
@@ -526,7 +529,7 @@ export const checkAddOnFieldById = ({
 
     // if we only copy parent data when created, then we should't show green color
     if (_syncFromParent && addonChildCopyParentDataWhenCreated) {
-      _syncFromParent = false
+      _syncFromParent = false;
     }
 
     // detach has higher priority. if that happens

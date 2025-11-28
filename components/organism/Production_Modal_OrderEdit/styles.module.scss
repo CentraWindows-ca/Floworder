@@ -478,7 +478,7 @@
 
         &.addonListContainer_parent {
             .addonItem {
-                
+
                 padding-right: 40px;
 
                 .addonBadge {
@@ -581,6 +581,22 @@ img.addonIcon {
 
 .addonChildIcon {
     color: $color_gray;
+}
+
+// ============= Service & Site lockout ===========
+
+
+.serviceAndSiteLockoutContainer {
+    margin: 10px;
+    border: 1px solid $color_border_table;
+    overflow: hidden;
+    border-radius: 10px;
+
+    .sectionTitle {
+        background-color: $color_service;
+    }
+
+    box-shadow: 0 4px 5px rgba(15, 23, 42, 0.1);
 }
 
 

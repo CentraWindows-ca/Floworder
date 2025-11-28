@@ -56,16 +56,17 @@ export default ({
       <div className="p-4">
         <div className="alert alert-light mb-0 font-bold" role="alert">
           <div className="justify-content-center align-items-center flex">
-            Is this work order Lockout{" "}
+            Is this work order linked to a{" "}
             {!constants.DEV_HOLDING_FEATURES.v20251030_createWithService &&
-              "or Service"}
-            ?
+              "Service"}{" "}
+            or Lockout ?
             <div className="ms-2">
               <Editable.EF_SelectWithLabel
                 id={"lockoutOrService"}
                 value={isLockoutOrService}
                 onChange={(v) => setIsLockoutOrService(v)}
                 options={[
+                  { label: "-", key: "" },
                   { label: "Yes", key: "Yes" },
                   { label: "No", key: "No" },
                 ]}

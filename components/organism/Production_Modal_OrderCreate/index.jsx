@@ -282,7 +282,8 @@ const Screen2 = ({
     (isWindow && !initValues?.winStartDate) ||
     (isDoor && !initValues?.doorStartDate) ||
     (isWindow && !windowManufacturingFacility) ||
-    (isDoor && !doorManufacturingFacility);
+    (isDoor && !doorManufacturingFacility) || 
+    (!existingWorkOrder && !isLockoutOrService)
 
   const doFetch = async (newStatus = "", isReservationWorkOrder = false) => {
     setIsLoading(true);

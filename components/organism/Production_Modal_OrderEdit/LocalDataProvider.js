@@ -324,15 +324,19 @@ export const LocalDataProvider = ({
       masterId: initMasterId,
     });
 
+    console.log(_siteLockOut)
+
     // if there is only a parent
     setInitDataSiteLockout(_siteLockOut);
   });
 
   const doInitService_NotAsync = useLoadingBar(async (initMasterId) => {
     if (constants.DEV_HOLDING_FEATURES.v20251127_service) return;
-    const _service = await External_ServiceApi.getServicesPaginated({
+    const _service = await External_ServiceApi.getServicesByMasterId({
       masterId: initMasterId,
     });
+
+    console.log(_service)
 
     setInitDataService(_service);
   });
