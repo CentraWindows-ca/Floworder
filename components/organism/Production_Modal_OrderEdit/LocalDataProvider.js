@@ -854,7 +854,7 @@ export const LocalDataProvider = ({
   // =============================== split context for UI performance ===============================
   // 1. context for order
   const context = {
-    ...generalContext,
+    // ...generalContext,
     ...props,
     isLoading,
     isSaving,

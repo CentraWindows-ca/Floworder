@@ -2,22 +2,40 @@ import React, { useState, useEffect, useContext, useMemo } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
-import {labelMapping, applyField} from "lib/constants/production_constants_labelMapping";
+import {
+  labelMapping,
+  applyField,
+} from "lib/constants/production_constants_labelMapping";
 
 import Editable from "components/molecule/Editable";
 // styles
 import styles from "./styles.module.scss";
 import stylesRoot from "../styles.module.scss";
 
-import { LocalDataContext } from "../LocalDataProvider";
-import { ToggleFull, NoData, DisplayBlock, displayFilter, SaveButton } from "../Com";
-
+import { LocalDataContext, GeneralContext } from "../LocalDataProvider";
+import {
+  ToggleFull,
+  NoData,
+  DisplayBlock,
+  displayFilter,
+  SaveButton,
+} from "../Com";
 
 // const group = "notes";
 
 const Com = ({}) => {
-  const { data, initData, validationResult, kind, uiOrderType, onChange, permissions, checkEditable, checkAddOnField, onHide } =
-    useContext(LocalDataContext);
+  const { permissions } = useContext(GeneralContext);
+  const {
+    data,
+    initData,
+    validationResult,
+    kind,
+    uiOrderType,
+    onChange,
+    checkEditable,
+    checkAddOnField,
+    onHide,
+  } = useContext(LocalDataContext);
 
   const COMMON_FIELDS = applyField([
     { id: "w_OfficeNotes" },
@@ -33,7 +51,11 @@ const Com = ({}) => {
     return data?.[a.id];
   });
 
-  collapsedList = displayFilter(collapsedList, { kind, uiOrderType, permissions });
+  collapsedList = displayFilter(collapsedList, {
+    kind,
+    uiOrderType,
+    permissions,
+  });
 
   const jsxClose = (
     <div
@@ -44,7 +66,8 @@ const Com = ({}) => {
     >
       {collapsedList?.length > 0 ? (
         <table className="bordered table-hover table">
-          <tbody>{collapsedList?.map((a) => {
+          <tbody>
+            {collapsedList?.map((a) => {
               const { id, title } = a;
               return (
                 <DisplayBlock id={id} key={id}>
@@ -69,18 +92,27 @@ const Com = ({}) => {
                   </tr>
                 </DisplayBlock>
               );
-            })}</tbody>
+            })}
+          </tbody>
         </table>
       ) : (
-        <NoData title={<>No Data <b>[Click To Add Notes]</b></>} className="hover:text-blue-600" />
+        <NoData
+          title={
+            <>
+              No Data <b>[Click To Add Notes]</b>
+            </>
+          }
+          className="hover:text-blue-600"
+        />
       )}
-      
     </div>
   );
 
   const jsxNoteBlock = (id) => {
     const addon = checkAddOnField({ id });
-    const addonClass = addon?.isSyncedFromParent ? stylesRoot.addonSync_input : "";
+    const addonClass = addon?.isSyncedFromParent
+      ? stylesRoot.addonSync_input
+      : "";
 
     return (
       <DisplayBlock id={id}>
@@ -96,12 +128,12 @@ const Com = ({}) => {
           <Editable.EF_Text
             k={id}
             value={data?.[id]}
-            initValue = {initData?.[id]}
+            initValue={initData?.[id]}
             isHighlightDiff
             onChange={(v) => onChange(v, id)}
             disabled={!checkEditable({ id })}
             className={cn(addonClass)}
-            errorMessage = {validationResult?.[id]}
+            errorMessage={validationResult?.[id]}
             rows={3}
           />
         </div>

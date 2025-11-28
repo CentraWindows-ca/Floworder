@@ -4,8 +4,6 @@ import _ from "lodash";
 import constants from "lib/constants";
 import {labelMapping, applyField} from "lib/constants/production_constants_labelMapping";
 
-import { getIsRequired } from "./hooks/vconfig";
-
 import {formatCurrency2Decimal} from "lib/utils";
 
 import Editable from "components/molecule/Editable";

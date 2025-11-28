@@ -5,7 +5,10 @@ import constants from "lib/constants";
 
 import Editable from "components/molecule/Editable";
 
-import {labelMapping, applyField} from "lib/constants/production_constants_labelMapping";
+import {
+  labelMapping,
+  applyField,
+} from "lib/constants/production_constants_labelMapping";
 
 import {
   RushIcon,
@@ -25,7 +28,7 @@ import {
 // styles
 import styles from "./styles.module.scss";
 
-import { LocalDataContext } from "./LocalDataProvider";
+import { LocalDataContext, GeneralContext } from "./LocalDataProvider";
 import { DisplayBlock, displayFilter } from "./Com";
 
 const COMMON_FIELDS = applyField([
@@ -135,7 +138,8 @@ const DOOR_FIELDS = applyField([
 ]);
 
 const Com = ({}) => {
-  const { uiOrderType, kind, permissions } = useContext(LocalDataContext);
+  const { permissions } = useContext(GeneralContext);
+  const { uiOrderType, kind } = useContext(LocalDataContext);
 
   const [doorInputs, setDoorInputs] = useState(null);
   const [windowInputs, setWindowInputs] = useState(null);
@@ -223,7 +227,9 @@ const Block = ({ inputData }) => {
           className={cn(addonClass)}
         />
       </div>
-      <div className={cn(addon?.isSyncedFromParent ? styles.addonSync_option : "")}>
+      <div
+        className={cn(addon?.isSyncedFromParent ? styles.addonSync_option : "")}
+      >
         <label
           htmlFor={id}
           className="align-items-center flex gap-1"

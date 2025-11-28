@@ -31,7 +31,6 @@ const Com = ({ title, id }) => {
     onEditReturnTrip,
     returnTrips,
     checkEditable,
-    setReturnTrips,
   } = useContext(LocalDataContext);
 
   const [editingRow, setEditingRow] = useState(null);

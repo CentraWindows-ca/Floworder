@@ -12,7 +12,7 @@ import Editable from "components/molecule/Editable";
 // styles
 import styles from "./styles.module.scss";
 
-import { LocalDataContext } from "./LocalDataProvider";
+import { LocalDataContext, GeneralContext } from "./LocalDataProvider";
 
 import { DisplayBlock, displayFilter } from "./Com";
 
@@ -72,7 +72,8 @@ const DOOR_FIELDS = applyField([
 ]);
 
 const Com = ({}) => {
-  const { kind, uiOrderType, permissions } = useContext(LocalDataContext);
+  const { permissions } = useContext(GeneralContext);
+  const { kind, uiOrderType } = useContext(LocalDataContext);
 
   const [doorInputs, setDoorInputs] = useState(null);
   const [windowInputs, setWindowInputs] = useState(null);

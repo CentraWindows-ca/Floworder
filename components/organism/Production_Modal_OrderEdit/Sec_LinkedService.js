@@ -101,7 +101,7 @@ const COMMON_FIELDS_SERVICE = applyField([
 ]);
 
 const Com = ({}) => {
-  const { data, initDataSiteLockout, initDataService, checkAddOnField } =
+  const { initDataSiteLockout, initDataService } =
     useContext(LocalDataContext);
 
   if (!initDataSiteLockout && !initDataService) return null;

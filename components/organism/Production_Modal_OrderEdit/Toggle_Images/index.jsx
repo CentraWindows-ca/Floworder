@@ -185,50 +185,15 @@ const Com = ({ title, id }) => {
 const ImagePreview = ({ base64Data, mimeType }) => {
   // Construct the data URL
   const imageUrl = `data:${mimeType};base64,${base64Data}`;
-  const [previewImage, setPreviewImage] = useState(false);
-
-  // Function to open the image in a new tab
-  const handleOpenInNewTab = () => {
-    const newTab = window.open();
-    if (newTab) {
-      newTab.document.write(
-        `<img src="${imageUrl}" alt="Full Image" style="max-width:100%; height:auto;" />`,
-      );
-      newTab.document.title = "Image Preview";
-      newTab.document.close();
-    } else {
-      alert("Popup blocked! Please allow popups for this website.");
-    }
-  };
-
-  const handlePreview = () => {
-    setPreviewImage(true);
-  };
 
   return (
     <div>
-      {/* <img
-        src={imageUrl}
-        alt="Preview"
-        style={{ maxWidth: "100px", height: "auto", cursor: "pointer" }}
-        onClick={handlePreview}
-      /> */}
       <Image
         src={imageUrl}
         width={160}
         height={160}
         rootClassName={cn(styles.previewRoot)}
       />
-
-      {/* <Modal
-        fullscreen={true}
-        show={previewImage}
-        onHide={() => setPreviewImage(false)}
-      >
-        <div className={cn(styles.previewZoomIn)}>
-          <img src={imageUrl} />
-        </div>
-      </Modal> */}
     </div>
   );
 };

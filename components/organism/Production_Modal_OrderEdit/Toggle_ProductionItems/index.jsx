@@ -107,7 +107,7 @@ const Com = ({ title, id }) => {
     doorItems,
   } = useContext(LocalDataContext_items);
 
-  const ITEM_CATEGORIES = dictionary.uiItemLabels || [];
+  const ITEM_CATEGORIES = dictionary?.uiItemLabels || [];
 
   // console.log(_.values(ITEM_CATEGORIES))
   const [stats, setStats] = useState({});
