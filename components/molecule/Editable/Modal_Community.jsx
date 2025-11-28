@@ -51,15 +51,16 @@ const Com = (props) => {
   const [sort, setSort] = useState({});
 
   useEffect(() => {
-    doInit();
-  }, []);
+    if (show) {
+      doInit();
+    }
+  }, [show]);
 
   useEffect(() => {
     // setFilters({
     //   name: value
     // })
-  }, [value])
-  
+  }, [value]);
 
   const doInit = async () => {
     const res = await External_FromApi.getAllCWBPCommunityAsync();
@@ -104,7 +105,7 @@ const Com = (props) => {
             filters,
             setFilters,
             className: styles.community,
-            keyField: 'comm_code',
+            keyField: "comm_code",
             trParams: (row) => {
               return {
                 style: {

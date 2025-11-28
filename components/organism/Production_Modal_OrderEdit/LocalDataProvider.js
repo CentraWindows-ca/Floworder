@@ -4,6 +4,7 @@ import React, {
   useState,
   useEffect,
   useCallback,
+  useMemo,
 } from "react";
 import _ from "lodash";
 import { useRouter } from "next/router";
@@ -227,9 +228,11 @@ export const LocalDataProvider = ({
       // === no async aways ===
       // skip if error out
       doInitGlassItems_NoAsync(mergedData);
-      doInitSiteLockOut_NotAsync(initMasterId);
-      doInitService_NotAsync(initMasterId);
       // === no async aways ===
+
+      // because its in main section, we share the loading
+      await doInitSiteLockOut_NotAsync(initMasterId);
+      await doInitService_NotAsync(initMasterId);
     }
 
     setIsLoading(false);
@@ -324,8 +327,6 @@ export const LocalDataProvider = ({
       masterId: initMasterId,
     });
 
-    console.log(_siteLockOut)
-
     // if there is only a parent
     setInitDataSiteLockout(_siteLockOut);
   });
@@ -336,9 +337,9 @@ export const LocalDataProvider = ({
       masterId: initMasterId,
     });
 
-    console.log(_service)
-
-    setInitDataService(_service);
+    if (!_.isEmpty(_service)) {
+      setInitDataService(_service);
+    }
   });
 
   const initItems = useLoadingBar(async (initMasterId) => {
@@ -847,9 +848,11 @@ export const LocalDataProvider = ({
     existingImages: existingImages?.length || 0,
     existingAttachments: existingAttachments?.length || 0,
     items: (windowItems?.length || 0) + (doorItems?.length || 0),
-    glass: `${glassTotal?.qty || 0}/${glassTotal?.glassQty || 0}`
-  }
+    glass: `${glassTotal?.qty || 0}/${glassTotal?.glassQty || 0}`,
+  };
 
+  // =============================== split context for UI performance ===============================
+  // 1. context for order
   const context = {
     ...generalContext,
     ...props,
@@ -914,11 +917,30 @@ export const LocalDataProvider = ({
     isInAddOnGroup,
   };
 
-  const context_items = {
-    onBatchUpdateItems: doBatchUpdateItems,
-    windowItems,
-    doorItems,
-  };
+  // 2. context for items
+  const context_items = useMemo(
+    () => ({
+      onBatchUpdateItems: doBatchUpdateItems,
+      windowItems,
+      doorItems,
+
+      //=== redundant for UI performance
+      checkEditable,
+      setExpands,
+      uiOrderType,
+      dictionary,
+    }),
+    [
+      doBatchUpdateItems,
+      windowItems,
+      doorItems,
+      //
+      checkEditable,
+      setExpands,
+      uiOrderType,
+      dictionary,
+    ],
+  );
 
   return (
     <LocalDataContext.Provider value={context}>

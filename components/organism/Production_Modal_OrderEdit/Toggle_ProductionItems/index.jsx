@@ -19,7 +19,7 @@ import TableSortable from "components/atom/TableSortable";
 import Tooltip from "components/atom/Tooltip";
 // styles
 
-import { LocalDataContext, LocalDataContext_items } from "../LocalDataProvider";
+import { LocalDataContext_items } from "../LocalDataProvider";
 import { ToggleBlock, DisplayBlock } from "../Com";
 import Modal_ItemEdit from "./Modal_ItemEdit";
 // styles
@@ -102,9 +102,6 @@ const Com = ({ title, id }) => {
     setExpands,
     uiOrderType,
     dictionary,
-  } = useContext(LocalDataContext);
-
-  const {
     onBatchUpdateItems,
     windowItems,
     doorItems,
@@ -282,8 +279,8 @@ const Com = ({ title, id }) => {
 };
 
 const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
-  const { checkEditable } = useContext(LocalDataContext);
   const {
+    checkEditable,
     onBatchUpdateItems,
   } = useContext(LocalDataContext_items);
 
@@ -541,8 +538,8 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
 };
 
 const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
-  const { checkEditable } = useContext(LocalDataContext);
   const {
+    checkEditable,
     onBatchUpdateItems,
   } = useContext(LocalDataContext_items);
 
@@ -779,8 +776,8 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
 
 const initialValueOfStatus = ITEM_STATUS?.find((a) => a.sort === 0)?.key;
 const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
-  const { checkEditable } = useContext(LocalDataContext);
   const {
+    checkEditable,
     onBatchUpdateItems,
   } = useContext(LocalDataContext_items);
 
