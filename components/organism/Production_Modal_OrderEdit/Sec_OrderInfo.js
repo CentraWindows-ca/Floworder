@@ -2,9 +2,12 @@ import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
-import {labelMapping, applyField} from "lib/constants/production_constants_labelMapping";
+import {
+  labelMapping,
+  applyField,
+} from "lib/constants/production_constants_labelMapping";
 
-import {formatCurrency2Decimal} from "lib/utils";
+import { formatCurrency2Decimal } from "lib/utils";
 
 import Editable from "components/molecule/Editable";
 
@@ -14,6 +17,22 @@ import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
 
 import { displayFilter, Block } from "./Com";
+
+const ComFetchButton = React.memo(({ kind, id }) => {
+  const { onGetWindowMaker_batchNo, checkEditable } =
+    useContext(LocalDataContext);
+  const disabled = !checkEditable({ id });
+  return (
+    <i
+      className={cn("fa-solid fa-arrows-rotate", {
+        [styles.iconFetchButton]: true,
+        [styles.disabled]: disabled,
+      })}
+      title = {"Fill From Windowmaker"}
+      onClick={() => (disabled ? null : onGetWindowMaker_batchNo(kind))}
+    />
+  );
+});
 
 const COMMON_FIELDS = applyField([
   {
@@ -72,11 +91,11 @@ const COMMON_FIELDS = applyField([
   },
   {
     Component: Editable.EF_Label,
-    className: "form-control d-block text-end", 
-    style: {background: "var(--bs-secondary-bg)"},
+    className: "form-control d-block text-end",
+    style: { background: "var(--bs-secondary-bg)" },
     renderValue: (v, data) => {
-      return formatCurrency2Decimal(v)
-    } , 
+      return formatCurrency2Decimal(v);
+    },
     id: "m_PriceBeforeTax",
   },
 ]);
@@ -99,6 +118,11 @@ const WINDOW_FIELDS = applyField([
   {
     Component: Editable.EF_Input,
     id: "w_BatchNo",
+    title: (
+      <span>
+        Windows Batch NO. <ComFetchButton kind={"w"} id={"w_BatchNo"} />
+      </span>
+    ),
   },
   {
     Component: Editable.EF_SelectWithLabel,
@@ -140,6 +164,11 @@ const DOOR_FIELDS = applyField([
   {
     Component: Editable.EF_Input,
     id: "d_BatchNo",
+    title: (
+      <span>
+        Doors Batch NO. <ComFetchButton kind="d" id={"w_BatchNo"} />
+      </span>
+    ),
   },
   {
     Component: Editable.EF_SelectWithLabel,
@@ -164,7 +193,7 @@ const Com = ({}) => {
       displayFilter(DOOR_FIELDS, {
         kind,
         uiOrderType,
-        permissions
+        permissions,
       }),
     );
 
@@ -172,7 +201,7 @@ const Com = ({}) => {
       displayFilter(WINDOW_FIELDS, {
         kind,
         uiOrderType,
-        permissions
+        permissions,
       }),
     );
   }, [kind, uiOrderType]);

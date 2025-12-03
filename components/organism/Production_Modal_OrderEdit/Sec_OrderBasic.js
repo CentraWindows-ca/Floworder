@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
-import {applyField} from "lib/constants/production_constants_labelMapping";
+import { applyField } from "lib/constants/production_constants_labelMapping";
 
 import Editable from "components/molecule/Editable";
 
@@ -12,6 +12,21 @@ import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
 
 import { DisplayBlock } from "./Com";
+const ComFetchButton = React.memo(({ id }) => {
+  const { onGetWindowMaker_comment, checkEditable } =
+    useContext(LocalDataContext);
+  const disabled = !checkEditable({ id });
+  return (
+    <i
+      className={cn("fa-solid fa-arrows-rotate", {
+        [styles.iconFetchButton]: true,
+        [styles.disabled]: disabled,
+      })}
+      title = {"Fill From Windowmaker"}
+      onClick={() => (disabled ? null : onGetWindowMaker_comment())}
+    />
+  );
+});
 
 const COMMON_FIELDS = applyField([
   {
@@ -70,6 +85,11 @@ const COMMON_FIELDS = applyField([
   },
   {
     Component: Editable.EF_Input,
+    title: (
+      <span>
+        Comment <ComFetchButton id="m_Comment_1" />
+      </span>
+    ),
     id: "m_Comment_1",
   },
   {
@@ -79,14 +99,23 @@ const COMMON_FIELDS = applyField([
 ]);
 
 const Com = ({}) => {
-  const { data, initData, onChange, checkEditable, checkAddOnField, validationResult} = useContext(LocalDataContext);
+  const {
+    data,
+    initData,
+    onChange,
+    checkEditable,
+    checkAddOnField,
+    validationResult,
+  } = useContext(LocalDataContext);
 
   return (
     <div className={cn(styles.columnInputsContainer)}>
       {COMMON_FIELDS?.map((a, i) => {
         const { id, Component, title, overrideOnChange, ...rest } = a;
         const addon = checkAddOnField({ id });
-        const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
+        const addonClass = addon?.isSyncedFromParent
+          ? styles.addonSync_input
+          : "";
 
         return (
           <DisplayBlock id={id} key={id}>
@@ -95,7 +124,7 @@ const Com = ({}) => {
               <Component
                 id={id}
                 value={data?.[id] || ""}
-                initValue = {initData?.[id] || ""}
+                initValue={initData?.[id] || ""}
                 isHighlightDiff
                 onChange={(v, ...o) => {
                   if (typeof overrideOnChange === "function") {
@@ -104,8 +133,8 @@ const Com = ({}) => {
                     onChange(v, id);
                   }
                 }}
-                errorMessage = {validationResult?.[id]}
-                disabled={!checkEditable({id})}
+                errorMessage={validationResult?.[id]}
+                disabled={!checkEditable({ id })}
                 className={cn(addonClass)}
                 {...rest}
               />

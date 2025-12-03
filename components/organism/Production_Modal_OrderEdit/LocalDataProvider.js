@@ -499,6 +499,32 @@ export const LocalDataProvider = ({
     onSave();
   });
 
+  const doGetWindowMaker_comment = useLoadingBar(async () => {
+    // fetch from WM
+    const _res = await WM2CWProdApi.fetchWMComment(null, {
+      masterId: data?.m_MasterId,
+    });
+
+    if (_res?.comment) {
+      setData((prev) => ({ ...prev, m_Comment_1: _res?.comment }));
+    } else {
+      toast("Comment Not found", { type: "warning" });
+    }
+  });
+  const doGetWindowMaker_batchNo = useLoadingBar(async (kind) => {
+    // fetch from WM
+    const _res = await WM2CWProdApi.fetchWMBatchNos(null, {
+      masterId: data?.m_MasterId,
+      kind // w,d
+    });
+
+    if (_res?.batchNo) {
+      setData((prev) => ({ ...prev, w_BatchNo: _res?.batchNo }));
+    } else {
+      toast("Batch No. Not found", { type: "warning" });
+    }
+  });
+
   const doUpdateTransferredLocation = useLoadingBar(async () => {
     const m_TransferredLocation = data?.m_TransferredLocation;
     await Wrapper_OrdersApi.updateWorkOrder(
@@ -890,6 +916,8 @@ export const LocalDataProvider = ({
     onLinkAddOn: doLinkAddOn,
     onRestore: doRestore,
     onGetWindowMaker: doGetWindowMaker,
+    onGetWindowMaker_comment: doGetWindowMaker_comment,
+    onGetWindowMaker_batchNo: doGetWindowMaker_batchNo,
     editedGroup,
     setEditedGroup,
 

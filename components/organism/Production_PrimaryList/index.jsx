@@ -491,6 +491,22 @@ const Com = (props) => {
         width: 80,
       },
       {
+        key: "w_ManufacturingFacility",
+        display: isWindow,
+      },
+      {
+        key: "d_ManufacturingFacility",
+        display: isDoor
+      },     
+      {
+        key: "w_GlassSupplier",
+        display: isWindow,
+      },
+      {
+        key: "d_GlassSupplier",
+        display: isDoor
+      },
+      {
         key: "m_JobType",
         width: 95,
       },

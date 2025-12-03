@@ -600,6 +600,21 @@ img.addonIcon {
 }
 
 
+// ============= fetch ===========
+.iconFetchButton {
+    color: $color_centraBlue;
+    cursor: pointer;
+    &:hover {
+        color: $color_centraBlue_hover;
+    }
+
+    &.disabled {
+        // cursor: default;
+        // color: $color_gray;
+        display: none;
+    }
+}
+
 // ============= UI switch ===========
 .uiClass_withLockout {
     background-color: red;
