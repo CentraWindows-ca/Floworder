@@ -498,7 +498,6 @@ export const LocalDataProvider = ({
     toast("Work order updated from WindowMaker", { type: "success" });
     onSave();
   });
-
   const doGetWindowMaker_comment = useLoadingBar(async () => {
     // fetch from WM
     const _res = await WM2CWProdApi.fetchWMComment(null, {
@@ -506,12 +505,14 @@ export const LocalDataProvider = ({
     });
 
     if (_res?.comment) {
-      setData((prev) => ({ ...prev, m_Comment_1: _res?.comment }));
+      const v =  _res?.comment
+      const k = "m_Comment_1"
+      handleChange(v, k)
     } else {
       toast("Comment Not found", { type: "warning" });
     }
   });
-  const doGetWindowMaker_batchNo = useLoadingBar(async (kind) => {
+  const doGetWindowMaker_batchNo = useLoadingBar(async (kind = 'w') => {
     // fetch from WM
     const _res = await WM2CWProdApi.fetchWMBatchNos(null, {
       masterId: data?.m_MasterId,
@@ -519,7 +520,9 @@ export const LocalDataProvider = ({
     });
 
     if (_res?.batchNo) {
-      setData((prev) => ({ ...prev, w_BatchNo: _res?.batchNo }));
+      const v = _res?.batchNo
+      const k = `${kind}_BatchNo`
+      handleChange(v, k)
     } else {
       toast("Batch No. Not found", { type: "warning" });
     }
