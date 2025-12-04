@@ -946,6 +946,7 @@ export const LocalDataProvider = ({
     validationResult,
     addonGroup,
     isInAddOnGroup,
+    dictionary
   };
 
   // 2. context for items
