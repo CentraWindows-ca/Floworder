@@ -28,7 +28,7 @@ const ComFetchButton = React.memo(({ kind, id }) => {
         [styles.iconFetchButton]: true,
         [styles.disabled]: disabled,
       })}
-      title = {"Fill From Windowmaker"}
+      title={"Fill From Windowmaker"}
       onClick={() => (disabled ? null : onGetWindowMaker_batchNo(kind))}
     />
   );
@@ -70,6 +70,10 @@ const COMMON_FIELDS = applyField([
     options: constants.WorkOrderSelectOptions.jobTypes,
   },
   {
+    Component: Editable.EF_Label_Disabled,
+    id: "m_OrderType",
+  },
+  {
     Component: Editable.EF_SelectWithLabel,
     id: "m_CustomerType",
     options: constants.WorkOrderSelectOptions.customerTypes,
@@ -90,9 +94,8 @@ const COMMON_FIELDS = applyField([
     },
   },
   {
-    Component: Editable.EF_Label,
-    className: "form-control d-block text-end",
-    style: { background: "var(--bs-secondary-bg)" },
+    Component: Editable.EF_Label_Disabled,
+    className: "text-end",
     renderValue: (v, data) => {
       return formatCurrency2Decimal(v);
     },

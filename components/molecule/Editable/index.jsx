@@ -490,6 +490,17 @@ export const EF_Label = React.memo(
   preventUpdate,
 );
 
+export const EF_Label_Disabled = React.memo(
+  ({ value, id, className, style, placeholder = "-", ...props }) => {
+    return (
+      <label className={cn(className, "form-control d-block")} style={{background: "var(--bs-secondary-bg)", style}}>
+        {value || placeholder}
+      </label>
+    );
+  },
+  preventUpdate,
+);
+
 export const EF_Renderer = React.memo(({ value, ...props }) => {
   return value;
 }, preventUpdate);
@@ -660,6 +671,7 @@ export const Editable = {
   EF_Checkbox,
   EF_Checkbox_Yesno,
   EF_Label,
+  EF_Label_Disabled,
   EF_Renderer,
   EF_Rack,
   EF_Community,

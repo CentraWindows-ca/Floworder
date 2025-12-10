@@ -511,6 +511,10 @@ const Com = (props) => {
         width: 95,
       },
       {
+        key: "m_OrderType",
+        width: 150,
+      },      
+      {
         key: "w_ProductionStartDate",
         display: isWindow,
       },
