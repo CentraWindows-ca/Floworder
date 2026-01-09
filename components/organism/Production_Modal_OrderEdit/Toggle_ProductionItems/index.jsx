@@ -548,10 +548,10 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
   const _isGroupEditable = checkEditable({ group });
 
   const handleOnClick = (...p) => {
-    // handleShowItem(...p)
-    alert(
-      "Please make change from production tracking platform (https://production-tracking.centra.ca/)",
-    );
+    handleShowItem(...p)
+    // alert(
+    //   "Please make change from production tracking platform (https://production-tracking.centra.ca/)",
+    // );
   };
 
   const {
