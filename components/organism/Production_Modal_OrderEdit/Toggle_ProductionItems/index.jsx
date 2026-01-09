@@ -279,10 +279,9 @@ const Com = ({ title, id }) => {
 };
 
 const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
-  const {
-    checkEditable,
-    onBatchUpdateItems,
-  } = useContext(LocalDataContext_items);
+  const { checkEditable, onBatchUpdateItems } = useContext(
+    LocalDataContext_items,
+  );
 
   const data = list?.[dictKey];
 
@@ -538,16 +537,22 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
 };
 
 const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
-  const {
-    checkEditable,
-    onBatchUpdateItems,
-  } = useContext(LocalDataContext_items);
+  const { checkEditable, onBatchUpdateItems } = useContext(
+    LocalDataContext_items,
+  );
 
   const data = list?.[dictKey];
 
   const blockId = "DOOR.doorItems";
   const group = "dooritems";
   const _isGroupEditable = checkEditable({ group });
+
+  const handleOnClick = (...p) => {
+    // handleShowItem(...p)
+    alert(
+      "Please make change from production tracking platform (https://production-tracking.centra.ca/)",
+    );
+  };
 
   const {
     updatingValues,
@@ -718,7 +723,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
         return (
           <button
             className="btn btn-sm btn-outline-primary"
-            onClick={() => handleShowItem(record, "d")}
+            onClick={() => handleOnClick(record, "d")}
           >
             Detail
           </button>
@@ -776,10 +781,9 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
 
 const initialValueOfStatus = ITEM_STATUS?.find((a) => a.sort === 0)?.key;
 const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
-  const {
-    checkEditable,
-    onBatchUpdateItems,
-  } = useContext(LocalDataContext_items);
+  const { checkEditable, onBatchUpdateItems } = useContext(
+    LocalDataContext_items,
+  );
 
   const data = list?.[dictKey];
 
@@ -1009,7 +1013,6 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
       },
     },
   ]);
-
 
   return (
     !_.isEmpty(data) && (
