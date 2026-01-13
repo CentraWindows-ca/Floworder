@@ -513,6 +513,7 @@ const Com = (props) => {
       {
         key: "m_OrderType",
         width: 150,
+        display: !constants.DEV_HOLDING_FEATURES.v20251210_ordertype
       },      
       {
         key: "w_ProductionStartDate",
