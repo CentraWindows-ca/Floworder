@@ -631,6 +631,34 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
         );
       },
     },
+    !constants.DEV_HOLDING_FEATURES.v20250113_multipoint && {
+      key: "Multipoint",
+      width: 110,
+      render: (t, record) => {
+        const updatingKey = "Multipoint";
+        const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
+
+        return (
+          <Editable.EF_Checkbox_Yesno
+            {...{
+              id: `di_${updatingKey}_${record?.Id}`,
+              value:
+                overrideValue !== undefined
+                  ? overrideValue
+                  : record[updatingKey],
+              onChange: (v) =>
+                handleUpdate(
+                  record?.Id,
+                  v || null,
+                  updatingKey,
+                  record[updatingKey],
+                ),
+              disabled: !_isGroupEditable,
+            }}
+          />
+        );
+      },
+    },
     {
       key: "Notes",
       render: (t, record) => {

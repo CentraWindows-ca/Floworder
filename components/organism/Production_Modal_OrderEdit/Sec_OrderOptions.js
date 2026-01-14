@@ -14,6 +14,7 @@ import {
   RushIcon,
   PaintIcon,
   DoorPaintIcon,
+  DoorMultipointIcon,
   CapStockIcon,
   MiniBlindIcon,
   EngineeredIcon,
@@ -115,6 +116,12 @@ const DOOR_FIELDS = applyField([
     icon: () => <DoorPaintIcon />,
     id: "d_PaintIcon",
   },
+  !constants.DEV_HOLDING_FEATURES.v20250113_multipoint
+    ? {
+        icon: () => <DoorMultipointIcon />,
+        id: "d_MultipointFlag",
+      }
+    : null,
   {
     icon: () => <MiniBlindIcon />,
     id: "d_MiniblindIcon",

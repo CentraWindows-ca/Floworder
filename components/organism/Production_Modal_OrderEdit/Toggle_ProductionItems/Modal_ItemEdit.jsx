@@ -50,6 +50,10 @@ const WINDOW_FIELDS = applyField([
     Component: Editable.EF_Checkbox_Yesno,
     id: "BTO",
   },
+    {
+    Component: Editable.EF_Checkbox_Yesno,
+    id: "Multipoint",
+  },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "HighRisk",
