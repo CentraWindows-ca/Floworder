@@ -21,6 +21,7 @@ import Toggle_GlassItems from "./Toggle_GlassItems";
 import Toggle_Images from "./Toggle_Images";
 import Toggle_Files from "./Toggle_Files";
 import Toggle_ReturnTrips from "./Toggle_ReturnTrips";
+import LoadingBlock from "components/atom/LoadingBlock";
 
 import { DisplayBlock } from "./Com";
 import constants, {
@@ -33,7 +34,7 @@ import Modal_OrderHistory from "components/organism/Production_Modal_OrderHistor
 import styles from "./styles.module.scss";
 
 import { LocalDataContext, LocalDataProvider } from "./LocalDataProvider";
-import LoadingBlock from "components/atom/LoadingBlock";
+import Main from "./Main";
 
 const Com = ({}) => {
   const {
@@ -79,7 +80,6 @@ const Com = ({}) => {
   const isOnStatusAllowToEdit = ![
     WORKORDER_STATUS_MAPPING.Cancelled.key,
   ].includes(data?.[`${kind}_Status`]);
-  const uiClass_withLockout = true;
 
   const jsxTitle = (
     <div className="justify-content-between align-items-center flex-grow-1 flex">
@@ -198,6 +198,11 @@ const Com = ({}) => {
                   <i className="fa-solid fa-clock-rotate-left"></i>
                 </button>
               </div>
+              <Modal_OrderHistory
+                initMasterId={historyOrderMasterId}
+                onHide={() => setHistoryOrderMasterId(null)}
+                layer={1}
+              />
             </PermissionBlock>
           </div>
         </div>
@@ -216,185 +221,8 @@ const Com = ({}) => {
       headerClassName={styles.modalHeader}
       titleClassName={"flex justify-content-between flex-grow-1"}
     >
-      <span id="basic" />
-      <LoadingBlock isLoading={isLoading}>
-        {!constants.DEV_HOLDING_FEATURES.v20250815_addon && (
-          <Sec_AddonSelector />
-        )}
-        <div className={cn(styles.modalContentContainer)}>
-          <div
-            className={cn(styles.gridsOfMainInfo, {
-              [styles.withLockout]: uiClass_withLockout,
-            })}
-          >
-            <div className={cn(styles.mainItem, styles["grid-1"])}>
-              <div className={cn(styles.sectionTitle)}>Basic Information</div>
-              <CollapseContainer id="basicInformation">
-                <Sec_OrderBasic />
-              </CollapseContainer>
-              {!constants.DEV_HOLDING_FEATURES.v20251016_invoice ? (
-                <PermissionBlock
-                  featureCode={constants.FEATURE_CODES["om.prod.wo.invoice"]}
-                  op="canView"
-                >
-                  <div className={cn(styles.sectionTitle)}>Invoice</div>
-                  <CollapseContainer id="invoice">
-                    <Sec_OrderInvoice />
-                  </CollapseContainer>
-                </PermissionBlock>
-              ) : null}
-            </div>
-            <div className={cn(styles.mainItem, styles["grid-2"])}>
-              <div className={cn(styles.sectionTitle)}>Order Information</div>
-              <CollapseContainer id="orderInformation">
-                <Sec_OrderInfo />
-              </CollapseContainer>
-            </div>
-            <div className={cn(styles.mainItem, styles["grid-3"])}>
-              <div className={cn(styles.sectionTitle)}>Order Options</div>
-              <CollapseContainer id="orderOptions">
-                <Sec_OrderOptions />
-              </CollapseContainer>
-            </div>
-            <div className={cn(styles.mainItem, styles["grid-4-up"])}>
-              <div className={cn(styles.sectionTitle)}>Schedule</div>
-              <CollapseContainer id="schedule">
-                <Sec_Schedule />
-                <Sec_LinkedService />
-              </CollapseContainer>
-            </div>
-          </div>
-          <div>
-            <div className={cn(styles.mainItem, styles["mainItem-3"])}>
-              <div className={cn(styles.sectionTitle)}>Summary</div>
-              <CollapseContainer id="summary">
-                <Sec_Summary />
-              </CollapseContainer>
-            </div>
-          </div>
-          <div
-            className="flex-column flex"
-            style={{ marginTop: "10px", marginBottom: "10px" }}
-          >
-            <Toggle_Notes />
-          </div>
-
-          <div
-            className="flex-column flex"
-            style={{ marginTop: "10px", marginBottom: "10px" }}
-          >
-            <Toggle_ReturnTrips title={"Return Trips"} id={"returnTrips"} />
-          </div>
-
-          {checkEditable() && (
-            <div
-              className={cn(
-                "justify-content-center flex gap-2 p-2",
-                styles.buttonContainer,
-              )}
-              style={{
-                margin: "10px 0px",
-                position: "sticky",
-                bottom: "0px",
-                zIndex: 5,
-              }}
-            >
-              {/* save button */}
-              <button
-                className="btn btn-primary align-items-center flex gap-2 px-3"
-                disabled={
-                  !data?.m_WorkOrderNo || isSaving || _.isEmpty(editedGroup) // if there is any unsaved update
-                }
-                onClick={onSave}
-              >
-                {!isSaving ? (
-                  <SaveOutlined size="small" />
-                ) : (
-                  <Spin
-                    size="small"
-                    indicator={<LoadingOutlined />}
-                    spinning={isSaving}
-                    style={{ color: "white" }}
-                  />
-                )}
-                Save
-              </button>
-
-              {/* detach button */}
-              {/* if it has parent */}
-              {isInAddOnGroup && (
-                <PermissionBlock
-                  featureCode={constants.FEATURE_CODES["om.prod.woUnlinkAddOn"]}
-                  // isValidationInactive={false}
-                >
-                  {data?.m_ParentMasterId ? (
-                    <>
-                      {data?.m_AddOnLinked !== ADDON_STATUS.detached ? (
-                        <button
-                          className="btn btn-outline-danger align-items-center flex gap-2 px-3"
-                          disabled={!data?.m_WorkOrderNo || isSaving}
-                          onClick={onUnlinkAddOn}
-                        >
-                          <img
-                            src="/unlinked.svg"
-                            className={styles.addonIcon}
-                          />
-                          Unlink Add-on
-                        </button>
-                      ) : (
-                        <button
-                          className="btn btn-outline-success align-items-center flex gap-2 px-3"
-                          disabled={!data?.m_WorkOrderNo || isSaving}
-                          onClick={onLinkAddOn}
-                        >
-                          <img src="/linked.svg" className={styles.addonIcon} />
-                          Link Add-on
-                        </button>
-                      )}
-                    </>
-                  ) : null}
-                </PermissionBlock>
-              )}
-            </div>
-          )}
-
-          <hr />
-
-          <div className="flex-column flex" style={{ gap: "10px" }}>
-            <Toggle_Images title={"Images"} id={"images"} />
-            <Toggle_Files title={"Attachments"} id={"files"} />
-            <Toggle_ProductionItems
-              title={"Production Items"}
-              id={"productionItems"}
-            />
-            <Toggle_GlassItems id={"glassItems"} />
-          </div>
-        </div>
-      </LoadingBlock>
-
-      <Modal_OrderHistory
-        initMasterId={historyOrderMasterId}
-        onHide={() => setHistoryOrderMasterId(null)}
-        layer={1}
-      />
+      <Main />
     </Modal>
-  );
-};
-
-const CollapseContainer = ({ id, children }) => {
-  const { uiShowMore, setUiShowMore } = useContext(LocalDataContext);
-
-  return (
-    <>
-      <div
-        className={cn(
-          styles.collapseContainer,
-          uiShowMore ? styles.showingContainer : styles.hiddingContainer,
-        )}
-      >
-        {children}
-      </div>
-    </>
   );
 };
 
