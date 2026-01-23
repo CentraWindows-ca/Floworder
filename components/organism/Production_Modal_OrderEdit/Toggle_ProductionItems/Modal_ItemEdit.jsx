@@ -106,110 +106,137 @@ const WINDOW_FIELDS = applyField([
   },
 ]);
 
+const TEMPORARY_DISABLE_FOR_FIX = true
+
 const DOOR_FIELDS = applyField([
   {
     Component: Editable.EF_Label,
     id: "Item",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Label,
     id: "System",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Label,
     id: "Description",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_SelectWithLabel,
     id: "DoorType",
-    options: ITEM_DOOR_TYPES
+    options: ITEM_DOOR_TYPES,
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Label,
     id: "Size",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Label,
     id: "Quantity",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Label,
     id: "SubQty",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Text,
     id: "Notes",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "DoorCutout",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_SelectWithLabel,
     options: ITEM_STATUS,
     id: "Status",
     sortBy: "sort",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "Stock",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_SelectWithLabel,
     id: "Lites",
-    options: ITEM_LITES
+    options: ITEM_LITES,
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "BTO",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "SlabPrep",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "Assembly",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "MillingDept",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "CustomSlabPrep",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "QA",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "CustomMilling",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "TempSlab",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "Painted",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Input,
     id: "BoxQty",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Input,
     id: "GlassQty",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Input,
     id: "LBRMin",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Label,
     id: "Nett",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Rack,
@@ -219,22 +246,27 @@ const DOOR_FIELDS = applyField([
       onChange(v, "RackLocationId");
       onChange(o?.RackNumber, "RackLocation");
     },
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Input,
     id: "TransomCount",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Input,
     id: "SideliteCount",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Input,
     id: "SingleDoorCount",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
   {
     Component: Editable.EF_Input,
     id: "DoubleDoorCount",
+    disabled: TEMPORARY_DISABLE_FOR_FIX
   },
 ]);
 
@@ -282,7 +314,7 @@ const Com = (props) => {
               setItem={setItem}
               key={`item_${a.id}`}
               inputData={a}
-              isEditable = {checkEditable({group: _editgroup[item?.kind]})}
+              isEditable = {!a.disabled && checkEditable({group: _editgroup[item?.kind]})}
             />
           );
         })}

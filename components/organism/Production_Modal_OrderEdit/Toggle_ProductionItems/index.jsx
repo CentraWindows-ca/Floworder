@@ -536,6 +536,8 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
   );
 };
 
+const TEMPORARY_DISABLE_FOR_FIX = true
+
 const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
   const { checkEditable, onBatchUpdateItems } = useContext(
     LocalDataContext_items,
@@ -625,7 +627,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
                   updatingKey,
                   record[updatingKey],
                 ),
-              disabled: !_isGroupEditable,
+              disabled: !_isGroupEditable || TEMPORARY_DISABLE_FOR_FIX,
             }}
           />
         );
@@ -653,7 +655,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
                   updatingKey,
                   record[updatingKey],
                 ),
-              disabled: !_isGroupEditable,
+              disabled: !_isGroupEditable || TEMPORARY_DISABLE_FOR_FIX,
             }}
           />
         );

@@ -502,10 +502,6 @@ export const checkEditableByGroup = ({ group, permissions, data }) => {
   //   }
   // }
 
-  if (group === "dooritems") {
-    return false
-  }
-
   return isAllowAny;
 };
 
