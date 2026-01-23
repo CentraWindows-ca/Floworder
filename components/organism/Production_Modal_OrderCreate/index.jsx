@@ -255,9 +255,9 @@ const Screen2 = ({
   const [serviceOrder, setServiceOrder] = useState(null);
 
   const isWindow = !!(
-    windowMakerData?.wmWindows || windowMakerData?.wmPatioDoors
+    windowMakerData?.wmWindows || windowMakerData?.wmPatioDoors || windowMakerData?.wmGlasss
   );
-  const isDoor = !!windowMakerData?.wmDoors;
+  const isDoor = !!windowMakerData?.wmDoors || !!windowMakerData?.wmDoorGlasss;
 
   useEffect(() => {
     if (existingWorkOrder) {
