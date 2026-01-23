@@ -49,6 +49,20 @@ const STATUS = {
   d: "d_Status",
 };
 
+// NOTE: UI toggles originally for embed iframe that doesnt need that many functionalities
+const DISPLAY_SECTIONS = {
+  addons: true,
+  basic: true,  
+  summary: true,
+  notes: true,
+  returnTrips: true,
+  images: true,
+  files: true,
+  productionItems: true,
+  glassItems: true,
+  history: true
+}
+
 export const LocalDataProvider = ({
   children,
   initMasterId,
@@ -61,8 +75,10 @@ export const LocalDataProvider = ({
   onRestore,
   initIsEditable,
   isDeleted,
+  display_sections,
   ...props
 }) => {
+
   const generalContext = useContext(GeneralContext);
   const { toast, permissions, dictionary } = generalContext;
   const { requestData } = useInterrupt();
@@ -887,6 +903,7 @@ export const LocalDataProvider = ({
     ...props,
     isLoading,
     isSaving,
+    display_sections: {...DISPLAY_SECTIONS, ...display_sections},
     initMasterId,
     data,
     kind,

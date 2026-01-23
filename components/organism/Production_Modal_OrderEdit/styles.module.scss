@@ -222,9 +222,7 @@
 .anchors {
     display: flex;
     align-items: center;
-    gap: 5px;
-    color: $color_gray;
-
+    // gap: 5px;
     span {
         cursor: pointer;
         padding: 5px;
@@ -238,7 +236,14 @@
         }
     }
 
-    font-size: 10px;
+    span:not(:last-child)::after {
+        content: '|';
+        margin-left: 10px;
+        color: $color_gray;
+        font-size: 10px;
+    }
+
+
 }
 
 .subTitle {
@@ -254,6 +259,8 @@
 
 .modalHeader {
     padding: 10px;
+    display: flex;
+    gap: 10px;
 }
 
 .modalBody {
@@ -263,7 +270,7 @@
     background-color: $color_background_modal;
 
     .modalToolBar {
-        padding: 5px 15px;
+        padding: 5px;
         // height: 50px;
         // position: sticky;
         // top: 0px;
@@ -604,6 +611,7 @@ img.addonIcon {
 .iconFetchButton {
     color: $color_centraBlue;
     cursor: pointer;
+
     &:hover {
         color: $color_centraBlue_hover;
     }

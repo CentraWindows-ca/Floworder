@@ -3,9 +3,7 @@ import cn from "classnames";
 import _ from "lodash";
 import { Spin } from "antd";
 import { LoadingOutlined, SaveOutlined } from "@ant-design/icons";
-import Modal from "components/molecule/Modal";
 import PermissionBlock from "components/atom/PermissionBlock";
-import Sec_Status from "./Sec_Status";
 import Sec_OrderInfo from "./Sec_OrderInfo";
 import Sec_OrderBasic from "./Sec_OrderBasic";
 import Sec_OrderOptions from "./Sec_OrderOptions";
@@ -22,13 +20,8 @@ import Toggle_Images from "./Toggle_Images";
 import Toggle_Files from "./Toggle_Files";
 import Toggle_ReturnTrips from "./Toggle_ReturnTrips";
 
-import { DisplayBlock } from "./Com";
-import constants, {
-  ADDON_STATUS,
-  WORKORDER_STATUS_MAPPING,
-} from "lib/constants";
+import constants, { ADDON_STATUS } from "lib/constants";
 
-import Modal_OrderHistory from "components/organism/Production_Modal_OrderHistory";
 // styles
 import styles from "./styles.module.scss";
 
@@ -40,107 +33,93 @@ const Com = ({}) => {
     isSaving,
     onSave,
     isLoading,
-    initMasterId,
-    onHide,
-    onAnchor,
-    onRestore,
-    onGetWindowMaker,
+    display_sections,
     onUnlinkAddOn,
     onLinkAddOn,
     data,
-    initDataSiteLockout,
-    initDataService,
-    kind,
     checkEditable,
-    setIsEditable,
     editedGroup,
-    existingAttachments,
-    existingImages,
-    windowItems,
-    doorItems,
-    returnTrips,
-    glassTotal,
-    uIstatusObj,
-    isDeleted = false,
-    tabCounts,
     isInAddOnGroup,
-    addonGroup,
   } = useContext(LocalDataContext);
 
   const uiClass_withLockout = true;
-
 
   return (
     <>
       <span id="basic" />
       <LoadingBlock isLoading={isLoading}>
-        {!constants.DEV_HOLDING_FEATURES.v20250815_addon && (
-          <Sec_AddonSelector />
-        )}
+        {display_sections.addons && <Sec_AddonSelector />}
         <div className={cn(styles.modalContentContainer)}>
-          <div
-            className={cn(styles.gridsOfMainInfo, {
-              [styles.withLockout]: uiClass_withLockout,
-            })}
-          >
-            <div className={cn(styles.mainItem, styles["grid-1"])}>
-              <div className={cn(styles.sectionTitle)}>Basic Information</div>
-              <CollapseContainer id="basicInformation">
-                <Sec_OrderBasic />
-              </CollapseContainer>
-              {!constants.DEV_HOLDING_FEATURES.v20251016_invoice ? (
-                <PermissionBlock
-                  featureCode={constants.FEATURE_CODES["om.prod.wo.invoice"]}
-                  op="canView"
-                >
-                  <div className={cn(styles.sectionTitle)}>Invoice</div>
-                  <CollapseContainer id="invoice">
-                    <Sec_OrderInvoice />
-                  </CollapseContainer>
-                </PermissionBlock>
-              ) : null}
+          {display_sections.basic && (
+            <div
+              className={cn(styles.gridsOfMainInfo, {
+                [styles.withLockout]: uiClass_withLockout,
+              })}
+            >
+              <div className={cn(styles.mainItem, styles["grid-1"])}>
+                <div className={cn(styles.sectionTitle)}>Basic Information</div>
+                <CollapseContainer id="basicInformation">
+                  <Sec_OrderBasic />
+                </CollapseContainer>
+                {!constants.DEV_HOLDING_FEATURES.v20251016_invoice ? (
+                  <PermissionBlock
+                    featureCode={constants.FEATURE_CODES["om.prod.wo.invoice"]}
+                    op="canView"
+                  >
+                    <div className={cn(styles.sectionTitle)}>Invoice</div>
+                    <CollapseContainer id="invoice">
+                      <Sec_OrderInvoice />
+                    </CollapseContainer>
+                  </PermissionBlock>
+                ) : null}
+              </div>
+              <div className={cn(styles.mainItem, styles["grid-2"])}>
+                <div className={cn(styles.sectionTitle)}>Order Information</div>
+                <CollapseContainer id="orderInformation">
+                  <Sec_OrderInfo />
+                </CollapseContainer>
+              </div>
+              <div className={cn(styles.mainItem, styles["grid-3"])}>
+                <div className={cn(styles.sectionTitle)}>Order Options</div>
+                <CollapseContainer id="orderOptions">
+                  <Sec_OrderOptions />
+                </CollapseContainer>
+              </div>
+              <div className={cn(styles.mainItem, styles["grid-4-up"])}>
+                <div className={cn(styles.sectionTitle)}>Schedule</div>
+                <CollapseContainer id="schedule">
+                  <Sec_Schedule />
+                  <Sec_LinkedService />
+                </CollapseContainer>
+              </div>
             </div>
-            <div className={cn(styles.mainItem, styles["grid-2"])}>
-              <div className={cn(styles.sectionTitle)}>Order Information</div>
-              <CollapseContainer id="orderInformation">
-                <Sec_OrderInfo />
-              </CollapseContainer>
+          )}
+          {display_sections.summary && (
+            <div>
+              <div className={cn(styles.mainItem, styles["mainItem-3"])}>
+                <div className={cn(styles.sectionTitle)}>Summary</div>
+                <CollapseContainer id="summary">
+                  <Sec_Summary />
+                </CollapseContainer>
+              </div>
             </div>
-            <div className={cn(styles.mainItem, styles["grid-3"])}>
-              <div className={cn(styles.sectionTitle)}>Order Options</div>
-              <CollapseContainer id="orderOptions">
-                <Sec_OrderOptions />
-              </CollapseContainer>
+          )}
+          {display_sections.notes && (
+            <div
+              className="flex-column flex"
+              style={{ marginTop: "10px", marginBottom: "10px" }}
+            >
+              <Toggle_Notes />
             </div>
-            <div className={cn(styles.mainItem, styles["grid-4-up"])}>
-              <div className={cn(styles.sectionTitle)}>Schedule</div>
-              <CollapseContainer id="schedule">
-                <Sec_Schedule />
-                <Sec_LinkedService />
-              </CollapseContainer>
+          )}
+          {display_sections.returnTrips && (
+            <div
+              className="flex-column flex"
+              style={{ marginTop: "10px", marginBottom: "10px" }}
+            >
+              <Toggle_ReturnTrips title={"Return Trips"} id={"returnTrips"} />
             </div>
-          </div>
-          <div>
-            <div className={cn(styles.mainItem, styles["mainItem-3"])}>
-              <div className={cn(styles.sectionTitle)}>Summary</div>
-              <CollapseContainer id="summary">
-                <Sec_Summary />
-              </CollapseContainer>
-            </div>
-          </div>
-          <div
-            className="flex-column flex"
-            style={{ marginTop: "10px", marginBottom: "10px" }}
-          >
-            <Toggle_Notes />
-          </div>
-
-          <div
-            className="flex-column flex"
-            style={{ marginTop: "10px", marginBottom: "10px" }}
-          >
-            <Toggle_ReturnTrips title={"Return Trips"} id={"returnTrips"} />
-          </div>
+          )}
 
           {checkEditable() && (
             <div
@@ -217,13 +196,21 @@ const Com = ({}) => {
           <hr />
 
           <div className="flex-column flex" style={{ gap: "10px" }}>
-            <Toggle_Images title={"Images"} id={"images"} />
-            <Toggle_Files title={"Attachments"} id={"files"} />
-            <Toggle_ProductionItems
-              title={"Production Items"}
-              id={"productionItems"}
-            />
-            <Toggle_GlassItems id={"glassItems"} />
+            {display_sections.images && (
+              <Toggle_Images title={"Images"} id={"images"} />
+            )}
+            {display_sections.files && (
+              <Toggle_Files title={"Attachments"} id={"files"} />
+            )}
+            {display_sections.productionItems && (
+              <Toggle_ProductionItems
+                title={"Production Items"}
+                id={"productionItems"}
+              />
+            )}
+            {display_sections.glassItems && (
+              <Toggle_GlassItems id={"glassItems"} />
+            )}
           </div>
         </div>
       </LoadingBlock>
@@ -232,7 +219,7 @@ const Com = ({}) => {
 };
 
 const CollapseContainer = ({ id, children }) => {
-  const { uiShowMore, setUiShowMore } = useContext(LocalDataContext);
+  const { uiShowMore } = useContext(LocalDataContext);
 
   return (
     <>
@@ -248,6 +235,4 @@ const CollapseContainer = ({ id, children }) => {
   );
 };
 
-export default (props) => {
-  return <Com />;
-};
+export default Com;

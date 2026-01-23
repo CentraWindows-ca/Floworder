@@ -271,16 +271,15 @@ const Com = (props) => {
         render: (text, record) => {
           return (
             <div className={cn(styles.orderNumber)}>
-              {!constants.DEV_HOLDING_FEATURES.v20250815_addon && (
-                <div
-                  className={cn(styles.addonListIcon)}
-                  title={
-                    ADDON_LISTICON_MAPPING[record?.m_AddonIcon_display]?.title
-                  }
-                >
-                  {ADDON_LISTICON_MAPPING[record?.m_AddonIcon_display]?.icon}
-                </div>
-              )}
+              <div
+                className={cn(styles.addonListIcon)}
+                title={
+                  ADDON_LISTICON_MAPPING[record?.m_AddonIcon_display]?.title
+                }
+              >
+                {ADDON_LISTICON_MAPPING[record?.m_AddonIcon_display]?.icon}
+              </div>
+
               <Dropdown_WorkOrderActions
                 data={record}
                 {...{
@@ -446,7 +445,6 @@ const Com = (props) => {
       {
         key: "m_AddOnsCount",
         width: 100,
-        display: !constants.DEV_HOLDING_FEATURES.v20250815_addon,
         renderFilter: ({ key }) => {
           return (
             <div className="w-full text-center">
@@ -496,15 +494,15 @@ const Com = (props) => {
       },
       {
         key: "d_ManufacturingFacility",
-        display: isDoor
-      },     
+        display: isDoor,
+      },
       {
         key: "w_GlassSupplier",
         display: isWindow,
       },
       {
         key: "d_GlassSupplier",
-        display: isDoor
+        display: isDoor,
       },
       {
         key: "m_JobType",
@@ -513,8 +511,8 @@ const Com = (props) => {
       {
         key: "m_OrderType",
         width: 150,
-        display: !constants.DEV_HOLDING_FEATURES.v20251210_ordertype
-      },      
+        display: !constants.DEV_HOLDING_FEATURES.v20251210_ordertype,
+      },
       {
         key: "w_ProductionStartDate",
         display: isWindow,

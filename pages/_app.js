@@ -27,9 +27,9 @@ const AuthNav = dynamic(() => import("@centrawindows-ca/authnav"), {
 });
 
 const APP_TITLE = {
-  "Invoice": "Invoice Management",
-  "Production": "Order Management"
-}
+  Invoice: "Invoice Management",
+  Production: "Order Management",
+};
 
 /* ===== [ADDED] very small progress bar component (uses @tanem/react-nprogress) ===== */
 function TopProgressBar({ isAnimating }) {
@@ -128,18 +128,19 @@ export default class MyApp extends App {
       ...prevState,
       permissions: p,
       rawAuth,
-      APP_NAME: getCookie('APP_NAME')
+      APP_NAME: getCookie("APP_NAME"),
     }));
   };
 
   render() {
     const { Component, pageProps } = this.props;
     const Layout = Component.layout || (({ children }) => children);
+    const No_header = Component.no_header || false;
     const env = process.env.NEXT_PUBLIC_ENV || "";
     const title =
       (APP_TITLE[this.state.APP_NAME] || "Order Management") +
       (env && env !== "production" ? ` (${env})` : "");
-    
+
     return (
       <React.Fragment>
         <Head>
@@ -155,7 +156,8 @@ export default class MyApp extends App {
         {/* ===== [ADDED END] ===== */}
 
         <div className="main_wrapper">
-          <ComAuthNav onLoaded={this.handleLoaded} />
+          <ComAuthNav onLoaded={this.handleLoaded} noheader={No_header}/>
+
           <Layout
             permissions={this.state.permissions}
             rawAuth={this.state.rawAuth}
@@ -168,7 +170,7 @@ export default class MyApp extends App {
   }
 }
 
-const ComAuthNav = ({ onLoaded }) => {
+const ComAuthNav = ({ onLoaded, noheader }) => {
   const router = useRouter();
   const handleOnRoute = (path) => router.push(path);
 
@@ -188,6 +190,7 @@ const ComAuthNav = ({ onLoaded }) => {
         onAction: handleAction,
         appCode: "OM",
         isExternal: false,
+        isHideHeader: noheader,
         clientURL: "https://production.centra.ca",
       }}
       activeFeature="om.prod"
