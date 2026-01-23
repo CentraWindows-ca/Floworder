@@ -69,7 +69,7 @@ const COMMON_FIELDS = applyField([
     id: "m_JobType",
     options: constants.WorkOrderSelectOptions.jobTypes,
   },
-  {
+  !constants.DEV_HOLDING_FEATURES.v20251210_ordertype && {
     Component: Editable.EF_Label_Disabled,
     id: "m_OrderType",
   },
