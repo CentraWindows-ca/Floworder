@@ -23,6 +23,9 @@ export default function Page(props) {
           productionItems: false,
           glassItems: false,
           history: false,
+          isUiAllowHeader: false,
+          isUiAllowEdit: false,
+          isPassToIframe: true
         }}
       />
     </AdminLayout>

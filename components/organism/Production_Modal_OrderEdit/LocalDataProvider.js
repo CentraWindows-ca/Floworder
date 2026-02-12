@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useCallback,
   useMemo,
+  useRef,
 } from "react";
 import _ from "lodash";
 import { useRouter } from "next/router";
@@ -52,7 +53,7 @@ const STATUS = {
 // NOTE: UI toggles originally for embed iframe that doesnt need that many functionalities
 const DISPLAY_SECTIONS = {
   addons: true,
-  basic: true,  
+  basic: true,
   summary: true,
   notes: true,
   returnTrips: true,
@@ -60,8 +61,11 @@ const DISPLAY_SECTIONS = {
   files: true,
   productionItems: true,
   glassItems: true,
-  history: true
-}
+  history: true,
+  isUiAllowHeader: true,
+  isUiAllowEdit: true,
+  isPassToIframe: false,
+};
 
 export const LocalDataProvider = ({
   children,
@@ -78,8 +82,11 @@ export const LocalDataProvider = ({
   display_sections,
   ...props
 }) => {
-
   const generalContext = useContext(GeneralContext);
+
+  // iframe data passing purpose
+  const latestDataRef = useRef(null);
+
   const { toast, permissions, dictionary } = generalContext;
   const { requestData } = useInterrupt();
   const [data, setData] = useState(null);
@@ -123,6 +130,41 @@ export const LocalDataProvider = ({
   // UI purpose
   const [expands, setExpands] = useState({});
 
+  // Iframe purpose start =======
+  useEffect(() => {
+    if (props.isPassToIframe) {
+      const handleMessage = (event) => {
+        if (event.data?.type === "GET_DATA") {
+          window.parent.postMessage(
+            {
+              type: "DATA",
+              payload: {
+                initData,
+                data: latestDataRef.current,
+              },
+            },
+            "*",
+          );
+        }
+      };
+
+      window.addEventListener("message", handleMessage);
+    }
+
+    return () => {
+      if (props.isPassToIframe) {
+        window.removeEventListener("message", handleMessage);
+      }
+    };
+  }, []);
+  useEffect(() => {
+    if (props.isPassToIframe) {
+      latestDataRef.current = data;
+    }
+  }, [data]);
+  // Iframe purpose end =======
+
+  // Initiate
   useEffect(() => {
     if (initMasterId) {
       doInit(initMasterId);
@@ -521,24 +563,24 @@ export const LocalDataProvider = ({
     });
 
     if (_res?.comment) {
-      const v =  _res?.comment
-      const k = "m_Comment_1"
-      handleChange(v, k)
+      const v = _res?.comment;
+      const k = "m_Comment_1";
+      handleChange(v, k);
     } else {
       toast("Comment Not found", { type: "warning" });
     }
   });
-  const doGetWindowMaker_batchNo = useLoadingBar(async (kind = 'w') => {
+  const doGetWindowMaker_batchNo = useLoadingBar(async (kind = "w") => {
     // fetch from WM
     const _res = await WM2CWProdApi.fetchWMBatchNos(null, {
       masterId: data?.m_MasterId,
-      kind // w,d
+      kind, // w,d
     });
 
     if (_res?.batchNo) {
-      const v = _res?.batchNo
-      const k = `${kind}_BatchNo`
-      handleChange(v, k)
+      const v = _res?.batchNo;
+      const k = `${kind}_BatchNo`;
+      handleChange(v, k);
     } else {
       toast("Batch No. Not found", { type: "warning" });
     }
@@ -903,7 +945,7 @@ export const LocalDataProvider = ({
     ...props,
     isLoading,
     isSaving,
-    display_sections: {...DISPLAY_SECTIONS, ...display_sections},
+    display_sections: { ...DISPLAY_SECTIONS, ...display_sections },
     initMasterId,
     data,
     kind,
@@ -963,7 +1005,7 @@ export const LocalDataProvider = ({
     validationResult,
     addonGroup,
     isInAddOnGroup,
-    dictionary
+    dictionary,
   };
 
   // 2. context for items

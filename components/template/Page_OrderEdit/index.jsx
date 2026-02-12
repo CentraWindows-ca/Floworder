@@ -8,35 +8,7 @@ import constants, { WORKORDER_STATUS_MAPPING } from "lib/constants";
 import OrdersApi from "lib/api/OrdersApi";
 // components
 
-// import Search from "components/molecule/bak_Search";
-import Framework_Production from "components/organism/Production_Framework";
 import Production_Modal_OrderEdit_Page from "components/organism/Production_Modal_OrderEdit/index_page";
-import Panel_Production from "components/organism/Production_Panel";
-
-// hooks
-import useDataInit from "lib/hooks/useDataInit";
-import useOrderListPermission from "lib/permissions/useOrderListPermission";
-
-// styles
-import styles from "./styles.module.scss";
-
-const DEFAULT_SORT = (status) => {
-  if (status === WORKORDER_STATUS_MAPPING.Scheduled.key) {
-    return [
-      {
-        field: "m_LastModifiedAt",
-        isDescending: true,
-      },
-    ];
-  }
-
-  return [
-    {
-      field: "m_CreatedAt",
-      isDescending: true,
-    },
-  ];
-};
 
 const Com = (props) => {
   const router = useRouter();

@@ -40,6 +40,7 @@ const Com = ({}) => {
     checkEditable,
     editedGroup,
     isInAddOnGroup,
+    isUiAllowEdit,
   } = useContext(LocalDataContext);
 
   const uiClass_withLockout = true;
@@ -121,79 +122,86 @@ const Com = ({}) => {
             </div>
           )}
 
-          {checkEditable() && (
-            <div
-              className={cn(
-                "justify-content-center flex gap-2 p-2",
-                styles.buttonContainer,
-              )}
-              style={{
-                margin: "10px 0px",
-                position: "sticky",
-                bottom: "0px",
-                zIndex: 5,
-              }}
-            >
-              {/* save button */}
-              <button
-                className="btn btn-primary align-items-center flex gap-2 px-3"
-                disabled={
-                  !data?.m_WorkOrderNo || isSaving || _.isEmpty(editedGroup) // if there is any unsaved update
-                }
-                onClick={onSave}
-              >
-                {!isSaving ? (
-                  <SaveOutlined size="small" />
-                ) : (
-                  <Spin
-                    size="small"
-                    indicator={<LoadingOutlined />}
-                    spinning={isSaving}
-                    style={{ color: "white" }}
-                  />
+          {/* NOTE: isUiAllowEdit originally for iframe need to disable save */}
+          {checkEditable() && isUiAllowEdit && (
+            <>
+              <div
+                className={cn(
+                  "justify-content-center flex gap-2 p-2",
+                  styles.buttonContainer,
                 )}
-                Save
-              </button>
-
-              {/* detach button */}
-              {/* if it has parent */}
-              {isInAddOnGroup && (
-                <PermissionBlock
-                  featureCode={constants.FEATURE_CODES["om.prod.woUnlinkAddOn"]}
-                  // isValidationInactive={false}
+                style={{
+                  margin: "10px 0px",
+                  position: "sticky",
+                  bottom: "0px",
+                  zIndex: 5,
+                }}
+              >
+                {/* save button */}
+                <button
+                  className="btn btn-primary align-items-center flex gap-2 px-3"
+                  disabled={
+                    !data?.m_WorkOrderNo || isSaving || _.isEmpty(editedGroup) // if there is any unsaved update
+                  }
+                  onClick={onSave}
                 >
-                  {data?.m_ParentMasterId ? (
-                    <>
-                      {data?.m_AddOnLinked !== ADDON_STATUS.detached ? (
-                        <button
-                          className="btn btn-outline-danger align-items-center flex gap-2 px-3"
-                          disabled={!data?.m_WorkOrderNo || isSaving}
-                          onClick={onUnlinkAddOn}
-                        >
-                          <img
-                            src="/unlinked.svg"
-                            className={styles.addonIcon}
-                          />
-                          Unlink Add-on
-                        </button>
-                      ) : (
-                        <button
-                          className="btn btn-outline-success align-items-center flex gap-2 px-3"
-                          disabled={!data?.m_WorkOrderNo || isSaving}
-                          onClick={onLinkAddOn}
-                        >
-                          <img src="/linked.svg" className={styles.addonIcon} />
-                          Link Add-on
-                        </button>
-                      )}
-                    </>
-                  ) : null}
-                </PermissionBlock>
-              )}
-            </div>
-          )}
+                  {!isSaving ? (
+                    <SaveOutlined size="small" />
+                  ) : (
+                    <Spin
+                      size="small"
+                      indicator={<LoadingOutlined />}
+                      spinning={isSaving}
+                      style={{ color: "white" }}
+                    />
+                  )}
+                  Save
+                </button>
 
-          <hr />
+                {/* detach button */}
+                {/* if it has parent */}
+                {isInAddOnGroup && (
+                  <PermissionBlock
+                    featureCode={
+                      constants.FEATURE_CODES["om.prod.woUnlinkAddOn"]
+                    }
+                    // isValidationInactive={false}
+                  >
+                    {data?.m_ParentMasterId ? (
+                      <>
+                        {data?.m_AddOnLinked !== ADDON_STATUS.detached ? (
+                          <button
+                            className="btn btn-outline-danger align-items-center flex gap-2 px-3"
+                            disabled={!data?.m_WorkOrderNo || isSaving}
+                            onClick={onUnlinkAddOn}
+                          >
+                            <img
+                              src="/unlinked.svg"
+                              className={styles.addonIcon}
+                            />
+                            Unlink Add-on
+                          </button>
+                        ) : (
+                          <button
+                            className="btn btn-outline-success align-items-center flex gap-2 px-3"
+                            disabled={!data?.m_WorkOrderNo || isSaving}
+                            onClick={onLinkAddOn}
+                          >
+                            <img
+                              src="/linked.svg"
+                              className={styles.addonIcon}
+                            />
+                            Link Add-on
+                          </button>
+                        )}
+                      </>
+                    ) : null}
+                  </PermissionBlock>
+                )}
+              </div>
+              <hr />
+            </>
+          )}
 
           <div className="flex-column flex" style={{ gap: "10px" }}>
             {display_sections.images && (

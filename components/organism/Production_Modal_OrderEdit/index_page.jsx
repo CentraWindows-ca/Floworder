@@ -9,10 +9,11 @@ import { LocalDataProvider } from "./LocalDataProvider";
 import Header from "./Header";
 import Main from "./Main";
 
-const Com = ({}) => {
+const Com = ({ ...props }) => {
+  const { isUiAllowHeader } = props;
   return (
     <div className={cn(styles.modalBody)}>
-      <Header />
+      {isUiAllowHeader && <Header />}
       <Main />
     </div>
   );
@@ -21,7 +22,7 @@ const Com = ({}) => {
 export default (props) => {
   return (
     <LocalDataProvider {...props}>
-      <Com />
+      <Com {...props} />
     </LocalDataProvider>
   );
 };
