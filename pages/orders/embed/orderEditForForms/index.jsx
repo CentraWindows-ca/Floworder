@@ -25,8 +25,8 @@ export default function Page(props) {
           history: false,
           isUiAllowHeader: false,
           isUiAllowEdit: false,
-          isPassToIframe: true
         }}
+        isPassToIframe={true}
       />
     </AdminLayout>
   );

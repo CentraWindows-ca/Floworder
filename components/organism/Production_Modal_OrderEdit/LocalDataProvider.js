@@ -79,6 +79,7 @@ export const LocalDataProvider = ({
   onRestore,
   initIsEditable,
   isDeleted,
+  isPassToIframe,
   display_sections,
   ...props
 }) => {
@@ -157,6 +158,7 @@ export const LocalDataProvider = ({
       }
     };
   }, []);
+
   useEffect(() => {
     if (props.isPassToIframe) {
       latestDataRef.current = data;
