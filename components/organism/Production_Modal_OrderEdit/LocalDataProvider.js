@@ -64,7 +64,6 @@ const DISPLAY_SECTIONS = {
   history: true,
   isUiAllowHeader: true,
   isUiAllowEdit: true,
-  isPassToIframe: false,
 };
 
 export const LocalDataProvider = ({
@@ -79,7 +78,7 @@ export const LocalDataProvider = ({
   onRestore,
   initIsEditable,
   isDeleted,
-  isPassToIframe,
+  isPassToIframe = false,
   display_sections,
   ...props
 }) => {
@@ -87,6 +86,7 @@ export const LocalDataProvider = ({
 
   // iframe data passing purpose
   const latestDataRef = useRef(null);
+  const initDataRef = useRef(null)
 
   const { toast, permissions, dictionary } = generalContext;
   const { requestData } = useInterrupt();
@@ -133,15 +133,16 @@ export const LocalDataProvider = ({
 
   // Iframe purpose start =======
   useEffect(() => {
-    if (props.isPassToIframe) {
-      const handleMessage = (event) => {
+    let handleMessage = () => {};
+    if (isPassToIframe) {
+      handleMessage = (event) => {
         if (event.data?.type === "GET_DATA") {
           window.parent.postMessage(
             {
               type: "DATA",
               payload: {
-                initData,
-                data: latestDataRef.current,
+                initData: initDataRef?.current,
+                data: latestDataRef?.current,
               },
             },
             "*",
@@ -153,17 +154,22 @@ export const LocalDataProvider = ({
     }
 
     return () => {
-      if (props.isPassToIframe) {
+      if (isPassToIframe) {
         window.removeEventListener("message", handleMessage);
       }
     };
   }, []);
 
   useEffect(() => {
-    if (props.isPassToIframe) {
+    if (isPassToIframe) {
       latestDataRef.current = data;
     }
   }, [data]);
+  useEffect(() => {
+    if (isPassToIframe) {
+      initDataRef.current = initData;
+    }
+  }, [initData]);
   // Iframe purpose end =======
 
   // Initiate
