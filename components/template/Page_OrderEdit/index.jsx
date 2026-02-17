@@ -16,7 +16,7 @@ const Com = (props) => {
   const {
     status: statusFromParam,
     facility: facilityFromParam,
-    tab = "m",
+    kind = "m",
     sort,
     masterId,
   } = router?.query || {};
@@ -29,14 +29,14 @@ const Com = (props) => {
   const facility = facilityFromParam === "All" ? "" : facilityFromParam;
 
   if (facility) {
-    filtersObj[tab + "_ManufacturingFacility"] = {
+    filtersObj[kind + "_ManufacturingFacility"] = {
       operator: constants.FILTER_OPERATOR.Equals,
       value: facility,
     };
   }
 
   if (status) {
-    filtersObj[tab + "_Status"] = {
+    filtersObj[kind + "_Status"] = {
       operator: constants.FILTER_OPERATOR.Equals,
       value: status,
     };
@@ -60,7 +60,7 @@ const Com = (props) => {
       {...props}
       initMasterId={masterId}
       initIsEditable={true}
-      kind={tab}
+      kind={kind}
     />
   );
 };
