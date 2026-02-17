@@ -60,6 +60,7 @@ const Com = (props) => {
       {...props}
       initMasterId={masterId}
       initIsEditable={true}
+      kind={tab}
     />
   );
 };
