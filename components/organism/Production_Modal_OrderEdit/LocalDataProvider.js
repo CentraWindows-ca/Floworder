@@ -136,6 +136,7 @@ export const LocalDataProvider = ({
     let handleMessage = () => {};
     if (isPassToIframe) {
       handleMessage = (event) => {
+        console.log("Hello, I have event from outside", event)
         if (event.data?.type === "GET_DATA") {
           window.parent.postMessage(
             {
