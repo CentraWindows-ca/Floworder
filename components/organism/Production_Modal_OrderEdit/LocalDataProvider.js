@@ -25,6 +25,7 @@ import constants, {
   ADDON_STATUS,
   ORDER_STATUS,
   ORDER_TRANSFER_FIELDS,
+  SOURCE_OF_UI,
 } from "lib/constants";
 import { uiWoFieldEditGroupMapping } from "lib/constants/production_constants_labelMapping";
 import { getOrderKind } from "lib/utils";
@@ -79,6 +80,7 @@ export const LocalDataProvider = ({
   initIsEditable,
   isDeleted,
   isPassToIframe = false,
+  sourceOfUI = SOURCE_OF_UI.modal_production,
   display_sections,
   ...props
 }) => {
@@ -874,11 +876,11 @@ export const LocalDataProvider = ({
       const { id, group } = params;
       let _pass = isEditable;
       if (id) {
-        _pass = _pass && checkEditableById({ id, data, permissions, initKind });
+        _pass = _pass && checkEditableById({ id, data, permissions, initKind, sourceOfUI });
       }
       if (group) {
         _pass =
-          _pass && checkEditableByGroup({ group, data, permissions, initKind });
+          _pass && checkEditableByGroup({ group, data, permissions, initKind, sourceOfUI });
       }
 
       /* if its addon workorder, check if field is addonField
@@ -960,6 +962,7 @@ export const LocalDataProvider = ({
     kind,
     initKind,
     facility,
+    sourceOfUI,
     setData,
     newAttachments,
     setNewAttachments,

@@ -6,6 +6,7 @@ import ComPage from "components/template/Page_OrderEdit";
 // layout for page
 import AdminProvider from "layouts/AdminProvider";
 import AdminLayout from "layouts/AdminLayout";
+import { SOURCE_OF_UI } from "lib/constants";
 
 export default function Page(props) {
   return (
@@ -26,6 +27,7 @@ export default function Page(props) {
           isUiAllowHeader: false,
           isUiAllowEdit: false,
         }}
+        sourceOfUI = {SOURCE_OF_UI.iframe_forms_approval}
         isPassToIframe={true}
       />
     </AdminLayout>

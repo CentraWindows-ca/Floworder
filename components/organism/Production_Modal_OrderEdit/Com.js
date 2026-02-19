@@ -8,6 +8,7 @@ import constants, {
   GlassRowStates,
   FEATURE_CODES,
   ADDON_STATUS,
+  SOURCE_OF_UI,
 } from "lib/constants";
 // styles
 import styles from "./styles.module.scss";
@@ -355,7 +356,7 @@ export const treateGlassItems = (list) => {
   return _newItems;
 };
 
-export const checkEditableById = ({ id, permissions, data, initKind }) => {
+export const checkEditableById = ({ id, permissions, data, initKind, sourceOfUI }) => {
   let isEnable = false;
 
   // ============ permission checking: "enable" rules ============
@@ -437,7 +438,9 @@ export const checkEditableById = ({ id, permissions, data, initKind }) => {
   here "where" means which tab (master, window, door) they search the order from
   */
   let status_ForPendingRule = data?.[`${initKind}_Status`];
-  if (status_ForPendingRule === WORKORDER_STATUS_MAPPING.Pending.key) {
+  if (
+    sourceOfUI !== SOURCE_OF_UI.iframe_forms_approval && // in forms, any status should able to edit
+    status_ForPendingRule === WORKORDER_STATUS_MAPPING.Pending.key) {
     // check from group 'schedule', but still from field level (in case we dont pass group)
     if (!checkGroup("schedule")) {
       isEnable = false;
