@@ -356,7 +356,13 @@ export const treateGlassItems = (list) => {
   return _newItems;
 };
 
-export const checkEditableById = ({ id, permissions, data, initKind, sourceOfUI }) => {
+export const checkEditableById = ({
+  id,
+  permissions,
+  data,
+  initKind,
+  sourceOfUI,
+}) => {
   let isEnable = false;
 
   // ============ permission checking: "enable" rules ============
@@ -439,11 +445,15 @@ export const checkEditableById = ({ id, permissions, data, initKind, sourceOfUI 
   */
   let status_ForPendingRule = data?.[`${initKind}_Status`];
   if (
-    sourceOfUI !== SOURCE_OF_UI.iframe_forms_approval && // in forms, any status should able to edit
-    status_ForPendingRule === WORKORDER_STATUS_MAPPING.Pending.key) {
-    // check from group 'schedule', but still from field level (in case we dont pass group)
-    if (!checkGroup("schedule")) {
-      isEnable = false;
+    sourceOfUI !== SOURCE_OF_UI.iframe_forms_approval
+  ) 
+  {
+    // in forms embed, any status should ignore editable check
+    if (status_ForPendingRule === WORKORDER_STATUS_MAPPING.Pending.key) {
+      // check from group 'schedule', but still from field level (in case we dont pass group)
+      if (!checkGroup("schedule")) {
+        isEnable = false;
+      }
     }
   }
 

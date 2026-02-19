@@ -63,8 +63,6 @@ const DISPLAY_SECTIONS = {
   productionItems: true,
   glassItems: true,
   history: true,
-  isUiAllowHeader: true,
-  isUiAllowEdit: true,
 };
 
 export const LocalDataProvider = ({
@@ -80,6 +78,8 @@ export const LocalDataProvider = ({
   initIsEditable,
   isDeleted,
   isPassToIframe = false,
+  isUiAllowHeader = true,
+  isUiAllowEdit = true,
   sourceOfUI = SOURCE_OF_UI.modal_production,
   display_sections,
   ...props
@@ -88,7 +88,7 @@ export const LocalDataProvider = ({
 
   // iframe data passing purpose
   const latestDataRef = useRef(null);
-  const initDataRef = useRef(null)
+  const initDataRef = useRef(null);
 
   const { toast, permissions, dictionary } = generalContext;
   const { requestData } = useInterrupt();
@@ -138,7 +138,7 @@ export const LocalDataProvider = ({
     let handleMessage = () => {};
     if (isPassToIframe) {
       handleMessage = (event) => {
-        console.log("Hello, I have event from outside", event)
+        console.log("Hello, I have event from outside", event);
         if (event.data?.type === "GET_DATA") {
           window.parent.postMessage(
             {
@@ -876,11 +876,20 @@ export const LocalDataProvider = ({
       const { id, group } = params;
       let _pass = isEditable;
       if (id) {
-        _pass = _pass && checkEditableById({ id, data, permissions, initKind, sourceOfUI });
+        _pass =
+          _pass &&
+          checkEditableById({ id, data, permissions, initKind, sourceOfUI });
       }
       if (group) {
         _pass =
-          _pass && checkEditableByGroup({ group, data, permissions, initKind, sourceOfUI });
+          _pass &&
+          checkEditableByGroup({
+            group,
+            data,
+            permissions,
+            initKind,
+            sourceOfUI,
+          });
       }
 
       /* if its addon workorder, check if field is addonField
@@ -957,6 +966,8 @@ export const LocalDataProvider = ({
     isLoading,
     isSaving,
     display_sections: { ...DISPLAY_SECTIONS, ...display_sections },
+    isUiAllowHeader,
+    isUiAllowEdit,
     initMasterId,
     data,
     kind,
