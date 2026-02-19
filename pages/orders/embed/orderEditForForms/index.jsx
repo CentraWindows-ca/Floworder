@@ -24,11 +24,11 @@ export default function Page(props) {
           productionItems: false,
           glassItems: false,
           history: false,
-          isUiAllowHeader: false,
-          isUiAllowEdit: false,
         }}
-        sourceOfUI = {SOURCE_OF_UI.iframe_forms_approval}
+        sourceOfUI={SOURCE_OF_UI.iframe_forms_approval}
         isPassToIframe={true}
+        isUiAllowHeader={false}
+        isUiAllowEdit={false}
       />
     </AdminLayout>
   );
