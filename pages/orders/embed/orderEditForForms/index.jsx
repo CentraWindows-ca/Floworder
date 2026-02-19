@@ -17,7 +17,7 @@ export default function Page(props) {
         display_sections={{
           addons: false,
           summary: false,
-          notes: false,
+          notes: true,
           returnTrips: false,
           images: false,
           files: false,
