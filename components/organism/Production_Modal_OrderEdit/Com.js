@@ -82,9 +82,33 @@ export const getIfFieldDisplayAsProductType = (
 
   return _isDisplay;
 };
+export const getIfFieldDisplayForProductItems = (
+  { kind, uiOrderType, key, id, displayAs, permissions },
+  data,
+) => {
+  let _isDisplay = true;
+  const checkPermission = (pc, op = "canEdit") => {
+        console.log(pc,permissions, _.get(permissions, [pc, op], false))
+    return _.get(permissions, [pc, op], false);
+  };
 
-export const displayFilter = (itemList, { kind, uiOrderType, permissions }) => {
-  return itemList?.filter((a) => {
+  const fieldCode = key || id
+
+  if (fieldCode === "Facility") {
+    _isDisplay &= checkPermission(
+      FEATURE_CODES["om.prod.wo.itemFacility"],
+      "canView",
+    );
+  }
+
+  return _isDisplay;
+};
+
+export const displayFilter = (
+  columnList,
+  { kind, uiOrderType, permissions },
+) => {
+  return columnList?.filter((a) => {
     const { id = "m", displayAs } = a;
     // currentKind is data kind
     return getIfFieldDisplayAsProductType(
@@ -99,6 +123,27 @@ export const displayFilter = (itemList, { kind, uiOrderType, permissions }) => {
     );
   });
 };
+
+export const displayFilterForProductItems = (
+  columnList,
+  { uiOrderType, permissions },
+) => {
+  return columnList?.filter((a) => {
+    const { key, id, displayAs } = a;
+    // currentKind is data kind
+    return getIfFieldDisplayForProductItems(
+      {
+        uiOrderType,
+        key,
+        id, 
+        displayAs,
+        permissions,
+      },
+      a,
+    );
+  });
+};
+
 export const Block = ({ className_input, inputData, data: overridingData }) => {
   const localContext = useContext(LocalDataContext);
   const {
@@ -444,10 +489,7 @@ export const checkEditableById = ({
   here "where" means which tab (master, window, door) they search the order from
   */
   let status_ForPendingRule = data?.[`${initKind}_Status`];
-  if (
-    sourceOfUI !== SOURCE_OF_UI.iframe_forms_approval
-  ) 
-  {
+  if (sourceOfUI !== SOURCE_OF_UI.iframe_forms_approval) {
     // in forms embed, any status should ignore editable check
     if (status_ForPendingRule === WORKORDER_STATUS_MAPPING.Pending.key) {
       // check from group 'schedule', but still from field level (in case we dont pass group)

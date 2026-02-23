@@ -7,20 +7,29 @@ import React, {
 } from "react";
 import cn from "classnames";
 import _ from "lodash";
-import constants from "lib/constants";
+import constants, {
+  ITEM_STATUS,
+  ITEM_LITES,
+  ITEM_DOOR_TYPES,
+  FACILITY_ORDER,
+  ITEM_FACILITY,
+} from "lib/constants";
 import {
   labelMapping,
   applyField,
 } from "lib/constants/production_constants_labelMapping";
 
-import { ITEM_STATUS, ITEM_LITES, ITEM_DOOR_TYPES } from "lib/constants";
 import Editable from "components/molecule/Editable";
 import TableSortable from "components/atom/TableSortable";
 import Tooltip from "components/atom/Tooltip";
 // styles
 
 import { LocalDataContext_items } from "../LocalDataProvider";
-import { ToggleBlock, DisplayBlock } from "../Com";
+import {
+  ToggleBlock,
+  DisplayBlock,
+  displayFilterForProductItems,
+} from "../Com";
 import Modal_ItemEdit from "./Modal_ItemEdit";
 // styles
 import stylesRoot from "../styles.module.scss";
@@ -109,7 +118,6 @@ const Com = ({ title, id }) => {
 
   const ITEM_CATEGORIES = dictionary?.uiItemLabels || [];
 
-  // console.log(_.values(ITEM_CATEGORIES))
   const [stats, setStats] = useState({});
   const [editingItem, setEditingItem] = useState(null);
 
@@ -294,6 +302,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
     setUpdatingValues,
     handleUpdate,
     overridedList,
+    overridedListByFacility,
     sort,
     setSort,
     filters,
@@ -318,6 +327,31 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
       {
         key: "Item",
         width: 80,
+      },
+      {
+        key: "Facility",
+        width: 150,
+        render: (t, record) => {
+          const updatingKey = "Facility";
+          return (
+            <Editable.EF_SelectWithLabel
+              {...{
+                value: record[updatingKey],
+                onChange: (v) =>
+                  handleUpdate(
+                    record?.Id,
+                    v || null,
+                    "Facility",
+                    record["Facility"],
+                  ),
+                id: `Facility_${record?.Id}`,
+                options: ITEM_FACILITY,
+                className: "form-select form-select-sm",
+                disabled: !_isGroupEditable,
+              }}
+            />
+          );
+        },
       },
       {
         key: "Size",
@@ -516,9 +550,10 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
               </button>
             </div>
           </div>
-          <TableSortable
+          <TableSortableWithFacility
             {...{
               data: overridedList,
+              overridedListByFacility,
               columns: columnsWindow,
               sort,
               setSort,
@@ -526,7 +561,6 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
               setFilters,
               keyField: "Id",
               className: "text-left",
-              headerClassName: cn(styles.thead),
               isLockFirstColumn: false,
             }}
           />
@@ -536,7 +570,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
   );
 };
 
-const TEMPORARY_DISABLE_FOR_FIX = true
+const TEMPORARY_DISABLE_FOR_FIX = true;
 
 const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
   const { checkEditable, onBatchUpdateItems } = useContext(
@@ -550,7 +584,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
   const _isGroupEditable = checkEditable({ group });
 
   const handleOnClick = (...p) => {
-    handleShowItem(...p)
+    handleShowItem(...p);
     // alert(
     //   "Please make change from production tracking platform (https://production-tracking.centra.ca/)",
     // );
@@ -561,6 +595,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
     setUpdatingValues,
     handleUpdate,
     overridedList,
+    overridedListByFacility,
     sort,
     setSort,
     filters,
@@ -584,6 +619,31 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
     {
       key: "Item",
       width: 80,
+    },
+    {
+      key: "Facility",
+      width: 150,
+      render: (t, record) => {
+        const updatingKey = "Facility";
+        return (
+          <Editable.EF_SelectWithLabel
+            {...{
+              value: record[updatingKey],
+              onChange: (v) =>
+                handleUpdate(
+                  record?.Id,
+                  v || null,
+                  "Facility",
+                  record["Facility"],
+                ),
+              id: `Facility_${record?.Id}`,
+              options: ITEM_FACILITY,
+              className: "form-select form-select-sm",
+              disabled: !_isGroupEditable,
+            }}
+          />
+        );
+      },
     },
     {
       key: "Size",
@@ -789,9 +849,10 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
               </button>
             </div>
           </div>
-          <TableSortable
+          <TableSortableWithFacility
             {...{
               data: overridedList,
+              overridedListByFacility,
               columns,
               sort,
               setSort,
@@ -799,7 +860,6 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
               setFilters,
               keyField: "Id",
               className: "text-left",
-              headerClassName: cn(styles.thead),
               isLockFirstColumn: false,
             }}
           />
@@ -827,6 +887,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
     setUpdatingValues,
     handleUpdate,
     overridedList,
+    overridedListByFacility,
     sort,
     setSort,
     filters,
@@ -922,6 +983,31 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
     {
       key: "Item",
       width: 80,
+    },
+    {
+      key: "Facility",
+      width: 150,
+      render: (t, record) => {
+        const updatingKey = "Facility";
+        return (
+          <Editable.EF_SelectWithLabel
+            {...{
+              value: record[updatingKey],
+              onChange: (v) =>
+                handleUpdate(
+                  record?.Id,
+                  v || null,
+                  "Facility",
+                  record["Facility"],
+                ),
+              id: `Facility_${record?.Id}`,
+              options: ITEM_FACILITY,
+              className: "form-select form-select-sm",
+              disabled: !_isGroupEditable,
+            }}
+          />
+        );
+      },
     },
     {
       key: "Size",
@@ -1069,9 +1155,10 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
               </button>
             </div>
           </div>
-          <TableSortable
+          <TableSortableWithFacility
             {...{
               data: overridedList,
+              overridedListByFacility,
               columns,
               sort,
               setSort,
@@ -1079,13 +1166,67 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
               setFilters,
               keyField: "Id",
               className: "text-left",
-              headerClassName: cn(styles.thead),
               isLockFirstColumn: false,
             }}
           />
         </div>
       </DisplayBlock>
     )
+  );
+};
+
+const TableSortableWithFacility = (props) => {
+  const { permissions } = useContext(LocalDataContext_items);
+  const { data, columns, overridedListByFacility } = props;
+
+  const _isWithFacility = _.keys(overridedListByFacility)?.length > 1;
+
+  const _headerClassName = cn(
+    styles.thead,
+    _isWithFacility ? styles.withFacility : "",
+  );
+
+  const _columns = useMemo(
+    () =>
+      displayFilterForProductItems(columns, {
+        permissions,
+      }),
+    [columns, permissions],
+  );
+
+  if (_isWithFacility) {
+    return (
+      <div>
+        {_.sortBy(
+          _.keys(overridedListByFacility),
+          (k) => FACILITY_ORDER[k] || 0,
+        ).map((k) => {
+          const _facilityDisplay = k || "[Not Set]";
+
+          return (
+            <React.Fragment key={k}>
+              <div className={cn(styles.facilityHeader, "text-slate-400")}>
+                - {_facilityDisplay}
+              </div>
+              <TableSortable
+                {...props}
+                columns={_columns}
+                headerClassName={_headerClassName}
+                data={overridedListByFacility[k]}
+              />
+            </React.Fragment>
+          );
+        })}
+      </div>
+    );
+  }
+
+  return (
+    <TableSortable
+      {...props}
+      columns={_columns}
+      headerClassName={_headerClassName}
+    />
   );
 };
 
@@ -1112,6 +1253,10 @@ const useUpdatingValues = ({ data, getRowId }) => {
     });
   }, []);
 
+  // const allFacilities = useMemo(() => {
+  //   return _.uniq(data.map((a) => a.facility));
+  // }, [data]);
+
   const sortedList = useMemo(
     () => buildSortedFilteredList(data, sort, filters),
     [data, sort, filters],
@@ -1122,12 +1267,22 @@ const useUpdatingValues = ({ data, getRowId }) => {
     [sortedList, updatingValues],
   );
 
+  const overridedListByFacility = useMemo(
+    () =>
+      _.groupBy(overridedList, (row) => {
+        const v = row?.Facility;
+        return v == null || v === "" ? "" : v;
+      }),
+    [overridedList],
+  );
+
   return {
     updatingValues,
     setUpdatingValues,
     handleUpdate,
     sortedList,
     overridedList,
+    overridedListByFacility,
     sort,
     setSort,
     filters,

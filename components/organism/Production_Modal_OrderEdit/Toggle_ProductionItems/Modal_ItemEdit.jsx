@@ -1,20 +1,34 @@
-import React, { useEffect, useState, useContext } from "react";
-import constants from "lib/constants";
-import {labelMapping, applyField} from "lib/constants/production_constants_labelMapping";
+import React, { useEffect, useState, useContext, useMemo } from "react";
+import {
+  labelMapping,
+  applyField,
+} from "lib/constants/production_constants_labelMapping";
 
 import cn from "classnames";
 import Modal from "components/molecule/Modal";
 import Editable from "components/molecule/Editable";
-import { ITEM_STATUS, ITEM_LITES, ITEM_DOOR_TYPES } from "lib/constants";
+import {
+  ITEM_STATUS,
+  ITEM_FACILITY,
+  ITEM_LITES,
+  ITEM_DOOR_TYPES,
+} from "lib/constants";
 import { LocalDataContext } from "../LocalDataProvider";
 import utils from "lib/utils";
 
 // styles
 import styles from "../styles.module.scss";
+import { displayFilterForProductItems } from "../Com";
 const WINDOW_FIELDS = applyField([
   {
     Component: Editable.EF_Label,
     id: "Item",
+  },
+  {
+    Component: Editable.EF_SelectWithLabel,
+    options: ITEM_FACILITY,
+    id: "Facility",
+    sortBy: "sort",
   },
   {
     Component: Editable.EF_Label,
@@ -50,7 +64,7 @@ const WINDOW_FIELDS = applyField([
     Component: Editable.EF_Checkbox_Yesno,
     id: "BTO",
   },
-    {
+  {
     Component: Editable.EF_Checkbox_Yesno,
     id: "Multipoint",
   },
@@ -82,7 +96,7 @@ const WINDOW_FIELDS = applyField([
     Component: Editable.EF_Rack,
     id: "RackLocationId",
     overrideOnChange: (onChange, params) => {
-      const [ v, id, o ] = params;
+      const [v, id, o] = params;
       onChange(v, "RackLocationId");
       onChange(o?.RackNumber, "RackLocation");
     },
@@ -106,172 +120,178 @@ const WINDOW_FIELDS = applyField([
   },
 ]);
 
-const TEMPORARY_DISABLE_FOR_FIX = true
+const TEMPORARY_DISABLE_FOR_FIX = true;
 
 const DOOR_FIELDS = applyField([
   {
     Component: Editable.EF_Label,
     id: "Item",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
+  },
+  {
+    Component: Editable.EF_SelectWithLabel,
+    options: ITEM_FACILITY,
+    id: "Facility",
+    sortBy: "sort",
   },
   {
     Component: Editable.EF_Label,
     id: "System",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Label,
     id: "Description",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_SelectWithLabel,
     id: "DoorType",
     options: ITEM_DOOR_TYPES,
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Label,
     id: "Size",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Label,
     id: "Quantity",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Label,
     id: "SubQty",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Text,
     id: "Notes",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "DoorCutout",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_SelectWithLabel,
     options: ITEM_STATUS,
     id: "Status",
     sortBy: "sort",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "Stock",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_SelectWithLabel,
     id: "Lites",
     options: ITEM_LITES,
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "BTO",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "SlabPrep",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "Assembly",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "MillingDept",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "CustomSlabPrep",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "QA",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "CustomMilling",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "TempSlab",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "Painted",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Input,
     id: "BoxQty",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Input,
     id: "GlassQty",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Input,
     id: "LBRMin",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Label,
     id: "Nett",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Rack,
     id: "RackLocation",
     overrideOnChange: (onChange, params) => {
-      const [ v, id, o ] = params;
+      const [v, id, o] = params;
       onChange(v, "RackLocationId");
       onChange(o?.RackNumber, "RackLocation");
     },
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Input,
     id: "TransomCount",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Input,
     id: "SideliteCount",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Input,
     id: "SingleDoorCount",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Input,
     id: "DoubleDoorCount",
-    disabled: TEMPORARY_DISABLE_FOR_FIX
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
 ]);
 
 const Com = (props) => {
-  const { checkEditable } = useContext(LocalDataContext);
+  const { checkEditable, permissions } = useContext(LocalDataContext);
   const { onHide, initItem, onSave } = props;
   const [item, setItem] = useState(null);
 
@@ -290,12 +310,20 @@ const Com = (props) => {
     onHide();
   };
 
-  const fields = item?.kind === 'w' ? WINDOW_FIELDS : DOOR_FIELDS
+  const fields = item?.kind === "w" ? WINDOW_FIELDS : DOOR_FIELDS;
+
+  const _filteredFields = useMemo(
+    () =>
+      displayFilterForProductItems(fields, {
+        permissions,
+      }),
+    [fields, permissions],
+  );
 
   const _editgroup = {
-    "w": "windowitems",
-    "d": "dooritems"
-  }
+    w: "windowitems",
+    d: "dooritems",
+  };
 
   return (
     <Modal
@@ -303,24 +331,30 @@ const Com = (props) => {
       size="lg"
       onHide={onHide}
       fullscreen={false}
-      title={`Item: ${item?.Item}`}      
+      title={`Item: ${item?.Item}`}
       layer={1}
     >
       <div className={cn(styles.columnItemInputsContainer)}>
-        {fields?.map((a) => {
+        {_filteredFields?.map((a) => {
           return (
             <Block
               item={item}
               setItem={setItem}
               key={`item_${a.id}`}
               inputData={a}
-              isEditable = {!a.disabled && checkEditable({group: _editgroup[item?.kind]})}
+              isEditable={
+                !a.disabled && checkEditable({ group: _editgroup[item?.kind] })
+              }
             />
           );
         })}
       </div>
       <div className="justify-content-center my-2 flex bg-slate-100 p-2">
-        <button className="btn btn-primary px-4" onClick={handleSave} disabled={!checkEditable({group: _editgroup[item?.kind]})}>
+        <button
+          className="btn btn-primary px-4"
+          onClick={handleSave}
+          disabled={!checkEditable({ group: _editgroup[item?.kind] })}
+        >
           Save
         </button>
       </div>
@@ -352,13 +386,12 @@ const Block = ({ item, setItem, inputData, isEditable }) => {
             }
           }}
           options={options}
-          disabled = {!isEditable}
+          disabled={!isEditable}
           {...rest}
         />
       </div>
     </div>
   );
 };
-
 
 export default Com;

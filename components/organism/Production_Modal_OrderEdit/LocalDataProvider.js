@@ -1037,6 +1037,7 @@ export const LocalDataProvider = ({
       onBatchUpdateItems: doBatchUpdateItems,
       windowItems,
       doorItems,
+      permissions,
 
       //=== redundant for UI performance
       checkEditable,
@@ -1048,6 +1049,8 @@ export const LocalDataProvider = ({
       doBatchUpdateItems,
       windowItems,
       doorItems,
+      permissions,
+      
       //
       checkEditable,
       setExpands,
