@@ -19,9 +19,10 @@ import constants, {
   WORKORDER_STATUS_MAPPING,
 } from "lib/constants";
 import {
-  labelMapping,
   applyField,
+  fnAssignValue,
 } from "lib/constants/production_constants_labelMapping";
+import { ALL_SUBORDER_TYPES } from "lib/constants";
 
 import utils from "lib/utils";
 
@@ -671,12 +672,6 @@ const Com = (props) => {
         m_CreatedAt,
         m_LastModifiedAt,
         m_CustomerDate,
-        w_GlassOrderDate,
-        w_CustomerDate,
-        d_CustomerDate,
-        w_ProductionStartDate,
-        d_ProductionStartDate,
-
         // addon
         m_ParentMasterId,
         m_AddOnsCount,
@@ -714,11 +709,26 @@ const Com = (props) => {
 
       merged.m_CustomerDate_display = m_CustomerDate;
 
-      merged.w_CustomerDate_display = w_CustomerDate;
-      merged.d_CustomerDate_display = d_CustomerDate;
+      // merged.w_CustomerDate_display = w_CustomerDate;
+      // merged.d_CustomerDate_display = d_CustomerDate;
 
-      merged.w_ProductionStartDate_colored = w_ProductionStartDate;
-      merged.d_ProductionStartDate_colored = d_ProductionStartDate;
+      // merged.w_ProductionStartDate_colored = w_ProductionStartDate;
+      // merged.d_ProductionStartDate_colored = d_ProductionStartDate;
+
+      // handle prefix
+      fnAssignValue({
+        fields: merged,
+        assignFrom: "CustomerDate",
+        assignTo: "CustomerDate_display",
+        fn: (v) => v,
+      });
+
+      fnAssignValue({
+        fields: merged,
+        assignFrom: "ProductionStartDate",
+        assignTo: "ProductionStartDate_colored",
+        fn: (v) => v,
+      });
 
       merged.m_InstallStatus =
         resInstallStatusMapping?.[merged.m_WorkOrderNo]?.currentStateName ||

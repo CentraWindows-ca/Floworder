@@ -3,6 +3,7 @@ import constants, {
   WorkOrderSelectOptions,
   ORDER_STATUS,
   WORKORDER_STATUS_MAPPING,
+  ALL_SUBORDER_TYPES,
 } from "lib/constants";
 
 const COLUMN_PRODUCT_NUMBERS = [
@@ -34,7 +35,7 @@ const COLUMN_PROJECT = [
   "m_CustomerName",
   "m_ProjectName",
   "m_ProjectManagerName",
-  "m_AddOnsCount"
+  "m_AddOnsCount",
 ];
 
 export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
@@ -323,7 +324,27 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
   // Remaining columns that weren't included in sequence
   // const remainingColumns = columns.filter(col => !sequence.includes(col.key));
 
-  return orderedColumns;
+  const columnsExpandSuborders = [];
+  // expand columns
+  orderedColumns.forEach((col) => {
+    const { key: fieldCode } = col;
+    const [kind, dbColumn] = fieldCode?.split("_");
+    if (kind === "m") {
+      columnsExpandSuborders.push(col);
+    } else {
+      ALL_SUBORDER_TYPES?.map((a) => a.suborder_code)
+        ?.filter((pref) => pref?.startsWith(kind))
+        ?.forEach((pref) => {
+          // assemble from fieldCode to field
+          columnsExpandSuborders.push({
+            ...col,
+            key: pref + "_" + dbColumn,
+          });
+        });
+    }
+  });
+
+  return columnsExpandSuborders;
 };
 
 export const TEMPORARY_DISPLAY_FILTER = {
