@@ -94,6 +94,8 @@ export const getIfFieldDisplayForProductItems = (
 
   const fieldCode = key || id
 
+  console.log(fieldCode, key, id, fieldCode === "Facility")
+
   if (fieldCode === "Facility") {
     _isDisplay &= checkPermission(
       FEATURE_CODES["om.prod.wo.itemFacility"],

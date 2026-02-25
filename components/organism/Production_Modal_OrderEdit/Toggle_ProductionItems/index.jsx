@@ -1195,6 +1195,8 @@ const TableSortableWithFacility = (props) => {
   );
 
   if (_isWithFacility) {
+
+    // if splitting facility: 
     return (
       <div>
         {_.sortBy(
@@ -1219,15 +1221,17 @@ const TableSortableWithFacility = (props) => {
         })}
       </div>
     );
-  }
+  } else {
 
-  return (
-    <TableSortable
-      {...props}
-      columns={_columns}
-      headerClassName={_headerClassName}
-    />
-  );
+    // if not splitting facility: 
+    return (
+      <TableSortable
+        {...props}
+        columns={_columns?.filter((a) => a.key !== "Facility")}
+        headerClassName={_headerClassName}
+      />
+    );
+  }
 };
 
 export default React.memo(Com);

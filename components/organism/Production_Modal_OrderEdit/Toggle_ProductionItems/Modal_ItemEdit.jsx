@@ -14,6 +14,8 @@ import {
   ITEM_DOOR_TYPES,
 } from "lib/constants";
 import { LocalDataContext } from "../LocalDataProvider";
+import { GeneralContext } from "lib/provider/GeneralProvider";
+
 import utils from "lib/utils";
 
 // styles
@@ -291,7 +293,8 @@ const DOOR_FIELDS = applyField([
 ]);
 
 const Com = (props) => {
-  const { checkEditable, permissions } = useContext(LocalDataContext);
+  const { checkEditable } = useContext(LocalDataContext);
+  const { permissions } = useContext(GeneralContext);
   const { onHide, initItem, onSave } = props;
   const [item, setItem] = useState(null);
 
