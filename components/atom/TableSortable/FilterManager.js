@@ -54,7 +54,7 @@ const FiltersManager = ({
         <span className="text-xs text-gray-300">|</span>
         {_.keys(filters)?.map((k) => {
           const title = columns?.find(
-            ({ initKey, key }) => (initKey || key) === k,
+            ({ initKey, fieldCode }) => (initKey || fieldCode) === k,
           )?.title;
           return (
             <button

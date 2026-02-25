@@ -325,11 +325,11 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
   const columnsWindow = useMemo(() => {
     return applyField([
       {
-        key: "Item",
+        fieldCode: "Item",
         width: 80,
       },
       {
-        key: "Facility",
+        fieldCode: "Facility",
         width: 150,
         render: (t, record) => {
           const updatingKey = "Facility";
@@ -354,27 +354,27 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
         },
       },
       {
-        key: "Size",
+        fieldCode: "Size",
         width: 160,
       },
       {
         title: "Qty",
-        key: "Quantity",
+        fieldCode: "Quantity",
         width: 60,
       },
       {
-        key: "SubQty",
+        fieldCode: "SubQty",
         width: 85,
       },
       {
-        key: "System",
+        fieldCode: "System",
         width: 85,
       },
       {
-        key: "Description",
+        fieldCode: "Description",
       },
       {
-        key: "HighRisk",
+        fieldCode: "HighRisk",
         width: 120,
         render: (t, record) => {
           const updatingKey = "HighRisk";
@@ -392,7 +392,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
         },
       },
       {
-        key: "Custom",
+        fieldCode: "Custom",
         width: 90,
         render: (t, record) => {
           const updatingKey = "Custom";
@@ -410,7 +410,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
         },
       },
       {
-        key: "BTO",
+        fieldCode: "BTO",
         width: 70,
         render: (t, record) => {
           const updatingKey = "BTO";
@@ -428,7 +428,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
         },
       },
       {
-        key: "Notes",
+        fieldCode: "Notes",
         render: (t, record) => {
           const updatingKey = "Notes";
           return (
@@ -450,7 +450,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
       },
       {
         title: "Location",
-        key: "RackLocationId",
+        fieldCode: "RackLocationId",
         width: 120,
         render: (t, record) => {
           const updatingKey = "RackLocationId";
@@ -482,7 +482,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
         },
       },
       {
-        key: "Status",
+        fieldCode: "Status",
         width: 150,
         render: (t, record) => {
           const updatingKey = "Status";
@@ -508,7 +508,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
       },
       {
         title: "",
-        key: "",
+        fieldCode: "",
         render: (t, record) => {
           return (
             <button
@@ -617,11 +617,11 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
 
   const columns = applyField([
     {
-      key: "Item",
+      fieldCode: "Item",
       width: 80,
     },
     {
-      key: "Facility",
+      fieldCode: "Facility",
       width: 150,
       render: (t, record) => {
         const updatingKey = "Facility";
@@ -646,27 +646,27 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
       },
     },
     {
-      key: "Size",
+      fieldCode: "Size",
       width: 160,
     },
     {
       title: "Qty",
-      key: "Quantity",
+      fieldCode: "Quantity",
       width: 60,
     },
     {
-      key: "SubQty",
+      fieldCode: "SubQty",
       width: 70,
     },
     {
-      key: "System",
+      fieldCode: "System",
       width: 70,
     },
     {
-      key: "Description",
+      fieldCode: "Description",
     },
     {
-      key: "BTO",
+      fieldCode: "BTO",
       width: 70,
       render: (t, record) => {
         const updatingKey = "BTO";
@@ -694,7 +694,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
       },
     },
     !constants.DEV_HOLDING_FEATURES.v20250113_multipoint && {
-      key: "Multipoint",
+      fieldCode: "Multipoint",
       width: 110,
       render: (t, record) => {
         const updatingKey = "Multipoint";
@@ -722,7 +722,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
       },
     },
     {
-      key: "Notes",
+      fieldCode: "Notes",
       render: (t, record) => {
         const updatingKey = "Notes";
         const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
@@ -747,7 +747,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
     },
     {
       title: "Location",
-      key: "RackLocationId",
+      fieldCode: "RackLocationId",
       width: 120,
       render: (t, record) => {
         const updatingKey = "RackLocationId";
@@ -783,7 +783,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
       },
     },
     {
-      key: "Status",
+      fieldCode: "Status",
       width: 150,
       render: (t, record) => {
         const updatingKey = "Status";
@@ -808,7 +808,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
     },
     {
       title: "",
-      key: "",
+      fieldCode: "",
       render: (t, record) => {
         return (
           <button
@@ -869,7 +869,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
   );
 };
 
-const initialValueOfStatus = ITEM_STATUS?.find((a) => a.sort === 0)?.key;
+const initialValueOfStatus = ITEM_STATUS?.find((a) => a.sort === 0)?.fieldCode;
 const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
   const { checkEditable, onBatchUpdateItems } = useContext(
     LocalDataContext_items,
@@ -963,7 +963,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
     _isGroupEditable
       ? {
           // NOTE 20250730: update/not update of others
-          key: "isUpdatableMapping",
+          fieldCode: "isUpdatableMapping",
           title: "Update",
           width: 40,
           render: (t, record) => {
@@ -981,11 +981,11 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
         }
       : null,
     {
-      key: "Item",
+      fieldCode: "Item",
       width: 80,
     },
     {
-      key: "Facility",
+      fieldCode: "Facility",
       width: 150,
       render: (t, record) => {
         const updatingKey = "Facility";
@@ -1010,27 +1010,27 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
       },
     },
     {
-      key: "Size",
+      fieldCode: "Size",
       width: 160,
     },
     {
       title: "Qty",
-      key: "Quantity",
+      fieldCode: "Quantity",
       width: 60,
     },
     {
-      key: "SubQty",
+      fieldCode: "SubQty",
       width: 70,
     },
     {
-      key: "System",
+      fieldCode: "System",
       width: 70,
     },
     {
-      key: "Description",
+      fieldCode: "Description",
     },
     {
-      key: "Notes",
+      fieldCode: "Notes",
       render: (t, record) => {
         const updatingKey = "Notes";
         const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
@@ -1055,7 +1055,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
     },
     {
       title: "Location",
-      key: "RackLocationId",
+      fieldCode: "RackLocationId",
       width: 120,
       render: (t, record) => {
         const updatingKey = "RackLocationId";
@@ -1100,7 +1100,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
       },
     },
     {
-      key: "Status",
+      fieldCode: "Status",
       width: 150,
       render: (t, record) => {
         const updatingKey = "Status";
@@ -1227,7 +1227,7 @@ const TableSortableWithFacility = (props) => {
     return (
       <TableSortable
         {...props}
-        columns={_columns?.filter((a) => a.key !== "Facility")}
+        columns={_columns?.filter((a) => a.fieldCode !== "Facility")}
         headerClassName={_headerClassName}
       />
     );

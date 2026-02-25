@@ -58,40 +58,40 @@ const Com = ({}) => {
 
   const columns = applyField([
     {
-      key: "receivedExpected",
+      fieldCode: "receivedExpected",
       width: 125,
     },
     {
-      key: "rackID",
+      fieldCode: "rackID",
     },
     {
-      key: "rackType",
+      fieldCode: "rackType",
     },
     {
-      key: "qty",
+      fieldCode: "qty",
       width: 120,
     },
     {
       // title: "Item",
-      key: "item",
+      fieldCode: "item",
     },
     {
-      key: "description",
+      fieldCode: "description",
     },
     {
-      key: "orderDate",
+      fieldCode: "orderDate",
     },
     {
-      key: "shipDate",
+      fieldCode: "shipDate",
     },
     {
-      key: "size",
+      fieldCode: "size",
     },
     {
-      key: "position",
+      fieldCode: "position",
     },
     {
-      key: "status",
+      fieldCode: "status",
     },
   ]);
 

@@ -88,13 +88,13 @@ export const getIfFieldDisplayForProductItems = (
 ) => {
   let _isDisplay = true;
   const checkPermission = (pc, op = "canEdit") => {
-        console.log(pc,permissions, _.get(permissions, [pc, op], false))
+    console.log(pc, permissions, _.get(permissions, [pc, op], false));
     return _.get(permissions, [pc, op], false);
   };
 
-  const fieldCode = key || id
+  const fieldCode = key || id;
 
-  console.log(fieldCode, key, id, fieldCode === "Facility")
+  console.log(fieldCode, key, id, fieldCode === "Facility");
 
   if (fieldCode === "Facility") {
     _isDisplay &= checkPermission(
@@ -137,7 +137,7 @@ export const displayFilterForProductItems = (
       {
         uiOrderType,
         key,
-        id, 
+        id,
         displayAs,
         permissions,
       },
@@ -209,7 +209,13 @@ export const Block = ({ className_input, inputData, data: overridingData }) => {
   );
 };
 
-export const DisplayBlock = ({ children, id = "m", displayAs, ...props }) => {
+export const DisplayBlock = ({
+  children,
+  id = "m",
+  fieldCode = "m",
+  displayAs,
+  ...props
+}) => {
   // kind is UI selected kind
   const { uiOrderType, kind, data, permissions } = useContext(LocalDataContext);
 
@@ -217,7 +223,7 @@ export const DisplayBlock = ({ children, id = "m", displayAs, ...props }) => {
     {
       kind,
       uiOrderType,
-      id,
+      id: fieldCode || id,
       displayAs,
       permissions,
     },

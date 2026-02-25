@@ -75,7 +75,7 @@ const Com = (props) => {
   const columns = applyField(
     [
       {
-        key: "inv_invoiceId",
+        fieldCode: "inv_invoiceId",
         title: "Invoice#",
         fixed: "left",
         render: (text, record) => {
@@ -107,12 +107,12 @@ const Com = (props) => {
         },
       },
       {
-        key: "inv_workOrderNo",
+        fieldCode: "inv_workOrderNo",
         title: "Work Order#",
       },
       // ========= status ========
       {
-        key: "invoiceStatus_display",
+        fieldCode: "invoiceStatus_display",
         title: "Invoice Status",
         initKey: "invoiceStatus",
         display: !isDeleted,
@@ -142,52 +142,52 @@ const Com = (props) => {
         },
       },
       {
-        key: "m_CustomerName",
+        fieldCode: "m_CustomerName",
         title: "Customer Name",
       },
       {
-        key: "m_Branch",
+        fieldCode: "m_Branch",
         title: "Branch",
       },
       {
-        key: "m_Email",
+        fieldCode: "m_Email",
         title: "Email",
       },
       {
-        key: "m_PhoneNumber",
+        fieldCode: "m_PhoneNumber",
         title: "Phone",
       },
       {
-        key: "m_Address",
+        fieldCode: "m_Address",
         title: "Address",
       },
       {
-        key: "m_City",
+        fieldCode: "m_City",
         title: "City"
       },
       {
-        key: "completeDate_display",
+        fieldCode: "completeDate_display",
         title: "Actual Shipped Date",
         initKey: "completeDate",
         width: 170,
       },
       {
-        key: "invoiceAmount_display",
+        fieldCode: "invoiceAmount_display",
         title: "Invoice Amount",
         className: "text-right",
       },
       {
-        key: "m_SalesRep",
+        fieldCode: "m_SalesRep",
         title: "Sales Rep",
       },
       {
-        key: "createdAt_display",
+        fieldCode: "createdAt_display",
         title: "Created",
         initKey: "createdAt",
         width: 145,
       },
       {
-        key: "invh_lastModifiedBy",
+        fieldCode: "invh_lastModifiedBy",
         title: "Modified By",
       },
     ]?.filter((a) => a.display === undefined || a.display),

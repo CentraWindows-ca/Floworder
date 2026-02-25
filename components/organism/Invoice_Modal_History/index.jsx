@@ -24,19 +24,19 @@ const Com = ({ layer = 1 }) => {
   const columns = [
     {
       title: "Source App.",
-      key: "SourceModule",
+      fieldCode: "SourceModule",
     },
     {
       title: "Operation",
-      key: "operation_display",
+      fieldCode: "operation_display",
     },
     {
       title: "Operation time",
-      key: "createdAt",
+      fieldCode: "createdAt",
     },
     {
       title: "Changed by",
-      key: "createdBy",
+      fieldCode: "createdBy",
     },
     {
       title: "",

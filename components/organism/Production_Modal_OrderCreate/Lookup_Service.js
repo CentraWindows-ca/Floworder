@@ -14,15 +14,15 @@ import Editable from "components/molecule/Editable";
 const columns = [
   {
     title: "Service Id",
-    key: "serviceId",
+    fieldCode: "serviceId",
   },
   {
     title: "Original WO#",
-    key: "originalWorkOrderNo",
+    fieldCode: "originalWorkOrderNo",
   },
   {
     title: "Customer",
-    key: "customerName",
+    fieldCode: "customerName",
   },
 ];
 

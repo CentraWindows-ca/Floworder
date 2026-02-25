@@ -312,22 +312,22 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
   }
 
   /* 
-    reorder columns. the element from sequence will match columns[i].key
+    reorder columns. the element from sequence will match columns[i].fieldCode
   */
 
-  // Build a map of columns for quick lookup by key
-  const columnMap = _.keyBy(columns, "key");
+  // Build a map of columns for quick lookup by fieldCode
+  const columnMap = _.keyBy(columns, "fieldCode");
 
   // Ordered part: only those keys that exist in columnMap
-  const orderedColumns = sequence.map((key) => columnMap[key]).filter(Boolean);
+  const orderedColumns = sequence.map((fieldCode) => columnMap[fieldCode]).filter(Boolean);
 
   // Remaining columns that weren't included in sequence
-  // const remainingColumns = columns.filter(col => !sequence.includes(col.key));
+  // const remainingColumns = columns.filter(col => !sequence.includes(col.fieldCode));
 
   const columnsExpandSuborders = [];
   // expand columns
   orderedColumns.forEach((col) => {
-    const { key: fieldCode } = col;
+    const { fieldCode } = col;
     const [kind, dbColumn] = fieldCode?.split("_");
     if (kind === "m") {
       columnsExpandSuborders.push(col);
@@ -338,7 +338,7 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
           // assemble from fieldCode to field
           columnsExpandSuborders.push({
             ...col,
-            key: pref + "_" + dbColumn,
+            fieldCode: pref + "_" + dbColumn,
           });
         });
     }

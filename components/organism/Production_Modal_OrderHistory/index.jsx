@@ -69,22 +69,22 @@ const Com = ({ layer = 1 }) => {
   const columns = [
     {
       title: "Source App.",
-      key: "Source",
+      fieldCode: "Source",
     },
     {
       title: "Operation",
-      key: "Operation",
+      fieldCode: "Operation",
       render: (v, record) => {
         return `${codeToTitleMap[record?.Operation] || record?.Operation}`;
       },
     },
     {
       title: "Operation time",
-      key: "CreatedAt",
+      fieldCode: "CreatedAt",
     },
     {
       title: "Changed by",
-      key: "ChangedBy",
+      fieldCode: "ChangedBy",
     },
     {
       title: "",

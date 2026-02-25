@@ -16,31 +16,31 @@ import styles from "./styles.module.scss";
 const columns = [
   // {
   //   title: "comm_code",
-  //   key: "comm_code",
+  //   fieldCode: "comm_code",
   // },
   {
     title: "Community Name",
-    key: "name",
+    fieldCode: "name",
   },
   {
     title: "Quadrents",
-    key: "sector",
+    fieldCode: "sector",
   },
   // {
   //   title: "class",
-  //   key: "class",
+  //   fieldCode: "class",
   // },
   {
     title: "Status",
-    key: "srg",
+    fieldCode: "srg",
   },
   {
     title: "Structure",
-    key: "comm_structure",
+    fieldCode: "comm_structure",
   },
   {
     title: "Ward Number",
-    key: "ward_num",
+    fieldCode: "ward_num",
   },
 ];
 const Com = (props) => {

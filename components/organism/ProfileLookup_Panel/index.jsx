@@ -30,40 +30,40 @@ const Com = ({ data, dataProfile, onRefresh }) => {
 
   const columns = applyField([
     {
-      key: "m_WorkOrderNo",
+      fieldCode: "m_WorkOrderNo",
       width: 125,
       isNotSortable: true,
     },
     {
-      key: "w_ManufacturingFacility",
+      fieldCode: "w_ManufacturingFacility",
       title: "Window Facility",
       width: 180,
       isNotSortable: true,
     },
     {
-      key: "d_ManufacturingFacility",
+      fieldCode: "d_ManufacturingFacility",
       title: "Door Facility",
       width: 180,
       isNotSortable: true,
     },  
     {
-      key: "m_Branch",
+      fieldCode: "m_Branch",
       width: 125,
       isNotSortable: true,
     },
     {
       title: "Profiles",
-      key: "profiles",
+      fieldCode: "profiles",
       isNotSortable: true,
     },
     {
       title: "Needed",
-      key: "needed",
+      fieldCode: "needed",
       isNotSortable: true,
     },
     {
       title: "Wasted",
-      key: "wasted",
+      fieldCode: "wasted",
       isNotSortable: true,
     },
   ]);

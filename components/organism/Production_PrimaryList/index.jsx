@@ -107,35 +107,35 @@ const Com = (props) => {
     ? [
         {
           title: "Windows",
-          key: "m_NumberOfWindows",
+          fieldCode: "m_NumberOfWindows",
           display: isWindow,
           className: "text-right",
           width: 95,
         },
         {
           title: "Patio Doors",
-          key: "m_NumberOfPatioDoors",
+          fieldCode: "m_NumberOfPatioDoors",
           display: isWindow,
           className: "text-right",
           width: 115,
         },
         {
           title: "Swing Doors",
-          key: "m_NumberOfSwingDoors",
+          fieldCode: "m_NumberOfSwingDoors",
           display: isWindow,
           className: "text-right",
           width: 135,
         },
         {
           title: "Exterior Doors",
-          key: "m_NumberOfDoors",
+          fieldCode: "m_NumberOfDoors",
           display: isDoor,
           className: "text-right",
           width: 135,
         },
         {
           title: "Others",
-          key: "m_NumberOfOthers",
+          fieldCode: "m_NumberOfOthers",
           className: "text-right",
           display: isMasterOnly,
           width: 80,
@@ -149,105 +149,105 @@ const Com = (props) => {
   const COLUMN_PRODUCT_NUMBERS_BREAKDOWN = uiIsShowBreakdown
     ? [
         {
-          key: "w__26CA",
+          fieldCode: "w__26CA",
           display: isWindow,
           onCell: _breakdownbackground,
           className: "text-right",
           width: 80,
         },
         {
-          key: "w__26HY",
+          fieldCode: "w__26HY",
           display: isWindow,
           onCell: _breakdownbackground,
           className: "text-right",
           width: 80,
         },
         {
-          key: "w__27DS",
+          fieldCode: "w__27DS",
           display: isWindow,
           onCell: _breakdownbackground,
           className: "text-right",
           width: 80,
         },
         {
-          key: "w__29CA",
+          fieldCode: "w__29CA",
           display: isWindow,
           onCell: _breakdownbackground,
           className: "text-right",
           width: 80,
         },
         {
-          key: "w__29CM",
+          fieldCode: "w__29CM",
           display: isWindow,
           onCell: _breakdownbackground,
           className: "text-right",
           width: 80,
         },
         {
-          key: "w__52PD",
+          fieldCode: "w__52PD",
           display: isWindow,
           onCell: _breakdownbackground,
           className: "text-right",
           width: 80,
         },
         {
-          key: "w__61DR",
+          fieldCode: "w__61DR",
           display: isWindow,
           onCell: _breakdownbackground,
           className: "text-right",
           width: 80,
         },
         {
-          key: "w__68CA",
+          fieldCode: "w__68CA",
           display: isWindow,
           onCell: _breakdownbackground,
           className: "text-right",
           width: 80,
         },
         {
-          key: "w__68SL",
+          fieldCode: "w__68SL",
           display: isWindow,
           onCell: _breakdownbackground,
           className: "text-right",
           width: 80,
         },
         {
-          key: "w__68VS",
+          fieldCode: "w__68VS",
           display: isWindow,
           onCell: _breakdownbackground,
           className: "text-right",
           width: 80,
         },
         {
-          key: "w__88SL",
+          fieldCode: "w__88SL",
           display: isWindow,
           onCell: _breakdownbackground,
           className: "text-right",
           width: 80,
         },
         {
-          key: "w__88VS",
+          fieldCode: "w__88VS",
           display: isWindow,
           onCell: _breakdownbackground,
           className: "text-right",
           width: 80,
         },
         {
-          key: "d__REDR",
+          fieldCode: "d__REDR",
           display: isDoor,
           onCell: _breakdownbackground,
           className: "text-right",
           width: 80,
         },
         {
-          key: "d__CDLD",
+          fieldCode: "d__CDLD",
           display: isDoor,
           onCell: _breakdownbackground,
           className: "text-right",
           width: 80,
         },
         {
-          key: "d__RESD",
+          fieldCode: "d__RESD",
           display: isDoor,
           onCell: _breakdownbackground,
           className: "text-right",
@@ -255,7 +255,7 @@ const Com = (props) => {
         },
         {
           title: "Others",
-          key: "m_NumberOfOthers",
+          fieldCode: "m_NumberOfOthers",
           className: "text-right",
           display: isMasterOnly,
           onCell: _breakdownbackground,
@@ -267,7 +267,7 @@ const Com = (props) => {
   const columns = applyField(
     [
       {
-        key: "m_WorkOrderNo",
+        fieldCode: "m_WorkOrderNo",
         fixed: "left",
         render: (text, record) => {
           return (
@@ -313,7 +313,7 @@ const Com = (props) => {
 
       // ========= status ========
       {
-        key: "m_InstallStatus",
+        fieldCode: "m_InstallStatus",
         initKey: "m_InstallStatus",
         display: !isDeleted,
         isNotSortable: true,
@@ -321,7 +321,7 @@ const Com = (props) => {
         width: 180,
       },
       {
-        key: "m_RebateIcon",
+        fieldCode: "m_RebateIcon",
         initKey: "m_RebateIcon",
         display: !isDeleted,
         isNotSortable: true,
@@ -329,7 +329,7 @@ const Com = (props) => {
         width: 80,
       },
       {
-        key: "m_TypeofGrant",
+        fieldCode: "m_TypeofGrant",
         initKey: "m_TypeofGrant",
         display: !isDeleted,
         isNotSortable: true,
@@ -337,7 +337,7 @@ const Com = (props) => {
         width: 130,
       },
       {
-        key: "m_GrantStatus",
+        fieldCode: "m_GrantStatus",
         initKey: "m_GrantStatus",
         display: !isDeleted,
         isNotSortable: true,
@@ -345,7 +345,7 @@ const Com = (props) => {
         width: 120,
       },
       {
-        key: "m_GovGrantExpiryDate_display",
+        fieldCode: "m_GovGrantExpiryDate_display",
         initKey: "m_GovGrantExpiryDate_display",
         display: !isDeleted,
         isNotSortable: true,
@@ -353,7 +353,7 @@ const Com = (props) => {
         width: 195,
       },
       {
-        key: "m_Status_display",
+        fieldCode: "m_Status_display",
         initKey: "m_Status",
         display: !isDeleted,
         onCell: (record) => ({
@@ -381,7 +381,7 @@ const Com = (props) => {
         },
       },
       {
-        key: "w_Status_display",
+        fieldCode: "w_Status_display",
         initKey: "w_Status",
         display: isWindow && !isDeleted,
         width: 180,
@@ -409,7 +409,7 @@ const Com = (props) => {
         },
       },
       {
-        key: "d_Status_display",
+        fieldCode: "d_Status_display",
         initKey: "d_Status",
         display: isDoor && !isDeleted,
         width: 180,
@@ -437,14 +437,14 @@ const Com = (props) => {
         },
       },
       {
-        key: "m_FormStatus",
+        fieldCode: "m_FormStatus",
         display: !isDeleted,
       },
       // ========= status ========
 
       // ========= addon ========
       {
-        key: "m_AddOnsCount",
+        fieldCode: "m_AddOnsCount",
         width: 100,
         renderFilter: ({ key }) => {
           return (
@@ -477,54 +477,54 @@ const Com = (props) => {
       },
       // ========= addon ========
       {
-        key: "m_ShippingStartDate",
+        fieldCode: "m_ShippingStartDate",
       },
       {
-        key: "m_TransferredDate",
+        fieldCode: "m_TransferredDate",
       },
       {
-        key: "m_ShippedDate",
+        fieldCode: "m_ShippedDate",
       },
       {
-        key: "m_Branch",
+        fieldCode: "m_Branch",
         width: 80,
       },
       {
-        key: "w_ManufacturingFacility",
+        fieldCode: "w_ManufacturingFacility",
         display: isWindow,
       },
       {
-        key: "d_ManufacturingFacility",
+        fieldCode: "d_ManufacturingFacility",
         display: isDoor,
       },
       {
-        key: "w_GlassSupplier",
+        fieldCode: "w_GlassSupplier",
         display: isWindow,
       },
       {
-        key: "d_GlassSupplier",
+        fieldCode: "d_GlassSupplier",
         display: isDoor,
       },
       {
-        key: "m_JobType",
+        fieldCode: "m_JobType",
         width: 95,
       },
       {
-        key: "m_OrderType",
+        fieldCode: "m_OrderType",
         width: 150,
         display: !constants.DEV_HOLDING_FEATURES.v20251210_ordertype,
       },
       {
-        key: "w_ProductionStartDate",
+        fieldCode: "w_ProductionStartDate",
         display: isWindow,
       },
       {
-        key: "d_ProductionStartDate",
+        fieldCode: "d_ProductionStartDate",
         display: isDoor,
       },
       {
         title: "Window Production Date",
-        key: "w_ProductionStartDate_colored",
+        fieldCode: "w_ProductionStartDate_colored",
         width: 210,
         display: isWindow,
         onCell: (record) => {
@@ -539,7 +539,7 @@ const Com = (props) => {
       },
       {
         title: "Door Production Date",
-        key: "d_ProductionStartDate_colored",
+        fieldCode: "d_ProductionStartDate_colored",
         width: 210,
         display: isDoor,
         onCell: (record) => {
@@ -555,84 +555,84 @@ const Com = (props) => {
       ...COLUMN_PRODUCT_NUMBERS,
       ...COLUMN_PRODUCT_NUMBERS_BREAKDOWN,
       {
-        key: "m_TotalLBRMin",
+        fieldCode: "m_TotalLBRMin",
         className: "text-right",
         width: 100,
       },
       {
-        key: "w_BatchNo",
+        fieldCode: "w_BatchNo",
         display: isWindow,
         width: 145,
         display: isWindow,
       },
       {
-        key: "w_BlockNo",
+        fieldCode: "w_BlockNo",
         display: isWindow,
         width: 145,
         display: isWindow,
       },
       {
-        key: "d_BatchNo",
+        fieldCode: "d_BatchNo",
         display: isDoor,
         width: 125,
         display: isDoor,
       },
       {
-        key: "d_BlockNo",
+        fieldCode: "d_BlockNo",
         display: isDoor,
         width: 125,
         display: isDoor,
       },
 
       {
-        key: "m_InvStatus",
+        fieldCode: "m_InvStatus",
         width: 105,
       },
       {
-        key: "m_CreatedAt_display",
+        fieldCode: "m_CreatedAt_display",
         initKey: "m_CreatedAt",
         width: 125,
       },
       {
-        key: "m_CreatedBy",
+        fieldCode: "m_CreatedBy",
       },
       {
-        key: "m_LastModifiedAt_display",
+        fieldCode: "m_LastModifiedAt_display",
         initKey: "m_LastModifiedAt",
         width: 125,
       },
       {
-        key: "m_LastModifiedBy",
+        fieldCode: "m_LastModifiedBy",
       },
       {
         title: "Windows Customer Date",
-        key: "w_CustomerDate_display",
+        fieldCode: "w_CustomerDate_display",
         initKey: "w_CustomerDate",
         width: 200,
         display: isWindow,
       },
       {
         title: "Doors Customer Date",
-        key: "d_CustomerDate_display",
+        fieldCode: "d_CustomerDate_display",
         initKey: "d_CustomerDate",
         width: 195,
         display: isDoor,
       },
       {
-        key: "m_CustomerName",
+        fieldCode: "m_CustomerName",
       },
       {
-        key: "m_ProjectName",
+        fieldCode: "m_ProjectName",
         width: 200,
       },
       {
-        key: "m_ProjectManagerName",
+        fieldCode: "m_ProjectManagerName",
       },
 
       // NOTE: it should generated data and it should be multiple lines
       // {
       //   title: "Glass Ordered Date",
-      //   key: "w_GlassOrderDate_display",
+      //   fieldCode: "w_GlassOrderDate_display",
       //   initKey: "w_GlassOrderDate",
       //   display: isWindow,
       //   minWidth: 50,

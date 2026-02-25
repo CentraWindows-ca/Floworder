@@ -93,14 +93,14 @@ const TableRow = React.memo(
     return (
       <tr {..._trParams}>
         {_filteredColumns?.map((b) => {
-          const { key, render, onCell, onWrapper, className } = b;
+          const { fieldCode, render, onCell, onWrapper, className } = b;
           let cell = onCell ? onCell(data) : null;
           let wrapper = onWrapper ? onWrapper(data) : null;
 
           if (typeof render === "function") {
             return (
               <React.Fragment
-                key={`${keyFieldPrefix}_${data[keyField]}_${key}`}
+                key={`${keyFieldPrefix}_${data[keyField]}_${fieldCode}`}
               >
                 <td {...cell}>
                   <div {...wrapper}>{render("", data, b)}</div>
@@ -112,14 +112,14 @@ const TableRow = React.memo(
           return (
             <td
               className={cn(className)}
-              key={`${keyFieldPrefix}_${data[keyField]}_${key}`}
+              key={`${keyFieldPrefix}_${data[keyField]}_${fieldCode}`}
               {...cell}
             >
               <div
                 className={cn(styles.tableTdWrapper, wrapper?.className)}
                 {...wrapper}
               >
-                <LabelDisplay>{data[key]}</LabelDisplay>
+                <LabelDisplay>{data[fieldCode]}</LabelDisplay>
               </div>
             </td>
           );
@@ -211,8 +211,8 @@ export const TableHeader = ({
     <thead className={cn(styles.thead, className)}>
       <tr>
         {_filteredColumns?.map((a, i) => {
-          const { title, key, width, initKey, isNotTitle, isNotSortable } = a;
-          const sortKey = initKey || key;
+          const { title, fieldCode, width, initKey, isNotTitle, isNotSortable } = a;
+          const sortKey = initKey || fieldCode;
           return (
             <th key={`${sortKey}_${i}`} style={{ width: width || "auto" }}>
               {!isNotTitle ? (
@@ -245,7 +245,7 @@ export const TableHeader = ({
         <tr>
           {_filteredColumns?.map((a) => {
             const {
-              key,
+              fieldCode,
               initKey,
               isNotTitle,
               isNotFilter,
@@ -255,19 +255,19 @@ export const TableHeader = ({
 
             if (renderFilter && typeof renderFilter !== undefined) {
               return (
-                <td key={`filter_${a.key}`}>
+                <td key={`filter_${fieldCode}`}>
                   <div style={{ padding: 2 }}>{renderFilter(a)}</div>
                 </td>
               );
             }
 
             return (
-              <td key={`filter_${a.key}`}>
+              <td key={`filter_${fieldCode}`}>
                 <div style={{ padding: 2 }}>
                   {!isNotTitle && !isNotFilter ? (
                     <Editable.EF_InputDebounce
-                      value={filters?.[initKey || key]?.value}
-                      onChange={(v) => handleFilterChange(v, initKey || key)}
+                      value={filters?.[initKey || fieldCode]?.value}
+                      onChange={(v) => handleFilterChange(v, initKey || fieldCode)}
                       style={{ width: "100%" }}
                       placeholder={filterPlaceHolder}
                       disabled={!isEnableFilter}
