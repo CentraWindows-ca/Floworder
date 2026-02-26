@@ -40,6 +40,7 @@ import {
 } from "./Com";
 import useLocalValidation from "./hooks/useLocalValidation";
 import { TEMPORARY_DISPLAY_FILTER } from "../Production_PrimaryList/_constants";
+import { getVConfig } from "./hooks/vconfig";
 
 const LocalDataContext = createContext(null);
 const LocalDataContext_items = createContext(null);
@@ -144,6 +145,7 @@ export const LocalDataProvider = ({
             {
               type: "DATA",
               payload: {
+                fieldConfig: getVConfig(initDataRef?.current),
                 initData: initDataRef?.current,
                 data: latestDataRef?.current,
               },
