@@ -19,17 +19,21 @@ import {
 } from "lib/constants/invoice_constants_labelMapping";
 
 export const getIfFieldDisplayAsProductType = (
-  { uiOrderType, id, permissions },
+  { uiOrderType, id, fieldCode, permissions },
   data,
 ) => {
   let _isDisplay = true;
+
+  if (!fieldCode) {
+    fieldCode = id
+  }
 
   // data conditions ======================
   if (
     [
       uiWoFieldEditGroupMapping.invoice.invh_rejectNotes,
       uiWoFieldEditGroupMapping.invoice.invh_rejectReason,
-    ].includes(id)
+    ].includes(fieldCode)
   ) {
     _isDisplay =
       _isDisplay &&
@@ -46,11 +50,12 @@ export const getIfFieldDisplayAsProductType = (
 
 export const displayFilter = (itemList, { uiOrderType, permissions }) => {
   return itemList?.filter((a) => {
-    const { id = "m" } = a;
+    const { id = "m", fieldCode = "m" } = a;
     return getIfFieldDisplayAsProductType(
       {
         uiOrderType,
         id,
+        fieldCode,
         permissions,
       },
       a,
@@ -103,7 +108,7 @@ export const Block = ({ className_input, inputData }) => {
               onChange(v, id);
             }
           }}
-          disabled={!checkEditable({ id })}
+          disabled={!checkEditable({ fieldCode: id })}
           options={options}
           errorMessage={validationResult?.[id]}
           className={cn(className)}
@@ -114,13 +119,14 @@ export const Block = ({ className_input, inputData }) => {
   );
 };
 
-export const DisplayBlock = ({ children, id = "m", displayAs, ...props }) => {
+export const DisplayBlock = ({ children, id = "m", fieldCode = "m", displayAs, ...props }) => {
   const { uiOrderType, data, permissions } = useContext(LocalDataContext);
 
   const display = getIfFieldDisplayAsProductType(
     {
       uiOrderType,
       id,
+      fieldCode,
       permissions,
     },
     data,

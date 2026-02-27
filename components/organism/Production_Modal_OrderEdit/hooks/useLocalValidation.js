@@ -20,11 +20,11 @@ const hook = ({ setValidationResult, checkEditable }) => {
     const errorMessages = {};
     let checkingConfig = getVConfig(initData);
 
-    _.keys(checkingConfig).map((fieldName) => {
+    _.keys(checkingConfig).map((fieldCode) => {
       // ===== if product type doesnt have this field. skip
       const isAvailabe = getIfFieldDisplayAsProductType(
         {
-          id: fieldName,
+          fieldCode,
           uiOrderType,
           kind,
         },
@@ -33,7 +33,7 @@ const hook = ({ setValidationResult, checkEditable }) => {
       if (!isAvailabe) return;
 
       // ===== if field visually disabled, skip
-      const isDisabled = !checkEditable({id: fieldName })
+      const isDisabled = !checkEditable({fieldCode })
 
       if (isDisabled) return
 
@@ -42,9 +42,9 @@ const hook = ({ setValidationResult, checkEditable }) => {
         errorMessages,
         initData,
         data,
-        fieldName,
+        fieldCode,
       };
-      if (checkingConfig[fieldName]?.required) {
+      if (checkingConfig[fieldCode]?.required) {
         c_required(_payload);
       }
     });
@@ -53,15 +53,18 @@ const hook = ({ setValidationResult, checkEditable }) => {
     return errorMessages;
   };
 
-  const c_required = ({ errorMessages, initData, data, fieldName }) => {
-    const fieldLabel = labelMapping[fieldName]?.title || fieldName;
+  const c_required = ({ errorMessages, initData, data, fieldCode }) => {
+    const fieldLabel = labelMapping[fieldCode]?.title || fieldCode;
+
+    const field = fieldCode
+
     if (
-      !data[fieldName] ||
+      !data[field] ||
       // legacy key from FF
-      data[fieldName] === "Select One" ||
-      data[fieldName] === "selectOne"
+      data[field] === "Select One" ||
+      data[field] === "selectOne"
     ) {
-      errorMessages[fieldName] = `[${fieldLabel}] Required`;
+      errorMessages[field] = `[${fieldLabel}] Required`;
     }
   };
   return {

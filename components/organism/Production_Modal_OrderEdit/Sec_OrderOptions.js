@@ -35,50 +35,50 @@ import { DisplayBlock, displayFilter } from "./Com";
 const COMMON_FIELDS = applyField([
   {
     icon: () => <CustomerPickupIcon />,
-    id: "m_CustomerPickup",
+    fieldCode: "m_CustomerPickup",
   },
 ]);
 
 const WINDOW_FIELDS = applyField([
   {
     icon: () => <RushIcon />,
-    id: "w_RushOrder",
+    fieldCode: "w_RushOrder",
   },
   {
     icon: () => <PaintIcon />,
-    id: "w_PaintIcon",
+    fieldCode: "w_PaintIcon",
   },
   {
     icon: () => <CapStockIcon />,
-    id: "w_CapstockIcon",
+    fieldCode: "w_CapstockIcon",
   },
   {
     icon: () => <MiniBlindIcon />,
-    id: "w_MiniblindIcon",
+    fieldCode: "w_MiniblindIcon",
   },
   {
     icon: () => <EngineeredIcon />,
-    id: "w_EngineeredIcon",
+    fieldCode: "w_EngineeredIcon",
   },
   {
     icon: () => <RbmIcon />,
-    id: "w_RBMIcon",
+    fieldCode: "w_RBMIcon",
   },
   {
     icon: () => <VinylWrapIcon />,
-    id: "w_VinylWrapIcon",
+    fieldCode: "w_VinylWrapIcon",
   },
   {
     icon: () => <ShapesIcon />,
-    id: "w_ShapesRequires",
+    fieldCode: "w_ShapesRequires",
   },
   {
     icon: () => <GridIcon />,
-    id: "w_GridsRequired",
+    fieldCode: "w_GridsRequired",
   },
   // {
   //   icon: () => <WaterTestingIcon />,
-  //   id: "w_WaterTestingRequired",
+  //   fieldCode: "w_WaterTestingRequired",
 
   //   // NOTE: specific layout. triggered by w_WaterTestingRequired
   //   renderSubItem: (data, onChange, isEditable, addon) => {
@@ -94,7 +94,7 @@ const WINDOW_FIELDS = applyField([
   //           <Editable.EF_Input
   //             className="text-right"
   //             type="number"
-  //             id={"w_WaterPenetrationResistance"}
+  //             fieldCode={"w_WaterPenetrationResistance"}
   //             value={data?.["w_WaterPenetrationResistance"]}
   //             onChange={(v) => onChange(v, "w_WaterPenetrationResistance")}
   //             disabled={!isEditable}
@@ -110,37 +110,37 @@ const WINDOW_FIELDS = applyField([
 const DOOR_FIELDS = applyField([
   {
     icon: () => <RushIcon />,
-    id: "d_RushOrder",
+    fieldCode: "d_RushOrder",
   },
   {
     icon: () => <DoorPaintIcon />,
-    id: "d_PaintIcon",
+    fieldCode: "d_PaintIcon",
   },
   !constants.DEV_HOLDING_FEATURES.v20250113_multipoint
     ? {
         icon: () => <DoorMultipointIcon />,
-        id: "d_MultipointFlag",
+        fieldCode: "d_MultipointFlag",
       }
     : null,
   {
     icon: () => <MiniBlindIcon />,
-    id: "d_MiniblindIcon",
+    fieldCode: "d_MiniblindIcon",
   },
   {
     icon: () => <EngineeredIcon />,
-    id: "d_EngineeredIcon",
+    fieldCode: "d_EngineeredIcon",
   },
   {
     icon: () => <RbmIcon />,
-    id: "d_RBMIcon",
+    fieldCode: "d_RBMIcon",
   },
   {
     icon: () => <ShapesIcon />,
-    id: "d_ShapesRequires",
+    fieldCode: "d_ShapesRequires",
   },
   {
     icon: () => <GridIcon />,
-    id: "d_GridsRequired",
+    fieldCode: "d_GridsRequired",
   },
 ]);
 
@@ -173,7 +173,7 @@ const Com = ({}) => {
     <>
       <div className={cn(styles.columnOptionsContainer)}>
         {COMMON_FIELDS?.map((a) => {
-          return <Block inputData={a} id={a.id} key={a.id} />;
+          return <Block inputData={a} key={a.fieldCode} />;
         })}
       </div>
 
@@ -184,7 +184,7 @@ const Com = ({}) => {
           </div>
           <div className={cn(styles.columnOptionsContainer)}>
             {windowInputs?.map((a) => {
-              return <Block key={a.id} inputData={a} />;
+              return <Block key={a.fieldCode} inputData={a} />;
             })}
           </div>
         </>
@@ -197,7 +197,7 @@ const Com = ({}) => {
           </div>
           <div className={cn(styles.columnOptionsContainer)}>
             {doorInputs?.map((a) => {
-              return <Block key={a.id} inputData={a} />;
+              return <Block key={a.fieldCode} inputData={a} />;
             })}
           </div>
         </>
@@ -216,21 +216,23 @@ const Block = ({ inputData }) => {
     validationResult,
     dictionary,
   } = useContext(LocalDataContext);
-  let { title, icon, id, renderSubItem } = inputData;
+  let { title, icon, fieldCode, renderSubItem } = inputData;
 
-  const addon = checkAddOnField({ id });
+  const field = fieldCode
+
+  const addon = checkAddOnField({ id: fieldCode });
   const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
   return (
-    <DisplayBlock id={id} key={id}>
+    <DisplayBlock fieldCode={fieldCode} key={field}>
       <div>
         <Editable.EF_Checkbox_Yesno
-          id={id}
-          value={data?.[id]}
-          initValue={initData?.[id]}
+          id={field}
+          value={data?.[field]}
+          initValue={initData?.[field]}
           isHighlightDiff
-          onChange={(v) => onChange(v, id)}
-          disabled={!checkEditable({ id })}
-          errorMessage={validationResult?.[id]}
+          onChange={(v) => onChange(v, field)}
+          disabled={!checkEditable({ fieldCode })}
+          errorMessage={validationResult?.[field]}
           className={cn(addonClass)}
         />
       </div>
@@ -238,17 +240,17 @@ const Block = ({ inputData }) => {
         className={cn(addon?.isSyncedFromParent ? styles.addonSync_option : "")}
       >
         <label
-          htmlFor={id}
+          htmlFor={field}
           className="align-items-center flex gap-1"
           style={{
-            cursor: checkEditable({ id }) ? "pointer" : "default",
+            cursor: checkEditable({ fieldCode }) ? "pointer" : "default",
           }}
         >
           <div className="w-6">{icon()}</div>
           {title}
         </label>
         {typeof renderSubItem === "function"
-          ? renderSubItem(data, onChange, checkEditable({ id }), addon)
+          ? renderSubItem(data, onChange, checkEditable({ fieldCode }), addon)
           : null}
       </div>
     </DisplayBlock>

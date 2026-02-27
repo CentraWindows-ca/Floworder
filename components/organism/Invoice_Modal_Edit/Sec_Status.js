@@ -40,8 +40,10 @@ const StatusUpdate = () => {
     useContext(LocalDataContext);
 
   const id = `invh_invoiceStatus`;
+  const field = id;
+  const fieldCode = id;
 
-  const uIstatusObj = INVOICE_STATUS?.find((a) => a.key === data?.[id]) || {};
+  const uIstatusObj = INVOICE_STATUS?.find((a) => a.key === data?.[field]) || {};
   const { color, label, textColor } = uIstatusObj;
   const [toggle, setToggle] = useState(false);
 
@@ -53,19 +55,19 @@ const StatusUpdate = () => {
         )}
       >
         <OverlayWrapper
-          isLock={!checkEditable({ id })}
+          isLock={!checkEditable({ fieldCode })}
           renderTrigger={(onTrigger) => (
             <div
               className={cn(
                 styles.statesContainer,
-                checkEditable({ id }) && styles.statesContainerEditable,
+                checkEditable({ fieldCode }) && styles.statesContainerEditable,
               )}
               style={{ color: textColor, backgroundColor: color }}
             >
               <span>
                 {label}
               </span>
-              {checkEditable({ id }) && (
+              {checkEditable({ fieldCode }) && (
                 <div>
                   <i className="fa-solid fa-angle-down" />
                 </div>

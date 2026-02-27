@@ -38,17 +38,18 @@ const Com = ({}) => {
   } = useContext(LocalDataContext);
 
   const COMMON_FIELDS = applyField([
-    { id: "w_OfficeNotes" },
-    { id: "d_OfficeNotes" },
-    { id: "w_PlantNotes" },
-    { id: "d_DoorShopNotes" },
-    { id: "m_ProjectManagementNotes" },
-    { id: "m_ReturnTripNotes" },
-    { id: "m_ShippingNotes" },
+    { fieldCode: "w_OfficeNotes" },
+    { fieldCode: "d_OfficeNotes" },
+    { fieldCode: "w_PlantNotes" },
+    { fieldCode: "d_DoorShopNotes" },
+    { fieldCode: "m_ProjectManagementNotes" },
+    { fieldCode: "m_ReturnTripNotes" },
+    { fieldCode: "m_ShippingNotes" },
   ]);
 
   let collapsedList = COMMON_FIELDS.filter((a) => {
-    return data?.[a.id];
+    const field = a.fieldCode
+    return data?.[field];
   });
 
   collapsedList = displayFilter(collapsedList, {
@@ -68,9 +69,12 @@ const Com = ({}) => {
         <table className="bordered table-hover table">
           <tbody>
             {collapsedList?.map((a) => {
-              const { id, title } = a;
+              const { fieldCode, title } = a;
+
+              const field = fieldCode
+
               return (
-                <DisplayBlock id={id} key={id}>
+                <DisplayBlock fieldCode={fieldCode} key={field}>
                   <tr>
                     <th
                       style={{
@@ -85,7 +89,7 @@ const Com = ({}) => {
                       <div
                         className={cn(styles.notesText)}
                         dangerouslySetInnerHTML={{
-                          __html: data?.[id],
+                          __html: data?.[field],
                         }}
                       />
                     </td>
@@ -108,14 +112,15 @@ const Com = ({}) => {
     </div>
   );
 
-  const jsxNoteBlock = (id) => {
-    const addon = checkAddOnField({ id });
+  const jsxNoteBlock = (fieldCode) => {
+    const field = fieldCode
+    const addon = checkAddOnField({ id: fieldCode });
     const addonClass = addon?.isSyncedFromParent
       ? stylesRoot.addonSync_input
       : "";
 
     return (
-      <DisplayBlock id={id}>
+      <DisplayBlock fieldCode={fieldCode}>
         <div>
           <div
             className={cn(
@@ -123,17 +128,17 @@ const Com = ({}) => {
               "justify-content-between align-items-center flex",
             )}
           >
-            <label>{labelMapping[id]?.title}</label>
+            <label>{labelMapping[fieldCode]?.title}</label>
           </div>
           <Editable.EF_Text
-            k={id}
-            value={data?.[id]}
-            initValue={initData?.[id]}
+            k={field}
+            value={data?.[field]}
+            initValue={initData?.[field]}
             isHighlightDiff
-            onChange={(v) => onChange(v, id)}
-            disabled={!checkEditable({ id })}
+            onChange={(v) => onChange(v, field)}
+            disabled={!checkEditable({ fieldCode })}
             className={cn(addonClass)}
-            errorMessage={validationResult?.[id]}
+            errorMessage={validationResult?.[field]}
             rows={3}
           />
         </div>

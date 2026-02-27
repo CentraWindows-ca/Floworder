@@ -16,31 +16,31 @@ import { DisplayBlock } from "./Com";
 const COMMON_FIELDS = applyField([
   {
     Component: Editable.EF_Input,
-    id: "m_DepositValue",
+    fieldCode: "m_DepositValue",
     className: "text-right"
   },
   {
     Component: Editable.EF_Input,
-    id: "m_ListPrice",
+    fieldCode: "m_ListPrice",
     className: "text-right"
   },
   {
     Component: Editable.EF_Input,
-    id: "m_Commission",
+    fieldCode: "m_Commission",
     className: "text-right"
   },
   {
     Component: Editable.EF_Input,
-    id: "m_PaymentType",
+    fieldCode: "m_PaymentType",
   },
   {
     Component: Editable.EF_Input,
-    id: "m_Discount",
+    fieldCode: "m_Discount",
     className: "text-right"
   },
   {
     Component: Editable.EF_SelectWithLabel,
-    id: "m_Tax",
+    fieldCode: "m_Tax",
     placeholder: "-",
     options: _.keys(constants.InvoiceTax)?.map((k) => ({
       label: k,
@@ -50,7 +50,7 @@ const COMMON_FIELDS = applyField([
   },
   {
     Component: Editable.EF_Input,
-    id: "m_PSTExemptionNumber",
+    fieldCode: "m_PSTExemptionNumber",
     onIsDisplay: (item, data) => {
       return [
         constants.InvoiceTax["GST+PST"],
@@ -61,7 +61,7 @@ const COMMON_FIELDS = applyField([
   },
   {
     Component: Editable.EF_Input,
-    id: "m_PO",
+    fieldCode: "m_PO",
   },
 ]);
 
@@ -78,9 +78,9 @@ const Com = ({}) => {
   return (
     <div className={cn(styles.columnInputsContainer)}>
       {COMMON_FIELDS?.map((a, i) => {
-        const { id, Component, title, overrideOnChange, onIsDisplay, className, ...rest } =
+        const { fieldCode, Component, title, overrideOnChange, onIsDisplay, className, ...rest } =
           a;
-        const addon = checkAddOnField({ id });
+        const addon = checkAddOnField({ id: fieldCode });
         const addonClass = addon?.isSyncedFromParent
           ? styles.addonSync_input
           : "";
@@ -90,24 +90,26 @@ const Com = ({}) => {
           if (!_isDisplay) return null;
         }
 
+        const field = fieldCode
+
         return (
-          <DisplayBlock id={id} key={id}>
+          <DisplayBlock fieldCode={fieldCode} key={field}>
             <label>{title}</label>
             <div>
               <Component
-                id={id}
-                value={data?.[id] || ""}
-                initValue={initData?.[id] || ""}
+                id={field}
+                value={data?.[field] || ""}
+                initValue={initData?.[field] || ""}
                 isHighlightDiff
                 onChange={(v, ...o) => {
                   if (typeof overrideOnChange === "function") {
                     overrideOnChange(onChange, [v, ...o]);
                   } else {
-                    onChange(v, id);
+                    onChange(v, field);
                   }
                 }}
-                errorMessage={validationResult?.[id]}
-                disabled={!checkEditable({ id })}
+                errorMessage={validationResult?.[field]}
+                disabled={!checkEditable({ fieldCode })}
                 className={cn(addonClass, className)}
                 {...rest}
               />

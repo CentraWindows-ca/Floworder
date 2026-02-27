@@ -17,13 +17,16 @@ import utils from "lib/utils";
 import { uiWoFieldEditGroupMapping as gmp } from "lib/constants/production_constants_labelMapping";
 
 export const getIfFieldDisplayAsProductType = (
-  { kind, uiOrderType, id, displayAs, permissions },
+  { kind, uiOrderType, id, fieldCode, displayAs, permissions },
   data,
 ) => {
+
+  if (!fieldCode) fieldCode = id 
+  
   let currentKind = "m";
-  if (id?.startsWith("m_")) currentKind = "m";
-  else if (id?.startsWith("w_")) currentKind = "w";
-  else if (id?.startsWith("d_")) currentKind = "d";
+  if (fieldCode?.startsWith("m_")) currentKind = "m";
+  else if (fieldCode?.startsWith("w_")) currentKind = "w";
+  else if (fieldCode?.startsWith("d_")) currentKind = "d";
   currentKind = displayAs || currentKind;
 
   // dont show fields if its not certain type of order
@@ -34,22 +37,22 @@ export const getIfFieldDisplayAsProductType = (
   let _isDisplay = true;
 
   // data conditions ======================
-  if (id === "m_Community") {
+  if (fieldCode === "m_Community") {
     //
     _isDisplay &=
       data?.m_JobType === "SO" &&
       constants.checkProvince(data?.m_Branch) === "AB";
   }
 
-  if (id === "m_ShippedDate") {
+  if (fieldCode === "m_ShippedDate") {
     _isDisplay &= [WORKORDER_STATUS_MAPPING.Shipped.key].includes(
       data?.m_Status,
     );
   }
 
   if (
-    id === "m_TransferredLocation_display" ||
-    id === "m_TransferredDate_display"
+    fieldCode === "m_TransferredLocation_display" ||
+    fieldCode === "m_TransferredDate_display"
   ) {
     const _windowShow =
       data?.w_ManufacturingFacility &&
@@ -66,7 +69,7 @@ export const getIfFieldDisplayAsProductType = (
     return _.get(permissions, [pc, op], false);
   };
 
-  if (id === "m_PriceBeforeTax") {
+  if (fieldCode === "m_PriceBeforeTax") {
     _isDisplay &= checkPermission(
       FEATURE_CODES["om.prod.wo.informationPriceBeforeTax"],
       "canView",
@@ -83,7 +86,7 @@ export const getIfFieldDisplayAsProductType = (
   return _isDisplay;
 };
 export const getIfFieldDisplayForProductItems = (
-  { kind, uiOrderType, key, id, displayAs, permissions },
+  { key, id, permissions },
   data,
 ) => {
   let _isDisplay = true;
@@ -108,13 +111,13 @@ export const displayFilter = (
   { kind, uiOrderType, permissions },
 ) => {
   return columnList?.filter((a) => {
-    const { id = "m", displayAs } = a;
+    const { id = "m", fieldCode = "m", displayAs } = a;
     // currentKind is data kind
     return getIfFieldDisplayAsProductType(
       {
         kind,
         uiOrderType,
-        id,
+        fieldCode: fieldCode || id,
         displayAs,
         permissions,
       },
@@ -162,6 +165,7 @@ export const Block = ({ className_input, inputData, data: overridingData }) => {
     title,
     displayId,
     id,
+    fieldCode,
     options,
     overrideOnChange,
     renderValue,
@@ -171,33 +175,40 @@ export const Block = ({ className_input, inputData, data: overridingData }) => {
   if (typeof options === "function") {
     options = options(dictionary);
   }
-  const className_required = getIsRequired(initData, id) && "required";
+
+  // TODO: temporary fallback
+  if (!fieldCode) {
+    fieldCode = id
+  }
+  const field = fieldCode
+
+  const className_required = getIsRequired(initData, fieldCode) && "required";
 
   const _value = renderValue
-    ? renderValue(data?.[id], data, localContext)
-    : data?.[id];
-  const addon = checkAddOnField({ id });
+    ? renderValue(data?.[field], data, localContext)
+    : data?.[field];
+  const addon = checkAddOnField({ id: fieldCode });
   const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
 
   return (
-    <DisplayBlock id={displayId || id}>
+    <DisplayBlock fieldCode={displayId || fieldCode}>
       <label className={cn(className_required)}>{title}</label>
       <div className={cn(className_input)}>
         <Component
-          id={id}
+          id={field}
           value={_value}
-          initValue={initData?.[id]}
+          initValue={initData?.[field]}
           isHighlightDiff
           onChange={(v, ...o) => {
             if (typeof overrideOnChange === "function") {
               overrideOnChange(onChange, [v, ...o]);
             } else {
-              onChange(v, id);
+              onChange(v, field);
             }
           }}
-          disabled={!checkEditable({ id })}
+          disabled={!checkEditable({ fieldCode })}
           options={options}
-          errorMessage={validationResult?.[id]}
+          errorMessage={validationResult?.[field]}
           className={cn(className, addonClass)}
           {...rest}
         />
@@ -220,7 +231,7 @@ export const DisplayBlock = ({
     {
       kind,
       uiOrderType,
-      id: fieldCode || id,
+      fieldCode: fieldCode || id,
       displayAs,
       permissions,
     },

@@ -47,7 +47,7 @@ export const getVConfig = (initData) => {
   return isReservation ? config_reservation : config_regular;
 };
 
-export const getIsRequired = (initData, fieldName) => {
+export const getIsRequired = (initData, fieldCode) => {
   const _configs = getVConfig(initData)
-  return _configs?.[fieldName]?.required
+  return _configs?.[fieldCode]?.required
 }

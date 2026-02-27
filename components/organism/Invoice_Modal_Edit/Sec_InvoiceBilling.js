@@ -101,7 +101,7 @@ const Com = ({}) => {
                   }
                 }}
                 errorMessage={validationResult?.[id]}
-                disabled={!checkEditable({ id })}
+                disabled={!checkEditable({ fieldCode: id })}
                 {...rest}
               />
             </div>

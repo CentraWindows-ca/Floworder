@@ -24,79 +24,79 @@ import { displayFilterForProductItems } from "../Com";
 const WINDOW_FIELDS = applyField([
   {
     Component: Editable.EF_Label,
-    id: "Item",
+    fieldCode: "Item",
   },
   {
     Component: Editable.EF_SelectWithLabel,
     options: ITEM_FACILITY,
-    id: "Facility",
+    fieldCode: "Facility",
     sortBy: "sort",
   },
   {
     Component: Editable.EF_Label,
-    id: "System",
+    fieldCode: "System",
   },
   {
     Component: Editable.EF_Label,
-    id: "Description",
+    fieldCode: "Description",
   },
   {
     Component: Editable.EF_Label,
-    id: "Size",
+    fieldCode: "Size",
   },
   {
     Component: Editable.EF_Label,
-    id: "Quantity",
+    fieldCode: "Quantity",
   },
   {
     Component: Editable.EF_Label,
-    id: "SubQty",
+    fieldCode: "SubQty",
   },
   {
     Component: Editable.EF_Text,
-    id: "Notes",
+    fieldCode: "Notes",
   },
   {
     Component: Editable.EF_SelectWithLabel,
     options: ITEM_STATUS,
-    id: "Status",
+    fieldCode: "Status",
     sortBy: "sort",
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    id: "BTO",
+    fieldCode: "BTO",
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    id: "Multipoint",
+    fieldCode: "Multipoint",
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    id: "HighRisk",
+    fieldCode: "HighRisk",
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    id: "Custom",
+    fieldCode: "Custom",
   },
   {
     Component: Editable.EF_Input,
-    id: "BoxQty",
+    fieldCode: "BoxQty",
   },
   {
     Component: Editable.EF_Input,
-    id: "GlassQty",
+    fieldCode: "GlassQty",
   },
   {
     Component: Editable.EF_Input,
-    id: "LBRMin",
+    fieldCode: "LBRMin",
   },
   {
     Component: Editable.EF_Label,
-    id: "Nett",
+    fieldCode: "Nett",
   },
   {
     Component: Editable.EF_Rack,
-    id: "RackLocationId",
+    fieldCode: "RackLocationId",
     overrideOnChange: (onChange, params) => {
       const [v, id, o] = params;
       onChange(v, "RackLocationId");
@@ -105,20 +105,20 @@ const WINDOW_FIELDS = applyField([
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    id: "RBMIcon",
+    fieldCode: "RBMIcon",
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    id: "Wraped",
+    fieldCode: "Wraped",
   },
 
   {
     Component: Editable.EF_Checkbox_Yesno,
-    id: "PaintLineal",
+    fieldCode: "PaintLineal",
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    id: "Painted",
+    fieldCode: "Painted",
   },
 ]);
 
@@ -127,142 +127,142 @@ const TEMPORARY_DISABLE_FOR_FIX = true;
 const DOOR_FIELDS = applyField([
   {
     Component: Editable.EF_Label,
-    id: "Item",
+    fieldCode: "Item",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_SelectWithLabel,
     options: ITEM_FACILITY,
-    id: "Facility",
+    fieldCode: "Facility",
     sortBy: "sort",
   },
   {
     Component: Editable.EF_Label,
-    id: "System",
+    fieldCode: "System",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Label,
-    id: "Description",
+    fieldCode: "Description",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_SelectWithLabel,
-    id: "DoorType",
+    fieldCode: "DoorType",
     options: ITEM_DOOR_TYPES,
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Label,
-    id: "Size",
+    fieldCode: "Size",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Label,
-    id: "Quantity",
+    fieldCode: "Quantity",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Label,
-    id: "SubQty",
+    fieldCode: "SubQty",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Text,
-    id: "Notes",
+    fieldCode: "Notes",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    id: "DoorCutout",
+    fieldCode: "DoorCutout",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_SelectWithLabel,
     options: ITEM_STATUS,
-    id: "Status",
+    fieldCode: "Status",
     sortBy: "sort",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    id: "Stock",
+    fieldCode: "Stock",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_SelectWithLabel,
-    id: "Lites",
+    fieldCode: "Lites",
     options: ITEM_LITES,
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    id: "BTO",
+    fieldCode: "BTO",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    id: "SlabPrep",
+    fieldCode: "SlabPrep",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    id: "Assembly",
+    fieldCode: "Assembly",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    id: "MillingDept",
+    fieldCode: "MillingDept",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    id: "CustomSlabPrep",
+    fieldCode: "CustomSlabPrep",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    id: "QA",
+    fieldCode: "QA",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    id: "CustomMilling",
+    fieldCode: "CustomMilling",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    id: "TempSlab",
+    fieldCode: "TempSlab",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    id: "Painted",
+    fieldCode: "Painted",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Input,
-    id: "BoxQty",
+    fieldCode: "BoxQty",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Input,
-    id: "GlassQty",
+    fieldCode: "GlassQty",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Input,
-    id: "LBRMin",
+    fieldCode: "LBRMin",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Label,
-    id: "Nett",
+    fieldCode: "Nett",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Rack,
-    id: "RackLocation",
+    fieldCode: "RackLocation",
     overrideOnChange: (onChange, params) => {
       const [v, id, o] = params;
       onChange(v, "RackLocationId");
@@ -272,22 +272,22 @@ const DOOR_FIELDS = applyField([
   },
   {
     Component: Editable.EF_Input,
-    id: "TransomCount",
+    fieldCode: "TransomCount",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Input,
-    id: "SideliteCount",
+    fieldCode: "SideliteCount",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Input,
-    id: "SingleDoorCount",
+    fieldCode: "SingleDoorCount",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
   {
     Component: Editable.EF_Input,
-    id: "DoubleDoorCount",
+    fieldCode: "DoubleDoorCount",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
 ]);
@@ -343,7 +343,7 @@ const Com = (props) => {
             <Block
               item={item}
               setItem={setItem}
-              key={`item_${a.id}`}
+              key={`item_${a.fieldCode}`}
               inputData={a}
               isEditable={
                 !a.disabled && checkEditable({ group: _editgroup[item?.kind] })
@@ -366,26 +366,29 @@ const Com = (props) => {
 };
 
 const Block = ({ item, setItem, inputData, isEditable }) => {
-  let { Component, title, id, options, overrideOnChange, ...rest } = inputData;
-  const handleChange = (v, id) => {
+  let { Component, title, fieldCode, options, overrideOnChange, ...rest } = inputData;
+  
+  const field = fieldCode
+  
+  const handleChange = (v, field) => {
     setItem((prev) => ({
       ...prev,
-      [id]: v,
+      [field]: v,
     }));
   };
 
   return (
-    <div className={styles.itemRow} id={id}>
+    <div className={styles.itemRow} id={field}>
       <label>{title}</label>
       <div className={styles.columnInput}>
         <Component
-          id={id}
-          value={item?.[id]}
+          id={field}
+          value={item?.[field]}
           onChange={(v, ...o) => {
             if (typeof overrideOnChange === "function") {
               overrideOnChange(handleChange, [v, ...o]);
             } else {
-              handleChange(v, id);
+              handleChange(v, field);
             }
           }}
           options={options}

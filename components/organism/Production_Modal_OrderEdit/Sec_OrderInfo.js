@@ -21,7 +21,7 @@ import { displayFilter, Block } from "./Com";
 const ComFetchButton = React.memo(({ kind, id }) => {
   const { onGetWindowMaker_batchNo, checkEditable } =
     useContext(LocalDataContext);
-  const disabled = !checkEditable({ id });
+  const disabled = !checkEditable({ fieldCode: id });
   return (
     <i
       className={cn("fa-solid fa-arrows-rotate", {
@@ -37,7 +37,7 @@ const ComFetchButton = React.memo(({ kind, id }) => {
 const COMMON_FIELDS = applyField([
   {
     Component: Editable.EF_SelectWithLabel,
-    id: "m_BranchId",
+    fieldCode: "m_BranchId",
     options: constants.WorkOrderSelectOptions.branches,
     overrideOnChange: (onChange, params) => {
       const [v, id, o] = params;
@@ -47,7 +47,7 @@ const COMMON_FIELDS = applyField([
   },
   // {
   //   Component: Editable.EF_SelectWithLabel,
-  //   id: "m_ManufacturingFacility",
+  //   fieldCode: "m_ManufacturingFacility",
   //   options: _.keys(constants.ManufacturingFacilities)?.map((k) => ({
   //     label: k,
   //     value: k,
@@ -56,36 +56,36 @@ const COMMON_FIELDS = applyField([
   // },
   {
     Component: Editable.EF_SelectWithLabel,
-    id: "m_ShippingType",
+    fieldCode: "m_ShippingType",
     options: constants.WorkOrderSelectOptions.shippingTypes,
   },
   {
     Component: Editable.EF_SelectWithLabel,
-    id: "m_ResidentialType",
+    fieldCode: "m_ResidentialType",
     options: constants.WorkOrderSelectOptions.residentialTypes,
   },
   {
     Component: Editable.EF_SelectWithLabel,
-    id: "m_JobType",
+    fieldCode: "m_JobType",
     options: constants.WorkOrderSelectOptions.jobTypes,
   },
   !constants.DEV_HOLDING_FEATURES.v20251210_ordertype && {
     Component: Editable.EF_Label_Disabled,
-    id: "m_OrderType",
+    fieldCode: "m_OrderType",
   },
   {
     Component: Editable.EF_SelectWithLabel,
-    id: "m_CustomerType",
+    fieldCode: "m_CustomerType",
     options: constants.WorkOrderSelectOptions.customerTypes,
   },
   {
     Component: Editable.EF_SelectWithLabel,
-    id: "m_Project",
+    fieldCode: "m_Project",
     options: constants.WorkOrderSelectOptions.project,
   },
   {
     Component: Editable.EF_SelectEmployee,
-    id: "m_SalesRepKeyAccount",
+    fieldCode: "m_SalesRepKeyAccount",
     placeholder: "-",
     overrideOnChange: (onChange, params) => {
       const [v, id, o] = params;
@@ -99,14 +99,14 @@ const COMMON_FIELDS = applyField([
     renderValue: (v, data) => {
       return formatCurrency2Decimal(v);
     },
-    id: "m_PriceBeforeTax",
+    fieldCode: "m_PriceBeforeTax",
   },
 ]);
 
 const WINDOW_FIELDS = applyField([
   {
     Component: Editable.EF_SelectWithLabel,
-    id: "w_ManufacturingFacility",
+    fieldCode: "w_ManufacturingFacility",
     placeholder: "-",
     options: _.keys(constants.ManufacturingFacilities)?.map((k) => ({
       label: k,
@@ -116,20 +116,20 @@ const WINDOW_FIELDS = applyField([
   },
   {
     Component: Editable.EF_Input,
-    id: "w_BlockNo",
+    fieldCode: "w_BlockNo",
   },
   {
     Component: Editable.EF_Input,
-    id: "w_BatchNo",
+    fieldCode: "w_BatchNo",
     title: (
       <span>
-        Windows Batch NO. <ComFetchButton kind={"w"} id={"w_BatchNo"} />
+        Windows Batch NO. <ComFetchButton kind={"w"} fieldCode={"w_BatchNo"} />
       </span>
     ),
   },
   {
     Component: Editable.EF_SelectWithLabel,
-    id: "w_GlassSupplier",
+    fieldCode: "w_GlassSupplier",
     options: (dictionary) => {
       return dictionary?.glassSupplierList?.map((a) => ({
         key: a.key,
@@ -139,7 +139,7 @@ const WINDOW_FIELDS = applyField([
   },
   {
     Component: Editable.EF_SelectWithLabel,
-    id: "w_GlassOptions",
+    fieldCode: "w_GlassOptions",
     options: (dictionary) => {
       return dictionary?.glassOptionList?.map((a) => ({
         key: a.key,
@@ -152,7 +152,7 @@ const WINDOW_FIELDS = applyField([
 const DOOR_FIELDS = applyField([
   {
     Component: Editable.EF_SelectWithLabel,
-    id: "d_ManufacturingFacility",
+    fieldCode: "d_ManufacturingFacility",
     placeholder: "-",
     options: _.keys(constants.ManufacturingFacilities)?.map((k) => ({
       label: k,
@@ -162,20 +162,20 @@ const DOOR_FIELDS = applyField([
   },
   {
     Component: Editable.EF_Input,
-    id: "d_BlockNo",
+    fieldCode: "d_BlockNo",
   },
   {
     Component: Editable.EF_Input,
-    id: "d_BatchNo",
+    fieldCode: "d_BatchNo",
     title: (
       <span>
-        Doors Batch NO. <ComFetchButton kind="d" id={"w_BatchNo"} />
+        Doors Batch NO. <ComFetchButton kind="d" fieldCode={"w_BatchNo"} />
       </span>
     ),
   },
   {
     Component: Editable.EF_SelectWithLabel,
-    id: "d_GlassSupplier",
+    fieldCode: "d_GlassSupplier",
     options: (dictionary) => {
       return dictionary?.glassSupplierList?.map((a) => ({
         key: a.key,
@@ -213,7 +213,7 @@ const Com = ({}) => {
     <>
       <div className={cn(styles.columnInputsContainer)}>
         {COMMON_FIELDS?.map((a) => {
-          return <Block key={a.id} inputData={a} />;
+          return <Block key={a.fieldCode} inputData={a} />;
         })}
       </div>
       {!_.isEmpty(windowInputs) && (
@@ -223,7 +223,7 @@ const Com = ({}) => {
           </div>
           <div className={cn(styles.columnInputsContainer)}>
             {windowInputs?.map((a) => {
-              return <Block key={a.id} inputData={a} />;
+              return <Block key={a.fieldCode} inputData={a} />;
             })}
           </div>
         </>
@@ -235,7 +235,7 @@ const Com = ({}) => {
           </div>
           <div className={cn(styles.columnInputsContainer)}>
             {doorInputs?.map((a) => {
-              return <Block key={a.id} inputData={a} />;
+              return <Block key={a.fieldCode} inputData={a} />;
             })}
           </div>
         </>

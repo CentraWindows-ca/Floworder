@@ -130,7 +130,6 @@ export const LocalDataProvider = ({
   const [initDataService, setInitDataService] = useState(null);
 
   const [kind, setKind] = useState(initKind || "m");
-  
 
   // UI purpose
   const [expands, setExpands] = useState({});
@@ -876,12 +875,18 @@ export const LocalDataProvider = ({
         group: usually for external tables that cant be identified by id. Like files, items. 
         -- mostly for permission purpose
       */
-      const { id, group } = params;
+      const { fieldCode, group } = params;
       let _pass = isEditable;
-      if (id) {
+      if (fieldCode) {
         _pass =
           _pass &&
-          checkEditableById({ id, data, permissions, initKind, sourceOfUI });
+          checkEditableById({
+            id: fieldCode,
+            data,
+            permissions,
+            initKind,
+            sourceOfUI,
+          });
       }
       if (group) {
         _pass =
@@ -1053,7 +1058,7 @@ export const LocalDataProvider = ({
       windowItems,
       doorItems,
       permissions,
-      
+
       //
       checkEditable,
       setExpands,

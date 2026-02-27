@@ -12,10 +12,10 @@ import styles from "./styles.module.scss";
 import { LocalDataContext } from "./LocalDataProvider";
 
 import { DisplayBlock } from "./Com";
-const ComFetchButton = React.memo(({ id }) => {
+const ComFetchButton = React.memo(({ fieldCode }) => {
   const { onGetWindowMaker_comment, checkEditable } =
     useContext(LocalDataContext);
-  const disabled = !checkEditable({ id });
+  const disabled = !checkEditable({ fieldCode });
   return (
     <i
       className={cn("fa-solid fa-arrows-rotate", {
@@ -31,38 +31,38 @@ const ComFetchButton = React.memo(({ id }) => {
 const COMMON_FIELDS = applyField([
   {
     Component: Editable.EF_Text,
-    id: "m_CustomerName",
+    fieldCode: "m_CustomerName",
     rows: 1,
   },
   {
     Component: Editable.EF_Text,
-    id: "m_ProjectName",
+    fieldCode: "m_ProjectName",
     rows: 1,
   },
   {
     Component: Editable.EF_Text,
-    id: "m_Address",
+    fieldCode: "m_Address",
     rows: 1,
   },
   {
     Component: Editable.EF_Input,
-    id: "m_City",
+    fieldCode: "m_City",
   },
   {
     Component: Editable.EF_Input,
-    id: "m_Email",
+    fieldCode: "m_Email",
   },
   {
     Component: Editable.EF_Input,
-    id: "m_PhoneNumber",
+    fieldCode: "m_PhoneNumber",
   },
   {
     Component: Editable.EF_Input,
-    id: "m_OtherContactNumber",
+    fieldCode: "m_OtherContactNumber",
   },
   {
     Component: Editable.EF_SelectEmployee,
-    id: "m_ProjectManager",
+    fieldCode: "m_ProjectManager",
     placeholder: "-",
     group: "projectManagerList",
     overrideOnChange: (onChange, params) => {
@@ -73,28 +73,28 @@ const COMMON_FIELDS = applyField([
   },
   {
     Component: Editable.EF_Input,
-    id: "m_SiteContact",
+    fieldCode: "m_SiteContact",
   },
   {
     Component: Editable.EF_Input,
-    id: "m_SiteContactPhoneNumber",
+    fieldCode: "m_SiteContactPhoneNumber",
   },
   {
     Component: Editable.EF_Input,
-    id: "m_SiteContactEmail",
+    fieldCode: "m_SiteContactEmail",
   },
   {
     Component: Editable.EF_Input,
     title: (
       <span>
-        Comment <ComFetchButton id="m_Comment_1" />
+        Comment <ComFetchButton fieldCode="m_Comment_1" />
       </span>
     ),
-    id: "m_Comment_1",
+    fieldCode: "m_Comment_1",
   },
   {
     Component: Editable.EF_Community,
-    id: "m_Community",
+    fieldCode: "m_Community",
   },
 ]);
 
@@ -111,30 +111,32 @@ const Com = ({}) => {
   return (
     <div className={cn(styles.columnInputsContainer)}>
       {COMMON_FIELDS?.map((a, i) => {
-        const { id, Component, title, overrideOnChange, ...rest } = a;
-        const addon = checkAddOnField({ id });
+        const { fieldCode, Component, title, overrideOnChange, ...rest } = a;
+        const addon = checkAddOnField({ id: fieldCode });
         const addonClass = addon?.isSyncedFromParent
           ? styles.addonSync_input
           : "";
 
+        const field = fieldCode
+
         return (
-          <DisplayBlock id={id} key={id}>
+          <DisplayBlock fieldCode={fieldCode} key={field}>
             <label>{title}</label>
             <div>
               <Component
-                id={id}
-                value={data?.[id] || ""}
-                initValue={initData?.[id] || ""}
+                id={field}
+                value={data?.[field] || ""}
+                initValue={initData?.[field] || ""}
                 isHighlightDiff
                 onChange={(v, ...o) => {
                   if (typeof overrideOnChange === "function") {
                     overrideOnChange(onChange, [v, ...o]);
                   } else {
-                    onChange(v, id);
+                    onChange(v, field);
                   }
                 }}
-                errorMessage={validationResult?.[id]}
-                disabled={!checkEditable({ id })}
+                errorMessage={validationResult?.[field]}
+                disabled={!checkEditable({ fieldCode })}
                 className={cn(addonClass)}
                 {...rest}
               />

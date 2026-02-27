@@ -18,20 +18,20 @@ import { DisplayBlock, displayFilter } from "./Com";
 
 const COMMON_FIELDS = applyField([
   {
-    id: "m_ShippingStartDate",
+    fieldCode: "m_ShippingStartDate",
   },
   {
-    id: "m_ShippedDate",
+    fieldCode: "m_ShippedDate",
   },
   {
-    id: "m_RevisedDeliveryDate",
+    fieldCode: "m_RevisedDeliveryDate",
   },
   {
-    id: "m_TransferredDate",
+    fieldCode: "m_TransferredDate",
     displayId: "m_TransferredDate_display"
   },
   {
-    id: "m_TransferredLocation",
+    fieldCode: "m_TransferredLocation",
     displayId: "m_TransferredLocation_display",
     Component: Editable.EF_SelectWithLabel,
     options: constants.WorkOrderSelectOptions.branches,
@@ -39,35 +39,35 @@ const COMMON_FIELDS = applyField([
 ]);
 const WINDOW_FIELDS = applyField([
   {
-    id: "w_CustomerDate",
+    fieldCode: "w_CustomerDate",
   },
   {
-    id: "w_ProductionStartDate",
+    fieldCode: "w_ProductionStartDate",
     disabledCloseButton: true,
   },
   {
-    id: "w_PaintStartDate",
+    fieldCode: "w_PaintStartDate",
   },
   {
-    id: "w_GlassOrderDate",
+    fieldCode: "w_GlassOrderDate",
   },
   {
-    id: "w_GlassRecDate",
+    fieldCode: "w_GlassRecDate",
   },
 ]);
 const DOOR_FIELDS = applyField([
   {
-    id: "d_CustomerDate",
+    fieldCode: "d_CustomerDate",
   },
   {
-    id: "d_ProductionStartDate",
+    fieldCode: "d_ProductionStartDate",
     disabledCloseButton: true,
   },
   {
-    id: "d_PaintStartDate",
+    fieldCode: "d_PaintStartDate",
   },
   {
-    id: "d_GlassOrderDate",
+    fieldCode: "d_GlassOrderDate",
   },
 ]);
 
@@ -100,8 +100,8 @@ const Com = ({}) => {
     <>
       <div className={cn(styles.columnScheduledContainer)}>
         {COMMON_FIELDS?.map((a) => {
-          const { title, id } = a;
-          return <DisplayDate key={id} {...a} />;
+          const { title, fieldCode } = a;
+          return <DisplayDate key={fieldCode} {...a} />;
         })}
       </div>
 
@@ -112,8 +112,8 @@ const Com = ({}) => {
           </div>
           <div className={cn(styles.columnScheduledContainer)}>
             {windowInputs?.map((a) => {
-              const { title, id } = a;
-              return <DisplayDate key={id} {...a} />;
+              const { title, fieldCode } = a;
+              return <DisplayDate key={fieldCode} {...a} />;
             })}
           </div>
         </>
@@ -126,8 +126,8 @@ const Com = ({}) => {
           </div>
           <div className={cn(styles.columnScheduledContainer)}>
             {doorInputs?.map((a) => {
-              const { title, id } = a;
-              return <DisplayDate key={id} {...a} />;
+              const { title, fieldCode } = a;
+              return <DisplayDate key={fieldCode} {...a} />;
             })}
           </div>
         </>
@@ -137,12 +137,14 @@ const Com = ({}) => {
 };
 
 const DisplayDate = (props) => {
-  const { id, displayId, title, Component, className, ...rest } = props
+  const { fieldCode, displayId, title, Component, className, ...rest } = props
   const { data, initData, onChange, validationResult, checkEditable, checkAddOnField } =
     useContext(LocalDataContext);
 
-  const className_required = getIsRequired(initData, id) && "required";
-  const addon = checkAddOnField({ id });
+  const field = fieldCode
+
+  const className_required = getIsRequired(initData, fieldCode) && "required";
+  const addon = checkAddOnField({ id: fieldCode });
   const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
 
 
@@ -159,7 +161,7 @@ const DisplayDate = (props) => {
     );
   }
   return (
-    <DisplayBlock id={displayId || id}>
+    <DisplayBlock fieldCode={displayId || fieldCode}>
       <label
         className={cn(
           "justify-content-start align-items-center flex",
@@ -170,16 +172,16 @@ const DisplayDate = (props) => {
       </label>
       <div className="justify-content-end align-items-center flex">
         <Editable.EF_DateOnly
-          k={id}
-          id={id}
-          value={data?.[id]}
-          initValue={initData?.[id]}
+          k={field}
+          id={field}
+          value={data?.[field]}
+          initValue={initData?.[field]}
           isHighlightDiff
           onChange={(v) => {
-            onChange(v, id);
+            onChange(v, field);
           }}
-          disabled={!checkEditable({ id })}
-          errorMessage={validationResult?.[id]}
+          disabled={!checkEditable({ fieldCode })}
+          errorMessage={validationResult?.[field]}
           className={cn(className, addonClass)}
           {...rest}
         />

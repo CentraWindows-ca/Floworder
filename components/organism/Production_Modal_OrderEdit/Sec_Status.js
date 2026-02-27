@@ -68,7 +68,7 @@ const Com = ({}) => {
               onChange={(v) => onChange(v, "m_TransferredLocation")}
               placeholder={"Transferred Location"}
               options={constants.WorkOrderSelectOptions.branches}
-              disabled={!checkEditable({ id: "m_TransferredLocation" })}
+              disabled={!checkEditable({ fieldCode: "m_TransferredLocation" })}
             />
 
             <button
@@ -76,7 +76,7 @@ const Com = ({}) => {
               disabled={
                 initData?.m_TransferredLocation ===
                   data?.m_TransferredLocation ||
-                !checkEditable({ id: "m_TransferredLocation" })
+                !checkEditable({ fieldCode: "m_TransferredLocation" })
               }
               onClick={onUpdateTransferredLocation}
             >
@@ -93,12 +93,13 @@ const StatusUpdate = ({ statusLabel, currentKind }) => {
   const { data, onUpdateStatus, checkEditable, checkAddOnField } =
     useContext(LocalDataContext);
 
-  const id = `${currentKind}_Status`;
+  const fieldCode = `${currentKind}_Status`;
+  const field = fieldCode
 
-  const uIstatusObj = ORDER_STATUS?.find((a) => a.key === data?.[id]) || {};
+  const uIstatusObj = ORDER_STATUS?.find((a) => a.key === data?.[field]) || {};
   const { color, label, textColor } = uIstatusObj;
   const [toggle, setToggle] = useState(false);
-  const addon = checkAddOnField({ id });
+  const addon = checkAddOnField({ id: fieldCode });
 
   return (
     <>
@@ -109,19 +110,19 @@ const StatusUpdate = ({ statusLabel, currentKind }) => {
         )}
       >
         <OverlayWrapper
-          isLock={!checkEditable({ id })}
+          isLock={!checkEditable({ fieldCode })}
           renderTrigger={(onTrigger) => (
             <div
               className={cn(
                 styles.statesContainer,
-                checkEditable({ id }) && styles.statesContainerEditable,
+                checkEditable({ fieldCode }) && styles.statesContainerEditable,
               )}
               style={{ color: textColor, backgroundColor: color }}
             >
               <span>
                 {statusLabel}: {label}
               </span>
-              {checkEditable({ id }) && (
+              {checkEditable({ fieldCode }) && (
                 <div>
                   <i className="fa-solid fa-angle-down" />
                 </div>

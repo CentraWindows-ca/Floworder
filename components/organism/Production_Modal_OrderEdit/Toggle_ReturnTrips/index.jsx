@@ -16,11 +16,11 @@ import Editable from "components/molecule/Editable";
 const COMMON_FIELDS = applyField([
   {
     Component: Editable.EF_DateOnly,
-    id: "returnTripDate",
+    fieldCode: "returnTripDate",
   },
   {
     Component: Editable.EF_Text,
-    id: "returnTripNotes",
+    fieldCode: "returnTripNotes",
   },
 ]);
 
@@ -140,7 +140,7 @@ const Com = ({ title, id }) => {
               <Block
                 item={editingRow}
                 setItem={setEditingRow}
-                key={`returntrip_${a.id}`}
+                key={`returntrip_${a.fieldCode}`}
                 inputData={a}
                 isEditable={checkEditable({ group: "returnTrips" })}
               />
@@ -158,26 +158,27 @@ const Com = ({ title, id }) => {
 };
 
 const Block = ({ item, setItem, inputData, isEditable }) => {
-  let { Component, title, id, options, overrideOnChange, ...rest } = inputData;
-  const handleChange = (v, id) => {
+  let { Component, title, fieldCode, options, overrideOnChange, ...rest } = inputData;
+  const field = fieldCode
+  const handleChange = (v, field) => {
     setItem((prev) => ({
       ...prev,
-      [id]: v,
+      [field]: v,
     }));
   };
 
   return (
-    <div className={styles.itemRow} id={id}>
+    <div className={styles.itemRow} id={field}>
       <label>{title}</label>
       <div className={styles.columnInput}>
         <Component
-          id={id}
-          value={item?.[id]}
+          id={field}
+          value={item?.[field]}
           onChange={(v, ...o) => {
             if (typeof overrideOnChange === "function") {
               overrideOnChange(handleChange, [v, ...o]);
             } else {
-              handleChange(v, id);
+              handleChange(v, field);
             }
           }}
           options={options}
