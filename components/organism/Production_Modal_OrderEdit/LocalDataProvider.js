@@ -130,6 +130,7 @@ export const LocalDataProvider = ({
   const [initDataService, setInitDataService] = useState(null);
 
   const [kind, setKind] = useState(initKind || "m");
+  
 
   // UI purpose
   const [expands, setExpands] = useState({});
@@ -139,8 +140,8 @@ export const LocalDataProvider = ({
     let handleMessage = () => {};
     if (isPassToIframe) {
       handleMessage = (event) => {
-        console.log("Hello, I have event from outside", event);
         if (event.data?.type === "GET_DATA") {
+          console.log("event from outside", event);
           window.parent.postMessage(
             {
               type: "DATA",

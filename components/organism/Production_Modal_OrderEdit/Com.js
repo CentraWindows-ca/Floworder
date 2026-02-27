@@ -88,13 +88,10 @@ export const getIfFieldDisplayForProductItems = (
 ) => {
   let _isDisplay = true;
   const checkPermission = (pc, op = "canEdit") => {
-    console.log(pc, permissions, _.get(permissions, [pc, op], false));
     return _.get(permissions, [pc, op], false);
   };
 
   const fieldCode = key || id;
-
-  console.log(fieldCode, key, id, fieldCode === "Facility");
 
   if (fieldCode === "Facility") {
     _isDisplay &= checkPermission(
