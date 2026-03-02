@@ -381,8 +381,8 @@ const Com = (props) => {
         },
       },
       {
-        fieldCode: "w_Status_display",
-        initKey: "w_Status",
+        fieldCode: "m_WinStatus_display",
+        initKey: "m_WinStatus",
         display: isWindow && !isDeleted,
         width: 180,
         onCell: (record) => ({
@@ -399,18 +399,18 @@ const Com = (props) => {
             <div
               className={cn(styles.tableStatusColor)}
               style={{
-                color: record?.w_Status_display?.textColor,
-                backgroundColor: record?.w_Status_display?.color,
+                color: record?.m_WinStatus?.textColor,
+                backgroundColor: record?.m_WinStatus_display?.color,
               }}
             >
-              <LabelDisplay>{record?.w_Status_display?.label}</LabelDisplay>
+              <LabelDisplay>{record?.m_WinStatus_display?.label}</LabelDisplay>
             </div>
           );
         },
       },
       {
-        fieldCode: "d_Status_display",
-        initKey: "d_Status",
+        fieldCode: "m_DoorStatus_display",
+        initKey: "m_DoorStatus",
         display: isDoor && !isDeleted,
         width: 180,
         onCell: (record) => ({
@@ -427,11 +427,11 @@ const Com = (props) => {
             <div
               className={cn(styles.tableStatusColor)}
               style={{
-                color: record?.d_Status_display?.textColor,
-                backgroundColor: record?.d_Status_display?.color,
+                color: record?.m_DoorStatus_display?.textColor,
+                backgroundColor: record?.m_DoorStatus_display?.color,
               }}
             >
-              <LabelDisplay>{record?.d_Status_display?.label}</LabelDisplay>
+              <LabelDisplay>{record?.m_DoorStatus_display?.label}</LabelDisplay>
             </div>
           );
         },
@@ -658,14 +658,16 @@ const Com = (props) => {
       }
     }
 
+    console.log(_data)
+
     _data = _data?.map((a) => {
       if (!a) return null;
       const { value } = a;
       const merged = { ...value?.d, ...value?.m, ...value?.w };
       const {
         m_Status,
-        w_Status,
-        d_Status,
+        m_WinStatus,
+        m_DoorStatus,
         m_BranchId,
         m_JobType,
         m_ShippingType,
@@ -690,11 +692,11 @@ const Com = (props) => {
       merged.m_Status_display = m_Status
         ? ORDER_STATUS?.find((a) => a.key.toString() === m_Status?.toString())
         : null;
-      merged.w_Status_display = w_Status
-        ? ORDER_STATUS?.find((a) => a.key.toString() === w_Status?.toString())
+      merged.m_WinStatus_display = m_WinStatus
+        ? ORDER_STATUS?.find((a) => a.key.toString() === m_WinStatus?.toString())
         : null;
-      merged.d_Status_display = d_Status
-        ? ORDER_STATUS?.find((a) => a.key.toString() === d_Status?.toString())
+      merged.m_DoorStatus_display = m_DoorStatus
+        ? ORDER_STATUS?.find((a) => a.key.toString() === m_DoorStatus?.toString())
         : null;
 
       merged.m_BranchId_display = getValue(m_BranchId, "branches")?.label;
