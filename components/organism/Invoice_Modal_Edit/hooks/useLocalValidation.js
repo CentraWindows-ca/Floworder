@@ -22,7 +22,7 @@ const hook = ({ setValidationResult, checkEditable }) => {
 
     _.keys(checkingConfig).map((fieldCode) => {
       // ===== if product type doesnt have this field. skip
-      const isAvailabe = getIfFieldDisplayAsProductType(
+      const isAvailabe = 
         {
           fieldCode,
           uiOrderType,

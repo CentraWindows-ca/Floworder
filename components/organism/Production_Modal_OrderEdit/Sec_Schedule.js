@@ -2,7 +2,11 @@ import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
-import {labelMapping, applyField} from "lib/constants/production_constants_labelMapping";
+import {
+  labelMapping,
+  applyField,
+  spreadFacilities,
+} from "lib/constants/production_constants_labelMapping";
 
 import { getIsRequired } from "./hooks/vconfig";
 import { Block } from "./Com";
@@ -12,7 +16,11 @@ import Editable from "components/molecule/Editable";
 // styles
 import styles from "./styles.module.scss";
 
-import { LocalDataContext, GeneralContext } from "./LocalDataProvider";
+import {
+  LocalDataContext,
+  LocalDataContext_data,
+  GeneralContext,
+} from "./LocalDataProvider";
 
 import { DisplayBlock, displayFilter } from "./Com";
 
@@ -28,7 +36,7 @@ const COMMON_FIELDS = applyField([
   },
   {
     fieldCode: "m_TransferredDate",
-    displayId: "m_TransferredDate_display"
+    displayId: "m_TransferredDate_display",
   },
   {
     fieldCode: "m_TransferredLocation",
@@ -73,63 +81,97 @@ const DOOR_FIELDS = applyField([
 
 const Com = ({}) => {
   const { permissions } = useContext(GeneralContext);
-  const { kind, uiOrderType } = useContext(LocalDataContext);
+  const { kind, uiOrderType, initData, initWithOriginalStructure } =
+    useContext(LocalDataContext);
 
   const [doorInputs, setDoorInputs] = useState(null);
   const [windowInputs, setWindowInputs] = useState(null);
+  const [masterInputs, setMasterInputs] = useState(null);
 
   useEffect(() => {
-    setDoorInputs(
-      displayFilter(DOOR_FIELDS, {
-        kind,
-        uiOrderType,
-        permissions
-      }),
-    );
+    let _doorFields = displayFilter(DOOR_FIELDS, {
+      kind,
+      uiOrderType,
+      permissions,
+      initWithOriginalStructure,
+    });
+    // spread to different facilities [{facility: "", fields: [], facilityRoleType: ""}]
+    _doorFields = spreadFacilities(
+      _doorFields,
+      initWithOriginalStructure,
+    )?.facilities;
+    setDoorInputs(_doorFields);
 
-    setWindowInputs(
-      displayFilter(WINDOW_FIELDS, {
-        kind,
-        uiOrderType,
-        permissions
-      }),
-    );
+    let _windowFields = displayFilter(WINDOW_FIELDS, {
+      kind,
+      uiOrderType,
+      permissions,
+      initWithOriginalStructure,
+    });
+    _windowFields = spreadFacilities(
+      _windowFields,
+      initWithOriginalStructure,
+    )?.facilities;
+
+    setWindowInputs(_windowFields);
+
+    const _masterFields = spreadFacilities(
+      COMMON_FIELDS,
+      initWithOriginalStructure,
+    )?.master;
+    setMasterInputs(_masterFields);
   }, [kind, uiOrderType]);
 
   return (
     <>
       <div className={cn(styles.columnScheduledContainer)}>
-        {COMMON_FIELDS?.map((a) => {
+        {masterInputs?.map((a) => {
           const { title, fieldCode } = a;
           return <DisplayDate key={fieldCode} {...a} />;
         })}
       </div>
-
       {!_.isEmpty(windowInputs) && (
         <>
           <div className={styles.subTitle}>
             <label>Windows</label>
           </div>
-          <div className={cn(styles.columnScheduledContainer)}>
-            {windowInputs?.map((a) => {
-              const { title, fieldCode } = a;
-              return <DisplayDate key={fieldCode} {...a} />;
-            })}
-          </div>
+          {windowInputs?.map((fac) => {
+            const { facility, fields } = fac;
+            return (
+              <React.Fragment key={`w_${facility}`}>
+                <div className={cn(styles.columnFacility)}>
+                  <span>{facility}</span>
+                </div>
+                <div className={cn(styles.columnScheduledContainer)}>
+                  {fields?.map((a) => {
+                    return <DisplayDate key={a.field} {...a} />;
+                  })}
+                </div>
+              </React.Fragment>
+            );
+          })}
         </>
       )}
-
       {!_.isEmpty(doorInputs) && (
         <>
           <div className={styles.subTitle}>
             <label>Doors</label>
           </div>
-          <div className={cn(styles.columnScheduledContainer)}>
-            {doorInputs?.map((a) => {
-              const { title, fieldCode } = a;
-              return <DisplayDate key={fieldCode} {...a} />;
-            })}
-          </div>
+          {doorInputs?.map((fac) => {
+            const { facility, fields } = fac;
+            return (
+              <React.Fragment key={`d_${facility}`}>
+                <div className={cn(styles.columnFacility)}>
+                  <span>{facility}</span>
+                </div>
+                <div className={cn(styles.columnScheduledContainer)}>
+                  {fields?.map((a) => {
+                    return <DisplayDate key={a.field} {...a} />;
+                  })}
+                </div>
+              </React.Fragment>
+            );
+          })}
         </>
       )}
     </>
@@ -137,16 +179,15 @@ const Com = ({}) => {
 };
 
 const DisplayDate = (props) => {
-  const { fieldCode, displayId, title, Component, className, ...rest } = props
-  const { data, initData, onChange, validationResult, checkEditable, checkAddOnField } =
+  const { fieldCode, field, displayId, title, Component, className, ...rest } =
+    props;
+  const { data, validationResult } = useContext(LocalDataContext_data);
+  const { initData, onChange, checkEditable, checkAddOnField } =
     useContext(LocalDataContext);
-
-  const field = fieldCode
 
   const className_required = getIsRequired(initData, fieldCode) && "required";
   const addon = checkAddOnField({ id: fieldCode });
   const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
-
 
   if (Component) {
     return (
@@ -160,6 +201,7 @@ const DisplayDate = (props) => {
       />
     );
   }
+
   return (
     <DisplayBlock fieldCode={displayId || fieldCode}>
       <label

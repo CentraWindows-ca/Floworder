@@ -6,29 +6,38 @@ import constants from "lib/constants";
 // styles
 import styles from "./styles.module.scss";
 
-import { LocalDataContext } from "./LocalDataProvider";
+import { LocalDataContext, LocalDataContext_data } from "./LocalDataProvider";
+import { parseFieldsByfieldCode } from "lib/constants/production_constants_labelMapping";
 
 const Com = ({ className, ...props }) => {
-  const { data, LbrBreakDowns } =
+  const { data } = useContext(LocalDataContext_data);
+  const { LbrBreakDowns, initWithOriginalStructure } =
     useContext(LocalDataContext);
 
   if (!data) return null;
+  const sum = (fields) => {
+    return _.sum(
+      fields?.map((fieldCode) => {
+        // spread fields
+        const fieldList = parseFieldsByfieldCode(
+          fieldCode,
+          initWithOriginalStructure,
+        );
+        // sum data by fields
+        return _.sum(fieldList?.map((f) => data[f]));
+      }),
+    );
+  };
 
-  const totalNumber =
-    (data["m_NumberOfWindows"] || 0) +
-    (data["m_NumberOfPatioDoors"] || 0) +
-    (data["m_NumberOfDoors"] || 0) +
-    (data["m_NumberOfOthers"] || 0) +
-    (data["m_NumberOfSwingDoors"] || 0);
-
-  const totalGlassQty =
-    (data["w_TotalGlassQty"] || 0) + (data["d_TotalGlassQty"] || 0);
-
-  const totalBoxQty =
-    (data["w_TotalBoxQty"] || 0) + (data["d_TotalBoxQty"] || 0);
-
-  const totalScreens =
-    (data["w_TotalScreens"] || 0) + (data["d_TotalScreens"] || 0);
+  const totalNumber = sum(
+    [
+      "m_NumberOfWindows",
+      "m_NumberOfPatioDoors",
+      "m_NumberOfDoors",
+      "m_NumberOfOthers",
+      "m_NumberOfSwingDoors",
+    ],
+  );
 
   const shouldShowTotal =
     [
@@ -39,17 +48,28 @@ const Com = ({ className, ...props }) => {
       data["m_NumberOfPatioDoors"],
     ]?.filter((a) => a)?.length > 1;
 
-  const otherFields = {
-    TotalGlassQty: data.w_TotalGlassQty,
-    TotalBoxQty: data.w_TotalBoxQty,
-    TotalScreens: data.w_TotalScreens,
-    TotalLBRMin: data.w_TotalLBRMin,
-    TotalPrice: data.w_TotalPrice,
+  const w_otherFields = {
+    TotalGlassQty: sum(["w_TotalGlassQty"]),
+    TotalBoxQty: sum(["w_TotalBoxQty"]),
+    TotalScreens: sum(["w_TotalScreens"]),
+    TotalLBRMin: sum(["w_TotalLBRMin"]),
+    TotalPrice: sum(["w_TotalPrice"])
   };
+
+  const d_otherFields = {
+    TotalGlassQty: sum(["d_TotalGlassQty"]),
+    TotalBoxQty: sum(["d_TotalBoxQty"]),
+    TotalLBRMin: sum(["d_TotalLBRMin"]),
+    TotalPrice: sum(["d_TotalPrice"])
+  };
+
+  const totalGlassQty = sum(["w_TotalGlassQty", "d_TotalGlassQty"]);
+  const totalBoxQty = sum(["w_TotalBoxQty", "d_TotalBoxQty"]);
+  const totalScreens = sum(["w_TotalScreens", "d_TotalScreens"]);
 
   const groupByWindowDoor = {
     w: {
-      otherFields,
+      otherFields: w_otherFields,
       numbers: [
         {
           label: "Windows",
@@ -74,12 +94,7 @@ const Com = ({ className, ...props }) => {
       ],
     },
     d: {
-      otherFields: {
-        TotalGlassQty: data.d_TotalGlassQty,
-        TotalBoxQty: data.d_TotalBoxQty,
-        TotalLBRMin: data.d_TotalLBRMin,
-        TotalPrice: data.d_TotalPrice,
-      },
+      otherFields: d_otherFields,
       numbers: [
         {
           label: "Exterior Doors",

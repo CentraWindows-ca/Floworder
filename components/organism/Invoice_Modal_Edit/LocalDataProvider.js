@@ -449,7 +449,6 @@ export const LocalDataProvider = ({
     uIstatusObj,
     initData,
     isDeleted: initData?.m_IsActive === false,
-    validationResult,
   };
   return (
     <LocalDataContext.Provider value={context}>

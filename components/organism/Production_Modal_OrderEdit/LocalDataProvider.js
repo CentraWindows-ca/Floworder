@@ -27,7 +27,10 @@ import constants, {
   ORDER_TRANSFER_FIELDS,
   SOURCE_OF_UI,
 } from "lib/constants";
-import { uiWoFieldEditGroupMapping } from "lib/constants/production_constants_labelMapping";
+import {
+  getFieldCode,
+  uiWoFieldEditGroupMapping,
+} from "lib/constants/production_constants_labelMapping";
 import { getOrderKind } from "lib/utils";
 
 import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
@@ -44,7 +47,13 @@ import { getVConfig } from "./hooks/vconfig";
 
 const LocalDataContext = createContext(null);
 const LocalDataContext_items = createContext(null);
-export { GeneralContext, LocalDataContext, LocalDataContext_items };
+const LocalDataContext_data = createContext(null);
+export {
+  GeneralContext,
+  LocalDataContext,
+  LocalDataContext_data,
+  LocalDataContext_items,
+};
 
 const STATUS = {
   m: "m_Status",
@@ -124,6 +133,8 @@ export const LocalDataProvider = ({
   const [validationResult, setValidationResult] = useState(null);
 
   const [initData, setInitData] = useState(null);
+  const [initWithOriginalStructure, setInitWithOriginalStructure] =
+    useState(null);
   const [initDataItems, setInitDataItems] = useState(null);
   const [initDataReturnTrips, setInitDataReturnTrips] = useState(null);
   const [initDataSiteLockout, setInitDataSiteLockout] = useState(null);
@@ -184,16 +195,17 @@ export const LocalDataProvider = ({
     }
   }, [initMasterId, isDeleted]);
 
-  const handleChange = (v, k) => {
+  const handleChange = (v, field) => {
+    const fieldCode = getFieldCode(field);
     setData((prev) => {
       const _newV = JSON.parse(JSON.stringify(prev || {}));
-      _.set(_newV, k, v);
+      _.set(_newV, field, v);
       return _newV;
     });
 
     const _groups = {};
     _.keys(uiWoFieldEditGroupMapping)?.map((group) => {
-      if (uiWoFieldEditGroupMapping[group][k]) _groups[group] = true;
+      if (uiWoFieldEditGroupMapping[group][fieldCode]) _groups[group] = true;
     });
 
     setEditedGroup((prev) => ({
@@ -205,7 +217,7 @@ export const LocalDataProvider = ({
     setValidationResult((prev) => {
       try {
         const _v = JSON.parse(JSON.stringify(prev));
-        _.unset(_v, k);
+        _.unset(_v, field);
         return _v;
       } catch (error) {
         return prev;
@@ -263,6 +275,7 @@ export const LocalDataProvider = ({
     setAddOnGroup({});
 
     setInitData(null);
+    setInitWithOriginalStructure(null);
     setInitDataItems(null);
     setInitDataReturnTrips(null);
     setInitDataSiteLockout(null);
@@ -321,8 +334,10 @@ export const LocalDataProvider = ({
         // re-assemble data to easier to edit
 
         const { value } = res;
+        setInitWithOriginalStructure(value);
 
-        mergedData = { ...value?.d, ...value?.m, ...value?.w };
+        // m_, w_1, w_2, ...
+        const mergedData = _.assign({}, ..._.values(value));
 
         // set init fields from newest wo
         setInitData(JSON.parse(JSON.stringify(mergedData)));
@@ -333,8 +348,9 @@ export const LocalDataProvider = ({
         // if we need to keep saveButton available for groups
         const _editingGroup = {};
         _.keys(uiWoFieldEditGroupMapping)?.map((group) => {
-          _.keys(stillEditingData)?.map((k) => {
-            if (uiWoFieldEditGroupMapping[group]?.[k]) {
+          _.keys(stillEditingData)?.map((field) => {
+            const fieldCode = getFieldCode(field);
+            if (uiWoFieldEditGroupMapping[group]?.[fieldCode]) {
               _editingGroup[group] = true;
             }
           });
@@ -343,8 +359,8 @@ export const LocalDataProvider = ({
 
         setUiOrderType({
           m: !!value?.m,
-          d: !!value?.d,
-          w: !!value?.w,
+          d: !!mergedData?.m_DoorStatus,
+          w: !!mergedData?.m_WinStatus,
         });
 
         // search lbr breakdowns
@@ -705,7 +721,7 @@ export const LocalDataProvider = ({
 
   const doSave = useLoadingBar(
     async (group) => {
-      const validateResult = onValidate({ initData, data, kind, uiOrderType });
+      const validateResult = onValidate({initWithOriginalStructure, initData, data, kind, uiOrderType });
       if (!_.isEmpty(validateResult)) {
         const _errorMessages = _.uniq(_.values(validateResult));
         toast(
@@ -977,7 +993,6 @@ export const LocalDataProvider = ({
     isUiAllowHeader,
     isUiAllowEdit,
     initMasterId,
-    data,
     kind,
     initKind,
     facility,
@@ -1011,8 +1026,6 @@ export const LocalDataProvider = ({
     onGetWindowMaker: doGetWindowMaker,
     onGetWindowMaker_comment: doGetWindowMaker_comment,
     onGetWindowMaker_batchNo: doGetWindowMaker_batchNo,
-    editedGroup,
-    setEditedGroup,
 
     tabCounts: _tabCounts,
     LbrBreakDowns,
@@ -1030,6 +1043,7 @@ export const LocalDataProvider = ({
     glassTotal,
     uIstatusObj,
     initData,
+    initWithOriginalStructure,
     initDataSiteLockout,
     initDataService,
     isDeleted: initData?.m_IsActive === false,
@@ -1037,6 +1051,13 @@ export const LocalDataProvider = ({
     addonGroup,
     isInAddOnGroup,
     dictionary,
+    permissions
+  };
+
+  const context_data = {
+    editedGroup,
+    validationResult,
+    data,
   };
 
   // 2. context for items
@@ -1069,9 +1090,11 @@ export const LocalDataProvider = ({
 
   return (
     <LocalDataContext.Provider value={context}>
-      <LocalDataContext_items.Provider value={context_items}>
-        {children}
-      </LocalDataContext_items.Provider>
+      <LocalDataContext_data.Provider value={context_data}>
+        <LocalDataContext_items.Provider value={context_items}>
+          {children}
+        </LocalDataContext_items.Provider>
+      </LocalDataContext_data.Provider>
     </LocalDataContext.Provider>
   );
 };

@@ -8,6 +8,7 @@ import Editable from "components/molecule/Editable";
 import {
   labelMapping,
   applyField,
+  spreadFacilities,
 } from "lib/constants/production_constants_labelMapping";
 
 import {
@@ -29,7 +30,7 @@ import {
 // styles
 import styles from "./styles.module.scss";
 
-import { LocalDataContext, GeneralContext } from "./LocalDataProvider";
+import { LocalDataContext, LocalDataContext_data, GeneralContext } from "./LocalDataProvider";
 import { DisplayBlock, displayFilter } from "./Com";
 
 const COMMON_FIELDS = applyField([
@@ -146,33 +147,40 @@ const DOOR_FIELDS = applyField([
 
 const Com = ({}) => {
   const { permissions } = useContext(GeneralContext);
-  const { uiOrderType, kind } = useContext(LocalDataContext);
+  const { uiOrderType, kind, initData, initWithOriginalStructure } = useContext(LocalDataContext);
 
   const [doorInputs, setDoorInputs] = useState(null);
   const [windowInputs, setWindowInputs] = useState(null);
+  const [masterInputs, setMasterInputs] = useState(null)
 
   useEffect(() => {
-    setDoorInputs(
-      displayFilter(DOOR_FIELDS, {
-        kind,
-        uiOrderType,
-        permissions,
-      }),
-    );
+    let _doorFields = displayFilter(DOOR_FIELDS, {
+      kind,
+      uiOrderType,
+      permissions,
+      initWithOriginalStructure
+    });
+    // spread to different facilities [{facility: "", fields: [], facilityRoleType: ""}]
+    _doorFields = spreadFacilities(_doorFields, initWithOriginalStructure)?.facilities;
+    setDoorInputs(_doorFields);
 
-    setWindowInputs(
-      displayFilter(WINDOW_FIELDS, {
-        kind,
-        uiOrderType,
-        permissions,
-      }),
-    );
+    let _windowFields = displayFilter(WINDOW_FIELDS, {
+      kind,
+      uiOrderType,
+      permissions,
+      initWithOriginalStructure
+    });
+    _windowFields = spreadFacilities(_windowFields, initWithOriginalStructure)?.facilities;
+    setWindowInputs(_windowFields);
+
+    const _masterFields = spreadFacilities(COMMON_FIELDS, initWithOriginalStructure)?.master
+    setMasterInputs(_masterFields)
   }, [kind, uiOrderType]);
 
   return (
     <>
       <div className={cn(styles.columnOptionsContainer)}>
-        {COMMON_FIELDS?.map((a) => {
+        {masterInputs?.map((a) => {
           return <Block inputData={a} key={a.fieldCode} />;
         })}
       </div>
@@ -182,43 +190,61 @@ const Com = ({}) => {
           <div className={styles.subTitle}>
             <label>Windows</label>
           </div>
-          <div className={cn(styles.columnOptionsContainer)}>
-            {windowInputs?.map((a) => {
-              return <Block key={a.fieldCode} inputData={a} />;
+          {windowInputs
+            ?.map((fac) => {
+              const { facility, fields } = fac;
+              return (
+                <React.Fragment key={`w_${facility}`}>
+                  <div className={cn(styles.columnFacility)}>
+                    <span>{facility}</span>
+                  </div>
+                  <div className={cn(styles.columnOptionsContainer)}>
+                    {fields?.map((a) => {
+                      return <Block key={a.field} inputData={a} />;
+                    })}
+                  </div>
+                </React.Fragment>
+              );
             })}
-          </div>
         </>
       )}
-
       {!_.isEmpty(doorInputs) && (
         <>
           <div className={styles.subTitle}>
             <label>Doors</label>
           </div>
-          <div className={cn(styles.columnOptionsContainer)}>
-            {doorInputs?.map((a) => {
-              return <Block key={a.fieldCode} inputData={a} />;
+          {doorInputs
+            ?.map((fac) => {
+              const { facility, fields } = fac;
+              return (
+                <React.Fragment key={`d_${facility}`}>
+                  <div className={cn(styles.columnFacility)}>
+                    <span>{facility}</span>
+                  </div>
+                  <div className={cn(styles.columnOptionsContainer)}>
+                    {fields?.map((a) => {
+                      return <Block key={a.field} inputData={a} />;
+                    })}
+                  </div>
+                </React.Fragment>
+              );
             })}
-          </div>
         </>
       )}
     </>
   );
 };
 
-const Block = ({ inputData }) => {
+const Block = React.memo(({ inputData }) => {
+  const { data, validationResult } = useContext(LocalDataContext_data);
   const {
-    data,
     initData,
     onChange,
     checkEditable,
     checkAddOnField,
-    validationResult,
     dictionary,
   } = useContext(LocalDataContext);
-  let { title, icon, fieldCode, renderSubItem } = inputData;
-
-  const field = fieldCode
+  let { title, icon, fieldCode, field, renderSubItem } = inputData;
 
   const addon = checkAddOnField({ id: fieldCode });
   const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
@@ -255,6 +281,6 @@ const Block = ({ inputData }) => {
       </div>
     </DisplayBlock>
   );
-};
+});
 
-export default Com;
+export default React.memo(Com);

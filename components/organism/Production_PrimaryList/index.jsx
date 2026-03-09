@@ -658,12 +658,12 @@ const Com = (props) => {
       }
     }
 
-    console.log(_data)
-
     _data = _data?.map((a) => {
       if (!a) return null;
       const { value } = a;
-      const merged = { ...value?.d, ...value?.m, ...value?.w };
+
+      const merged = _.assign({}, ..._.values(value));
+
       const {
         m_Status,
         m_WinStatus,
@@ -673,7 +673,6 @@ const Com = (props) => {
         m_ShippingType,
         m_CreatedAt,
         m_LastModifiedAt,
-        m_CustomerDate,
         // addon
         m_ParentMasterId,
         m_AddOnsCount,
@@ -693,10 +692,14 @@ const Com = (props) => {
         ? ORDER_STATUS?.find((a) => a.key.toString() === m_Status?.toString())
         : null;
       merged.m_WinStatus_display = m_WinStatus
-        ? ORDER_STATUS?.find((a) => a.key.toString() === m_WinStatus?.toString())
+        ? ORDER_STATUS?.find(
+            (a) => a.key.toString() === m_WinStatus?.toString(),
+          )
         : null;
       merged.m_DoorStatus_display = m_DoorStatus
-        ? ORDER_STATUS?.find((a) => a.key.toString() === m_DoorStatus?.toString())
+        ? ORDER_STATUS?.find(
+            (a) => a.key.toString() === m_DoorStatus?.toString(),
+          )
         : null;
 
       merged.m_BranchId_display = getValue(m_BranchId, "branches")?.label;
@@ -709,28 +712,26 @@ const Com = (props) => {
       merged.m_CreatedAt_display = utils.formatDate(m_CreatedAt);
       merged.m_LastModifiedAt_display = utils.formatDate(m_LastModifiedAt);
 
-      merged.m_CustomerDate_display = m_CustomerDate;
-
-      // merged.w_CustomerDate_display = w_CustomerDate;
-      // merged.d_CustomerDate_display = d_CustomerDate;
-
-      // merged.w_ProductionStartDate_colored = w_ProductionStartDate;
-      // merged.d_ProductionStartDate_colored = d_ProductionStartDate;
-
       // handle prefix
       fnAssignValue({
         fields: merged,
         assignFrom: "CustomerDate",
         assignTo: "CustomerDate_display",
-        fn: (v) => v,
+        fn: (v) => utils.formatDate(v),
       });
 
       fnAssignValue({
         fields: merged,
         assignFrom: "ProductionStartDate",
         assignTo: "ProductionStartDate_colored",
-        fn: (v) => v,
+        fn: (v) => utils.formatDate(v),
       });
+
+      // merged.w_CustomerDate_display = w_CustomerDate;
+      // merged.d_CustomerDate_display = d_CustomerDate;
+
+      // merged.w_ProductionStartDate_colored = w_ProductionStartDate;
+      // merged.d_ProductionStartDate_colored = d_ProductionStartDate;
 
       merged.m_InstallStatus =
         resInstallStatusMapping?.[merged.m_WorkOrderNo]?.currentStateName ||

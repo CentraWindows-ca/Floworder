@@ -14,7 +14,13 @@ const hook = ({ setValidationResult, checkEditable }) => {
    * data is current value;
    * initData to search extra conditions (if window, if door, ...)
    */
-  const onValidate = ({ initData, data, uiOrderType, kind }) => {
+  const onValidate = ({
+    initData,
+    data,
+    uiOrderType,
+    kind,
+    initWithOriginalStructure,
+  }) => {
     // initData condition
 
     const errorMessages = {};
@@ -27,15 +33,16 @@ const hook = ({ setValidationResult, checkEditable }) => {
           fieldCode,
           uiOrderType,
           kind,
+          initWithOriginalStructure,
         },
         data,
       );
       if (!isAvailabe) return;
 
       // ===== if field visually disabled, skip
-      const isDisabled = !checkEditable({fieldCode })
+      const isDisabled = !checkEditable({ fieldCode });
 
-      if (isDisabled) return
+      if (isDisabled) return;
 
       // ===== if product type doesnt have this field. skip
       const _payload = {
@@ -56,7 +63,7 @@ const hook = ({ setValidationResult, checkEditable }) => {
   const c_required = ({ errorMessages, initData, data, fieldCode }) => {
     const fieldLabel = labelMapping[fieldCode]?.title || fieldCode;
 
-    const field = fieldCode
+    const field = fieldCode;
 
     if (
       !data[field] ||

@@ -12,12 +12,12 @@ import Editable from "components/molecule/Editable";
 
 // styles
 import styles from "./styles.module.scss";
-import { LocalDataContext } from "./LocalDataProvider";
+import { LocalDataContext, LocalDataContext_data } from "./LocalDataProvider";
 
 const Com = ({}) => {
+  const { data } = useContext(LocalDataContext_data);
   const {
     initData,
-    data,
     checkEditable,
     onUpdateTransferredLocation,
     onChange,
@@ -90,11 +90,12 @@ const Com = ({}) => {
 };
 
 const StatusUpdate = ({ statusLabel, currentKind }) => {
-  const { data, onUpdateStatus, checkEditable, checkAddOnField } =
+  const { data } = useContext(LocalDataContext_data);
+  const { onUpdateStatus, checkEditable, checkAddOnField } =
     useContext(LocalDataContext);
 
   const fieldCode = `${currentKind}_Status`;
-  const field = fieldCode
+  const field = fieldCode;
 
   const uIstatusObj = ORDER_STATUS?.find((a) => a.key === data?.[field]) || {};
   const { color, label, textColor } = uIstatusObj;

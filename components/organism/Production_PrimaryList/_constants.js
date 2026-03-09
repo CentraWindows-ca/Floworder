@@ -1,10 +1,12 @@
 import _ from "lodash";
+import cn from "classnames";
 import constants, {
   WorkOrderSelectOptions,
   ORDER_STATUS,
   WORKORDER_STATUS_MAPPING,
   ALL_SUBORDER_TYPES,
 } from "lib/constants";
+import styles from "./styles.module.scss";
 
 const COLUMN_PRODUCT_NUMBERS = [
   "m_NumberOfWindows",
@@ -319,7 +321,9 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
   const columnMap = _.keyBy(columns, "fieldCode");
 
   // Ordered part: only those keys that exist in columnMap
-  const orderedColumns = sequence.map((fieldCode) => columnMap[fieldCode]).filter(Boolean);
+  const orderedColumns = sequence
+    .map((fieldCode) => columnMap[fieldCode])
+    .filter(Boolean);
 
   // Remaining columns that weren't included in sequence
   // const remainingColumns = columns.filter(col => !sequence.includes(col.fieldCode));
@@ -328,19 +332,42 @@ export const COLUMN_SEQUENCE_FOR_STATUS = (status, columns) => {
   // expand columns
   orderedColumns.forEach((col) => {
     const { fieldCode } = col;
-    const [kind, dbColumn] = fieldCode?.split("_");
+    const [kind, ...dbColumn] = fieldCode?.split("_");
+    const fieldDisplay = dbColumn?.join("_");
+
     if (kind === "m") {
       columnsExpandSuborders.push(col);
     } else {
-      ALL_SUBORDER_TYPES?.map((a) => a.suborder_code)
-        ?.filter((pref) => pref?.startsWith(kind))
-        ?.forEach((pref) => {
-          // assemble from fieldCode to field
-          columnsExpandSuborders.push({
-            ...col,
-            fieldCode: pref + "_" + dbColumn,
-          });
-        });
+      ALL_SUBORDER_TYPES?.filter((a) =>
+        a?.suborder_code?.startsWith(kind),
+      )?.forEach((a) => {
+        const { suborder_code, facility } = a;
+
+        const _newCol = {
+          ...col,
+          fieldCode: suborder_code + "_" + fieldDisplay,
+          title: (
+            <>
+              <span
+                className={cn(
+                  "badge badge-primary fw-normal fs-xs",
+                  styles.badge,
+                )}
+              >
+                {facility}
+              </span>
+              <span>{col.title}</span>
+            </>
+          ),
+        }
+
+        if (_newCol.initKey) {
+          _newCol.initKey = _newCol.initKey.replace(/^[^_]+_/, suborder_code + "_")
+        }
+
+        // assemble from fieldCode to field
+        columnsExpandSuborders.push(_newCol);
+      });
     }
   });
 

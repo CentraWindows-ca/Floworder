@@ -25,10 +25,15 @@ import constants, { ADDON_STATUS } from "lib/constants";
 // styles
 import styles from "./styles.module.scss";
 
-import { LocalDataContext, LocalDataProvider } from "./LocalDataProvider";
+import {
+  LocalDataContext,
+  LocalDataContext_data,
+  LocalDataProvider,
+} from "./LocalDataProvider";
 import LoadingBlock from "components/atom/LoadingBlock";
 
 const Com = ({}) => {
+  const { data, editedGroup } = useContext(LocalDataContext_data);
   const {
     isSaving,
     onSave,
@@ -36,9 +41,7 @@ const Com = ({}) => {
     display_sections,
     onUnlinkAddOn,
     onLinkAddOn,
-    data,
     checkEditable,
-    editedGroup,
     isInAddOnGroup,
     isUiAllowEdit,
   } = useContext(LocalDataContext);
@@ -82,9 +85,9 @@ const Com = ({}) => {
               </div>
               <div className={cn(styles.mainItem, styles["grid-3"])}>
                 <div className={cn(styles.sectionTitle)}>Order Options</div>
-                <CollapseContainer id="orderOptions">
-                  <Sec_OrderOptions />
-                </CollapseContainer>
+                {/* <CollapseContainer id="orderOptions"> */}
+                <Sec_OrderOptions />
+                {/* </CollapseContainer> */}
               </div>
               <div className={cn(styles.mainItem, styles["grid-4-up"])}>
                 <div className={cn(styles.sectionTitle)}>Schedule</div>
@@ -226,9 +229,8 @@ const Com = ({}) => {
   );
 };
 
-const CollapseContainer = ({ id, children }) => {
+const CollapseContainer = React.memo(({ id, children }) => {
   const { uiShowMore } = useContext(LocalDataContext);
-
   return (
     <>
       <div
@@ -241,6 +243,6 @@ const CollapseContainer = ({ id, children }) => {
       </div>
     </>
   );
-};
+});
 
 export default Com;

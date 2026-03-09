@@ -1,13 +1,16 @@
 import React, { useState, useContext } from "react";
 import cn from "classnames";
 import constants from "lib/constants";
-import {labelMapping, applyField} from "lib/constants/production_constants_labelMapping";
+import {
+  labelMapping,
+  applyField,
+} from "lib/constants/production_constants_labelMapping";
 
 import _ from "lodash";
 
 import { TableHeader, TableWrapper } from "components/atom/TableSortable";
 
-import { LocalDataContext } from "../LocalDataProvider";
+import { LocalDataContext, LocalDataContext_data } from "../LocalDataProvider";
 import { ToggleBlock, NoData } from "../Com";
 // styles
 import stylesRoot from "../styles.module.scss";
@@ -42,7 +45,8 @@ const STATUS_DISPLAY = (data, woRef) => {
 };
 
 const Com = ({}) => {
-  const { glassTotal, glassItems, data: woRef } = useContext(LocalDataContext);
+  const { data: woRef } = useContext(LocalDataContext_data);
+  const { glassTotal, glassItems } = useContext(LocalDataContext);
 
   const [sort, setSort] = useState(null);
   const [filters, setFilters] = useState(null);

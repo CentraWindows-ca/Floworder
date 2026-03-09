@@ -22,7 +22,7 @@ import { PORTAL_WEBCAL } from "lib/api/SERVER";
 
 const COMMON_FIELDS_LOCKOUT = applyField([
   {
-    id: "lo_displayName",
+    fieldCode: "lo_displayName",
     title: "Lockout Number",
     Component: Editable.EF_Renderer,
     disabled: true,
@@ -50,7 +50,7 @@ const COMMON_FIELDS_LOCKOUT = applyField([
     },
   },
   {
-    id: "lo_scheduledLockoutDate",
+    fieldCode: "lo_scheduledLockoutDate",
     title: "Schedule Date",
     Component: Editable.EF_DateOnly,
     disabled: true,
@@ -63,7 +63,7 @@ const COMMON_FIELDS_LOCKOUT = applyField([
 
 const COMMON_FIELDS_SERVICE = applyField([
   {
-    id: "serviceId",
+    fieldCode: "serviceId",
     title: "Service number",
     Component: Editable.EF_Renderer,
     disabled: true,
@@ -89,7 +89,7 @@ const COMMON_FIELDS_SERVICE = applyField([
     },
   },
   // {
-  //   id: "windowProductionStartDate",
+  //   fieldCode: "windowProductionStartDate",
   //   title: "Production Date",
   //   Component: Editable.EF_DateOnly,
   //   disabled: true,
@@ -119,9 +119,9 @@ const Com = ({}) => {
           <div id="sitelockout" className={cn(styles.collapseContainer)}>
             <div className={cn(styles.columnScheduledContainer)}>
               {COMMON_FIELDS_LOCKOUT?.map((a) => {
-                const { title, id } = a;
+                const { title, fieldCode } = a;
                 return (
-                  <DisplayDate key={id} {...a} data={initDataSiteLockout} />
+                  <DisplayDate key={fieldCode} {...a} data={initDataSiteLockout} />
                 );
               })}
             </div>
@@ -144,8 +144,8 @@ const Com = ({}) => {
                   key={serviceId}
                 >
                   {COMMON_FIELDS_SERVICE?.map((a) => {
-                    const { title, id } = a;
-                    return <DisplayDate key={id} {...a} data={service} />;
+                    const { title, fieldCode } = a;
+                    return <DisplayDate key={fieldCode} {...a} data={service} />;
                   })}
                 </div>
               );
@@ -158,7 +158,7 @@ const Com = ({}) => {
 };
 
 const DisplayDate = (props) => {
-  const { id, displayId, title, Component, className, data, ...rest } = props;
+  const { fieldCode, displayId, title, Component, className, data, ...rest } = props;
 
   if (Component) {
     return (

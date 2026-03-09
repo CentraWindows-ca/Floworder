@@ -12,17 +12,27 @@ import constants, {
 } from "lib/constants";
 // styles
 import styles from "./styles.module.scss";
-import { LocalDataContext } from "./LocalDataProvider";
+import { LocalDataContext, LocalDataContext_data } from "./LocalDataProvider";
 import utils from "lib/utils";
-import { uiWoFieldEditGroupMapping as gmp } from "lib/constants/production_constants_labelMapping";
+import {
+  uiWoFieldEditGroupMapping as gmp,
+  parseFieldsByfieldCode,
+} from "lib/constants/production_constants_labelMapping";
 
 export const getIfFieldDisplayAsProductType = (
-  { kind, uiOrderType, id, fieldCode, displayAs, permissions },
+  {
+    kind,
+    uiOrderType,
+    id,
+    fieldCode,
+    displayAs,
+    permissions,
+    initWithOriginalStructure,
+  },
   data,
 ) => {
+  if (!fieldCode) fieldCode = id;
 
-  if (!fieldCode) fieldCode = id 
-  
   let currentKind = "m";
   if (fieldCode?.startsWith("m_")) currentKind = "m";
   else if (fieldCode?.startsWith("w_")) currentKind = "w";
@@ -54,13 +64,30 @@ export const getIfFieldDisplayAsProductType = (
     fieldCode === "m_TransferredLocation_display" ||
     fieldCode === "m_TransferredDate_display"
   ) {
-    const _windowShow =
-      data?.w_ManufacturingFacility &&
-      data?.m_Branch !== data?.w_ManufacturingFacility;
-    const _doorShow =
-      data?.d_ManufacturingFacility &&
-      data?.m_Branch !== data?.d_ManufacturingFacility;
+    // TODO: need to discuss a new way to check transfer
     const _hasBranch = data?.m_Branch && data?.m_Branch !== "-";
+
+    // has dbColumn ManufacturingFacility, value != main
+    const _windowShow = _.some(
+      parseFieldsByfieldCode(
+        "w_ManufacturingFacility",
+        initWithOriginalStructure,
+      ),
+      (_field) => {
+        return data?.m_Branch !== data[_field];
+      },
+    );
+
+    const _doorShow = _.some(
+      parseFieldsByfieldCode(
+        "d_ManufacturingFacility",
+        initWithOriginalStructure,
+      ),
+      (_field) => {
+        return data?.m_Branch !== data[_field];
+      },
+    );
+
     _isDisplay &= _hasBranch && (_windowShow || _doorShow);
   }
 
@@ -108,7 +135,7 @@ export const getIfFieldDisplayForProductItems = (
 
 export const displayFilter = (
   columnList,
-  { kind, uiOrderType, permissions },
+  { kind, uiOrderType, permissions, initWithOriginalStructure },
 ) => {
   return columnList?.filter((a) => {
     const { id = "m", fieldCode = "m", displayAs } = a;
@@ -120,6 +147,7 @@ export const displayFilter = (
         fieldCode: fieldCode || id,
         displayAs,
         permissions,
+        initWithOriginalStructure,
       },
       a,
     );
@@ -148,15 +176,11 @@ export const displayFilterForProductItems = (
 
 export const Block = ({ className_input, inputData, data: overridingData }) => {
   const localContext = useContext(LocalDataContext);
-  const {
-    data: contextData,
-    initData,
-    onChange,
-    checkEditable,
-    checkAddOnField,
-    validationResult,
-    dictionary,
-  } = localContext;
+  const { data: contextData, validationResult } = useContext(
+    LocalDataContext_data,
+  );
+  const { initData, onChange, checkEditable, checkAddOnField, dictionary } =
+    localContext;
 
   const data = overridingData || contextData;
 
@@ -165,6 +189,7 @@ export const Block = ({ className_input, inputData, data: overridingData }) => {
     title,
     displayId,
     id,
+    field,
     fieldCode,
     options,
     overrideOnChange,
@@ -176,11 +201,11 @@ export const Block = ({ className_input, inputData, data: overridingData }) => {
     options = options(dictionary);
   }
 
-  // TODO: temporary fallback
+  // TODO: temporary fallback. should remove id later
   if (!fieldCode) {
-    fieldCode = id
+    fieldCode = id;
   }
-  const field = fieldCode
+  field = field || fieldCode;
 
   const className_required = getIsRequired(initData, fieldCode) && "required";
 
@@ -190,9 +215,16 @@ export const Block = ({ className_input, inputData, data: overridingData }) => {
   const addon = checkAddOnField({ id: fieldCode });
   const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
 
+  let _title = title;
+  if (typeof title === "function") {
+    {
+      _title = title(inputData);
+    }
+  }
+
   return (
     <DisplayBlock fieldCode={displayId || fieldCode}>
-      <label className={cn(className_required)}>{title}</label>
+      <label className={cn(className_required)}>{_title}</label>
       <div className={cn(className_input)}>
         <Component
           id={field}
@@ -224,9 +256,12 @@ export const DisplayBlock = ({
   displayAs,
   ...props
 }) => {
-  // kind is UI selected kind
-  const { uiOrderType, kind, data, permissions } = useContext(LocalDataContext);
 
+
+  // kind is UI selected kind
+  const { uiOrderType, kind, permissions, initWithOriginalStructure } =
+    useContext(LocalDataContext);
+  const { data } = useContext(LocalDataContext_data);
   const display = getIfFieldDisplayAsProductType(
     {
       kind,
@@ -234,6 +269,7 @@ export const DisplayBlock = ({
       fieldCode: fieldCode || id,
       displayAs,
       permissions,
+      initWithOriginalStructure,
     },
     data,
   );

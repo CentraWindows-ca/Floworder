@@ -12,7 +12,7 @@ import Editable from "components/molecule/Editable";
 import styles from "./styles.module.scss";
 import stylesRoot from "../styles.module.scss";
 
-import { LocalDataContext, GeneralContext } from "../LocalDataProvider";
+import { LocalDataContext,LocalDataContext_data, GeneralContext } from "../LocalDataProvider";
 import {
   ToggleFull,
   NoData,
@@ -25,16 +25,16 @@ import {
 
 const Com = ({}) => {
   const { permissions } = useContext(GeneralContext);
+  const { data, validationResult } = useContext(LocalDataContext_data);
   const {
-    data,
     initData,
-    validationResult,
     kind,
     uiOrderType,
     onChange,
     checkEditable,
     checkAddOnField,
     onHide,
+    initWithOriginalStructure
   } = useContext(LocalDataContext);
 
   const COMMON_FIELDS = applyField([
@@ -56,6 +56,7 @@ const Com = ({}) => {
     kind,
     uiOrderType,
     permissions,
+    initWithOriginalStructure
   });
 
   const jsxClose = (

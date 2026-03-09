@@ -25,7 +25,7 @@ export const getIfFieldDisplayAsProductType = (
   let _isDisplay = true;
 
   if (!fieldCode) {
-    fieldCode = id
+    fieldCode = id;
   }
 
   // data conditions ======================
@@ -48,7 +48,10 @@ export const getIfFieldDisplayAsProductType = (
   return _isDisplay;
 };
 
-export const displayFilter = (itemList, { uiOrderType, permissions }) => {
+export const displayFilter = (
+  itemList,
+  { uiOrderType, permissions, initWithOriginalStructure },
+) => {
   return itemList?.filter((a) => {
     const { id = "m", fieldCode = "m" } = a;
     return getIfFieldDisplayAsProductType(
@@ -57,6 +60,7 @@ export const displayFilter = (itemList, { uiOrderType, permissions }) => {
         id,
         fieldCode,
         permissions,
+        initWithOriginalStructure,
       },
       a,
     );
@@ -119,8 +123,15 @@ export const Block = ({ className_input, inputData }) => {
   );
 };
 
-export const DisplayBlock = ({ children, id = "m", fieldCode = "m", displayAs, ...props }) => {
-  const { uiOrderType, data, permissions } = useContext(LocalDataContext);
+export const DisplayBlock = ({
+  children,
+  id = "m",
+  fieldCode = "m",
+  displayAs,
+  ...props
+}) => {
+  const { uiOrderType, data, permissions, initWithOriginalStructure } =
+    useContext(LocalDataContext);
 
   const display = getIfFieldDisplayAsProductType(
     {
@@ -128,6 +139,7 @@ export const DisplayBlock = ({ children, id = "m", fieldCode = "m", displayAs, .
       id,
       fieldCode,
       permissions,
+      initWithOriginalStructure,
     },
     data,
   );

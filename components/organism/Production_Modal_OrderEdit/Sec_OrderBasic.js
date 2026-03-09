@@ -9,7 +9,7 @@ import Editable from "components/molecule/Editable";
 // styles
 import styles from "./styles.module.scss";
 
-import { LocalDataContext } from "./LocalDataProvider";
+import { LocalDataContext, LocalDataContext_data } from "./LocalDataProvider";
 
 import { DisplayBlock } from "./Com";
 const ComFetchButton = React.memo(({ fieldCode }) => {
@@ -99,13 +99,12 @@ const COMMON_FIELDS = applyField([
 ]);
 
 const Com = ({}) => {
+  const { data, validationResult } = useContext(LocalDataContext_data);
   const {
-    data,
     initData,
     onChange,
     checkEditable,
     checkAddOnField,
-    validationResult,
   } = useContext(LocalDataContext);
 
   return (

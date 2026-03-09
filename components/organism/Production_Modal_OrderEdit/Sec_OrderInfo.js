@@ -5,6 +5,7 @@ import constants from "lib/constants";
 import {
   labelMapping,
   applyField,
+  spreadFacilities,
 } from "lib/constants/production_constants_labelMapping";
 
 import { formatCurrency2Decimal } from "lib/utils";
@@ -14,7 +15,7 @@ import Editable from "components/molecule/Editable";
 // styles
 import styles from "./styles.module.scss";
 
-import { LocalDataContext } from "./LocalDataProvider";
+import { LocalDataContext, GeneralContext } from "./LocalDataProvider";
 
 import { displayFilter, Block } from "./Com";
 
@@ -121,9 +122,9 @@ const WINDOW_FIELDS = applyField([
   {
     Component: Editable.EF_Input,
     fieldCode: "w_BatchNo",
-    title: (
+    title: (a) => (
       <span>
-        Windows Batch NO. <ComFetchButton kind={"w"} fieldCode={"w_BatchNo"} />
+        Windows Batch NO. <ComFetchButton kind={"w"} fieldCode={a.fieldCode} />
       </span>
     ),
   },
@@ -167,9 +168,9 @@ const DOOR_FIELDS = applyField([
   {
     Component: Editable.EF_Input,
     fieldCode: "d_BatchNo",
-    title: (
+    title: (a) => (
       <span>
-        Doors Batch NO. <ComFetchButton kind="d" fieldCode={"w_BatchNo"} />
+        Doors Batch NO. <ComFetchButton kind="d" fieldCode={a.fieldCode} />
       </span>
     ),
   },
@@ -186,46 +187,68 @@ const DOOR_FIELDS = applyField([
 ]);
 
 const Com = ({}) => {
-  const { uiOrderType, kind, permissions } = useContext(LocalDataContext);
+  const { permissions } = useContext(GeneralContext);
+  const { uiOrderType, kind, initData, initWithOriginalStructure } = useContext(LocalDataContext);
 
   const [doorInputs, setDoorInputs] = useState(null);
   const [windowInputs, setWindowInputs] = useState(null);
+  const [masterInputs, setMasterInputs] = useState(null)
 
   useEffect(() => {
-    setDoorInputs(
-      displayFilter(DOOR_FIELDS, {
-        kind,
-        uiOrderType,
-        permissions,
-      }),
-    );
+    let _doorFields = displayFilter(DOOR_FIELDS, {
+      kind,
+      uiOrderType,
+      permissions,
+      initWithOriginalStructure
+    });
+    // spread to different facilities [{facility: "", fields: [], facilityRoleType: ""}]
+    _doorFields = spreadFacilities(_doorFields, initWithOriginalStructure)?.facilities;
 
-    setWindowInputs(
-      displayFilter(WINDOW_FIELDS, {
-        kind,
-        uiOrderType,
-        permissions,
-      }),
-    );
+    console.log(initWithOriginalStructure)
+    setDoorInputs(_doorFields);
+
+    let _windowFields = displayFilter(WINDOW_FIELDS, {
+      kind,
+      uiOrderType,
+      permissions,
+      initWithOriginalStructure
+    });
+    _windowFields = spreadFacilities(_windowFields, initWithOriginalStructure)?.facilities;
+    setWindowInputs(_windowFields);
+
+    const _masterFields = spreadFacilities(COMMON_FIELDS, initWithOriginalStructure)?.master
+    setMasterInputs(_masterFields)
   }, [kind, uiOrderType]);
 
   return (
     <>
       <div className={cn(styles.columnInputsContainer)}>
-        {COMMON_FIELDS?.map((a) => {
+        {masterInputs?.map((a) => {
           return <Block key={a.fieldCode} inputData={a} />;
         })}
       </div>
+
       {!_.isEmpty(windowInputs) && (
         <>
           <div className={styles.subTitle}>
             <label>Windows</label>
           </div>
-          <div className={cn(styles.columnInputsContainer)}>
-            {windowInputs?.map((a) => {
-              return <Block key={a.fieldCode} inputData={a} />;
+          {windowInputs
+            ?.map((fac) => {
+              const { facility, fields } = fac;
+              return (
+                <React.Fragment key={`w_${facility}`}>
+                  <div className={cn(styles.columnFacility)}>
+                    <span>{facility}</span>
+                  </div>
+                  <div className={cn(styles.columnInputsContainer)}>
+                    {fields?.map((a) => {
+                      return <Block key={a.field} inputData={a} />;
+                    })}
+                  </div>
+                </React.Fragment>
+              );
             })}
-          </div>
         </>
       )}
       {!_.isEmpty(doorInputs) && (
@@ -233,11 +256,22 @@ const Com = ({}) => {
           <div className={styles.subTitle}>
             <label>Doors</label>
           </div>
-          <div className={cn(styles.columnInputsContainer)}>
-            {doorInputs?.map((a) => {
-              return <Block key={a.fieldCode} inputData={a} />;
+          {doorInputs
+            ?.map((fac) => {
+              const { facility, fields } = fac;
+              return (
+                <React.Fragment key={`d_${facility}`}>
+                  <div className={cn(styles.columnFacility)}>
+                    <span>{facility}</span>
+                  </div>
+                  <div className={cn(styles.columnInputsContainer)}>
+                    {fields?.map((a) => {
+                      return <Block key={a.field} inputData={a} />;
+                    })}
+                  </div>
+                </React.Fragment>
+              );
             })}
-          </div>
         </>
       )}
     </>

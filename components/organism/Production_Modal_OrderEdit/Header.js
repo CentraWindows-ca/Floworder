@@ -11,15 +11,15 @@ import Modal_OrderHistory from "components/organism/Production_Modal_OrderHistor
 // styles
 import styles from "./styles.module.scss";
 
-import { LocalDataContext, LocalDataProvider } from "./LocalDataProvider";
+import { LocalDataContext, LocalDataContext_data, LocalDataProvider } from "./LocalDataProvider";
 
 const Com = ({}) => {
+  const { data } = useContext(LocalDataContext_data);
   const {
     initMasterId,
     onAnchor,
     onRestore,
     onGetWindowMaker,
-    data,
     kind,
     display_sections,
     checkEditable,

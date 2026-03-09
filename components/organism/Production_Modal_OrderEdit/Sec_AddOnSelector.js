@@ -6,10 +6,11 @@ import HoverPopover from "components/atom/HoverPopover";
 // styles
 import styles from "./styles.module.scss";
 
-import { LocalDataContext, GeneralContext } from "./LocalDataProvider";
+import { LocalDataContext, LocalDataContext_data, GeneralContext } from "./LocalDataProvider";
 
 const AddOnSelector = ({}) => {
-  const { data, addonGroup, isInAddOnGroup } = useContext(LocalDataContext);
+  const { data } = useContext(LocalDataContext_data);
+  const { addonGroup, isInAddOnGroup } = useContext(LocalDataContext);
 
   if (!isInAddOnGroup || !addonGroup.parent) {
     return null;
