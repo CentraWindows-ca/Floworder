@@ -204,7 +204,6 @@ const Com = ({}) => {
     // spread to different facilities [{facility: "", fields: [], facilityRoleType: ""}]
     _doorFields = spreadFacilities(_doorFields, initWithOriginalStructure)?.facilities;
 
-    console.log(initWithOriginalStructure)
     setDoorInputs(_doorFields);
 
     let _windowFields = displayFilter(WINDOW_FIELDS, {

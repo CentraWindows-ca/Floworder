@@ -29,6 +29,7 @@ import constants, {
 } from "lib/constants";
 import {
   getFieldCode,
+  parseFieldsByfieldCode,
   uiWoFieldEditGroupMapping,
 } from "lib/constants/production_constants_labelMapping";
 import { getOrderKind } from "lib/utils";
@@ -36,7 +37,7 @@ import { getOrderKind } from "lib/utils";
 import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
 
 import {
-  checkEditableById,
+  checkEditableByFieldCode,
   checkEditableByGroup,
   checkAddOnFieldById,
   treateGlassItems,
@@ -57,8 +58,8 @@ export {
 
 const STATUS = {
   m: "m_Status",
-  w: "w_Status",
-  d: "d_Status",
+  w: "m_WinStatus",
+  d: "m_DoorStatus",
 };
 
 // NOTE: UI toggles originally for embed iframe that doesnt need that many functionalities
@@ -195,6 +196,13 @@ export const LocalDataProvider = ({
     }
   }, [initMasterId, isDeleted]);
 
+  const handleChangeAllSuborders = (v, fieldCode) => {
+    const fields = parseFieldsByfieldCode(fieldCode, initWithOriginalStructure);
+    fields?.forEach((field) => {
+      handleChange(v, field);
+    });
+  };
+
   const handleChange = (v, field) => {
     const fieldCode = getFieldCode(field);
     setData((prev) => {
@@ -330,6 +338,7 @@ export const LocalDataProvider = ({
         isDeleted ? 0 : 1,
       );
       let mergedData = {};
+
       if (typeof res === "object") {
         // re-assemble data to easier to edit
 
@@ -337,8 +346,7 @@ export const LocalDataProvider = ({
         setInitWithOriginalStructure(value);
 
         // m_, w_1, w_2, ...
-        const mergedData = _.assign({}, ..._.values(value));
-
+        mergedData = _.assign({}, ..._.values(value));
         // set init fields from newest wo
         setInitData(JSON.parse(JSON.stringify(mergedData)));
 
@@ -365,21 +373,33 @@ export const LocalDataProvider = ({
 
         // search lbr breakdowns
         const _lbrs = [];
-        _.keys(mergedData)?.map((k) => {
-          // matches "<n>__"
-          if (/^[a-zA-Z]__.*$/.test(k) && k?.endsWith("Min")) {
-            const lbr_title = k.split("__")?.[1]?.replace("Min", "");
-            const lbr_qty = mergedData[k?.replace("Min", "")];
-            const lbr_min = mergedData[k];
+
+        _.keys(value)?.forEach((kindFac) => {
+          const _kindFacObj = value[kindFac];
+          const [kind, facilityCode] = kindFac;
+          if (!_.isPlainObject(_kindFacObj)) return;
+
+          _.keys(_kindFacObj)?.forEach((field) => {
+            const prefix = `${kindFac}__`;
+            if (!field.startsWith(prefix) || !field.endsWith("Min")) return;
 
             _lbrs.push({
-              title: lbr_title,
-              qty: lbr_qty,
-              lbr: lbr_min,
+              title: field.slice(prefix.length, -3),
+              qty: _kindFacObj[field.slice(0, -3)],
+              lbr: _kindFacObj[field],
+              facility: constants.FACILITY_FROM_CODE[facilityCode] || "",
             });
-          }
+          });
         });
-        setLbrBreakDowns(_lbrs);
+        const mergedLbrs = _(_lbrs)
+          .groupBy("title")
+          .map((items, title) => ({
+            title,
+            qty: _.sumBy(items, (a) => a.qty || 0),
+            lbr: _.sumBy(items, (a) => a.lbr || 0),
+          }))
+          .value();
+        setLbrBreakDowns(mergedLbrs);
       }
 
       return mergedData;
@@ -501,8 +521,8 @@ export const LocalDataProvider = ({
   });
 
   //
-  const doUpdateStatus = async (newStatus, _kind) => {
-    const payload = await getStatusPayload(data, newStatus, _kind);
+  const doUpdateStatus = async (newStatus, _kind, facilityCode) => {
+    const payload = await getStatusPayload(data, newStatus, _kind, facilityCode);
     if (payload === null) return null;
     await doMove(payload);
 
@@ -511,14 +531,14 @@ export const LocalDataProvider = ({
     onSave();
   };
 
-  const getStatusPayload = async (data, newStatus, _kind) => {
+  const getStatusPayload = async (data, newStatus, _kind, facilityCode) => {
     const { m_WorkOrderNo, m_MasterId } = data;
     const payload = {
       m_WorkOrderNo,
       m_MasterId,
       newStatus,
     };
-    const updatingStatusField = `${_kind}_Status`;
+    const updatingStatusField = `${_kind}_${facilityCode}_Status`;
     payload["oldStatus"] = data[updatingStatusField];
     payload["isWindow"] = _kind === "w";
 
@@ -721,7 +741,13 @@ export const LocalDataProvider = ({
 
   const doSave = useLoadingBar(
     async (group) => {
-      const validateResult = onValidate({initWithOriginalStructure, initData, data, kind, uiOrderType });
+      const validateResult = onValidate({
+        initWithOriginalStructure,
+        initData,
+        data,
+        kind,
+        uiOrderType,
+      });
       if (!_.isEmpty(validateResult)) {
         const _errorMessages = _.uniq(_.values(validateResult));
         toast(
@@ -896,8 +922,8 @@ export const LocalDataProvider = ({
       if (fieldCode) {
         _pass =
           _pass &&
-          checkEditableById({
-            id: fieldCode,
+          checkEditableByFieldCode({
+            fieldCode,
             data,
             permissions,
             initKind,
@@ -927,8 +953,8 @@ export const LocalDataProvider = ({
       isEditable,
       initMasterId,
       data?.m_Status,
-      data?.w_Status,
-      data?.d_Status,
+      data?.m_WinStatus,
+      data?.m_DoorStatus,
       permissions,
       dictionary,
       isInAddOnGroup,
@@ -960,8 +986,8 @@ export const LocalDataProvider = ({
       isEditable,
       initMasterId,
       data?.m_Status,
-      data?.w_Status,
-      data?.d_Status,
+      data?.m_WinStatus,
+      data?.m_DoorStatus,
       dictionary?.workOrderFields,
       isInAddOnGroup,
       addonGroup?.parent?.m_MasterId,
@@ -1008,6 +1034,7 @@ export const LocalDataProvider = ({
     setExistingImages,
     setReturnTrips,
     onChange: handleChange,
+    onChangeAllSuborders: handleChangeAllSuborders,
     onUpdateStatus: doUpdateStatus,
     onUpdateTransferredLocation: doUpdateTransferredLocation,
     onAnchor: handleAnchor,
@@ -1051,7 +1078,7 @@ export const LocalDataProvider = ({
     addonGroup,
     isInAddOnGroup,
     dictionary,
-    permissions
+    permissions,
   };
 
   const context_data = {

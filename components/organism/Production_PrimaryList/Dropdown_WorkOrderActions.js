@@ -97,8 +97,8 @@ const WorkOrderActions = ({
     return payload;
   };
 
-  const handleMoveTo = async (newStatus, _kind, isReservation) => {
-    const payload = await getStatusPayload(data, newStatus, _kind);
+  const handleMoveTo = async (newStatus, _kind, isReservation, facilityCode) => {
+    const payload = await getStatusPayload(data, newStatus, _kind, facilityCode);
     if (payload === null) return null;
     if (
       !window.confirm(
@@ -248,6 +248,8 @@ const WorkOrderActions = ({
         </Button>
       </PermissionBlock>
 
+
+      {/* TODO: move to sub dropdown */}
       <PermissionBlock
         featureCode={constants.FEATURE_CODES["om.prod.wo.status.window"]}
       >

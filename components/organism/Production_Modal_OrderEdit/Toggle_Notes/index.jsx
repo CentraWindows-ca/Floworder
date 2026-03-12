@@ -30,7 +30,7 @@ const Com = ({}) => {
     initData,
     kind,
     uiOrderType,
-    onChange,
+    onChangeAllSuborders,
     checkEditable,
     checkAddOnField,
     onHide,
@@ -136,7 +136,7 @@ const Com = ({}) => {
             value={data?.[field]}
             initValue={initData?.[field]}
             isHighlightDiff
-            onChange={(v) => onChange(v, field)}
+            onChange={(v) => onChangeAllSuborders(v, field)}
             disabled={!checkEditable({ fieldCode })}
             className={cn(addonClass)}
             errorMessage={validationResult?.[field]}

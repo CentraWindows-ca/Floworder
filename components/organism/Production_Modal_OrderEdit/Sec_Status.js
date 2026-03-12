@@ -5,6 +5,7 @@ import constants, {
   ORDER_STATUS,
   WORKORDER_WORKFLOW,
   WORKORDER_STATUS_MAPPING,
+  FACILITY_FROM_CODE,
 } from "lib/constants";
 
 import OverlayWrapper from "components/atom/OverlayWrapper";
@@ -29,10 +30,10 @@ const Com = ({}) => {
   const { color, label, textColor } = uIstatusObj;
 
   const isTransferred_w = [WORKORDER_STATUS_MAPPING.Transferred.key].includes(
-    data?.w_Status,
+    data?.m_WinStatus,
   );
   const isTransferred_d = [WORKORDER_STATUS_MAPPING.Transferred.key].includes(
-    data?.d_Status,
+    data?.m_DoorStatus,
   );
 
   return (
@@ -51,10 +52,18 @@ const Com = ({}) => {
       )}
 
       {(kind === "w" || kind === "m") && (
-        <StatusUpdate statusLabel="Windows" currentKind="w" />
+        <StatusUpdate
+          statusLabel="Windows"
+          currentKind="w"
+          fieldCode="m_WinStatus"
+        />
       )}
       {(kind === "d" || kind === "m") && (
-        <StatusUpdate statusLabel="Doors" currentKind="d" />
+        <StatusUpdate
+          statusLabel="Doors"
+          currentKind="d"
+          fieldCode="m_DoorStatus"
+        />
       )}
       {/* 
         either window or door in transfered status, allow to input location
@@ -89,18 +98,34 @@ const Com = ({}) => {
   );
 };
 
-const StatusUpdate = ({ statusLabel, currentKind }) => {
+const StatusUpdate = ({ statusLabel, currentKind, fieldCode }) => {
   const { data } = useContext(LocalDataContext_data);
-  const { onUpdateStatus, checkEditable, checkAddOnField } =
-    useContext(LocalDataContext);
+  const {
+    onUpdateStatus,
+    checkEditable,
+    checkAddOnField,
+    initWithOriginalStructure,
+  } = useContext(LocalDataContext);
 
-  const fieldCode = `${currentKind}_Status`;
   const field = fieldCode;
 
   const uIstatusObj = ORDER_STATUS?.find((a) => a.key === data?.[field]) || {};
   const { color, label, textColor } = uIstatusObj;
   const [toggle, setToggle] = useState(false);
   const addon = checkAddOnField({ id: fieldCode });
+
+  const _isEditable = checkEditable({ fieldCode });
+
+  const facilities = _.keys(initWithOriginalStructure)
+    ?.map((k) => {
+      const [kind, facilityCode] = k.split("_");
+      return {
+        kind,
+        facility: FACILITY_FROM_CODE[facilityCode] || "",
+        facilityCode
+      };
+    })
+    ?.filter(({ kind }) => kind === currentKind);
 
   return (
     <>
@@ -111,19 +136,19 @@ const StatusUpdate = ({ statusLabel, currentKind }) => {
         )}
       >
         <OverlayWrapper
-          isLock={!checkEditable({ fieldCode })}
+          isLock={!_isEditable}
           renderTrigger={(onTrigger) => (
             <div
               className={cn(
                 styles.statesContainer,
-                checkEditable({ fieldCode }) && styles.statesContainerEditable,
+                _isEditable && styles.statesContainerEditable,
               )}
               style={{ color: textColor, backgroundColor: color }}
             >
               <span>
                 {statusLabel}: {label}
               </span>
-              {checkEditable({ fieldCode }) && (
+              {_isEditable && (
                 <div>
                   <i className="fa-solid fa-angle-down" />
                 </div>
@@ -133,12 +158,13 @@ const StatusUpdate = ({ statusLabel, currentKind }) => {
           toggle={toggle}
         >
           <PopoverEdit
-            onChange={(v) => {
-              onUpdateStatus(v, currentKind);
+            onChange={(v, facilityCode) => {
+              onUpdateStatus(v, currentKind, facilityCode);
               setToggle((prev) => !prev);
             }}
             uIstatusObj={uIstatusObj}
             statusLabel={statusLabel}
+            facilities={facilities}
           />
         </OverlayWrapper>
       </div>
@@ -146,11 +172,38 @@ const StatusUpdate = ({ statusLabel, currentKind }) => {
   );
 };
 
-const PopoverEdit = ({ onChange, uIstatusObj, statusLabel }) => {
+const PopoverEdit = ({ onChange, uIstatusObj, statusLabel, facilities }) => {
   const allowedStatusNames = WORKORDER_WORKFLOW[uIstatusObj?.systemName];
   const allowedStatus =
     allowedStatusNames?.map((n) => WORKORDER_STATUS_MAPPING[n]) ||
     ORDER_STATUS.filter((a) => a.key);
+
+  const jsxStatusList = (a, _facilityCode) => {
+    const { key, color, label, icon, textColor } = a;
+    return (
+      <div
+        key={key}
+        className={cn(styles.statesContainer, styles.statesContainerEditable)}
+        // style={{ color: textColor, backgroundColor: color }}
+        style={{ minHeight: 36 }}
+        onClick={() => onChange(key, _facilityCode)}
+      >
+        <div className="align-items-center flex gap-2">
+          Move {statusLabel} To:
+          <span
+            style={{
+              width: 15,
+              height: 15,
+              backgroundColor: color,
+              border: "1px solid #A0A0A0",
+            }}
+          />
+          <b>{label}</b>
+        </div>
+        <div className="text-slate-300">{icon}</div>
+      </div>
+    );
+  };
 
   return (
     <div
@@ -159,33 +212,18 @@ const PopoverEdit = ({ onChange, uIstatusObj, statusLabel }) => {
         "flex-column flex gap-2 p-2",
       )}
     >
-      {allowedStatus?.map((a) => {
-        const { key, color, label, icon, textColor } = a;
+      {facilities?.map((f) => {
+        const { facility, facilityCode } = f;
+
         return (
-          <div
-            key={key}
-            className={cn(
-              styles.statesContainer,
-              styles.statesContainerEditable,
-            )}
-            // style={{ color: textColor, backgroundColor: color }}
-            style={{ minHeight: 36 }}
-            onClick={() => onChange(key)}
-          >
-            <div className="align-items-center flex gap-2">
-              Move {statusLabel} To:
-              <span
-                style={{
-                  width: 15,
-                  height: 15,
-                  backgroundColor: color,
-                  border: "1px solid #A0A0A0",
-                }}
-              />
-              <b>{label}</b>
+          <React.Fragment key={facility}>
+            <div className={cn(styles.columnFacility)}>
+              <span>{facility}</span>
             </div>
-            <div className="text-slate-300">{icon}</div>
-          </div>
+            {allowedStatus?.map((a) => {
+              return jsxStatusList(a, facilityCode);
+            })}
+          </React.Fragment>
         );
       })}
     </div>

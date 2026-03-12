@@ -15,6 +15,7 @@ import styles from "./styles.module.scss";
 import { LocalDataContext, LocalDataContext_data } from "./LocalDataProvider";
 import utils from "lib/utils";
 import {
+  getFieldCode,
   uiWoFieldEditGroupMapping as gmp,
   parseFieldsByfieldCode,
 } from "lib/constants/production_constants_labelMapping";
@@ -24,7 +25,7 @@ export const getIfFieldDisplayAsProductType = (
     kind,
     uiOrderType,
     id,
-    fieldCode,
+    fieldCode = "m",
     displayAs,
     permissions,
     initWithOriginalStructure,
@@ -138,7 +139,7 @@ export const displayFilter = (
   { kind, uiOrderType, permissions, initWithOriginalStructure },
 ) => {
   return columnList?.filter((a) => {
-    const { id = "m", fieldCode = "m", displayAs } = a;
+    const { id, fieldCode, displayAs } = a;
     // currentKind is data kind
     return getIfFieldDisplayAsProductType(
       {
@@ -256,8 +257,6 @@ export const DisplayBlock = ({
   displayAs,
   ...props
 }) => {
-
-
   // kind is UI selected kind
   const { uiOrderType, kind, permissions, initWithOriginalStructure } =
     useContext(LocalDataContext);
@@ -453,8 +452,8 @@ export const treateGlassItems = (list) => {
   return _newItems;
 };
 
-export const checkEditableById = ({
-  id,
+export const checkEditableByFieldCode = ({
+  fieldCode,
   permissions,
   data,
   initKind,
@@ -463,14 +462,15 @@ export const checkEditableById = ({
   let isEnable = false;
 
   // ============ permission checking: "enable" rules ============
-  const isWindowField = id?.startsWith("w_") || id?.startsWith("m_");
-  const isDoorField = id?.startsWith("d_") || id?.startsWith("m_");
+  const isWindowField = fieldCode?.startsWith("w_") || fieldCode?.startsWith("m_");
+  const isDoorField = fieldCode?.startsWith("d_") || fieldCode?.startsWith("m_");
   const checkPermission = (pc, op = "canEdit") => {
     return _.get(permissions, [pc, op], false);
   };
   const checkGroup = (group) => {
-    return gmp[group][id];
+    return gmp[group][fieldCode];
   };
+
   if (checkPermission(FEATURE_CODES["om.prod.wo.basic"])) {
     isEnable = isEnable || checkGroup("basic");
   }
@@ -507,7 +507,7 @@ export const checkEditableById = ({
     isEnable =
       isEnable ||
       (checkGroup("schedule") &&
-        id !== "w_ProductionStartDate" &&
+        fieldCode !== "w_ProductionStartDate" &&
         isWindowField);
   }
   if (
@@ -515,20 +515,20 @@ export const checkEditableById = ({
   ) {
     isEnable =
       isEnable ||
-      (checkGroup("schedule") && id !== "d_ProductionStartDate" && isDoorField);
+      (checkGroup("schedule") && fieldCode !== "d_ProductionStartDate" && isDoorField);
   }
   if (
     checkPermission(FEATURE_CODES["om.prod.wo.scheduleWithProduction.window"])
   ) {
-    isEnable = isEnable || id === "w_ProductionStartDate";
+    isEnable = isEnable || fieldCode === "w_ProductionStartDate";
   }
   if (
     checkPermission(FEATURE_CODES["om.prod.wo.scheduleWithProduction.door"])
   ) {
-    isEnable = isEnable || id === "d_ProductionStartDate";
+    isEnable = isEnable || fieldCode === "d_ProductionStartDate";
   }
   if (checkPermission(FEATURE_CODES["om.prod.wo.scheduleShippedDate"])) {
-    isEnable = isEnable || id === "m_ShippedDate";
+    isEnable = isEnable || fieldCode === "m_ShippedDate";
   }
   if (checkPermission(FEATURE_CODES["om.prod.wo.notes"])) {
     isEnable = isEnable || checkGroup("notes");
@@ -540,8 +540,12 @@ export const checkEditableById = ({
   pending rule is rely on "where they open the modal". not on "what modal" they open
   here "where" means which tab (master, window, door) they search the order from
   */
-  let status_ForPendingRule = data?.[`${initKind}_Status`];
   if (sourceOfUI !== SOURCE_OF_UI.iframe_forms_approval) {
+    let status_ForPendingRule;
+    if (initKind === "m") status_ForPendingRule = data?.["m_Status"];
+    if (initKind === "w") status_ForPendingRule = data?.["m_WinStatus"];
+    if (initKind === "d") status_ForPendingRule = data?.["m_DoorStatus"];
+
     // in forms embed, any status should ignore editable check
     if (status_ForPendingRule === WORKORDER_STATUS_MAPPING.Pending.key) {
       // check from group 'schedule', but still from field level (in case we dont pass group)
@@ -560,7 +564,7 @@ export const checkEditableById = ({
       isEnable = false;
     }
 
-    if (checkGroup("information") && id?.startsWith("m_")) {
+    if (checkGroup("information") && fieldCode?.startsWith("m_")) {
       isEnable = false;
     }
 
@@ -570,11 +574,13 @@ export const checkEditableById = ({
         "m_RevisedDeliveryDate",
         "w_CustomerDate",
         "d_CustomerDate",
-      ].includes(id)
+      ].includes(fieldCode)
     ) {
       isEnable = false;
     }
   }
+
+
 
   return isEnable;
 };
@@ -623,13 +629,15 @@ export const checkAddOnFieldById = ({
   // if data?.m_AddOnLinked === 'SPLIT', isAddOnEditable is true
   const isOrderUnlink = data?.m_AddOnLinked === ADDON_STATUS.detached;
 
-  if (workOrderFields?.[id]) {
+  const fieldCode = getFieldCode(id)
+
+  if (workOrderFields?.[fieldCode]) {
     let {
       isReadOnly, // default
       isSplitNotSync, // functional purpose
       isSyncedFromParent, // visual color purpose
       addonChildCopyParentDataWhenCreated, // additional param for visual color
-    } = workOrderFields[id];
+    } = workOrderFields[fieldCode];
 
     let _editable = !isReadOnly;
     let _syncFromParent = isSyncedFromParent;

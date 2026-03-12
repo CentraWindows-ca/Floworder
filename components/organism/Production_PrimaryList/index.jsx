@@ -399,7 +399,7 @@ const Com = (props) => {
             <div
               className={cn(styles.tableStatusColor)}
               style={{
-                color: record?.m_WinStatus?.textColor,
+                color: record?.m_WinStatus_display?.textColor,
                 backgroundColor: record?.m_WinStatus_display?.color,
               }}
             >

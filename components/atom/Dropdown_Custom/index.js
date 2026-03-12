@@ -18,7 +18,7 @@ const Dropdown_Custom =  ({
       open={open}
       onOpenChange={setOpen}
       trigger={["click"]}
-      dropdownRender={() => (
+      popupRender={() => (
         <div
           style={{
             padding: "5px",
