@@ -11,7 +11,8 @@ import styles from "./styles.module.scss";
 
 import { LocalDataContext, LocalDataContext_data } from "./LocalDataProvider";
 
-import { DisplayBlock } from "./Com";
+import { DisplayBlock, Block } from "./Com";
+
 const ComFetchButton = React.memo(({ fieldCode }) => {
   const { onGetWindowMaker_comment, checkEditable } =
     useContext(LocalDataContext);
@@ -22,7 +23,7 @@ const ComFetchButton = React.memo(({ fieldCode }) => {
         [styles.iconFetchButton]: true,
         [styles.disabled]: disabled,
       })}
-      title = {"Fill From Windowmaker"}
+      title={"Fill From Windowmaker"}
       onClick={() => (disabled ? null : onGetWindowMaker_comment())}
     />
   );
@@ -65,11 +66,7 @@ const COMMON_FIELDS = applyField([
     fieldCode: "m_ProjectManager",
     placeholder: "-",
     group: "projectManagerList",
-    overrideOnChange: (onChange, params) => {
-      const [v, id, o] = params;
-      onChange(v, "m_ProjectManager");
-      onChange(o?.name, "m_ProjectManagerName");
-    },
+
   },
   {
     Component: Editable.EF_Input,
@@ -99,49 +96,11 @@ const COMMON_FIELDS = applyField([
 ]);
 
 const Com = ({}) => {
-  const { data, validationResult } = useContext(LocalDataContext_data);
-  const {
-    initData,
-    onChange,
-    checkEditable,
-    checkAddOnField,
-  } = useContext(LocalDataContext);
-
   return (
     <div className={cn(styles.columnInputsContainer)}>
       {COMMON_FIELDS?.map((a, i) => {
         const { fieldCode, Component, title, overrideOnChange, ...rest } = a;
-        const addon = checkAddOnField({ id: fieldCode });
-        const addonClass = addon?.isSyncedFromParent
-          ? styles.addonSync_input
-          : "";
-
-        const field = fieldCode
-
-        return (
-          <DisplayBlock fieldCode={fieldCode} key={field}>
-            <label>{title}</label>
-            <div>
-              <Component
-                id={field}
-                value={data?.[field] || ""}
-                initValue={initData?.[field] || ""}
-                isHighlightDiff
-                onChange={(v, ...o) => {
-                  if (typeof overrideOnChange === "function") {
-                    overrideOnChange(onChange, [v, ...o]);
-                  } else {
-                    onChange(v, field);
-                  }
-                }}
-                errorMessage={validationResult?.[field]}
-                disabled={!checkEditable({ fieldCode })}
-                className={cn(addonClass)}
-                {...rest}
-              />
-            </div>
-          </DisplayBlock>
-        );
+        return <Block fieldCode={fieldCode} key={fieldCode} inputData={a} />
       })}
     </div>
   );

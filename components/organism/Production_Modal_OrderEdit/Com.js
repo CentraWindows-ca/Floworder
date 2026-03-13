@@ -1,4 +1,4 @@
-import { useState, useContext, memo } from "react";
+import { useState, useContext, memo, useCallback } from "react";
 import cn from "classnames";
 import { Spin } from "antd";
 import { LoadingOutlined, SaveOutlined } from "@ant-design/icons";
@@ -175,110 +175,119 @@ export const displayFilterForProductItems = (
   });
 };
 
-export const Block = ({ className_input, inputData, data: overridingData }) => {
-  const localContext = useContext(LocalDataContext);
-  const { data: contextData, validationResult } = useContext(
-    LocalDataContext_data,
-  );
-  const { initData, onChange, checkEditable, checkAddOnField, dictionary } =
-    localContext;
+export const Block = memo(
+  ({ className_input, inputData, data: overridingData }) => {
+    const localContext = useContext(LocalDataContext);
+    const { data: contextData, validationResult } = useContext(
+      LocalDataContext_data,
+    );
+    const { initData, onChange, checkEditable, checkAddOnField, dictionary } =
+      localContext;
 
-  const data = overridingData || contextData;
+    const data = overridingData || contextData;
 
-  let {
-    Component,
-    title,
-    displayId,
-    id,
-    field,
-    fieldCode,
-    options,
-    overrideOnChange,
-    renderValue,
-    className,
-    ...rest
-  } = inputData;
-  if (typeof options === "function") {
-    options = options(dictionary);
-  }
-
-  // TODO: temporary fallback. should remove id later
-  if (!fieldCode) {
-    fieldCode = id;
-  }
-  field = field || fieldCode;
-
-  const className_required = getIsRequired(initData, fieldCode) && "required";
-
-  const _value = renderValue
-    ? renderValue(data?.[field], data, localContext)
-    : data?.[field];
-  const addon = checkAddOnField({ id: fieldCode });
-  const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
-
-  let _title = title;
-  if (typeof title === "function") {
-    {
-      _title = title(inputData);
+    let {
+      Component,
+      title,
+      displayId,
+      field,
+      fieldCode,
+      options,
+      overrideOnChange,
+      renderValue,
+      className,
+      icon,
+      ...rest
+    } = inputData;
+    if (typeof options === "function") {
+      options = options(dictionary);
     }
-  }
 
-  return (
-    <DisplayBlock fieldCode={displayId || fieldCode}>
-      <label className={cn(className_required)}>{_title}</label>
-      <div className={cn(className_input)}>
-        <Component
-          id={field}
-          value={_value}
-          initValue={initData?.[field]}
-          isHighlightDiff
-          onChange={(v, ...o) => {
-            if (typeof overrideOnChange === "function") {
-              overrideOnChange(onChange, [v, ...o]);
-            } else {
-              onChange(v, field);
-            }
-          }}
-          disabled={!checkEditable({ fieldCode })}
-          options={options}
-          errorMessage={validationResult?.[field]}
-          className={cn(className, addonClass)}
-          {...rest}
-        />
-      </div>
-    </DisplayBlock>
-  );
-};
+    field = field || fieldCode;
 
-export const DisplayBlock = ({
-  children,
-  id = "m",
-  fieldCode = "m",
-  displayAs,
-  ...props
-}) => {
-  // kind is UI selected kind
-  const { uiOrderType, kind, permissions, initWithOriginalStructure } =
-    useContext(LocalDataContext);
-  const { data } = useContext(LocalDataContext_data);
-  const display = getIfFieldDisplayAsProductType(
-    {
-      kind,
-      uiOrderType,
-      fieldCode: fieldCode || id,
-      displayAs,
-      permissions,
-      initWithOriginalStructure,
-    },
-    data,
-  );
+    const className_required = getIsRequired(initData, fieldCode) && "required";
 
-  if (display) {
-    return children;
-  } else {
-    return null;
-  }
-};
+    const _value = renderValue
+      ? renderValue(data?.[field], data, localContext)
+      : data?.[field];
+    const addon = checkAddOnField({ id: fieldCode });
+    const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
+
+    let _title = title;
+    if (typeof title === "function") {
+      {
+        _title = title(inputData);
+      }
+    }
+
+    const handleBlockChange = useCallback(
+      (v, ...o) => {
+        if (typeof overrideOnChange === "function") {
+          overrideOnChange(onChange, [v, ...o]);
+        } else {
+          onChange(v, field);
+        }
+      },
+      [overrideOnChange],
+    );
+
+    return (
+      <DisplayBlock blockId={displayId || fieldCode}>
+        <label className={cn(className_required)}>{_title}</label>
+        <div className={cn(className_input)}>
+          <Component
+            id={field}
+            value={_value}
+            initValue={initData?.[field]}
+            isHighlightDiff
+            onChange={handleBlockChange}
+            disabled={!checkEditable({ fieldCode })}
+            options={options}
+            errorMessage={validationResult?.[field]}
+            className={cn(className, addonClass)}
+            {...rest}
+          />
+        </div>
+      </DisplayBlock>
+    );
+  },
+  // (prev, nex) => {
+  //   return (prev.data === nex.data &&
+  //     prev.inputData.overrideOnChange === nex.inputData.overrideOnChange)
+  // },
+);
+
+export const DisplayBlock = memo(
+  ({ children, blockId = "m", displayAs, ...props }) => {
+    // kind is UI selected kind
+    const { uiOrderType, kind, permissions, initWithOriginalStructure } =
+      useContext(LocalDataContext);
+    const { data } = useContext(LocalDataContext_data);
+    const display = getIfFieldDisplayAsProductType(
+      {
+        kind,
+        uiOrderType,
+        fieldCode: blockId,
+        displayAs,
+        permissions,
+        initWithOriginalStructure,
+      },
+      data,
+    );
+
+    if (display) {
+      return children;
+    } else {
+      return null;
+    }
+  },
+  (prev, nex) => {
+    return (
+      prev.displayAs === nex.displayAs &&
+      prev.children === nex.children
+    );
+  },
+);
 
 export const ToggleBlock = ({
   children,
@@ -295,7 +304,7 @@ export const ToggleBlock = ({
   const setToggle = () => {
     if (expands[id]) {
       setExpands((prev) => {
-        const _v = JSON.parse(JSON.stringify(prev || {}));
+        const _v = { ...prev };
         _v[id] = !_v[id];
         return _v;
       });
@@ -341,7 +350,7 @@ export const ToggleFull = ({
   const setToggle = () => {
     if (expands[id]) {
       setExpands((prev) => {
-        const _v = JSON.parse(JSON.stringify(prev || {}));
+        const _v = { ...prev };
         _v[id] = !_v[id];
         return _v;
       });
@@ -462,8 +471,10 @@ export const checkEditableByFieldCode = ({
   let isEnable = false;
 
   // ============ permission checking: "enable" rules ============
-  const isWindowField = fieldCode?.startsWith("w_") || fieldCode?.startsWith("m_");
-  const isDoorField = fieldCode?.startsWith("d_") || fieldCode?.startsWith("m_");
+  const isWindowField =
+    fieldCode?.startsWith("w_") || fieldCode?.startsWith("m_");
+  const isDoorField =
+    fieldCode?.startsWith("d_") || fieldCode?.startsWith("m_");
   const checkPermission = (pc, op = "canEdit") => {
     return _.get(permissions, [pc, op], false);
   };
@@ -515,7 +526,9 @@ export const checkEditableByFieldCode = ({
   ) {
     isEnable =
       isEnable ||
-      (checkGroup("schedule") && fieldCode !== "d_ProductionStartDate" && isDoorField);
+      (checkGroup("schedule") &&
+        fieldCode !== "d_ProductionStartDate" &&
+        isDoorField);
   }
   if (
     checkPermission(FEATURE_CODES["om.prod.wo.scheduleWithProduction.window"])
@@ -580,8 +593,6 @@ export const checkEditableByFieldCode = ({
     }
   }
 
-
-
   return isEnable;
 };
 
@@ -629,7 +640,7 @@ export const checkAddOnFieldById = ({
   // if data?.m_AddOnLinked === 'SPLIT', isAddOnEditable is true
   const isOrderUnlink = data?.m_AddOnLinked === ADDON_STATUS.detached;
 
-  const fieldCode = getFieldCode(id)
+  const fieldCode = getFieldCode(id);
 
   if (workOrderFields?.[fieldCode]) {
     let {

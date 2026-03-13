@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
@@ -189,6 +189,10 @@ const DisplayDate = (props) => {
   const addon = checkAddOnField({ id: fieldCode });
   const addonClass = addon?.isSyncedFromParent ? styles.addonSync_input : "";
 
+  const handleBlockChange = useCallback((v) => {
+    onChange(v, field);
+  }, []);
+
   if (Component) {
     return (
       <Block
@@ -203,7 +207,7 @@ const DisplayDate = (props) => {
   }
 
   return (
-    <DisplayBlock fieldCode={displayId || fieldCode}>
+    <DisplayBlock blockId={displayId || fieldCode}>
       <label
         className={cn(
           "justify-content-start align-items-center flex",
@@ -219,9 +223,7 @@ const DisplayDate = (props) => {
           value={data?.[field]}
           initValue={initData?.[field]}
           isHighlightDiff
-          onChange={(v) => {
-            onChange(v, field);
-          }}
+          onChange={handleBlockChange}
           disabled={!checkEditable({ fieldCode })}
           errorMessage={validationResult?.[field]}
           className={cn(className, addonClass)}

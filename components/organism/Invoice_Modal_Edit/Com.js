@@ -97,7 +97,7 @@ export const Block = ({ className_input, inputData }) => {
     : data?.[id];
 
   return (
-    <DisplayBlock id={displayId || id}>
+    <DisplayBlock blockId={displayId || id}>
       <label className={cn(className_required)}>{title}</label>
       <div className={cn(className_input)}>
         <Component
@@ -125,7 +125,7 @@ export const Block = ({ className_input, inputData }) => {
 
 export const DisplayBlock = ({
   children,
-  id = "m",
+  blockId = "m",
   fieldCode = "m",
   displayAs,
   ...props
@@ -136,7 +136,7 @@ export const DisplayBlock = ({
   const display = getIfFieldDisplayAsProductType(
     {
       uiOrderType,
-      id,
+      id: blockId,
       fieldCode,
       permissions,
       initWithOriginalStructure,

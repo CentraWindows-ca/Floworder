@@ -85,7 +85,7 @@ const Com = ({}) => {
         }
 
         return (
-          <DisplayBlock id={id} key={id}>
+          <DisplayBlock blockId={id} key={id}>
             <label>{_defaultTitle || title}</label>
             <div>
               <Component

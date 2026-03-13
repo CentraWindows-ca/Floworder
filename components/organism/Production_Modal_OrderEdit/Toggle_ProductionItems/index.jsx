@@ -460,7 +460,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
 
   return (
     !_.isEmpty(data) && (
-      <DisplayBlock id={blockId}>
+      <DisplayBlock blockId={blockId}>
         <div className={styles.togglePadding} id={dictKey}>
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
             <label>
@@ -759,7 +759,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
 
   return (
     !_.isEmpty(data) && (
-      <DisplayBlock id={blockId}>
+      <DisplayBlock blockId={blockId}>
         <div className={styles.togglePadding} id={dictKey}>
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
             <label>
@@ -1065,7 +1065,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
 
   return (
     !_.isEmpty(data) && (
-      <DisplayBlock id={blockId}>
+      <DisplayBlock blockId={blockId}>
         <div className={styles.togglePadding} id={dictKey}>
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
             <label>

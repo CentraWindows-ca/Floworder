@@ -3,7 +3,12 @@ import cn from "classnames";
 import _ from "lodash";
 import Modal from "components/molecule/Modal";
 import constants from "lib/constants";
-import {labelMapping} from "lib/constants/production_constants_labelMapping"
+import {
+  getFieldCode,
+  getFieldObj,
+  labelMapping,
+  parseFieldInfoByField,
+} from "lib/constants/production_constants_labelMapping";
 
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
@@ -95,7 +100,10 @@ const Com = ({ data, layer, onHide }) => {
             Record has been modified by <b>{historyData?.ChangedBy || "--"}</b>{" "}
             at <b>{historyData?.CreatedAt}</b>
             <br />
-            Source App. : {historyData?.Source}{historyData?.DBSource ? ` | Window Maker: ${historyData?.DBSource}`:null}
+            Source App. : {historyData?.Source}
+            {historyData?.DBSource
+              ? ` | Window Maker: ${historyData?.DBSource}`
+              : null}
           </div>
           <Tabs
             activeKey={tab}
@@ -130,11 +138,14 @@ const ChangesOnly = ({ historyData }) => {
         ?.sort((a, b) => sortByPrefix(a.Field, b.Field))
         ?.map((a) => {
           const { Field, OldValue, NewValue } = a;
+          const { fieldCode, facility, fieldObj } =
+            parseFieldInfoByField(Field);
 
           return (
             <div key={`changed_${Field}`} className={cn(styles.changesRow)}>
               <div className={cn(styles.changesField)} title={Field}>
-                {labelMapping[Field]?.title || Field}
+                {fieldObj?.title || fieldCode}
+                {facility ? <>- {facility}</> : null}
               </div>
               <div className={cn(styles.changesOld)}>{OldValue}</div>
               <div className={cn(styles.changesNew)}>{NewValue}</div>
@@ -205,14 +216,14 @@ const Items = ({ list, type, label }) => {
                 {a?.Changes?.map((b) => {
                   const { Field, OldValue, NewValue } = b;
                   const displayField = Field;
+
                   return (
                     <div
                       key={`item_changed_${Field}`}
                       className={cn(styles.changesRow)}
                     >
                       <div className={cn(styles.changesField)} title={Field}>
-                        {labelMapping[displayField]
-                          ?.title || displayField}
+                        {labelMapping[displayField]?.title || displayField}
                       </div>
                       <div className={cn(styles.changesOld)}>{OldValue}</div>
                       <div className={cn(styles.changesNew)}>{NewValue}</div>
@@ -252,8 +263,7 @@ const ReturnTrips = ({ list, label }) => {
                         className={cn(styles.changesRow)}
                       >
                         <div className={cn(styles.changesField)} title={Field}>
-                          {labelMapping[displayField]
-                            ?.title || displayField}
+                          {labelMapping[displayField]?.title || displayField}
                         </div>
                         <div className={cn(styles.changesOld)}>{OldValue}</div>
                         <div className={cn(styles.changesNew)}>{NewValue}</div>
@@ -296,8 +306,7 @@ const MultiLines = ({ list, label }) => {
                         className={cn(styles.changesRow)}
                       >
                         <div className={cn(styles.changesField)} title={Field}>
-                          {labelMapping[displayField]
-                            ?.title || displayField}
+                          {labelMapping[displayField]?.title || displayField}
                         </div>
                         <div className={cn(styles.changesOld)}>{OldValue}</div>
                         <div className={cn(styles.changesNew)}>{NewValue}</div>

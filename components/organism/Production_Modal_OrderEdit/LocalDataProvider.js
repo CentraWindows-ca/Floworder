@@ -196,17 +196,10 @@ export const LocalDataProvider = ({
     }
   }, [initMasterId, isDeleted]);
 
-  const handleChangeAllSuborders = (v, fieldCode) => {
-    const fields = parseFieldsByfieldCode(fieldCode, initWithOriginalStructure);
-    fields?.forEach((field) => {
-      handleChange(v, field);
-    });
-  };
-
   const handleChange = (v, field) => {
     const fieldCode = getFieldCode(field);
     setData((prev) => {
-      const _newV = JSON.parse(JSON.stringify(prev || {}));
+      const _newV = {...prev};
       _.set(_newV, field, v);
       return _newV;
     });
@@ -224,7 +217,7 @@ export const LocalDataProvider = ({
     // remove validation of key
     setValidationResult((prev) => {
       try {
-        const _v = JSON.parse(JSON.stringify(prev));
+        const _v = {...prev}
         _.unset(_v, field);
         return _v;
       } catch (error) {
@@ -643,6 +636,7 @@ export const LocalDataProvider = ({
         m_TransferredLocation,
       },
       initData,
+      initWithOriginalStructure
     );
 
     await doInit(initMasterId);
@@ -791,6 +785,7 @@ export const LocalDataProvider = ({
         data,
         _changedData,
         initData,
+        initWithOriginalStructure
       );
 
       if (res?.message) {
@@ -825,7 +820,7 @@ export const LocalDataProvider = ({
         m_AddOnLinked: ADDON_STATUS.detached,
       };
 
-      await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData);
+      await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData, initWithOriginalStructure);
 
       toast(`Add-on Work order unlinked from ${_parentWorkOrder}`, {
         type: "success",
@@ -856,7 +851,7 @@ export const LocalDataProvider = ({
         m_AddOnLinked: ADDON_STATUS.attached,
       };
 
-      await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData);
+      await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData, initWithOriginalStructure);
 
       toast(`Add-on Work order linked from ${_parentWorkOrder}`, {
         type: "success",
@@ -1034,7 +1029,6 @@ export const LocalDataProvider = ({
     setExistingImages,
     setReturnTrips,
     onChange: handleChange,
-    onChangeAllSuborders: handleChangeAllSuborders,
     onUpdateStatus: doUpdateStatus,
     onUpdateTransferredLocation: doUpdateTransferredLocation,
     onAnchor: handleAnchor,

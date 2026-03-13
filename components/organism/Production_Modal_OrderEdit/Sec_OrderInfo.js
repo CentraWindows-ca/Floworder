@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import constants from "lib/constants";
@@ -188,21 +188,25 @@ const DOOR_FIELDS = applyField([
 
 const Com = ({}) => {
   const { permissions } = useContext(GeneralContext);
-  const { uiOrderType, kind, initData, initWithOriginalStructure } = useContext(LocalDataContext);
+  const { uiOrderType, kind, initData, initWithOriginalStructure } =
+    useContext(LocalDataContext);
 
   const [doorInputs, setDoorInputs] = useState(null);
   const [windowInputs, setWindowInputs] = useState(null);
-  const [masterInputs, setMasterInputs] = useState(null)
+  const [masterInputs, setMasterInputs] = useState(null);
 
   useEffect(() => {
     let _doorFields = displayFilter(DOOR_FIELDS, {
       kind,
       uiOrderType,
       permissions,
-      initWithOriginalStructure
+      initWithOriginalStructure,
     });
     // spread to different facilities [{facility: "", fields: [], facilityRoleType: ""}]
-    _doorFields = spreadFacilities(_doorFields, initWithOriginalStructure)?.facilities;
+    _doorFields = spreadFacilities(
+      _doorFields,
+      initWithOriginalStructure,
+    )?.facilities;
 
     setDoorInputs(_doorFields);
 
@@ -210,13 +214,19 @@ const Com = ({}) => {
       kind,
       uiOrderType,
       permissions,
-      initWithOriginalStructure
+      initWithOriginalStructure,
     });
-    _windowFields = spreadFacilities(_windowFields, initWithOriginalStructure)?.facilities;
+    _windowFields = spreadFacilities(
+      _windowFields,
+      initWithOriginalStructure,
+    )?.facilities;
     setWindowInputs(_windowFields);
 
-    const _masterFields = spreadFacilities(COMMON_FIELDS, initWithOriginalStructure)?.master
-    setMasterInputs(_masterFields)
+    const _masterFields = spreadFacilities(
+      COMMON_FIELDS,
+      initWithOriginalStructure,
+    )?.master;
+    setMasterInputs(_masterFields);
   }, [kind, uiOrderType]);
 
   return (
@@ -226,28 +236,26 @@ const Com = ({}) => {
           return <Block key={a.fieldCode} inputData={a} />;
         })}
       </div>
-
       {!_.isEmpty(windowInputs) && (
         <>
           <div className={styles.subTitle}>
             <label>Windows</label>
           </div>
-          {windowInputs
-            ?.map((fac) => {
-              const { facility, fields } = fac;
-              return (
-                <React.Fragment key={`w_${facility}`}>
-                  <div className={cn(styles.columnFacility)}>
-                    <span>{facility}</span>
-                  </div>
-                  <div className={cn(styles.columnInputsContainer)}>
-                    {fields?.map((a) => {
-                      return <Block key={a.field} inputData={a} />;
-                    })}
-                  </div>
-                </React.Fragment>
-              );
-            })}
+          {windowInputs?.map((fac) => {
+            const { facility, fields } = fac;
+            return (
+              <React.Fragment key={`w_${facility}`}>
+                <div className={cn(styles.columnFacility)}>
+                  <span>{facility}</span>
+                </div>
+                <div className={cn(styles.columnInputsContainer)}>
+                  {fields?.map((a) => {
+                    return <Block key={a.field} inputData={a} />;
+                  })}
+                </div>
+              </React.Fragment>
+            );
+          })}
         </>
       )}
       {!_.isEmpty(doorInputs) && (
@@ -255,22 +263,21 @@ const Com = ({}) => {
           <div className={styles.subTitle}>
             <label>Doors</label>
           </div>
-          {doorInputs
-            ?.map((fac) => {
-              const { facility, fields } = fac;
-              return (
-                <React.Fragment key={`d_${facility}`}>
-                  <div className={cn(styles.columnFacility)}>
-                    <span>{facility}</span>
-                  </div>
-                  <div className={cn(styles.columnInputsContainer)}>
-                    {fields?.map((a) => {
-                      return <Block key={a.field} inputData={a} />;
-                    })}
-                  </div>
-                </React.Fragment>
-              );
-            })}
+          {doorInputs?.map((fac) => {
+            const { facility, fields } = fac;
+            return (
+              <React.Fragment key={`d_${facility}`}>
+                <div className={cn(styles.columnFacility)}>
+                  <span>{facility}</span>
+                </div>
+                <div className={cn(styles.columnInputsContainer)}>
+                  {fields?.map((a) => {
+                    return <Block key={a.field} inputData={a} />;
+                  })}
+                </div>
+              </React.Fragment>
+            );
+          })}
         </>
       )}
     </>

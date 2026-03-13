@@ -11,23 +11,23 @@ import styles from "./styles.module.scss";
 
 import { LocalDataContext, LocalDataContext_data } from "./LocalDataProvider";
 
-import { DisplayBlock } from "./Com";
+import { DisplayBlock, Block } from "./Com";
 
 const COMMON_FIELDS = applyField([
   {
     Component: Editable.EF_Input,
     fieldCode: "m_DepositValue",
-    className: "text-right"
+    className: "text-right",
   },
   {
     Component: Editable.EF_Input,
     fieldCode: "m_ListPrice",
-    className: "text-right"
+    className: "text-right",
   },
   {
     Component: Editable.EF_Input,
     fieldCode: "m_Commission",
-    className: "text-right"
+    className: "text-right",
   },
   {
     Component: Editable.EF_Input,
@@ -36,7 +36,7 @@ const COMMON_FIELDS = applyField([
   {
     Component: Editable.EF_Input,
     fieldCode: "m_Discount",
-    className: "text-right"
+    className: "text-right",
   },
   {
     Component: Editable.EF_SelectWithLabel,
@@ -57,7 +57,7 @@ const COMMON_FIELDS = applyField([
         constants.InvoiceTax["PST Exempt"],
       ].includes(data?.m_Tax);
     },
-    className: "text-right"
+    className: "text-right",
   },
   {
     Component: Editable.EF_Input,
@@ -66,55 +66,19 @@ const COMMON_FIELDS = applyField([
 ]);
 
 const Com = ({}) => {
-  const { data, validationResult } = useContext(LocalDataContext_data);
-  const {
-    initData,
-    onChange,
-    checkEditable,
-    checkAddOnField,
-  } = useContext(LocalDataContext);
+  const { data } = useContext(LocalDataContext_data);
 
   return (
     <div className={cn(styles.columnInputsContainer)}>
       {COMMON_FIELDS?.map((a, i) => {
-        const { fieldCode, Component, title, overrideOnChange, onIsDisplay, className, ...rest } =
-          a;
-        const addon = checkAddOnField({ id: fieldCode });
-        const addonClass = addon?.isSyncedFromParent
-          ? styles.addonSync_input
-          : "";
+        const { fieldCode, onIsDisplay } = a;
 
         if (typeof onIsDisplay === "function") {
           const _isDisplay = onIsDisplay(a, data);
           if (!_isDisplay) return null;
         }
 
-        const field = fieldCode
-
-        return (
-          <DisplayBlock fieldCode={fieldCode} key={field}>
-            <label>{title}</label>
-            <div>
-              <Component
-                id={field}
-                value={data?.[field] || ""}
-                initValue={initData?.[field] || ""}
-                isHighlightDiff
-                onChange={(v, ...o) => {
-                  if (typeof overrideOnChange === "function") {
-                    overrideOnChange(onChange, [v, ...o]);
-                  } else {
-                    onChange(v, field);
-                  }
-                }}
-                errorMessage={validationResult?.[field]}
-                disabled={!checkEditable({ fieldCode })}
-                className={cn(addonClass, className)}
-                {...rest}
-              />
-            </div>
-          </DisplayBlock>
-        );
+        return <Block fieldCode={fieldCode} key={fieldCode} inputData={a} />;
       })}
     </div>
   );

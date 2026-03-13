@@ -112,7 +112,7 @@ const Com = ({}) => {
           <Sec_Status />
           {["Shipped"].includes(uIstatusObj?.key) &&
             data?.m_TransferredLocation && (
-              <DisplayBlock id="m_TransferredLocation">
+              <DisplayBlock blockId="m_TransferredLocation">
                 <label className="text-base font-normal">
                   Transferred to:{" "}
                 </label>

@@ -48,7 +48,7 @@ const Com = ({}) => {
         const _defaultTitle = labelMapping[id]?.title;
 
         return (
-          <DisplayBlock id={id} key={id}>
+          <DisplayBlock blockId={id} key={id}>
             <label>{_defaultTitle || title}</label>
             <div>
               <Component
