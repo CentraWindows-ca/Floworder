@@ -9,8 +9,6 @@ import cn from "classnames";
 import _ from "lodash";
 import constants, {
   ITEM_STATUS,
-  ITEM_LITES,
-  ITEM_DOOR_TYPES,
   FACILITY_ORDER,
   ITEM_FACILITY,
 } from "lib/constants";
@@ -365,7 +363,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
         render: (t, record) => {
           const updatingKey = "Notes";
           return (
-            <Editable.EF_Input
+            <Editable.EF_InputDebounce
               {...{
                 className: "form-control form-control-sm",
                 id: `wi_${updatingKey}_${record?.Id}`,
@@ -376,6 +374,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
                 disabled: !_isGroupEditable,
                 size: "sm",
                 placeholder: "--",
+                isHightlightValue: false
               }}
             />
           );
@@ -661,8 +660,9 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
         const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
 
         return (
-          <Editable.EF_Input
+          <Editable.EF_InputDebounce
             {...{
+              className: "form-control form-control-sm",
               id: `di_${updatingKey}_${record?.Id}`,
               value:
                 overrideValue !== undefined
@@ -673,6 +673,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
               disabled: !_isGroupEditable,
               size: "sm",
               placeholder: "--",
+              isHightlightValue: false
             }}
           />
         );
@@ -969,8 +970,9 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
         const overrideValue = updatingValues?.[record?.Id]?.[updatingKey];
 
         return (
-          <Editable.EF_Input
+          <Editable.EF_InputDebounce
             {...{
+              className: "form-control form-control-sm",
               id: `wi_${updatingKey}_${record?.Id}`,
               value:
                 overrideValue !== undefined
@@ -981,6 +983,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
               disabled: !_isGroupEditable,
               size: "sm",
               placeholder: "--",
+              isHightlightValue: false
             }}
           />
         );
@@ -1110,7 +1113,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
 
 const TableSortableWithFacility = (props) => {
   const { permissions } = useContext(LocalDataContext_items);
-  const { data, columns, overridedListByFacility } = props;
+  const { data, columns, overridedListByFacility, ...rest } = props;
 
   const _isWithFacility = _.keys(overridedListByFacility)?.length > 1;
 
@@ -1144,7 +1147,7 @@ const TableSortableWithFacility = (props) => {
                 - {_facilityDisplay}
               </div>
               <TableSortable
-                {...props}
+                {...rest}
                 columns={_columns}
                 headerClassName={_headerClassName}
                 data={overridedListByFacility[k]}
@@ -1159,7 +1162,8 @@ const TableSortableWithFacility = (props) => {
     // if not splitting facility: 
     return (
       <TableSortable
-        {...props}
+        {...rest}
+        data={data}
         columns={_columns?.filter((a) => a.fieldCode !== "Facility")}
         headerClassName={_headerClassName}
       />

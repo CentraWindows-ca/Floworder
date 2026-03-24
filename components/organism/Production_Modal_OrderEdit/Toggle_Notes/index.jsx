@@ -86,18 +86,19 @@ const Com = ({}) => {
   const result = _.chain(groupInputs)
     .map((facility) => ({
       ...facility,
-      fields: _.filter(facility.fields, (f) => data[f.field]),
+      fields: _.filter(facility.fields, (f) => data?.[f.field]),
     }))
     .filter((facility) => !_.isEmpty(facility.fields))
     .value();
 
   const jsxFacilities = (a) => {
     const { facility, fields } = a;
+
     return (
       <React.Fragment key={`closed_${facility}`}>
         <thead className={styles.facilityHeader}>
           <tr>
-            <td colSpan={2}>{facility} Notes</td>
+            <td colSpan={2}>{facility} Facility Notes</td>
           </tr>
         </thead>
         <tbody>
@@ -210,10 +211,11 @@ const Com = ({}) => {
         {groupInputs?.map((a) => {
           const { facility, fields } = a;
           return (
-            <React.Fragment>
+            <React.Fragment key={`notegroup_${facility}`}>
               <div className={cn(stylesRoot.columnFacility)}>
-                <span>{facility} Notes</span>
+                <span>{facility} Facility Notes</span>
               </div>
+
               <div className={cn("grid grid-cols-2", styles.notesContainer)}>
                 {fields?.map((a) => {
                   return (

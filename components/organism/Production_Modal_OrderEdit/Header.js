@@ -5,7 +5,7 @@ import PermissionBlock from "components/atom/PermissionBlock";
 import Sec_Status from "./Sec_Status";
 
 import { DisplayBlock } from "./Com";
-import constants, { WORKORDER_STATUS_MAPPING } from "lib/constants";
+import constants, { WORKORDER_STATUS_MAPPING, getStatusFieldByKind } from "lib/constants";
 
 import Modal_OrderHistory from "components/organism/Production_Modal_OrderHistory";
 // styles
@@ -39,10 +39,12 @@ const Com = ({}) => {
     d: <b className="text-primary">[Doors]</b>,
   };
 
+  const statusField = getStatusFieldByKind(kind)
+
   /* NOTE: <rule 250912_cancel_editable> */
   const isOnStatusAllowToEdit = ![
     WORKORDER_STATUS_MAPPING.Cancelled.key,
-  ].includes(data?.[`${kind}_Status`]);
+  ].includes(data?.[statusField]);
 
   const jsxTitle = (
     <div

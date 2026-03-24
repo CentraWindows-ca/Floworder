@@ -21,9 +21,6 @@ import constants, { WORKORDER_STATUS_MAPPING } from "lib/constants";
 import PermissionBlock from "components/atom/PermissionBlock";
 import Sec_LockoutOrService from "./Sec_LockoutOrService";
 
-// const DEFAULT_WINDOW_FACILITY = 'Langley'
-const DEFAULT_DOOR_FACILITY = "Calgary";
-
 const Com = (props) => {
   const { show, onHide, onCreate } = props;
   const [workOrderNo, setWorkOrderNo] = useState("");
@@ -90,11 +87,6 @@ const Com = (props) => {
 const WM_MAPPING = {
   WM_AB: "WM_AB",
   WM_BC: "WM_BC",
-};
-
-const FACILITY_MAPPING = {
-  WM_AB: "Calgary",
-  WM_BC: "Langley",
 };
 
 const Screen1 = ({
@@ -240,16 +232,6 @@ const Screen2 = ({
   const [selectedOverrideOption, setSelectedOverrideOption] =
     useState("override");
 
-  const [manufacturingFacility, setManufacturingFacility] = useState(
-    constants.ManufacturingFacilities.Langley,
-  );
-
-  const [doorManufacturingFacility, setDoorManufacturingFacility] = useState(
-    constants.ManufacturingFacilities.Calgary,
-  );
-  const [windowManufacturingFacility, setWindowManufacturingFacility] =
-    useState(constants.ManufacturingFacilities.Langley);
-
   const [isLockoutOrService, setIsLockoutOrService] = useState("No");
   const [lockoutOrder, setLockoutOrder] = useState(null);
   const [serviceOrder, setServiceOrder] = useState(null);
@@ -265,24 +247,14 @@ const Screen2 = ({
         winStartDate: existingWorkOrder.w_ProductionStartDate,
         doorStartDate: existingWorkOrder.d_ProductionStartDate,
       });
-      setManufacturingFacility(existingWorkOrder.m_ManufacturingFacility || FACILITY_MAPPING[dbSource]);
-      setDoorManufacturingFacility(existingWorkOrder.d_ManufacturingFacility || DEFAULT_DOOR_FACILITY);
-      setWindowManufacturingFacility(existingWorkOrder.w_ManufacturingFacility || FACILITY_MAPPING[dbSource]);
     } else {
-      setInitValues({});
-      setManufacturingFacility(FACILITY_MAPPING[dbSource]);
-
-      // door always default; window depends on facility
-      setDoorManufacturingFacility(DEFAULT_DOOR_FACILITY);
-      setWindowManufacturingFacility(FACILITY_MAPPING[dbSource]);
+      setInitValues({});;
     }
   }, [existingWorkOrder, windowMakerData]);
 
   const disabled =
     (isWindow && !initValues?.winStartDate) ||
     (isDoor && !initValues?.doorStartDate) ||
-    (isWindow && !windowManufacturingFacility) ||
-    (isDoor && !doorManufacturingFacility) || 
     (!existingWorkOrder && !isLockoutOrService)
 
   const doFetch = async (newStatus = "", isReservationWorkOrder = false) => {
@@ -326,9 +298,6 @@ const Screen2 = ({
     const _updatingBody = {
       workOrderNo,
       resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
-      manufacturingFacility,
-      winManufacturingFacility: windowManufacturingFacility,
-      doorManufacturingFacility: doorManufacturingFacility,
       isReservationWorkOrder,
       ...updateValues,
     };
@@ -392,45 +361,8 @@ const Screen2 = ({
         </div>
       )}
 
-      {isWindow && (
-        <div className="form-group row">
-          <label className="col-lg-4">Window Manufacturing Facility</label>
-          <div className="col-lg-8 flex justify-start">
-            <Editable.EF_SelectWithLabel
-              id="windowManufacturingFacility"
-              value={windowManufacturingFacility}
-              // placeholder = {"-"}
-              onChange={(v) => setWindowManufacturingFacility((prev) => v)}
-              options={_.keys(constants.ManufacturingFacilities)?.map((k) => ({
-                label: k,
-                value: k,
-                key: k,
-              }))}
-              style={{ width: 140 }}
-            />
-          </div>
-        </div>
-      )}
-
-      {isDoor && (
-        <div className="form-group row">
-          <label className="col-lg-4">Door Manufacturing Facility</label>
-          <div className="col-lg-8 flex justify-start">
-            <Editable.EF_SelectWithLabel
-              id="doorManufacturingFacility"
-              value={doorManufacturingFacility}
-              // placeholder = {"-"}
-              onChange={(v) => setDoorManufacturingFacility((prev) => v)}
-              options={_.keys(constants.ManufacturingFacilities)?.map((k) => ({
-                label: k,
-                value: k,
-                key: k,
-              }))}
-              style={{ width: 140 }}
-            />
-          </div>
-        </div>
-      )}
+      {/* NOTE: 20230323 - now facility based on Item data. not decide by user */}
+      {/* removed */}
 
       <hr />
       <div className="form-group row">

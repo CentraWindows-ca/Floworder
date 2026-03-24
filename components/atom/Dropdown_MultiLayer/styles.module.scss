@@ -1,0 +1,13 @@
+@use "styles/theme" as *;
+
+.root {}
+
+.item {
+	background-color: $color_background;
+	cursor: pointer;
+	z-index: 1000000000
+}
+
+.subContent {
+	background-color: $color_background;
+}

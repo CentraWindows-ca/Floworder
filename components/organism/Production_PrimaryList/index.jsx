@@ -663,7 +663,6 @@ const Com = (props) => {
       const { value } = a;
 
       const merged = _.assign({}, ..._.values(value));
-
       const {
         m_Status,
         m_WinStatus,
@@ -677,6 +676,8 @@ const Com = (props) => {
         m_ParentMasterId,
         m_AddOnsCount,
       } = merged;
+
+      merged.internal_facilityList = _.keys(value)
 
       // ======== if has parent then its addon child; if has count then its addon parent; otherwise its not addon ========
       merged.m_AddonIcon_display = "";

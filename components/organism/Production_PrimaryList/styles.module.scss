@@ -1,46 +1,28 @@
 @use "styles/theme" as *;
 
 
-.workorderActionsContainer {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    gap: 5px;
-    font-size: 1rem;
-    max-height: 420px;
-    overflow-y: auto;
-
-    // align-items: flex-start;
-    :global(.ant-btn-icon) {
-        width: 20px;
-    }
-}
-
-.workorderActionsContainer button {
-    display: flex;
-    justify-content: flex-start;
-    width: 100%;
-    text-align: left;
-    font-size: 1rem;
-    min-height: 32px;
-}
-
-
 .orderNumber {
     display: flex;
     align-items: center;
     gap: 5px;
+
+    [aria-expanded="true"] {
+        font-weight: bold;
+    }
+
     .addonListIcon {
         width: 16px;
         height: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
+
         img {
             width: 12px;
             height: 12px;
         }
     }
+
     span {
         cursor: pointer;
         color: $color_centraBlack;
@@ -102,4 +84,53 @@ i.copiedIcon {
     bottom: -10px;
     z-index: 1;
     padding: 2px 15px;
+}
+
+.statesContainer {
+    border-radius: 4px;
+    padding: 4px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 30px;
+    font-size: 1rem;
+
+    &[data-disabled] {
+        cursor: unset;
+    }
+}
+
+.statesContainerEditable {
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.8;
+        background-color: $color_active;
+    }
+}
+
+
+
+.workorderActionsContainer {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    gap: 5px;
+    font-size: 1rem;
+    max-height: 420px;
+    overflow-y: auto;
+
+    // align-items: flex-start;
+    :global(.ant-btn-icon) {
+        width: 20px;
+    }
+}
+
+.workorderActionsContainer button {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    text-align: left;
+    font-size: 1rem;
+    min-height: 32px;
 }

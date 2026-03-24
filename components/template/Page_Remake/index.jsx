@@ -16,75 +16,8 @@ import useOrderListPermission from "lib/permissions/useOrderListPermission";
 // styles
 import styles from "./styles.module.scss";
 
-const DEFAULT_SORT = (status) => {
-  if (status === WORKORDER_STATUS_MAPPING.Scheduled.key) {
-    return [
-      {
-        field: "m_LastModifiedAt",
-        isDescending: true,
-      },
-    ];
-  }
-
-  return [
-    {
-      field: "m_CreatedAt",
-      isDescending: true,
-    },
-  ];
-};
-
 const Com = ({}) => {
   const router = useRouter();
-
-  const { applyPermissionsToExcludeStatuses } = useOrderListPermission();
-
-  // ====== search
-  const [filters, setFilters] = useState({});
-  const [advancedFilters, setAdvancedFilters] = useState({});
-  const [isEnableFilter, setIsEnableFilter] = useState(true);
-
-  const {
-    status: statusFromParam,
-    p = 0,
-    facility: facilityFromParam,
-    tab = "m",
-    sort,
-    isDeleted,
-  } = router?.query || {};
-
-  const filtersObj = {};
-  const sortObj = {};
-  let sortArr = [];
-
-  const status = statusFromParam === "All" ? "" : statusFromParam
-  const facility = facilityFromParam === "All" ? "" : facilityFromParam
-
-  if (facility) {
-    filtersObj[tab + "_ManufacturingFacility"] = {
-      operator: constants.FILTER_OPERATOR.Equals,
-      value: facility,
-    };
-  }
-
-  if (status) {
-    filtersObj[tab + "_Status"] = {
-      operator: constants.FILTER_OPERATOR.Equals,
-      value: status,
-    };
-  }
-
-  if (sort) {
-    sort?.split(",")?.map((sortKey) => {
-      const [field, dir] = sortKey?.split(":");
-      sortObj[field] = dir;
-    });
-
-    sortArr = _.keys(sortObj)?.map((k) => ({
-      field: k,
-      isDescending: sortObj[k]?.toLocaleLowerCase() === "desc",
-    }));
-  }
 
   const endPoint = ''
   // use swr

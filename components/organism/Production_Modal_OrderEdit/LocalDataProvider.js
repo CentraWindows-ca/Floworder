@@ -23,6 +23,7 @@ import External_ServiceApi from "lib/api/External_ServiceApi";
 import useLoadingBar from "lib/hooks/useLoadingBar";
 import constants, {
   ADDON_STATUS,
+  FACILITY_FROM_CODE,
   ORDER_STATUS,
   ORDER_TRANSFER_FIELDS,
   SOURCE_OF_UI,
@@ -199,7 +200,7 @@ export const LocalDataProvider = ({
   const handleChange = (v, field) => {
     const fieldCode = getFieldCode(field);
     setData((prev) => {
-      const _newV = {...prev};
+      const _newV = { ...prev };
       _.set(_newV, field, v);
       return _newV;
     });
@@ -217,7 +218,7 @@ export const LocalDataProvider = ({
     // remove validation of key
     setValidationResult((prev) => {
       try {
-        const _v = {...prev}
+        const _v = { ...prev };
         _.unset(_v, field);
         return _v;
       } catch (error) {
@@ -515,7 +516,12 @@ export const LocalDataProvider = ({
 
   //
   const doUpdateStatus = async (newStatus, _kind, facilityCode) => {
-    const payload = await getStatusPayload(data, newStatus, _kind, facilityCode);
+    const payload = await getStatusPayload(
+      data,
+      newStatus,
+      _kind,
+      facilityCode,
+    );
     if (payload === null) return null;
     await doMove(payload);
 
@@ -534,6 +540,7 @@ export const LocalDataProvider = ({
     const updatingStatusField = `${_kind}_${facilityCode}_Status`;
     payload["oldStatus"] = data[updatingStatusField];
     payload["isWindow"] = _kind === "w";
+    payload["facility"] = FACILITY_FROM_CODE[facilityCode];
 
     // different target has different required fields
     const missingFields = ORDER_TRANSFER_FIELDS?.[newStatus] || {};
@@ -636,7 +643,7 @@ export const LocalDataProvider = ({
         m_TransferredLocation,
       },
       initData,
-      initWithOriginalStructure
+      initWithOriginalStructure,
     );
 
     await doInit(initMasterId);
@@ -785,7 +792,7 @@ export const LocalDataProvider = ({
         data,
         _changedData,
         initData,
-        initWithOriginalStructure
+        initWithOriginalStructure,
       );
 
       if (res?.message) {
@@ -820,7 +827,12 @@ export const LocalDataProvider = ({
         m_AddOnLinked: ADDON_STATUS.detached,
       };
 
-      await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData, initWithOriginalStructure);
+      await Wrapper_OrdersApi.updateWorkOrder(
+        data,
+        _changedData,
+        initData,
+        initWithOriginalStructure,
+      );
 
       toast(`Add-on Work order unlinked from ${_parentWorkOrder}`, {
         type: "success",
@@ -851,7 +863,12 @@ export const LocalDataProvider = ({
         m_AddOnLinked: ADDON_STATUS.attached,
       };
 
-      await Wrapper_OrdersApi.updateWorkOrder(data, _changedData, initData, initWithOriginalStructure);
+      await Wrapper_OrdersApi.updateWorkOrder(
+        data,
+        _changedData,
+        initData,
+        initWithOriginalStructure,
+      );
 
       toast(`Add-on Work order linked from ${_parentWorkOrder}`, {
         type: "success",
@@ -863,26 +880,29 @@ export const LocalDataProvider = ({
     () => setIsSaving(false), // callback function
   );
 
-  const doBatchUpdateItems = useLoadingBar(async (updateList, kind) => {
-    if (_.isEmpty(updateList)) return null;
-    await Wrapper_OrdersApi.updateItemList(
-      data?.m_MasterId,
-      updateList,
-      kind,
-      initData,
-      initDataItems,
-    );
+  const doBatchUpdateItems = useCallback(
+    useLoadingBar(async (updateList, kind) => {
+      if (_.isEmpty(updateList)) return null;
+      await Wrapper_OrdersApi.updateItemList(
+        data?.m_MasterId,
+        updateList,
+        kind,
+        initData,
+        initDataItems,
+      );
 
-    await External_WebCalApi.bulkUpdateItemTrackingList(
-      updateList,
-      initData,
-      initDataItems,
-    );
+      await External_WebCalApi.bulkUpdateItemTrackingList(
+        updateList,
+        initData,
+        initDataItems,
+      );
 
-    toast("Items saved", { type: "success" });
-    await initItems(initMasterId);
-    return;
-  });
+      toast("Items saved", { type: "success" });
+      await initItems(initMasterId);
+      return;
+    }),
+    [data?.m_MasterId, kind, initData, initDataItems, initMasterId],
+  );
 
   // calculations
   const glassTotal =

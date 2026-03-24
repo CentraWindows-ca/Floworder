@@ -350,6 +350,7 @@ export const EF_InputDebounce = React.memo(
     value = "",
     initValue = "",
     isHighlightDiff,
+    isHightlightValue = true,
     errorMessage,
     className,
     disabled,
@@ -365,7 +366,7 @@ export const EF_InputDebounce = React.memo(
         className={cn(
           "",
           className,
-          value && !disabled ? "bg-blue-100" : null,
+          (value && !disabled && isHightlightValue) ? "bg-blue-100" : null,
           isHighlightDiff && initValue !== value && styles.diff,
           errorMessage ? styles.error : "",
         )}

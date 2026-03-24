@@ -106,16 +106,6 @@ const COMMON_FIELDS = applyField([
 
 const WINDOW_FIELDS = applyField([
   {
-    Component: Editable.EF_SelectWithLabel,
-    fieldCode: "w_ManufacturingFacility",
-    placeholder: "-",
-    options: _.keys(constants.ManufacturingFacilities)?.map((k) => ({
-      label: k,
-      value: k,
-      key: k,
-    })),
-  },
-  {
     Component: Editable.EF_Input,
     fieldCode: "w_BlockNo",
   },
@@ -151,16 +141,6 @@ const WINDOW_FIELDS = applyField([
 ]);
 
 const DOOR_FIELDS = applyField([
-  {
-    Component: Editable.EF_SelectWithLabel,
-    fieldCode: "d_ManufacturingFacility",
-    placeholder: "-",
-    options: _.keys(constants.ManufacturingFacilities)?.map((k) => ({
-      label: k,
-      value: k,
-      key: k,
-    })),
-  },
   {
     Component: Editable.EF_Input,
     fieldCode: "d_BlockNo",

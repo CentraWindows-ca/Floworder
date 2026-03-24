@@ -3,14 +3,13 @@ import { useRouter } from "next/router";
 import cn from "classnames";
 import _ from "lodash";
 
-import constants, { WORKORDER_STATUS_MAPPING } from "lib/constants";
+import constants, {getStatusFieldByKind, FACILITY_CODE_FROM_NAME, WORKORDER_STATUS_MAPPING } from "lib/constants";
 
 import OrdersApi from "lib/api/OrdersApi";
 // components
 
 // import Search from "components/molecule/bak_Search";
 import Framework_Production from "components/organism/Production_Framework";
-
 import Panel_Production from "components/organism/Production_Panel";
 
 // hooks
@@ -45,7 +44,6 @@ const Com = ({}) => {
 
   // ====== search
   const [filters, setFilters] = useState({});
-  const [advancedFilters, setAdvancedFilters] = useState({});
   const [isEnableFilter, setIsEnableFilter] = useState(true);
 
   const {
@@ -61,18 +59,20 @@ const Com = ({}) => {
   const sortObj = {};
   let sortArr = [];
 
-  const status = statusFromParam === "All" ? "" : statusFromParam
-  const facility = facilityFromParam === "All" ? "" : facilityFromParam
+  const status = statusFromParam === "All" ? "" : statusFromParam;
+  const facility = facilityFromParam === "All" ? "" : facilityFromParam;
 
   if (facility) {
-    filtersObj[tab + "_ManufacturingFacility"] = {
+    const facilityField = [tab, FACILITY_CODE_FROM_NAME[facility], "ManufacturingFacility"]?.filter(Boolean)?.join("_")
+    filtersObj[facilityField] = {
       operator: constants.FILTER_OPERATOR.Equals,
       value: facility,
     };
   }
 
   if (status) {
-    filtersObj[tab + "_Status"] = {
+    const statusField = getStatusFieldByKind(tab);
+    filtersObj[statusField] = {
       operator: constants.FILTER_OPERATOR.Equals,
       value: status,
     };
@@ -109,7 +109,8 @@ const Com = ({}) => {
     }),
   ];
 
-  const {excludeStatuses, conditions} = applyPermissionsToExcludeStatuses(_conditions);
+  const { excludeStatuses, conditions } =
+    applyPermissionsToExcludeStatuses(_conditions);
 
   const endPoint = OrdersApi.initQueryWorkOrderHeaderWithPrefixAsync(null, {
     page: (parseInt(p) || 0) + 1,
@@ -123,7 +124,7 @@ const Com = ({}) => {
     orderByItems: _.isEmpty(sortArr) ? DEFAULT_SORT(status) : sortArr,
     kind: tab,
     isActive: isDeleted ? 0 : 1,
-    excludeStatuses
+    excludeStatuses,
   });
 
   // use swr

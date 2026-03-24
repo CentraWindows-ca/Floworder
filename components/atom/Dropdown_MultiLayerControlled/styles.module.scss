@@ -1,0 +1,31 @@
+@use "styles/theme" as *;
+
+.root {}
+
+.popupContainer {
+	padding: 6px;
+	background-color: $color_white;
+	border-radius: 4px;
+	border: 1px solid $color_gray;
+	@include shadow();
+
+	[data-state="open"] {
+		background-color: $color_active !important;
+	}
+
+	:disabled {
+		opacity: 0.6;
+	}
+	[data-disabled] {
+		opacity: 0.6;
+	}
+}
+
+.item {
+	background-color: $color_white;
+	cursor: pointer;
+}
+
+.subContent {
+	background-color: $color_white;
+}
