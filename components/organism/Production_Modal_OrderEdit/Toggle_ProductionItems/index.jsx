@@ -32,6 +32,7 @@ import Modal_ItemEdit from "./Modal_ItemEdit";
 // styles
 import stylesRoot from "../styles.module.scss";
 import stylesCurrent from "./styles.module.scss";
+import Subsec_Bulkupdate from "./Subsec_Bulkupdate"
 
 const styles = { ...stylesRoot, ...stylesCurrent };
 
@@ -462,9 +463,12 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
       <DisplayBlock blockId={blockId}>
         <div className={styles.togglePadding} id={dictKey}>
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
-            <label>
-              {label} <small className="fw-normal">( {stats[dictKey]} )</small>
-            </label>
+            <div>
+              <label>
+                {label} <small className="fw-normal">( {stats[dictKey]} )</small>
+              </label>
+              <Subsec_Bulkupdate/>
+            </div>
             <div>
               <button
                 className="btn btn-primary btn-sm me-2"
@@ -763,9 +767,12 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
       <DisplayBlock blockId={blockId}>
         <div className={styles.togglePadding} id={dictKey}>
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
-            <label>
-              {label} <small className="fw-normal">( {stats[dictKey]} )</small>
-            </label>
+            <div>
+              <label>
+                {label} <small className="fw-normal">( {stats[dictKey]} )</small>
+              </label>
+              <Subsec_Bulkupdate/>
+            </div>
             <div>
               <button
                 className="btn btn-primary btn-sm me-2"
@@ -1071,9 +1078,12 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
       <DisplayBlock blockId={blockId}>
         <div className={styles.togglePadding} id={dictKey}>
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
-            <label>
-              {label} <small className="fw-normal">( {stats[dictKey]} )</small>
-            </label>
+            <div>
+              <label>
+                {label} <small className="fw-normal">( {stats[dictKey]} )</small>
+              </label>
+              <Subsec_Bulkupdate/>
+            </div>
             <div>
               <button
                 className="btn btn-primary btn-sm me-2"
