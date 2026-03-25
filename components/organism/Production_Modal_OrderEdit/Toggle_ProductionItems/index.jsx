@@ -4,6 +4,7 @@ import React, {
   useContext,
   useMemo,
   useCallback,
+  memo,
 } from "react";
 import cn from "classnames";
 import _ from "lodash";
@@ -307,7 +308,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
     setUpdatingValues,
     handleUpdate,
     multiChecked,
-    handleMultiCheck,
+    setMultiChecked,
     overridedList,
     overridedListByFacility,
     sort,
@@ -328,23 +329,6 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
 
   const columnsWindow = useMemo(() => {
     return applyField([
-      {
-        width: 30,
-        title: "",
-        isNotSortable: true,
-        render: (t, record) => {
-          return (
-            <Editable.EF_Checkbox_Yesno
-              {...{
-                id: `wi_MultiSelect_${record?.Id}`,
-                value: multiChecked[record?.Id],
-                onChange: (v) => handleMultiCheck(record?.Id, v),
-                disabled: !_isGroupEditable,
-              }}
-            />
-          );
-        },
-      },
       {
         key: "Item",
         width: 80,
@@ -544,14 +528,14 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
         isNotTitle: true,
       },
     ]);
-  }, [_isGroupEditable, multiChecked]);
+  }, [_isGroupEditable]);
 
   return (
     !_.isEmpty(data) && (
       <DisplayBlock id={blockId}>
         <div className={styles.togglePadding} id={dictKey}>
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
-            <div>
+            <div className={cn(styles.kindTitleContainer)}>
               <label>
                 {label} <small className="fw-normal">( {stats[dictKey]} )</small>
               </label>
@@ -586,6 +570,8 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
               keyField: "Id",
               className: "text-left",
               isLockFirstColumn: false,
+              multiChecked,
+              setMultiChecked
             }}
           />
         </div>
@@ -623,7 +609,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
     setUpdatingValues,
     handleUpdate,
     multiChecked,
-    handleMultiCheck,
+    setMultiChecked,
     overridedList,
     overridedListByFacility,
     sort,
@@ -643,23 +629,6 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
   };
 
   const columns = applyField([
-    {
-      width: 30,
-      title: "",
-      isNotSortable: true,
-      render: (t, record) => {
-        return (
-          <Editable.EF_Checkbox_Yesno
-            {...{
-              id: `di_MultiSelect_${record?.Id}`,
-              value: multiChecked[record?.Id],
-              onChange: (v) => handleMultiCheck(record?.Id, v),
-              disabled: !_isGroupEditable,
-            }}
-          />
-        );
-      },
-    },
     {
       key: "Item",
       width: 80,
@@ -873,7 +842,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
       <DisplayBlock id={blockId}>
         <div className={styles.togglePadding} id={dictKey}>
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
-            <div>
+            <div className={cn(styles.kindTitleContainer)}>
               <label>
                 {label} <small className="fw-normal">( {stats[dictKey]} )</small>
               </label>
@@ -908,6 +877,8 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
               keyField: "Id",
               className: "text-left",
               isLockFirstColumn: false,
+              multiChecked,
+              setMultiChecked,
             }}
           />
         </div>
@@ -937,8 +908,6 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
     updatingValues,
     setUpdatingValues,
     handleUpdate,
-    multiChecked,
-    handleMultiCheck,
     overridedList,
     overridedListByFacility,
     sort,
@@ -1010,23 +979,6 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
   };
 
   const columns = applyField([
-    {
-      width: 30,
-      title: "",
-      isNotSortable: true,
-      render: (t, record) => {
-        return (
-          <Editable.EF_Checkbox_Yesno
-            {...{
-              id: `oi_MultiSelect_${record?.Id}`,
-              value: multiChecked[record?.Id],
-              onChange: (v) => handleMultiCheck(record?.Id, v),
-              disabled: !_isGroupEditable,
-            }}
-          />
-        );
-      },
-    },
     _isGroupEditable
       ? {
           // NOTE 20250730: update/not update of others
@@ -1202,7 +1154,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
       <DisplayBlock id={blockId}>
         <div className={styles.togglePadding} id={dictKey}>
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
-            <div>
+            <div className={cn(styles.kindTitleContainer)}>
               <label>
                 {label} <small className="fw-normal">( {stats[dictKey]} )</small>
               </label>
@@ -1245,7 +1197,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
   );
 };
 
-const TableSortableWithFacility = (props) => {
+const TableSortableWithFacility = memo((props) => {
   const { permissions } = useContext(LocalDataContext_items);
   const { data, columns, overridedListByFacility } = props;
 
@@ -1263,6 +1215,11 @@ const TableSortableWithFacility = (props) => {
       }),
     [columns, permissions],
   );
+
+  const _columnsNotSplit = useMemo(
+    () => _columns?.filter((a) => a.key !== "Facility"),
+    [_columns]
+  )
 
   if (_isWithFacility) {
 
@@ -1297,12 +1254,12 @@ const TableSortableWithFacility = (props) => {
     return (
       <TableSortable
         {...props}
-        columns={_columns?.filter((a) => a.key !== "Facility")}
+        columns={_columnsNotSplit}
         headerClassName={_headerClassName}
       />
     );
   }
-};
+});
 
 export default React.memo(Com);
 
@@ -1363,6 +1320,7 @@ const useUpdatingValues = ({ data, getRowId }) => {
     setUpdatingValues,
     handleUpdate,
     multiChecked,
+    setMultiChecked,
     handleMultiCheck,
     sortedList,
     overridedList,
