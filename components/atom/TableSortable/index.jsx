@@ -18,6 +18,8 @@ const Com = (props) => {
     columns,
     sort,
     setSort,
+    multiChecked,
+    setMultiChecked,
     keyField = "m_MasterId",
     keyFieldPrefix = "",
     className,
@@ -29,7 +31,15 @@ const Com = (props) => {
     ...rest
   } = props;
 
-  const _filteredColumns = useMemo(() => columns.filter(Boolean), [columns])
+  useEffect(() => {
+  console.log("Com mounted");
+
+  return () => {
+    console.log("Com unmounted");
+  };
+}, []);
+
+  const _filteredColumns = useMemo(() => columns.filter(Boolean), [columns]);
 
   return (
     <>
@@ -45,6 +55,8 @@ const Com = (props) => {
             columns,
             sort,
             setSort,
+            multiChecked,
+            setMultiChecked,
             filters,
             setFilters,
             isEnableFilter,
@@ -68,6 +80,8 @@ const Com = (props) => {
                   keyFieldPrefix,
                   keyField,
                   _filteredColumns,
+                  multiChecked,
+                  setMultiChecked,
                 }}
                 data={a}
                 key={key}
@@ -88,10 +102,30 @@ const Com = (props) => {
 };
 
 const TableRow = React.memo(
-  ({ keyFieldPrefix, keyField, trParams, _filteredColumns, data }) => {
+  ({
+    keyFieldPrefix,
+    keyField,
+    trParams,
+    _filteredColumns,
+    data,
+    multiChecked,
+    setMultiChecked,
+  }) => {
     const _trParams = trParams ? trParams(data) : {};
     return (
       <tr {..._trParams}>
+        {typeof setMultiChecked === "function" && (
+          <td>
+            <div>
+              <input
+                type="checkbox"
+                value={multiChecked?.[data[keyField]]}
+                onChange={(v) => setMultiChecked(v)}
+                className={cn(styles.multiCheck)}
+              />
+            </div>
+          </td>
+        )}
         {_filteredColumns?.map((b) => {
           const { fieldCode, render, onCell, onWrapper, className } = b;
           let cell = onCell ? onCell(data) : null;
@@ -104,6 +138,19 @@ const TableRow = React.memo(
               >
                 <td {...cell}>
                   <div {...wrapper}>{render("", data, b)}</div>
+                </td>
+              </React.Fragment>
+            );
+          }
+          if (Component) {
+            return (
+              <React.Fragment
+                key={`${keyFieldPrefix}_${data[keyField]}_${fieldCode}`}
+              >
+                <td {...cell}>
+                  <div {...wrapper}>
+                    <Component {...{ record: data, ...b }} />
+                  </div>
                 </td>
               </React.Fragment>
             );
@@ -127,7 +174,32 @@ const TableRow = React.memo(
       </tr>
     );
   },
+  (prev, nex) => {
+    let multiCheckSame = true;
+    if (prev.multiChecked) {
+      const prev_multiCheck = prev.multiChecked[prev.data[prev.keyField]];
+      const nex_multiCheck = nex.multiChecked[nex.data[nex.keyField]];
+      multiCheckSame = prev_multiCheck === nex_multiCheck;
+    }
+
+    return (
+      prev.keyFieldPrefix === nex.keyFieldPrefix &&
+      prev.keyField === nex.keyField &&
+      prev.trParams === nex.trParams &&  
+      prev._filteredColumns === nex._filteredColumns &&
+      prev.data === nex.data &&
+      multiCheckSame
+    );
+  },
 );
+
+// keyFieldPrefix,
+// keyField,
+// trParams,
+// _filteredColumns,
+// data,
+// multiChecked,
+// setMultiChecked,
 
 export const TableWrapper = ({
   children,
@@ -159,11 +231,13 @@ export const TableHeader = ({
   isEnableFilter = true,
   sort,
   setSort,
+  multiChecked,
+  setMultiChecked,
   filters,
   setFilters,
   className,
 }) => {
-  const _filteredColumns = useMemo(() => columns.filter(Boolean), [columns])
+  const _filteredColumns = useMemo(() => columns.filter(Boolean), [columns]);
   const handleSortChange = (k) => {
     let newSortObj = null;
     // only 1 sorting field currently
@@ -210,6 +284,16 @@ export const TableHeader = ({
   return (
     <thead className={cn(styles.thead, className)}>
       <tr>
+        {typeof setMultiChecked === "function" && (
+          <th style={{ width: 30 }}>
+            <div className={cn(styles.tableTitle)}>
+              <span className={cn(styles.sortTitle)}>
+                <input type="checkbox" />
+              </span>
+            </div>
+          </th>
+        )}
+
         {_filteredColumns?.map((a, i) => {
           const { title, fieldCode, width, initKey, isNotTitle, isNotSortable } = a;
           const sortKey = initKey || fieldCode;
@@ -243,6 +327,15 @@ export const TableHeader = ({
       </tr>
       {setFilters ? (
         <tr>
+          {typeof setMultiChecked === "function" && (
+            <td>
+              <div className={cn(styles.tableTitle)}>
+                <span className={cn(styles.sortTitle)}>
+                  <br />
+                </span>
+              </div>
+            </td>
+          )}
           {_filteredColumns?.map((a) => {
             const {
               fieldCode,
