@@ -298,6 +298,10 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
   const group = "windowitems";
   const _isGroupEditable = checkEditable({ group });
 
+  const _params_updatingValues = useUpdatingValues({
+    data,
+    getRowId: (row) => row.Id,
+  });
   const {
     updatingValues,
     setUpdatingValues,
@@ -308,10 +312,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
     setSort,
     filters,
     setFilters,
-  } = useUpdatingValues({
-    data,
-    getRowId: (row) => row.Id,
-  });
+  } = _params_updatingValues
 
   const handleSave = async () => {
     // treat updating items
@@ -535,7 +536,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
               <label>
                 {label} <small className="fw-normal">( {stats[dictKey]} )</small>
               </label>
-              <Subsec_Bulkupdate/>
+              <Subsec_Bulkupdate dictKey={dictKey} itemListData={data} {..._params_updatingValues}/>
             </div>
             <div>
               <button
@@ -594,6 +595,10 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
     // );
   };
 
+  const _params_updatingValues = useUpdatingValues({
+    data,
+    getRowId: (row) => row.Id,
+  });
   const {
     updatingValues,
     setUpdatingValues,
@@ -604,10 +609,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
     setSort,
     filters,
     setFilters,
-  } = useUpdatingValues({
-    data,
-    getRowId: (row) => row.Id,
-  });
+  } = _params_updatingValues
 
   const handleSave = async () => {
     // treat updating items
@@ -837,7 +839,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
               <label>
                 {label} <small className="fw-normal">( {stats[dictKey]} )</small>
               </label>
-              <Subsec_Bulkupdate/>
+              <Subsec_Bulkupdate dictKey={dictKey} itemListData={data} {..._params_updatingValues}/>
             </div>
             <div>
               <button
@@ -889,6 +891,10 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
   const _isGroupEditable = checkEditable({ group });
 
   const [isUpdatableMapping, setIsUpdatableMapping] = useState({});
+  const _params_updatingValues = useUpdatingValues({
+    data,
+    getRowId: (row) => row.Id,
+  });
   const {
     updatingValues,
     setUpdatingValues,
@@ -899,10 +905,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
     setSort,
     filters,
     setFilters,
-  } = useUpdatingValues({
-    data,
-    getRowId: (row) => row.Id,
-  });
+  } = _params_updatingValues
 
   useEffect(() => {
     init(data);
@@ -1146,7 +1149,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
               <label>
                 {label} <small className="fw-normal">( {stats[dictKey]} )</small>
               </label>
-              <Subsec_Bulkupdate/>
+              <Subsec_Bulkupdate dictKey={dictKey} itemListData={data} {..._params_updatingValues}/>
             </div>
             <div>
               <button
