@@ -463,7 +463,7 @@ export const EF_Checkbox_Yesno = React.memo(
       onChange(e.target.checked ? "1" : "0", e);
     };
 
-    const checked = value === "1"; // can be true or "true"
+    const checked = value === "1" || value === 1; // can be true or "true"
 
     return (
       <input

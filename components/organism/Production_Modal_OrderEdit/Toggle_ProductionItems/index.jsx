@@ -237,6 +237,8 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
     updatingValues,
     setUpdatingValues,
     handleUpdate,
+    multiChecked,
+    handleMultiCheck,
     overridedList,
     overridedListByFacility,
     sort,
@@ -257,6 +259,23 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
 
   const columnsWindow = useMemo(() => {
     return applyField([
+      {
+        width: 30,
+        title: "",
+        isNotSortable: true,
+        render: (t, record) => {
+          return (
+            <Editable.EF_Checkbox_Yesno
+              {...{
+                id: `wi_MultiSelect_${record?.Id}`,
+                value: multiChecked[record?.Id],
+                onChange: (v) => handleMultiCheck(record?.Id, v),
+                disabled: !_isGroupEditable,
+              }}
+            />
+          );
+        },
+      },
       {
         fieldCode: "Item",
         width: 80,
@@ -457,7 +476,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
         isNotTitle: true,
       },
     ]);
-  }, [_isGroupEditable]);
+  }, [_isGroupEditable, multiChecked]);
 
   return (
     !_.isEmpty(data) && (
@@ -535,6 +554,8 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
     updatingValues,
     setUpdatingValues,
     handleUpdate,
+    multiChecked,
+    handleMultiCheck,
     overridedList,
     overridedListByFacility,
     sort,
@@ -554,6 +575,23 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
   };
 
   const columns = applyField([
+    {
+      width: 30,
+      title: "",
+      isNotSortable: true,
+      render: (t, record) => {
+        return (
+          <Editable.EF_Checkbox_Yesno
+            {...{
+              id: `di_MultiSelect_${record?.Id}`,
+              value: multiChecked[record?.Id],
+              onChange: (v) => handleMultiCheck(record?.Id, v),
+              disabled: !_isGroupEditable,
+            }}
+          />
+        );
+      },
+    },
     {
       fieldCode: "Item",
       width: 80,
@@ -833,6 +871,8 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
     updatingValues,
     setUpdatingValues,
     handleUpdate,
+    multiChecked,
+    handleMultiCheck,
     overridedList,
     overridedListByFacility,
     sort,
@@ -904,6 +944,23 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
   };
 
   const columns = applyField([
+    {
+      width: 30,
+      title: "",
+      isNotSortable: true,
+      render: (t, record) => {
+        return (
+          <Editable.EF_Checkbox_Yesno
+            {...{
+              id: `oi_MultiSelect_${record?.Id}`,
+              value: multiChecked[record?.Id],
+              onChange: (v) => handleMultiCheck(record?.Id, v),
+              disabled: !_isGroupEditable,
+            }}
+          />
+        );
+      },
+    },
     _isGroupEditable
       ? {
           // NOTE 20250730: update/not update of others
@@ -915,7 +972,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
             return (
               <Editable.EF_Checkbox
                 {...{
-                  id: `di_${updatingKey}_${record?.Id}`,
+                  id: `oi_${updatingKey}_${record?.Id}`,
                   value: isUpdatableMapping?.[record?.Id],
                   onChange: (v) => handleChangeIsUpdatable(v, record),
                 }}
@@ -983,7 +1040,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
           <Editable.EF_InputDebounce
             {...{
               className: "form-control form-control-sm",
-              id: `wi_${updatingKey}_${record?.Id}`,
+              id: `oi_${updatingKey}_${record?.Id}`,
               value:
                 overrideValue !== undefined
                   ? overrideValue
@@ -1189,6 +1246,7 @@ export default React.memo(Com);
 // === util hooks ======
 const useUpdatingValues = ({ data, getRowId }) => {
   const [updatingValues, setUpdatingValues] = useState({});
+  const [multiChecked, setMultiChecked] = useState({})
   const [sort, setSort] = useState({});
   const [filters, setFilters] = useState({});
   const handleUpdate = useCallback((id, v, k, initV) => {
@@ -1206,6 +1264,13 @@ const useUpdatingValues = ({ data, getRowId }) => {
       return _v;
     });
   }, []);
+
+  const handleMultiCheck = useCallback((recordId, value) => {
+    setMultiChecked(prev => ({
+      ...prev,
+      [recordId]: value
+      }))
+    }, [])
 
   // const allFacilities = useMemo(() => {
   //   return _.uniq(data.map((a) => a.facility));
@@ -1234,6 +1299,8 @@ const useUpdatingValues = ({ data, getRowId }) => {
     updatingValues,
     setUpdatingValues,
     handleUpdate,
+    multiChecked,
+    handleMultiCheck,
     sortedList,
     overridedList,
     overridedListByFacility,
