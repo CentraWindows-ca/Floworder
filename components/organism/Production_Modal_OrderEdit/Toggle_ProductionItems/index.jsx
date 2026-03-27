@@ -176,6 +176,7 @@ const Com = ({ title, id }) => {
                     handleShowItem,
                     list: grouppedItems,
                     stats,
+                    kind: "w"
                   }}
                   key={dictKey}
                 />
@@ -188,6 +189,7 @@ const Com = ({ title, id }) => {
                     handleShowItem,
                     list: grouppedItems,
                     stats,
+                    kind: "d"
                   }}
                   key={dictKey}
                 />
@@ -219,7 +221,7 @@ const Com = ({ title, id }) => {
   );
 };
 
-const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
+const TableWindow = ({ stats, handleShowItem, list, dictKey, label, kind }) => {
   const { checkEditable, onBatchUpdateItems } = useContext(
     LocalDataContext_items,
   );
@@ -254,7 +256,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
       keyValue: k,
       fields: updatingValues[k],
     }));
-    await onBatchUpdateItems(updates, "w");
+    await onBatchUpdateItems(updates, kind);
     setUpdatingValues({});
   };
 
@@ -450,7 +452,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
           return (
             <button
               className="btn btn-sm btn-outline-primary"
-              onClick={() => handleShowItem(record, "w")}
+              onClick={() => handleShowItem(record, kind)}
             >
               Detail
             </button>
@@ -471,7 +473,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
               <label>
                 {label} <small className="fw-normal">( {stats[dictKey]} )</small>
               </label>
-              <Subsec_Bulkupdate dictKey={dictKey} itemListData={data} {..._params_updatingValues}/>
+              <Subsec_Bulkupdate onBatchUpdateItems={onBatchUpdateItems} kind={kind} dictKey={dictKey} itemListData={data} {..._params_updatingValues}/>
             </div>
             <div>
               <button
@@ -514,7 +516,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
 
 const TEMPORARY_DISABLE_FOR_FIX = true;
 
-const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
+const TableDoor = ({ stats, handleShowItem, list, label, dictKey, kind }) => {
   const { checkEditable, onBatchUpdateItems } = useContext(
     LocalDataContext_items,
   );
@@ -556,7 +558,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
       keyValue: k,
       fields: updatingValues[k],
     }));
-    await onBatchUpdateItems(updates, "d");
+    await onBatchUpdateItems(updates, kind);
     setUpdatingValues({});
   };
 
@@ -760,7 +762,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
         return (
           <button
             className="btn btn-sm btn-outline-primary"
-            onClick={() => handleOnClick(record, "d")}
+            onClick={() => handleOnClick(record, kind)}
           >
             Detail
           </button>
@@ -780,7 +782,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
               <label>
                 {label} <small className="fw-normal">( {stats[dictKey]} )</small>
               </label>
-              <Subsec_Bulkupdate dictKey={dictKey} itemListData={data} {..._params_updatingValues}/>
+              <Subsec_Bulkupdate onBatchUpdateItems={onBatchUpdateItems} kind={kind} dictKey={dictKey} itemListData={data} {..._params_updatingValues}/>
             </div>
             <div>
               <button
@@ -1094,7 +1096,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
               <label>
                 {label} <small className="fw-normal">( {stats[dictKey]} )</small>
               </label>
-              <Subsec_Bulkupdate dictKey={dictKey} itemListData={data} {..._params_updatingValues}/>
+              <Subsec_Bulkupdate onBatchUpdateItems={onBatchUpdateItems} dictKey={dictKey} itemListData={data} {..._params_updatingValues}/>
             </div>
             <div>
               <button
@@ -1223,17 +1225,6 @@ const useUpdatingValues = ({ data, getRowId }) => {
     });
   }, []);
 
-  const handleMultiCheck = useCallback((recordId, value) => {
-    setMultiChecked(prev => ({
-      ...prev,
-      [recordId]: value
-      }))
-    }, [])
-
-  // const allFacilities = useMemo(() => {
-  //   return _.uniq(data.map((a) => a.facility));
-  // }, [data]);
-
   const sortedList = useMemo(
     () => buildSortedFilteredList(data, sort, filters),
     [data, sort, filters],
@@ -1259,7 +1250,6 @@ const useUpdatingValues = ({ data, getRowId }) => {
     handleUpdate,
     multiChecked,
     setMultiChecked,
-    handleMultiCheck,
     sortedList,
     overridedList,
     overridedListByFacility,

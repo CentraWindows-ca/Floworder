@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext, useRef, useMemo } from "react";
 import { parseISO, formatISO, format, addMinutes, subMinutes } from "date-fns";
 import _ from "lodash";
 import cn from "classnames";
@@ -366,7 +366,7 @@ export const EF_InputDebounce = React.memo(
         className={cn(
           "",
           className,
-          (value && !disabled && isHightlightValue) ? "bg-blue-100" : null,
+          value && !disabled && isHightlightValue ? "bg-blue-100" : null,
           isHighlightDiff && initValue !== value && styles.diff,
           errorMessage ? styles.error : "",
         )}
@@ -526,9 +526,30 @@ export const EF_Rack = React.memo(
     size = "md",
     options = null, // prevent override
     isDisplayAvilible = true,
+    isRemoveAllow = false,
     ...props
   }) => {
     const { dictionary } = useContext(GeneralContext);
+
+    const rackOptions = useMemo(() => {
+      const list = dictionary?.rackList
+        ?.sort((a, b) => (a.RackNumber > b.RackNumber ? 1 : -1))
+        ?.map((o) => ({
+          ...o,
+          label: `${o.RackNumber || "--"}`,
+          value: o.RecordID,
+        }));
+
+      if (isRemoveAllow) {
+        list.unshift({
+          label: "-- Remove From Rack --",
+          value: "REMOVE",
+          className: "text-red-500"
+        })
+      }
+
+      return list;
+    }, [dictionary]);
 
     return (
       <Typeahead
@@ -550,13 +571,7 @@ export const EF_Rack = React.memo(
         }}
         value={value}
         placeholder={placeholder}
-        options={dictionary?.rackList
-          ?.sort((a, b) => (a.RackNumber > b.RackNumber ? 1 : -1))
-          ?.map((o) => ({
-            ...o,
-            label: `${o.RackNumber || "--"}`,
-            value: o.RecordID,
-          }))}
+        options={rackOptions}
         {...props}
       />
     );
