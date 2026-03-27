@@ -109,7 +109,7 @@ export default React.memo(
           }
 
           return (
-            <div className="btn-toolbar justify-content-between">
+            <div className={cn("btn-toolbar justify-content-between", option?.className)}>
               <div>
                 {renderPrefix ? renderPrefix(option) : null}
                 <Highlighter search={props.text}>{label}</Highlighter>

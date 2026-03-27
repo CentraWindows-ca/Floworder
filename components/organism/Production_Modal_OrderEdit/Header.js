@@ -104,7 +104,7 @@ const Com = ({}) => {
           </small>
         )}
         {isDeleted && (
-          <div className="align-items-center flex gap-2 text-red-400">
+          <div className="align-items-center flex gap-2 text-red-500">
             [DELETED]
           </div>
         )}
