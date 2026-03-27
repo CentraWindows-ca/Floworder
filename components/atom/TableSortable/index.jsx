@@ -136,7 +136,7 @@ const TableRow = React.memo(
           </td>
         )}
         {_filteredColumns?.map((b) => {
-          const { fieldCode, render, onCell, onWrapper, className } = b;
+          const { fieldCode, render, Component, onCell, onWrapper, className } = b;
           let cell = onCell ? onCell(data) : null;
           let wrapper = onWrapper ? onWrapper(data) : null;
 
