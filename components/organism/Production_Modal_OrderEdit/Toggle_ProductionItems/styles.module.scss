@@ -54,3 +54,15 @@
         color: $color_border_table
     }
 }
+
+.kindTitleContainer {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.bulkUpdateContainer {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}

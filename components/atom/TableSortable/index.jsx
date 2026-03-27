@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
+import React, { useState, useEffect, useContext, useMemo, useRef } from "react";
 import Editable from "components/molecule/Editable";
 import cn from "classnames";
 import _ from "lodash";
@@ -18,6 +18,8 @@ const Com = (props) => {
     columns,
     sort,
     setSort,
+    multiChecked,
+    setMultiChecked,
     keyField = "m_MasterId",
     keyFieldPrefix = "",
     className,
@@ -29,7 +31,15 @@ const Com = (props) => {
     ...rest
   } = props;
 
-  const _filteredColumns = useMemo(() => columns.filter(Boolean), [columns])
+  const _filteredColumns = useMemo(() => columns.filter(Boolean), [columns]);
+
+  const handleSelectAll = () => {
+    const _v = {};
+    data?.forEach((a) => {
+      _v[a[keyField]] = true;
+    });
+    setMultiChecked(_v);
+  };
 
   return (
     <>
@@ -45,6 +55,12 @@ const Com = (props) => {
             columns,
             sort,
             setSort,
+            // === for multi select (
+            multiChecked,
+            setMultiChecked,
+            dataCount: data?.length,
+            onSelectAll: handleSelectAll,
+            // === for multi select )
             filters,
             setFilters,
             isEnableFilter,
@@ -68,6 +84,8 @@ const Com = (props) => {
                   keyFieldPrefix,
                   keyField,
                   _filteredColumns,
+                  multiChecked,
+                  setMultiChecked,
                 }}
                 data={a}
                 key={key}
@@ -88,10 +106,35 @@ const Com = (props) => {
 };
 
 const TableRow = React.memo(
-  ({ keyFieldPrefix, keyField, trParams, _filteredColumns, data }) => {
+  ({
+    keyFieldPrefix,
+    keyField,
+    trParams,
+    _filteredColumns,
+    data,
+    multiChecked,
+    setMultiChecked,
+  }) => {
     const _trParams = trParams ? trParams(data) : {};
     return (
       <tr {..._trParams}>
+        {typeof setMultiChecked === "function" && (
+          <td>
+            <label style={{cursor: 'pointer', padding: '8px'}}>
+              <input
+                type="checkbox"
+                checked={multiChecked?.[data[keyField]] || false}
+                onChange={(e) =>
+                  setMultiChecked((prev) => ({
+                    ...prev,
+                    [data[keyField]]: e.target.checked,
+                  }))
+                }
+                className={cn(styles.multiCheck)}
+              />
+            </label>
+          </td>
+        )}
         {_filteredColumns?.map((b) => {
           const { fieldCode, render, onCell, onWrapper, className } = b;
           let cell = onCell ? onCell(data) : null;
@@ -104,6 +147,19 @@ const TableRow = React.memo(
               >
                 <td {...cell}>
                   <div {...wrapper}>{render("", data, b)}</div>
+                </td>
+              </React.Fragment>
+            );
+          }
+          if (Component) {
+            return (
+              <React.Fragment
+                key={`${keyFieldPrefix}_${data[keyField]}_${fieldCode}`}
+              >
+                <td {...cell}>
+                  <div {...wrapper}>
+                    <Component {...{ record: data, ...b }} />
+                  </div>
                 </td>
               </React.Fragment>
             );
@@ -125,6 +181,23 @@ const TableRow = React.memo(
           );
         })}
       </tr>
+    );
+  },
+  (prev, nex) => {
+    let multiCheckSame = true;
+    if (prev.multiChecked) {
+      const prev_multiCheck = prev.multiChecked[prev.data[prev.keyField]];
+      const nex_multiCheck = nex.multiChecked[nex.data[nex.keyField]];
+      multiCheckSame = prev_multiCheck === nex_multiCheck;
+    }
+
+    return (
+      prev.keyFieldPrefix === nex.keyFieldPrefix &&
+      prev.keyField === nex.keyField &&
+      prev.trParams === nex.trParams &&
+      prev._filteredColumns === nex._filteredColumns &&
+      prev.data === nex.data &&
+      multiCheckSame
     );
   },
 );
@@ -159,11 +232,15 @@ export const TableHeader = ({
   isEnableFilter = true,
   sort,
   setSort,
+  multiChecked,
+  setMultiChecked,
+  dataCount,
+  onSelectAll,
   filters,
   setFilters,
   className,
 }) => {
-  const _filteredColumns = useMemo(() => columns.filter(Boolean), [columns])
+  const _filteredColumns = useMemo(() => columns.filter(Boolean), [columns]);
   const handleSortChange = (k) => {
     let newSortObj = null;
     // only 1 sorting field currently
@@ -210,6 +287,14 @@ export const TableHeader = ({
   return (
     <thead className={cn(styles.thead, className)}>
       <tr>
+        {typeof setMultiChecked === "function" && (
+          <th style={{ width: 30 }}>
+            <MultiCheckForAll
+              {...{ multiChecked, setMultiChecked, onSelectAll, dataCount }}
+            />
+          </th>
+        )}
+
         {_filteredColumns?.map((a, i) => {
           const { title, fieldCode, width, initKey, isNotTitle, isNotSortable } = a;
           const sortKey = initKey || fieldCode;
@@ -243,6 +328,15 @@ export const TableHeader = ({
       </tr>
       {setFilters ? (
         <tr>
+          {typeof setMultiChecked === "function" && (
+            <td>
+              <div className={cn(styles.tableTitle)}>
+                <span className={cn(styles.sortTitle)}>
+                  <br />
+                </span>
+              </div>
+            </td>
+          )}
           {_filteredColumns?.map((a) => {
             const {
               fieldCode,
@@ -282,6 +376,46 @@ export const TableHeader = ({
         </tr>
       ) : null}
     </thead>
+  );
+};
+
+const MultiCheckForAll = ({
+  multiChecked,
+  setMultiChecked,
+  onSelectAll,
+  dataCount,
+}) => {
+  const allCheckRef = useRef(null);
+  const selectedCount = _.values(multiChecked)?.filter(Boolean)?.length;
+
+  const isAllSelected = selectedCount === dataCount;
+  const isIndeterminate = !isAllSelected && selectedCount > 0;
+
+  useEffect(() => {
+    if (allCheckRef.current) {
+      allCheckRef.current.indeterminate = isIndeterminate;
+    }
+  }, [isIndeterminate]);
+
+  const handleAllMultiChange = (e) => {
+    if (!isAllSelected) {
+      onSelectAll();
+    } else {
+      setMultiChecked({});
+    }
+  };
+
+  return (
+    <label className={cn(styles.tableTitle)} style={{cursor: 'pointer'}}>
+      <span className={cn(styles.sortTitle)}>
+        <input
+          type="checkbox"
+          onChange={handleAllMultiChange}
+          checked={isAllSelected}
+          ref={allCheckRef}
+        />
+      </span>
+    </label>
   );
 };
 

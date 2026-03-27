@@ -445,6 +445,7 @@ const Com = (props) => {
       // ========= addon ========
       {
         fieldCode: "m_AddOnsCount",
+        title: "Includes Add-ons",
         width: 100,
         renderFilter: ({ key }) => {
           return (

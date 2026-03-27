@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext, useRef, useMemo } from "react";
 import { parseISO, formatISO, format, addMinutes, subMinutes } from "date-fns";
 import _ from "lodash";
 import cn from "classnames";
@@ -303,7 +303,7 @@ export const EF_Input = React.memo(
     ...props
   }) => {
     const handleChange = (e) => {
-      onChange(e.target.value);
+      onChange(e.target.value, e);
     };
 
     const handleKeyDown = (e) => {
@@ -350,6 +350,7 @@ export const EF_InputDebounce = React.memo(
     value = "",
     initValue = "",
     isHighlightDiff,
+    isHightlightValue = true,
     errorMessage,
     className,
     disabled,
@@ -357,7 +358,7 @@ export const EF_InputDebounce = React.memo(
     ...props
   }) => {
     const handleChange = (e) => {
-      onChange(e.target.value);
+      onChange(e.target.value, e);
     };
 
     return (
@@ -365,14 +366,14 @@ export const EF_InputDebounce = React.memo(
         className={cn(
           "",
           className,
-          value && !disabled ? "bg-blue-100" : null,
+          value && !disabled && isHightlightValue ? "bg-blue-100" : null,
           isHighlightDiff && initValue !== value && styles.diff,
           errorMessage ? styles.error : "",
         )}
         onChange={handleChange}
         value={value || ""}
         disabled={disabled}
-        placeholder = {placeholder}
+        placeholder={placeholder}
         {...props}
       />
     );
@@ -391,7 +392,7 @@ export const EF_Text = React.memo(
     ...props
   }) => {
     const handleChange = (e) => {
-      onChange(e.target.value);
+      onChange(e.target.value, e);
     };
     return (
       <textarea
@@ -412,6 +413,7 @@ export const EF_Text = React.memo(
 
 export const EF_Checkbox = React.memo(
   ({
+    id,
     onChange,
     value = false,
     initValue = false,
@@ -421,13 +423,14 @@ export const EF_Checkbox = React.memo(
     ...props
   }) => {
     const handleChange = (e) => {
-      onChange(e.target.checked);
+      onChange(e.target.checked, e);
     };
 
     const checked = value === true || value === "true"; // can be true or "true"
 
     return (
       <input
+        id={id}
         className={cn(
           "form-check-input cursor-pointer",
           className,
@@ -446,6 +449,7 @@ export const EF_Checkbox = React.memo(
 
 export const EF_Checkbox_Yesno = React.memo(
   ({
+    id,
     onChange,
     value = "0",
     initValue = "0",
@@ -456,13 +460,14 @@ export const EF_Checkbox_Yesno = React.memo(
   }) => {
     // 20250306: decide the whole database use 1/0 as boolean
     const handleChange = (e) => {
-      onChange(e.target.checked ? "1" : "0");
+      onChange(e.target.checked ? "1" : "0", e);
     };
 
-    const checked = value === "1"; // can be true or "true"
+    const checked = value === "1" || value === 1; // can be true or "true"
 
     return (
       <input
+        id={id}
         className={cn(
           "form-check-input cursor-pointer",
           className,
@@ -493,7 +498,10 @@ export const EF_Label = React.memo(
 export const EF_Label_Disabled = React.memo(
   ({ value, id, className, style, placeholder = "-", ...props }) => {
     return (
-      <label className={cn(className, "form-control d-block")} style={{background: "var(--bs-secondary-bg)", style}}>
+      <label
+        className={cn(className, "form-control d-block")}
+        style={{ background: "var(--bs-secondary-bg)", style }}
+      >
         {value || placeholder}
       </label>
     );
@@ -518,9 +526,30 @@ export const EF_Rack = React.memo(
     size = "md",
     options = null, // prevent override
     isDisplayAvilible = true,
+    isRemoveAllow = false,
     ...props
   }) => {
     const { dictionary } = useContext(GeneralContext);
+
+    const rackOptions = useMemo(() => {
+      const list = dictionary?.rackList
+        ?.sort((a, b) => (a.RackNumber > b.RackNumber ? 1 : -1))
+        ?.map((o) => ({
+          ...o,
+          label: `${o.RackNumber || "--"}`,
+          value: o.RecordID,
+        }));
+
+      if (isRemoveAllow) {
+        list.unshift({
+          label: "-- Remove From Rack --",
+          value: "REMOVE",
+          className: "text-red-500"
+        })
+      }
+
+      return list;
+    }, [dictionary]);
 
     return (
       <Typeahead
@@ -542,13 +571,7 @@ export const EF_Rack = React.memo(
         }}
         value={value}
         placeholder={placeholder}
-        options={dictionary?.rackList
-          ?.sort((a, b) => (a.RackNumber > b.RackNumber ? 1 : -1))
-          ?.map((o) => ({
-            ...o,
-            label: `${o.RackNumber || "--"}`,
-            value: o.RecordID,
-          }))}
+        options={rackOptions}
         {...props}
       />
     );

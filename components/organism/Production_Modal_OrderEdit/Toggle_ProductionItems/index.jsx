@@ -4,6 +4,7 @@ import React, {
   useContext,
   useMemo,
   useCallback,
+  memo,
 } from "react";
 import cn from "classnames";
 import _ from "lodash";
@@ -34,6 +35,7 @@ import Modal_ItemEdit from "./Modal_ItemEdit";
 // styles
 import stylesRoot from "../styles.module.scss";
 import stylesCurrent from "./styles.module.scss";
+import Subsec_Bulkupdate from "./Subsec_Bulkupdate"
 
 const styles = { ...stylesRoot, ...stylesCurrent };
 
@@ -243,6 +245,7 @@ const Com = ({ title, id }) => {
                     handleShowItem,
                     list: grouppedItems,
                     stats,
+                    kind: "w"
                   }}
                   key={dictKey}
                 />
@@ -255,6 +258,7 @@ const Com = ({ title, id }) => {
                     handleShowItem,
                     list: grouppedItems,
                     stats,
+                    kind: "d"
                   }}
                   key={dictKey}
                 />
@@ -286,7 +290,7 @@ const Com = ({ title, id }) => {
   );
 };
 
-const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
+const TableWindow = ({ stats, handleShowItem, list, dictKey, label, kind }) => {
   const { checkEditable, onBatchUpdateItems } = useContext(
     LocalDataContext_items,
   );
@@ -297,20 +301,23 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
   const group = "windowitems";
   const _isGroupEditable = checkEditable({ group });
 
+  const _params_updatingValues = useUpdatingValues({
+    data,
+    getRowId: (row) => row.Id,
+  });
   const {
     updatingValues,
     setUpdatingValues,
     handleUpdate,
+    multiChecked,
+    setMultiChecked,
     overridedList,
     overridedListByFacility,
     sort,
     setSort,
     filters,
     setFilters,
-  } = useUpdatingValues({
-    data,
-    getRowId: (row) => row.Id,
-  });
+  } = _params_updatingValues
 
   const handleSave = async () => {
     // treat updating items
@@ -318,7 +325,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
       keyValue: k,
       fields: updatingValues[k],
     }));
-    await onBatchUpdateItems(updates, "w");
+    await onBatchUpdateItems(updates, kind);
     setUpdatingValues({});
   };
 
@@ -513,7 +520,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
           return (
             <button
               className="btn btn-sm btn-outline-primary"
-              onClick={() => handleShowItem(record, "w")}
+              onClick={() => handleShowItem(record, kind)}
             >
               Detail
             </button>
@@ -530,9 +537,12 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
       <DisplayBlock id={blockId}>
         <div className={styles.togglePadding} id={dictKey}>
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
-            <label>
-              {label} <small className="fw-normal">( {stats[dictKey]} )</small>
-            </label>
+            <div className={cn(styles.kindTitleContainer)}>
+              <label>
+                {label} <small className="fw-normal">( {stats[dictKey]} )</small>
+              </label>
+              <Subsec_Bulkupdate onBatchUpdateItems={onBatchUpdateItems} kind={kind} dictKey={dictKey} itemListData={data} {..._params_updatingValues}/>
+            </div>
             <div>
               <button
                 className="btn btn-primary btn-sm me-2"
@@ -562,6 +572,8 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
               keyField: "Id",
               className: "text-left",
               isLockFirstColumn: false,
+              multiChecked,
+              setMultiChecked
             }}
           />
         </div>
@@ -572,7 +584,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label }) => {
 
 const TEMPORARY_DISABLE_FOR_FIX = true;
 
-const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
+const TableDoor = ({ stats, handleShowItem, list, label, dictKey, kind }) => {
   const { checkEditable, onBatchUpdateItems } = useContext(
     LocalDataContext_items,
   );
@@ -590,20 +602,23 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
     // );
   };
 
+  const _params_updatingValues = useUpdatingValues({
+    data,
+    getRowId: (row) => row.Id,
+  });
   const {
     updatingValues,
     setUpdatingValues,
     handleUpdate,
+    multiChecked,
+    setMultiChecked,
     overridedList,
     overridedListByFacility,
     sort,
     setSort,
     filters,
     setFilters,
-  } = useUpdatingValues({
-    data,
-    getRowId: (row) => row.Id,
-  });
+  } = _params_updatingValues
 
   const handleSave = async () => {
     // treat updating items
@@ -611,7 +626,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
       keyValue: k,
       fields: updatingValues[k],
     }));
-    await onBatchUpdateItems(updates, "d");
+    await onBatchUpdateItems(updates, kind);
     setUpdatingValues({});
   };
 
@@ -813,7 +828,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
         return (
           <button
             className="btn btn-sm btn-outline-primary"
-            onClick={() => handleOnClick(record, "d")}
+            onClick={() => handleOnClick(record, kind)}
           >
             Detail
           </button>
@@ -829,9 +844,12 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
       <DisplayBlock id={blockId}>
         <div className={styles.togglePadding} id={dictKey}>
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
-            <label>
-              {label} <small className="fw-normal">( {stats[dictKey]} )</small>
-            </label>
+            <div className={cn(styles.kindTitleContainer)}>
+              <label>
+                {label} <small className="fw-normal">( {stats[dictKey]} )</small>
+              </label>
+              <Subsec_Bulkupdate onBatchUpdateItems={onBatchUpdateItems} kind={kind} dictKey={dictKey} itemListData={data} {..._params_updatingValues}/>
+            </div>
             <div>
               <button
                 className="btn btn-primary btn-sm me-2"
@@ -861,6 +879,8 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey }) => {
               keyField: "Id",
               className: "text-left",
               isLockFirstColumn: false,
+              multiChecked,
+              setMultiChecked,
             }}
           />
         </div>
@@ -882,6 +902,10 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
   const _isGroupEditable = checkEditable({ group });
 
   const [isUpdatableMapping, setIsUpdatableMapping] = useState({});
+  const _params_updatingValues = useUpdatingValues({
+    data,
+    getRowId: (row) => row.Id,
+  });
   const {
     updatingValues,
     setUpdatingValues,
@@ -892,10 +916,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
     setSort,
     filters,
     setFilters,
-  } = useUpdatingValues({
-    data,
-    getRowId: (row) => row.Id,
-  });
+  } = _params_updatingValues
 
   useEffect(() => {
     init(data);
@@ -971,7 +992,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
             return (
               <Editable.EF_Checkbox
                 {...{
-                  id: `di_${updatingKey}_${record?.Id}`,
+                  id: `oi_${updatingKey}_${record?.Id}`,
                   value: isUpdatableMapping?.[record?.Id],
                   onChange: (v) => handleChangeIsUpdatable(v, record),
                 }}
@@ -1038,7 +1059,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
         return (
           <Editable.EF_Input
             {...{
-              id: `wi_${updatingKey}_${record?.Id}`,
+              id: `oi_${updatingKey}_${record?.Id}`,
               value:
                 overrideValue !== undefined
                   ? overrideValue
@@ -1135,9 +1156,12 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
       <DisplayBlock id={blockId}>
         <div className={styles.togglePadding} id={dictKey}>
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
-            <label>
-              {label} <small className="fw-normal">( {stats[dictKey]} )</small>
-            </label>
+            <div className={cn(styles.kindTitleContainer)}>
+              <label>
+                {label} <small className="fw-normal">( {stats[dictKey]} )</small>
+              </label>
+              <Subsec_Bulkupdate onBatchUpdateItems={onBatchUpdateItems} dictKey={dictKey} itemListData={data} {..._params_updatingValues}/>
+            </div>
             <div>
               <button
                 className="btn btn-primary btn-sm me-2"
@@ -1175,7 +1199,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
   );
 };
 
-const TableSortableWithFacility = (props) => {
+const TableSortableWithFacility = memo((props) => {
   const { permissions } = useContext(LocalDataContext_items);
   const { data, columns, overridedListByFacility } = props;
 
@@ -1193,6 +1217,11 @@ const TableSortableWithFacility = (props) => {
       }),
     [columns, permissions],
   );
+
+  const _columnsNotSplit = useMemo(
+    () => _columns?.filter((a) => a.key !== "Facility"),
+    [_columns]
+  )
 
   if (_isWithFacility) {
 
@@ -1227,18 +1256,19 @@ const TableSortableWithFacility = (props) => {
     return (
       <TableSortable
         {...props}
-        columns={_columns?.filter((a) => a.fieldCode !== "Facility")}
+        columns={_columnsNotSplit}
         headerClassName={_headerClassName}
       />
     );
   }
-};
+});
 
 export default React.memo(Com);
 
 // === util hooks ======
 const useUpdatingValues = ({ data, getRowId }) => {
   const [updatingValues, setUpdatingValues] = useState({});
+  const [multiChecked, setMultiChecked] = useState({})
   const [sort, setSort] = useState({});
   const [filters, setFilters] = useState({});
   const handleUpdate = useCallback((id, v, k, initV) => {
@@ -1256,10 +1286,6 @@ const useUpdatingValues = ({ data, getRowId }) => {
       return _v;
     });
   }, []);
-
-  // const allFacilities = useMemo(() => {
-  //   return _.uniq(data.map((a) => a.facility));
-  // }, [data]);
 
   const sortedList = useMemo(
     () => buildSortedFilteredList(data, sort, filters),
@@ -1284,6 +1310,8 @@ const useUpdatingValues = ({ data, getRowId }) => {
     updatingValues,
     setUpdatingValues,
     handleUpdate,
+    multiChecked,
+    setMultiChecked,
     sortedList,
     overridedList,
     overridedListByFacility,

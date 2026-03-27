@@ -290,7 +290,7 @@ export const LocalDataProvider = ({
       }
 
       // === no async for first load ===
-      initItems(initMasterId);
+      initItems(initMasterId, mergedData);
       initAttachmentList(initMasterId);
       initImageList(initMasterId);
       initReturnTrips(initMasterId);
@@ -413,7 +413,7 @@ export const LocalDataProvider = ({
     }
   });
 
-  const initItems = useLoadingBar(async (initMasterId) => {
+  const initItems = useLoadingBar(async (initMasterId, mergedData) => {
     // NOTE: if user open from window tab, eventhough its door order, we dont show doors
     let windowItems = [];
 
@@ -425,6 +425,7 @@ export const LocalDataProvider = ({
 
     let doorItems = [];
 
+    // v20260324: if no door, dont fetch
     doorItems = await Wrapper_OrdersApi.getDoorItems(initMasterId);
     doorItems = doorItems.filter((a) => !TEMPORARY_DISPLAY_FILTER[a.System]);
     setDoorItems(_.orderBy(doorItems, ["Item"]));

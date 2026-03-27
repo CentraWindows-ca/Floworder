@@ -27,7 +27,7 @@
         background-color: $color_background_tableHeader;
         height: 32px;
 
-        &>div {
+        &>div, &>label {
             // border-right: 1px solid $color_border_table;
             background-color: $color_background_tableHeader;
             border-bottom: 1px solid $color_border_table;
@@ -52,7 +52,9 @@
     tr:first-child {
 
         th>div,
-        td>div {
+        td>div,
+        th>label,
+        td>label {
             background-color: $primary;
             color: $color_white;
             border-top: 1px solid $color_border_table;
@@ -157,4 +159,8 @@
             }
         }
     }
+}
+
+.multiCheck {
+    cursor: pointer;
 }
