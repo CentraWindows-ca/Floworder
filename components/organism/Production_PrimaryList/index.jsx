@@ -446,7 +446,7 @@ const Com = (props) => {
       {
         fieldCode: "m_AddOnsCount",
         title: "Includes Add-ons",
-        width: 100,
+        width: 160,
         renderFilter: ({ key }) => {
           return (
             <div className="w-full text-center">

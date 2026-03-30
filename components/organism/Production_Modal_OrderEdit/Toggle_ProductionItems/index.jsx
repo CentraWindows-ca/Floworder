@@ -286,6 +286,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label, kind }) => {
                 options: ITEM_FACILITY,
                 className: "form-select form-select-sm",
                 disabled: !_isGroupEditable,
+                exclude:{"": true}
               }}
             />
           );
@@ -813,8 +814,8 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey, kind }) => {
               keyField: "Id",
               className: "text-left",
               isLockFirstColumn: false,
-              multiChecked,
-              setMultiChecked,
+              multiChecked: constants.DEV_HOLDING_FEATURES.v20260330_bulkupdate ? null: multiChecked,
+              setMultiChecked: constants.DEV_HOLDING_FEATURES.v20260330_bulkupdate ? null: setMultiChecked
             }}
           />
         </div>
