@@ -31,6 +31,7 @@ const WINDOW_FIELDS = applyField([
     options: ITEM_FACILITY,
     id: "Facility",
     sortBy: "sort",
+    exclude:{"": true}
   },
   {
     Component: Editable.EF_Label,

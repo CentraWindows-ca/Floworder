@@ -355,6 +355,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label, kind }) => {
                 options: ITEM_FACILITY,
                 className: "form-select form-select-sm",
                 disabled: !_isGroupEditable,
+                exclude:{"": true}
               }}
             />
           );
