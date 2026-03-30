@@ -879,8 +879,8 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey, kind }) => {
               keyField: "Id",
               className: "text-left",
               isLockFirstColumn: false,
-              multiChecked,
-              setMultiChecked,
+              multiChecked: constants.DEV_HOLDING_FEATURES.v20260330_bulkupdate ? null: multiChecked,
+              setMultiChecked: constants.DEV_HOLDING_FEATURES.v20260330_bulkupdate ? null: setMultiChecked
             }}
           />
         </div>
