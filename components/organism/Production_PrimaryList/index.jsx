@@ -447,24 +447,24 @@ const Com = (props) => {
         fieldCode: "m_AddOnsCount",
         title: "Includes Add-ons",
         width: 160,
-        renderFilter: ({ key }) => {
+        renderFilter: ({ fieldCode }) => {
           return (
             <div className="w-full text-center">
               <Editable.EF_Checkbox
                 {...{
-                  id: key,
-                  value: !!filters?.[key]?.field,
+                  id: fieldCode,
+                  value: !!filters?.[fieldCode]?.field,
                   onChange: (v) => {
                     setFilters((prev) => {
                       const _v = JSON.parse(JSON.stringify(prev)) || {};
                       if (v) {
-                        _v[key] = {
+                        _v[fieldCode] = {
                           operator: "GreaterOrEqual",
                           value: "1",
-                          field: key,
+                          field: fieldCode,
                         };
                       } else {
-                        delete _v[key];
+                        delete _v[fieldCode];
                       }
 
                       return _v;
