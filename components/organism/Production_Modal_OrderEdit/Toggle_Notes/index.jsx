@@ -72,7 +72,7 @@ const Com = ({}) => {
 
     const { master, facilities } = _filteredFields;
     const masterObj = {
-      facility: "Work Order",
+      facility: "",
       facilityRoleType: "",
       fields: master,
     };
@@ -94,11 +94,13 @@ const Com = ({}) => {
   const jsxFacilities = (a) => {
     const { facility, fields } = a;
 
+    const title = facility ? `${facility} Facility Notes` : "Work Order Notes";
+
     return (
       <React.Fragment key={`closed_${facility}`}>
         <thead className={styles.facilityHeader}>
           <tr>
-            <td colSpan={2}>{facility} Facility Notes</td>
+            <td colSpan={2}>{title}</td>
           </tr>
         </thead>
         <tbody>
@@ -210,10 +212,14 @@ const Com = ({}) => {
       >
         {groupInputs?.map((a) => {
           const { facility, fields } = a;
+          const title = facility
+            ? `${facility} Facility Notes`
+            : "Work Order Notes";
+
           return (
             <React.Fragment key={`notegroup_${facility}`}>
               <div className={cn(stylesRoot.columnFacility)}>
-                <span>{facility} Facility Notes</span>
+                <span>{title}</span>
               </div>
 
               <div className={cn("grid grid-cols-2", styles.notesContainer)}>

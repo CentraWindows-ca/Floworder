@@ -27,6 +27,8 @@ const Com = (props) => {
   const [windowMakerData, setWindowMakerData] = useState(null);
   const [dbSource, setDbSource] = useState("");
   const [existingWorkOrder, setExistingWorkOrder] = useState(null);
+  const [initWithOriginalStructure, setInitWithOriginalStructure] =
+    useState(null);
 
   const handleCreate = (...params) => {
     handleClear();
@@ -44,6 +46,7 @@ const Com = (props) => {
     setWindowMakerData(null);
     setDbSource("");
     setExistingWorkOrder(null);
+    setInitWithOriginalStructure(null);
   };
 
   return (
@@ -64,6 +67,8 @@ const Com = (props) => {
             setWindowMakerData,
             existingWorkOrder,
             setExistingWorkOrder,
+            initWithOriginalStructure,
+            setInitWithOriginalStructure,
           }}
         />
       ) : (
@@ -77,6 +82,8 @@ const Com = (props) => {
             setWindowMakerData,
             onCreate: handleCreate,
             existingWorkOrder,
+            initWithOriginalStructure,
+            setInitWithOriginalStructure,
           }}
         />
       )}
@@ -96,6 +103,8 @@ const Screen1 = ({
   windowMakerData,
   setWindowMakerData,
   setExistingWorkOrder,
+  initWithOriginalStructure,
+  setInitWithOriginalStructure,
 }) => {
   const { toast } = useContext(GeneralContext);
   const [resList, setResList] = useState();
@@ -113,7 +122,10 @@ const Screen1 = ({
         existingRecord.isActive,
       );
       _wo = _wo?.[0];
-      _wo = { ..._wo?.value?.d, ..._wo?.value?.m, ..._wo?.value?.w };
+      const { value } = _wo;
+      setInitWithOriginalStructure(value)
+      _wo = _.assign({}, ..._.values(value));
+
 
       setExistingWorkOrder(_wo);
       setDbSource(existingRecord.dbSource);
@@ -237,7 +249,9 @@ const Screen2 = ({
   const [serviceOrder, setServiceOrder] = useState(null);
 
   const isWindow = !!(
-    windowMakerData?.wmWindows || windowMakerData?.wmPatioDoors || windowMakerData?.wmGlasss
+    windowMakerData?.wmWindows ||
+    windowMakerData?.wmPatioDoors ||
+    windowMakerData?.wmGlasss
   );
   const isDoor = !!windowMakerData?.wmDoors || !!windowMakerData?.wmDoorGlasss;
 
@@ -248,14 +262,14 @@ const Screen2 = ({
         doorStartDate: existingWorkOrder.d_ProductionStartDate,
       });
     } else {
-      setInitValues({});;
+      setInitValues({});
     }
   }, [existingWorkOrder, windowMakerData]);
 
   const disabled =
     (isWindow && !initValues?.winStartDate) ||
     (isDoor && !initValues?.doorStartDate) ||
-    (!existingWorkOrder && !isLockoutOrService)
+    (!existingWorkOrder && !isLockoutOrService);
 
   const doFetch = async (newStatus = "", isReservationWorkOrder = false) => {
     setIsLoading(true);
@@ -285,11 +299,11 @@ const Screen2 = ({
     if (isLockoutOrService === "Yes") {
       if (serviceOrder) {
         // "can be split by comma". it only accept id, not the "serviceId"
-        updateValues.serviceIds = serviceOrder?.id?.toString()
+        updateValues.serviceIds = serviceOrder?.id?.toString();
       }
       if (lockoutOrder) {
         // "can be split by comma"
-        updateValues.siteLockoutIds = lockoutOrder?.siteLockoutId?.toString()
+        updateValues.siteLockoutIds = lockoutOrder?.siteLockoutId?.toString();
       }
     }
 
@@ -316,7 +330,7 @@ const Screen2 = ({
         existingWorkOrder,
       );
     }
- 
+
     // update init values
     setInitValues({});
     setIsLoading(false);
@@ -464,7 +478,7 @@ const Screen2 = ({
             setServiceOrder,
             isLockoutOrService,
             setIsLockoutOrService,
-            existingWorkOrder
+            existingWorkOrder,
           }}
         />
       )}
