@@ -731,7 +731,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey, kind }) => {
                   updatingKey,
                   record[updatingKey],
                 ),
-              disabled: !_isGroupEditable || TEMPORARY_DISABLE_FOR_FIX,
+              disabled: !_isGroupEditable,
             }}
           />
         );
