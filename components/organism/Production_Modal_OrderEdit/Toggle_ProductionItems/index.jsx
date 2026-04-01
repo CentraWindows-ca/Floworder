@@ -355,6 +355,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label, kind }) => {
                 options: ITEM_FACILITY,
                 className: "form-select form-select-sm",
                 disabled: !_isGroupEditable,
+                exclude:{"": true}
               }}
             />
           );
@@ -730,7 +731,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey, kind }) => {
                   updatingKey,
                   record[updatingKey],
                 ),
-              disabled: !_isGroupEditable || TEMPORARY_DISABLE_FOR_FIX,
+              disabled: !_isGroupEditable,
             }}
           />
         );
