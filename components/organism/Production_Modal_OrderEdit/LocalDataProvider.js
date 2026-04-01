@@ -900,6 +900,7 @@ export const LocalDataProvider = ({
 
       toast("Items saved", { type: "success" });
       await initItems(initMasterId);
+      await doInitWo(initMasterId)
       return;
     }),
     [data?.m_MasterId, kind, initData, initDataItems, initMasterId],
