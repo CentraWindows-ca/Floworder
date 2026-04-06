@@ -123,7 +123,7 @@ const WINDOW_FIELDS = applyField([
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    id: "Shaped",
+    id: "Shapped",
     disabled: true, // 20260406: not editable from OM
   },
 ]);
