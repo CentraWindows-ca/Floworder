@@ -121,6 +121,11 @@ const WINDOW_FIELDS = applyField([
     Component: Editable.EF_Checkbox_Yesno,
     fieldCode: "Painted",
   },
+  {
+    Component: Editable.EF_Checkbox_Yesno,
+    id: "Shapped",
+    disabled: true, // 20260406: not editable from OM
+  },
 ]);
 
 const TEMPORARY_DISABLE_FOR_FIX = true;
