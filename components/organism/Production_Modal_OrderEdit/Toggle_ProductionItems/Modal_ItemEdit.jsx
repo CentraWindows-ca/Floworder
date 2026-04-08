@@ -128,7 +128,7 @@ const WINDOW_FIELDS = applyField([
   },
 ]);
 
-const TEMPORARY_DISABLE_FOR_FIX = true;
+const TEMPORARY_DISABLE_FOR_FIX = false;
 
 const DOOR_FIELDS = applyField([
   {
@@ -299,7 +299,7 @@ const DOOR_FIELDS = applyField([
   {
     Component: Editable.EF_Checkbox_Yesno,
     id: "Shaped",
-    //  disabled: true, // 20260406: not editable from OM
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
 ]);
 
