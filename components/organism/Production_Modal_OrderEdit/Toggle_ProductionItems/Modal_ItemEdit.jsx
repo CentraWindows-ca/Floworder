@@ -298,7 +298,7 @@ const DOOR_FIELDS = applyField([
   },
   {
     Component: Editable.EF_Checkbox_Yesno,
-    id: "Shaped",
+    fieldCode: "Shaped",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
 ]);
