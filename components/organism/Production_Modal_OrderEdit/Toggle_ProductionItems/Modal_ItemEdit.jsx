@@ -296,6 +296,11 @@ const DOOR_FIELDS = applyField([
     id: "DoubleDoorCount",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
+  {
+    Component: Editable.EF_Checkbox_Yesno,
+    id: "Shaped",
+    //  disabled: true, // 20260406: not editable from OM
+  },
 ]);
 
 const Com = (props) => {
