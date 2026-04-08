@@ -77,7 +77,7 @@ const WorkOrderActions = ({
 
   const getStatusPayload = async (data, newStatus, _kind) => {
     const { m_WorkOrderNo, m_MasterId } = data;
-    const payload = {
+    let payload = {
       m_WorkOrderNo,
       m_MasterId,
       newStatus,
