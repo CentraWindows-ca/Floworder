@@ -128,7 +128,7 @@ const WINDOW_FIELDS = applyField([
   },
 ]);
 
-const TEMPORARY_DISABLE_FOR_FIX = true;
+const TEMPORARY_DISABLE_FOR_FIX = false;
 
 const DOOR_FIELDS = applyField([
   {
@@ -294,6 +294,11 @@ const DOOR_FIELDS = applyField([
   {
     Component: Editable.EF_Input,
     fieldCode: "DoubleDoorCount",
+    disabled: TEMPORARY_DISABLE_FOR_FIX,
+  },
+  {
+    Component: Editable.EF_Checkbox_Yesno,
+    id: "Shaped",
     disabled: TEMPORARY_DISABLE_FOR_FIX,
   },
 ]);
