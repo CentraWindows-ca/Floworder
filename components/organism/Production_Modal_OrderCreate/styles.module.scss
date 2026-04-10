@@ -20,3 +20,26 @@
     color: $color_red;
     cursor: pointer;
 }
+
+.columnFacility {
+    text-align: left;
+    // padding: 0px 10px;
+    font-size: .7rem;
+    margin-top: 10px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    border-bottom: 1px solid $color_background_lightBlue;
+    width: 100%;
+    margin-bottom: 15px;
+
+    span {
+        padding: 3px 10px;
+        min-width: 80px;
+        border-radius: 0px 20px 20px 0px;
+        color: $color_centraBlack;
+        background-color: $color_background;
+        margin-bottom: -10px;
+        font-weight: bold;
+    }
+}

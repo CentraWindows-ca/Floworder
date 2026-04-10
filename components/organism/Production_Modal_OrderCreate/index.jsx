@@ -11,6 +11,8 @@ import WM2CWProdApi from "lib/api/WM2CWProdApi";
 import Wrapper_OrdersApi from "lib/api/Wrapper_OrdersApi";
 import External_FromApi from "lib/api/External_FromApi";
 
+import { spreadFacilities } from "lib/constants/production_constants_labelMapping";
+
 // hooks
 import useLoadingBar from "lib/hooks/useLoadingBar";
 
@@ -20,6 +22,16 @@ import { GeneralContext } from "lib/provider/GeneralProvider";
 import constants, { WORKORDER_STATUS_MAPPING } from "lib/constants";
 import PermissionBlock from "components/atom/PermissionBlock";
 import Sec_LockoutOrService from "./Sec_LockoutOrService";
+
+import styles from "./styles.module.scss";
+import utils from "lib/utils";
+
+const DEFAULT_DOOR_FACILITY = "Calgary";
+
+const FIELDS = [
+  { fieldCode: "w_ProductionStartDate", title: "Window Production Date" },
+  { fieldCode: "d_ProductionStartDate", title: "Door Production Date" },
+];
 
 const Com = (props) => {
   const { show, onHide, onCreate } = props;
@@ -96,6 +108,11 @@ const WM_MAPPING = {
   WM_BC: "WM_BC",
 };
 
+const FACILITY_MAPPING = {
+  WM_AB: "Calgary",
+  WM_BC: "Langley",
+};
+
 const Screen1 = ({
   setDbSource,
   workOrderNo,
@@ -123,9 +140,8 @@ const Screen1 = ({
       );
       _wo = _wo?.[0];
       const { value } = _wo;
-      setInitWithOriginalStructure(value)
+      setInitWithOriginalStructure(value);
       _wo = _.assign({}, ..._.values(value));
-
 
       setExistingWorkOrder(_wo);
       setDbSource(existingRecord.dbSource);
@@ -237,12 +253,21 @@ const Screen2 = ({
   setWindowMakerData,
   onCreate,
   existingWorkOrder,
+  initWithOriginalStructure,
 }) => {
   const [initValues, setInitValues] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   const [selectedOverrideOption, setSelectedOverrideOption] =
     useState("override");
+
+  const [viewExistingByFacilities, setViewExistingByFacilities] = useState([]);
+
+  const [doorManufacturingFacility, setDoorManufacturingFacility] = useState(
+    constants.ManufacturingFacilities.Calgary,
+  );
+  const [windowManufacturingFacility, setWindowManufacturingFacility] =
+    useState(constants.ManufacturingFacilities.Langley);
 
   const [isLockoutOrService, setIsLockoutOrService] = useState("No");
   const [lockoutOrder, setLockoutOrder] = useState(null);
@@ -257,18 +282,27 @@ const Screen2 = ({
 
   useEffect(() => {
     if (existingWorkOrder) {
-      setInitValues({
-        winStartDate: existingWorkOrder.w_ProductionStartDate,
-        doorStartDate: existingWorkOrder.d_ProductionStartDate,
-      });
+      // NOTE: if existing, read only
+      const _filteredFields = spreadFacilities(
+        FIELDS,
+        initWithOriginalStructure,
+      );
+
+      setViewExistingByFacilities(_filteredFields || []);
+
+      console.log("spread", _filteredFields, initWithOriginalStructure);
     } else {
       setInitValues({});
+      setDoorManufacturingFacility(DEFAULT_DOOR_FACILITY);
+      setWindowManufacturingFacility(FACILITY_MAPPING[dbSource]);
     }
   }, [existingWorkOrder, windowMakerData]);
 
   const disabled =
     (isWindow && !initValues?.winStartDate) ||
     (isDoor && !initValues?.doorStartDate) ||
+    (isWindow && !windowManufacturingFacility) ||
+    (isDoor && !doorManufacturingFacility) ||
     (!existingWorkOrder && !isLockoutOrService);
 
   const doFetch = async (newStatus = "", isReservationWorkOrder = false) => {
@@ -312,6 +346,8 @@ const Screen2 = ({
     const _updatingBody = {
       workOrderNo,
       resetWorkOrder: selectedOverrideOption === "ResetWorkOrder",
+      winManufacturingFacility: windowManufacturingFacility,
+      doorManufacturingFacility: doorManufacturingFacility,
       isReservationWorkOrder,
       ...updateValues,
     };
@@ -338,8 +374,8 @@ const Screen2 = ({
     onCreate(res?.masterId);
   };
 
-  return (
-    <div className="flex-column flex gap-2">
+  const jsxEdit = (
+    <>
       {isWindow && (
         <div className="form-group row">
           <label className="col-lg-4">Windows Production Date</label>
@@ -374,11 +410,82 @@ const Screen2 = ({
           </div>
         </div>
       )}
+      {isWindow && (
+        <div className="form-group row">
+          <label className="col-lg-4">Window Manufacturing Facility</label>
+          <div className="col-lg-8 flex justify-start">
+            <Editable.EF_SelectWithLabel
+              id="windowManufacturingFacility"
+              value={windowManufacturingFacility}
+              // placeholder = {"-"}
+              onChange={(v) => setWindowManufacturingFacility((prev) => v)}
+              options={_.keys(constants.ManufacturingFacilities)?.map((k) => ({
+                label: k,
+                value: k,
+                key: k,
+              }))}
+              style={{ width: 140 }}
+            />
+          </div>
+        </div>
+      )}
 
-      {/* NOTE: 20230323 - now facility based on Item data. not decide by user */}
-      {/* removed */}
+      {isDoor && (
+        <div className="form-group row">
+          <label className="col-lg-4">Door Manufacturing Facility</label>
+          <div className="col-lg-8 flex justify-start">
+            <Editable.EF_SelectWithLabel
+              id="doorManufacturingFacility"
+              value={doorManufacturingFacility}
+              // placeholder = {"-"}
+              onChange={(v) => setDoorManufacturingFacility((prev) => v)}
+              options={_.keys(constants.ManufacturingFacilities)?.map((k) => ({
+                label: k,
+                value: k,
+                key: k,
+              }))}
+              style={{ width: 140 }}
+            />
+          </div>
+        </div>
+      )}
+    </>
+  );
 
-      <hr />
+  const jsxView = (
+    <>
+      {viewExistingByFacilities?.facilities?.map((fac) => {
+        const { facility, facilityRoleType, fields } = fac;
+        return (
+          <React.Fragment key={`${facility}`}>
+            <div className={cn(styles.columnFacility)}>
+              <span>Manufacturing Facility: {facility}</span>
+            </div>
+            <div className={cn(styles.columnInputsContainer)}>
+              {fields?.map((a) => {
+                const { field, title } = a;
+                return (
+                  <div key={field} className="form-group row">
+                    <label className="col-lg-4 font-bold">{title} ({facility})</label>
+                    <div className="col-lg-8 border-gray-200">
+                      {utils.formatDate(existingWorkOrder?.[field]) || "--"}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </React.Fragment>
+        );
+      })}
+    </>
+  );
+
+  return (
+    <div className="flex-column flex gap-2">
+      {existingWorkOrder ? jsxView : jsxEdit}
+      <div className={cn(styles.columnFacility)}>
+        <span>Work Order Information</span>
+      </div>
       <div className="form-group row">
         <label className="col-lg-4 font-bold">Work Order Number</label>
         <div className="col-lg-8 border-b border-gray-200">
@@ -490,21 +597,7 @@ const Screen2 = ({
             className="alert alert-danger align-items-center mb-0 flex"
             role="alert"
           >
-            The order you are trying to create already exists. You can:
-            <div className="ms-2" style={{ width: 240 }}>
-              <Editable.EF_SelectWithLabel
-                id={"exists"}
-                value={selectedOverrideOption}
-                onChange={(v) => setSelectedOverrideOption(v)}
-                options={[
-                  { label: "Update it", key: "override" },
-                  // {
-                  //   label: "Delete it and create a new one",
-                  //   key: "ResetWorkOrder",
-                  // },
-                ]}
-              />
-            </div>
+            The order you are trying to create already exists.
           </div>
         </div>
       ) : null}
@@ -567,19 +660,21 @@ const Screen2 = ({
           </>
         ) : (
           <>
-            <button
-              className="btn btn-primary align-items-center flex gap-2"
-              onClick={() => doFetch(null)}
-              disabled={disabled || isLoading}
-            >
-              <Spin
-                size="small"
-                indicator={<LoadingOutlined />}
-                spinning={isLoading}
-                style={{ color: "white" }}
-              />
-              <span>Save</span>
-            </button>
+            {!existingWorkOrder && (
+              <button
+                className="btn btn-primary align-items-center flex gap-2"
+                onClick={() => doFetch(null)}
+                disabled={disabled || isLoading}
+              >
+                <Spin
+                  size="small"
+                  indicator={<LoadingOutlined />}
+                  spinning={isLoading}
+                  style={{ color: "white" }}
+                />
+                <span>Save</span>
+              </button>
+            )}
           </>
         )}
       </div>
