@@ -8,7 +8,11 @@ import Prod2FFApi from "lib/api/Prod2FFApi";
 import { TableHeader, TableWrapper } from "components/atom/TableSortable";
 
 import constants from "lib/constants";
-import {labelMapping, applyField} from "lib/constants/production_constants_labelMapping";
+import {
+  labelMapping,
+  applyField,
+  parseFacilityList,
+} from "lib/constants/production_constants_labelMapping";
 
 // components
 import Editable from "components/molecule/Editable";
@@ -45,7 +49,7 @@ const Com = ({ data, dataProfile, onRefresh }) => {
       title: "Door Facility",
       width: 180,
       isNotSortable: true,
-    },  
+    },
     {
       fieldCode: "m_Branch",
       width: 125,
@@ -81,10 +85,8 @@ const Com = ({ data, dataProfile, onRefresh }) => {
 
     const _data = dataCWD?.map((a) => {
       const { value } = a;
-      const merged = {
-        ...value?.m,
-        //...value?.d,...value?.w
-      };
+      const merged = _.assign({}, ..._.values(value));
+      merged.internal_facilityList = parseFacilityList(value);
       const profileList = dataProfile?.filter((b) => {
         return (
           b.parentRecordId === merged?.m_RecordId?.toString() &&
@@ -200,12 +202,12 @@ const Com = ({ data, dataProfile, onRefresh }) => {
                   className: styles.thead,
                 }}
               />
-              <tbody>{treatedData?.length > 0 ? (
+              <tbody>
+                {treatedData?.length > 0 ? (
                   treatedData?.map((a, i) => {
                     const {
                       m_WorkOrderNo,
-                      w_ManufacturingFacility,
-                      d_ManufacturingFacility,
+                      internal_facilityList,
                       m_MasterId,
                       m_Branch,
                       profileList,
@@ -213,12 +215,23 @@ const Com = ({ data, dataProfile, onRefresh }) => {
                       totalWasted,
                     } = a;
 
+                    const fac = internal_facilityList;
+                    console.log(fac);
+
+                    const windowFacilities = fac?.filter((a) => a.kind === "w")?.map(a => a.facility);
+                    const doorFacilities = fac?.filter((a) => a.kind === "d")?.map(a => a.facility);
+
+                    const windowFacilities_display = windowFacilities?.join(", ")
+                    const doorFacilities_display = doorFacilities?.join(", ")
+
+
+
                     return !_.isEmpty(profileList) ? (
                       <React.Fragment key={m_MasterId}>
                         <tr>
                           <td>{m_WorkOrderNo}</td>
-                          <td>{w_ManufacturingFacility}</td>
-                          <td>{d_ManufacturingFacility}</td>
+                          <td>{windowFacilities_display}</td>
+                          <td>{doorFacilities_display}</td>
                           <td>{m_Branch}</td>
                           <td className="text-right">
                             (profiles) <b>{profileList?.length}</b>
@@ -257,8 +270,8 @@ const Com = ({ data, dataProfile, onRefresh }) => {
                     ) : (
                       <tr className={cn(styles.subRowLast)}>
                         <td>{m_WorkOrderNo}</td>
-                        <td>{w_ManufacturingFacility}</td>
-                        <td>{d_ManufacturingFacility}</td>
+                        <td>{windowFacilities_display}</td>
+                        <td>{doorFacilities_display}</td>
                         <td>{m_Branch}</td>
                         <td
                           colSpan={3}
@@ -270,9 +283,7 @@ const Com = ({ data, dataProfile, onRefresh }) => {
                           No Data{" "}
                           <button
                             className="btn btn-success btn-sm ms-2"
-                            onClick={() =>
-                              handleGetWindowMaker(a)
-                            }
+                            onClick={() => handleGetWindowMaker(a)}
                             type="button"
                           >
                             Get From Windowmaker
@@ -283,9 +294,12 @@ const Com = ({ data, dataProfile, onRefresh }) => {
                   })
                 ) : (
                   <tr>
-                    <td colSpan={6} className="text-center">-- No Data --</td>
+                    <td colSpan={6} className="text-center">
+                      -- No Data --
+                    </td>
                   </tr>
-                )}</tbody>
+                )}
+              </tbody>
             </table>
           )}
         </div>

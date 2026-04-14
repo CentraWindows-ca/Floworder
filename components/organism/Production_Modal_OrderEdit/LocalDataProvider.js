@@ -23,6 +23,7 @@ import External_ServiceApi from "lib/api/External_ServiceApi";
 import useLoadingBar from "lib/hooks/useLoadingBar";
 import constants, {
   ADDON_STATUS,
+  ALL_SUBORDER_TYPES,
   FACILITY_FROM_CODE,
   ORDER_STATUS,
   ORDER_TRANSFER_FIELDS,
@@ -769,14 +770,13 @@ export const LocalDataProvider = ({
       // identify changed data:
       const _changedData = utils.findChanges(initData, data);
 
-      // process customized
-      if (_changedData.w_ProductionStartDate) {
-        _changedData.w_ProductionEndDate = _changedData.w_ProductionStartDate;
-      }
-
-      if (_changedData.d_ProductionStartDate) {
-        _changedData.d_ProductionEndDate = _changedData.d_ProductionStartDate;
-      }
+      // process customized. copy production start date to end date
+      ALL_SUBORDER_TYPES.forEach(({ suborder_code }) => {
+        const startField = `${suborder_code}_ProductionStartDate`;
+        if (_changedData[startField]) {
+          _changedData[`${suborder_code}_ProductionEndDate`] = _changedData[startField];
+        }
+      });
 
       let stillEditingData = {};
       if (group && uiWoFieldEditGroupMapping?.[group]) {

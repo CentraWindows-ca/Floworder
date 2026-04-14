@@ -261,22 +261,13 @@ const WorkOrderActions = ({
 
         // split facilities
         const _fac = internal_facilityList
-          ?.map((k) => {
-            const [kind, facilityCode] = k.split("_");
-            return {
-              fkcode: k,
-              kind,
-              facility: FACILITY_FROM_CODE[facilityCode] || "",
-              facilityCode,
-            };
-          })
           ?.filter(({ kind }) => kind === current_kind);
 
         // get status of facilities
         _option_lvl2 = _fac?.map((f) => {
           const { fkcode, kind, facility, facilityCode } = f;
           const field = `${fkcode}_Status`;
-          const current_status = data[field];
+          const current_status = data?.[field];
           const allowedStatus =
             WORKORDER_WORKFLOW[getStatusName(current_status)]?.map(
               (n) => WORKORDER_STATUS_MAPPING[n],

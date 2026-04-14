@@ -19,11 +19,6 @@ import stylesCurrent from "./styles.module.scss";
 const styles = { ...stylesRoot, ...stylesCurrent };
 
 const STATUS_DISPLAY = (data, woRef) => {
-  // NOTE: 20250419 hardcode requirement from Meng
-  if (woRef.w_GlassSupplier === "GlassFab") {
-    return "N/A";
-  }
-
   if (data.statusObj) {
     return (
       <div className="align-items-center flex gap-2">

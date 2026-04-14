@@ -121,7 +121,7 @@ const StatusUpdate = ({ statusLabel, currentKind, fieldCode }) => {
     let _options = facilities?.map((f) => {
       const { kind, facility, facilityCode } = f;
       const field = `${kind}_${facilityCode}_Status`;
-      const current_status = data[field];
+      const current_status = data?.[field];
       const allowedStatus =
         WORKORDER_WORKFLOW[getStatusName(current_status)]?.map(
           (n) => WORKORDER_STATUS_MAPPING[n],

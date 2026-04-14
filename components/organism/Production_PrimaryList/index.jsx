@@ -21,6 +21,7 @@ import constants, {
 import {
   applyField,
   fnAssignValue,
+  parseFacilityList,
 } from "lib/constants/production_constants_labelMapping";
 import { ALL_SUBORDER_TYPES } from "lib/constants";
 
@@ -528,8 +529,8 @@ const Com = (props) => {
         fieldCode: "w_ProductionStartDate_colored",
         width: 210,
         display: isWindow,
-        onCell: (record) => {
-          if (record?.w_ProductionStartDate < today) {
+        onCell: (record, field) => {
+          if (record?.[field] < today) {
             return {
               style: {
                 color: "red",
@@ -543,8 +544,8 @@ const Com = (props) => {
         fieldCode: "d_ProductionStartDate_colored",
         width: 210,
         display: isDoor,
-        onCell: (record) => {
-          if (record?.d_ProductionStartDate < today) {
+        onCell: (record, field) => {
+          if (record?.[field] < today) {
             return {
               style: {
                 color: "red",
@@ -678,7 +679,7 @@ const Com = (props) => {
         m_AddOnsCount,
       } = merged;
 
-      merged.internal_facilityList = _.keys(value)
+      merged.internal_facilityList = parseFacilityList(value);
 
       // ======== if has parent then its addon child; if has count then its addon parent; otherwise its not addon ========
       merged.m_AddonIcon_display = "";
@@ -719,14 +720,21 @@ const Com = (props) => {
         fields: merged,
         assignFrom: "CustomerDate",
         assignTo: "CustomerDate_display",
-        fn: (v) => utils.formatDate(v),
+        fn: (v) => utils.formatDate(v, "yyyy-MM-dd"),
+      });
+
+      fnAssignValue({
+        fields: merged,
+        assignFrom: "ProductionStartDate",
+        assignTo: "ProductionStartDate",
+        fn: (v) => utils.formatDate(v, "yyyy-MM-dd"),
       });
 
       fnAssignValue({
         fields: merged,
         assignFrom: "ProductionStartDate",
         assignTo: "ProductionStartDate_colored",
-        fn: (v) => utils.formatDate(v),
+        fn: (v) => v,
       });
 
       // merged.w_CustomerDate_display = w_CustomerDate;
