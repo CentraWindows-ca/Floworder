@@ -198,7 +198,7 @@ export const LocalDataProvider = ({
     }
   }, [initMasterId, isDeleted]);
 
-  const handleChange = (v, field) => {
+  const handleChange = useCallback((v, field) => {
     const fieldCode = getFieldCode(field);
     setData((prev) => {
       const _newV = { ...prev };
@@ -226,7 +226,7 @@ export const LocalDataProvider = ({
         return prev;
       }
     });
-  };
+  }, []);
 
   const handleAnchor = (id, closeOthers) => {
     if (closeOthers) {

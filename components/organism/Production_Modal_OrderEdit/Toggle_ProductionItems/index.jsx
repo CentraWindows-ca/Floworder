@@ -33,7 +33,7 @@ import Modal_ItemEdit from "./Modal_ItemEdit";
 // styles
 import stylesRoot from "../styles.module.scss";
 import stylesCurrent from "./styles.module.scss";
-import Subsec_Bulkupdate from "./Subsec_Bulkupdate"
+import Subsec_Bulkupdate from "./Subsec_Bulkupdate";
 
 const styles = { ...stylesRoot, ...stylesCurrent };
 
@@ -176,7 +176,7 @@ const Com = ({ title, id }) => {
                     handleShowItem,
                     list: grouppedItems,
                     stats,
-                    kind: "w"
+                    kind: "w",
                   }}
                   key={dictKey}
                 />
@@ -189,7 +189,7 @@ const Com = ({ title, id }) => {
                     handleShowItem,
                     list: grouppedItems,
                     stats,
-                    kind: "d"
+                    kind: "d",
                   }}
                   key={dictKey}
                 />
@@ -222,7 +222,7 @@ const Com = ({ title, id }) => {
 };
 
 const TableWindow = ({ stats, handleShowItem, list, dictKey, label, kind }) => {
-  const { checkEditable, onBatchUpdateItems } = useContext(
+  const { checkEditable, onBatchUpdateItems, dictionary } = useContext(
     LocalDataContext_items,
   );
 
@@ -248,7 +248,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label, kind }) => {
     setSort,
     filters,
     setFilters,
-  } = _params_updatingValues
+  } = _params_updatingValues;
 
   const handleSave = async () => {
     // treat updating items
@@ -271,24 +271,48 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label, kind }) => {
         width: 150,
         render: (t, record) => {
           const updatingKey = "Facility";
+          const value = record[updatingKey];
+          const acceptFacilities =
+            dictionary?.facilitySystemCodeList?.[record?.["System"]];
+          let err = null;
+          if (!acceptFacilities?.includes(value)) {
+            err = (
+              <span className="text-danger text-xs">
+                Not available in {value}
+              </span>
+            );
+          }
+          const excludeFacilities = ITEM_FACILITY.reduce((acc, item) => {
+            if (
+              item.key === "" ||
+              (acceptFacilities && !acceptFacilities.includes(item.key))
+            ) {
+              acc[item.key] = true;
+            }
+            return acc;
+          }, {});
+
           return (
-            <Editable.EF_SelectWithLabel
-              {...{
-                value: record[updatingKey],
-                onChange: (v) =>
-                  handleUpdate(
-                    record?.Id,
-                    v || null,
-                    "Facility",
-                    record["Facility"],
-                  ),
-                id: `Facility_${record?.Id}`,
-                options: ITEM_FACILITY,
-                className: "form-select form-select-sm",
-                disabled: !_isGroupEditable,
-                exclude:{"": true}
-              }}
-            />
+            <>
+              <Editable.EF_SelectWithLabel
+                {...{
+                  value,
+                  onChange: (v) =>
+                    handleUpdate(
+                      record?.Id,
+                      v || null,
+                      "Facility",
+                      record["Facility"],
+                    ),
+                  id: `Facility_${record?.Id}`,
+                  options: ITEM_FACILITY,
+                  className: "form-select form-select-sm",
+                  disabled: !_isGroupEditable,
+                  exclude: excludeFacilities,
+                }}
+              />
+              {err}
+            </>
           );
         },
       },
@@ -382,7 +406,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label, kind }) => {
                 disabled: !_isGroupEditable,
                 size: "sm",
                 placeholder: "--",
-                isHightlightValue: false
+                isHightlightValue: false,
               }}
             />
           );
@@ -472,9 +496,16 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label, kind }) => {
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
             <div className={cn(styles.kindTitleContainer)}>
               <label>
-                {label} <small className="fw-normal">( {stats[dictKey]} )</small>
+                {label}{" "}
+                <small className="fw-normal">( {stats[dictKey]} )</small>
               </label>
-              <Subsec_Bulkupdate onBatchUpdateItems={onBatchUpdateItems} kind={kind} dictKey={dictKey} itemListData={data} {..._params_updatingValues}/>
+              <Subsec_Bulkupdate
+                onBatchUpdateItems={onBatchUpdateItems}
+                kind={kind}
+                dictKey={dictKey}
+                itemListData={data}
+                {..._params_updatingValues}
+              />
             </div>
             <div>
               <button
@@ -506,7 +537,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label, kind }) => {
               className: "text-left",
               isLockFirstColumn: false,
               multiChecked,
-              setMultiChecked
+              setMultiChecked,
             }}
           />
         </div>
@@ -551,7 +582,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey, kind }) => {
     setSort,
     filters,
     setFilters,
-  } = _params_updatingValues
+  } = _params_updatingValues;
 
   const handleSave = async () => {
     // treat updating items
@@ -573,10 +604,31 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey, kind }) => {
       width: 150,
       render: (t, record) => {
         const updatingKey = "Facility";
+        const value = record[updatingKey];
+        const acceptFacilities =
+          dictionary?.facilitySystemCodeList?.[record?.["System"]];
+        let err = null;
+        if (!acceptFacilities?.includes(value)) {
+          err = (
+            <span className="text-danger text-xs">
+              Not available in {value}
+            </span>
+          );
+        }
+        const excludeFacilities = ITEM_FACILITY.reduce((acc, item) => {
+          if (
+            item.key === "" ||
+            (acceptFacilities && !acceptFacilities.includes(item.key))
+          ) {
+            acc[item.key] = true;
+          }
+          return acc;
+        }, {});
+
         return (
           <Editable.EF_SelectWithLabel
             {...{
-              value: record[updatingKey],
+              value,
               onChange: (v) =>
                 handleUpdate(
                   record?.Id,
@@ -588,6 +640,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey, kind }) => {
               options: ITEM_FACILITY,
               className: "form-select form-select-sm",
               disabled: !_isGroupEditable,
+              exclude: excludeFacilities,
             }}
           />
         );
@@ -689,7 +742,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey, kind }) => {
               disabled: !_isGroupEditable,
               size: "sm",
               placeholder: "--",
-              isHightlightValue: false
+              isHightlightValue: false,
             }}
           />
         );
@@ -781,9 +834,16 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey, kind }) => {
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
             <div className={cn(styles.kindTitleContainer)}>
               <label>
-                {label} <small className="fw-normal">( {stats[dictKey]} )</small>
+                {label}{" "}
+                <small className="fw-normal">( {stats[dictKey]} )</small>
               </label>
-              <Subsec_Bulkupdate onBatchUpdateItems={onBatchUpdateItems} kind={kind} dictKey={dictKey} itemListData={data} {..._params_updatingValues}/>
+              <Subsec_Bulkupdate
+                onBatchUpdateItems={onBatchUpdateItems}
+                kind={kind}
+                dictKey={dictKey}
+                itemListData={data}
+                {..._params_updatingValues}
+              />
             </div>
             <div>
               <button
@@ -814,8 +874,13 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey, kind }) => {
               keyField: "Id",
               className: "text-left",
               isLockFirstColumn: false,
-              multiChecked: constants.DEV_HOLDING_FEATURES.v20260330_bulkupdate ? null: multiChecked,
-              setMultiChecked: constants.DEV_HOLDING_FEATURES.v20260330_bulkupdate ? null: setMultiChecked
+              multiChecked: constants.DEV_HOLDING_FEATURES.v20260330_bulkupdate
+                ? null
+                : multiChecked,
+              setMultiChecked: constants.DEV_HOLDING_FEATURES
+                .v20260330_bulkupdate
+                ? null
+                : setMultiChecked,
             }}
           />
         </div>
@@ -851,7 +916,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
     setSort,
     filters,
     setFilters,
-  } = _params_updatingValues
+  } = _params_updatingValues;
 
   useEffect(() => {
     init(data);
@@ -945,10 +1010,31 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
       width: 150,
       render: (t, record) => {
         const updatingKey = "Facility";
+        const value = record[updatingKey];
+        const acceptFacilities =
+          dictionary?.facilitySystemCodeList?.[record?.["System"]];
+        let err = null;
+        if (!acceptFacilities?.includes(value)) {
+          err = (
+            <span className="text-danger text-xs">
+              Not available in {value}
+            </span>
+          );
+        }
+        const excludeFacilities = ITEM_FACILITY.reduce((acc, item) => {
+          if (
+            item.key === "" ||
+            (acceptFacilities && !acceptFacilities.includes(item.key))
+          ) {
+            acc[item.key] = true;
+          }
+          return acc;
+        }, {});
+        
         return (
           <Editable.EF_SelectWithLabel
             {...{
-              value: record[updatingKey],
+              value,
               onChange: (v) =>
                 handleUpdate(
                   record?.Id,
@@ -958,8 +1044,9 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
                 ),
               id: `Facility_${record?.Id}`,
               options: ITEM_FACILITY,
-              className: "form-select form-select-sm",
+              className: cn("form-select form-select-sm"),
               disabled: !_isGroupEditable,
+              exclude: excludeFacilities,
             }}
           />
         );
@@ -1005,7 +1092,7 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
               disabled: !_isGroupEditable,
               size: "sm",
               placeholder: "--",
-              isHightlightValue: false
+              isHightlightValue: false,
             }}
           />
         );
@@ -1095,9 +1182,15 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
           <div className={cn(styles.itemSubTitle, styles.subTitle)}>
             <div className={cn(styles.kindTitleContainer)}>
               <label>
-                {label} <small className="fw-normal">( {stats[dictKey]} )</small>
+                {label}{" "}
+                <small className="fw-normal">( {stats[dictKey]} )</small>
               </label>
-              <Subsec_Bulkupdate onBatchUpdateItems={onBatchUpdateItems} dictKey={dictKey} itemListData={data} {..._params_updatingValues}/>
+              <Subsec_Bulkupdate
+                onBatchUpdateItems={onBatchUpdateItems}
+                dictKey={dictKey}
+                itemListData={data}
+                {..._params_updatingValues}
+              />
             </div>
             <div>
               <button
@@ -1157,12 +1250,11 @@ const TableSortableWithFacility = memo((props) => {
 
   const _columnsNotSplit = useMemo(
     () => _columns?.filter((a) => a.key !== "Facility"),
-    [_columns]
-  )
+    [_columns],
+  );
 
   if (_isWithFacility) {
-
-    // if splitting facility: 
+    // if splitting facility:
     return (
       <div>
         {_.sortBy(
@@ -1188,8 +1280,7 @@ const TableSortableWithFacility = memo((props) => {
       </div>
     );
   } else {
-
-    // if not splitting facility: 
+    // if not splitting facility:
     return (
       <TableSortable
         {...rest}
@@ -1207,7 +1298,7 @@ export default React.memo(Com);
 // === util hooks ======
 const useUpdatingValues = ({ data, getRowId }) => {
   const [updatingValues, setUpdatingValues] = useState({});
-  const [multiChecked, setMultiChecked] = useState({})
+  const [multiChecked, setMultiChecked] = useState({});
   const [sort, setSort] = useState({});
   const [filters, setFilters] = useState({});
   const handleUpdate = useCallback((id, v, k, initV) => {
