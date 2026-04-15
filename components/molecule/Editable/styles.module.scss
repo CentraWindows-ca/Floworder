@@ -60,4 +60,11 @@
     }
 }
 
+.select {
+    option {
+        &:disabled {
+            color: #CCC
+        }
+    }
 
+}

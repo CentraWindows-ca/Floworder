@@ -122,6 +122,7 @@ export const EF_SelectWithLabel = React.memo(
         className={cn(
           "form-select w-full",
           className,
+          styles.select,
           isHighlightDiff && initValue !== value && styles.diff,
           errorMessage ? styles.error : "",
         )}
