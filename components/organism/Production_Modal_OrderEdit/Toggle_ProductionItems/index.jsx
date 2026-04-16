@@ -549,7 +549,7 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label, kind }) => {
 const TEMPORARY_DISABLE_FOR_FIX = true;
 
 const TableDoor = ({ stats, handleShowItem, list, label, dictKey, kind }) => {
-  const { checkEditable, onBatchUpdateItems } = useContext(
+  const { checkEditable, onBatchUpdateItems, dictionary } = useContext(
     LocalDataContext_items,
   );
 
@@ -891,7 +891,7 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey, kind }) => {
 
 const initialValueOfStatus = ITEM_STATUS?.find((a) => a.sort === 0)?.fieldCode;
 const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
-  const { checkEditable, onBatchUpdateItems } = useContext(
+  const { checkEditable, onBatchUpdateItems, dictionary } = useContext(
     LocalDataContext_items,
   );
 

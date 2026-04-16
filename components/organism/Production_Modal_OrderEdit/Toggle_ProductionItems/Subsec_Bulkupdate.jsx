@@ -123,7 +123,7 @@ const Com = (props) => {
         break;
       case "Ready To Ship":
         allow = false;
-        if (!allow) reason.push("Should bulk update by shipping");
+        if (!allow) reason.push("Bulk update available during shipping process only");
         break;
       case "On Hold":
       // if onhold, always true. multiStatus is target status
