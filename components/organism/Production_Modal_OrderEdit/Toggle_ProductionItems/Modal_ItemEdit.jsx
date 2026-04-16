@@ -21,6 +21,28 @@ import utils from "lib/utils";
 // styles
 import styles from "../styles.module.scss";
 import { displayFilterForProductItems } from "../Com";
+
+export const getFacilityExclude = (system, dictionary) => {
+  const acceptFacilities = dictionary?.facilitySystemCodeList?.[system] || [""];
+  const hasAnyValidFacility = ITEM_FACILITY.some((fac) => fac.key !== "" && acceptFacilities.includes(fac.key));
+  return ITEM_FACILITY.reduce((acc, fac) => {
+    if (fac.key === "") {
+      if (hasAnyValidFacility) acc[fac.key] = true;
+    } else if (acceptFacilities && !acceptFacilities.includes(fac.key)) {
+      acc[fac.key] = true;
+    }
+    return acc;
+  }, {});
+};
+
+export const getFacilityError = (value, system, dictionary) => {
+  const acceptFacilities = dictionary?.facilitySystemCodeList?.[system];
+  if (value && !acceptFacilities?.includes(value)) {
+    return <span className="text-danger text-xs">Not available in {value}</span>;
+  }
+  return null;
+};
+
 const WINDOW_FIELDS = applyField([
   {
     Component: Editable.EF_Label,
@@ -31,7 +53,8 @@ const WINDOW_FIELDS = applyField([
     options: ITEM_FACILITY,
     fieldCode: "Facility",
     sortBy: "sort",
-    exclude:{"": true}
+    getProps: (item, dictionary) => ({ exclude: getFacilityExclude(item?.System, dictionary) }),
+    renderAfter: (item, dictionary) => getFacilityError(item?.Facility, item?.System, dictionary),
   },
   {
     Component: Editable.EF_Label,
@@ -141,6 +164,8 @@ const DOOR_FIELDS = applyField([
     options: ITEM_FACILITY,
     fieldCode: "Facility",
     sortBy: "sort",
+    getProps: (item, dictionary) => ({ exclude: getFacilityExclude(item?.System, dictionary) }),
+    renderAfter: (item, dictionary) => getFacilityError(item?.Facility, item?.System, dictionary),
   },
   {
     Component: Editable.EF_Label,
@@ -304,7 +329,7 @@ const DOOR_FIELDS = applyField([
 ]);
 
 const Com = (props) => {
-  const { checkEditable } = useContext(LocalDataContext);
+  const { checkEditable, dictionary } = useContext(LocalDataContext);
   const { permissions } = useContext(GeneralContext);
   const { onHide, initItem, onSave } = props;
   const [item, setItem] = useState(null);
@@ -359,6 +384,7 @@ const Com = (props) => {
               isEditable={
                 !a.disabled && checkEditable({ group: _editgroup[item?.kind] })
               }
+              dictionary={dictionary}
             />
           );
         })}
@@ -376,11 +402,13 @@ const Com = (props) => {
   );
 };
 
-const Block = ({ item, setItem, inputData, isEditable }) => {
-  let { Component, title, fieldCode, options, overrideOnChange, ...rest } = inputData;
-  
-  const field = fieldCode
-  
+const Block = ({ item, setItem, inputData, isEditable, dictionary }) => {
+  let { Component, title, fieldCode, options, overrideOnChange, getProps, renderAfter, ...rest } = inputData;
+
+  const field = fieldCode;
+  const dynamicProps = getProps ? getProps(item, dictionary) : {};
+  const extraContent = renderAfter ? renderAfter(item, dictionary) : null;
+
   const handleChange = (v, field) => {
     setItem((prev) => ({
       ...prev,
@@ -405,7 +433,9 @@ const Block = ({ item, setItem, inputData, isEditable }) => {
           options={options}
           disabled={!isEditable}
           {...rest}
+          {...dynamicProps}
         />
+        {extraContent}
       </div>
     </div>
   );

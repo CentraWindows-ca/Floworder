@@ -29,7 +29,7 @@ import {
   DisplayBlock,
   displayFilterForProductItems,
 } from "../Com";
-import Modal_ItemEdit from "./Modal_ItemEdit";
+import Modal_ItemEdit, { getFacilityExclude, getFacilityError } from "./Modal_ItemEdit";
 // styles
 import stylesRoot from "../styles.module.scss";
 import stylesCurrent from "./styles.module.scss";
@@ -38,6 +38,24 @@ import Subsec_Bulkupdate from "./Subsec_Bulkupdate";
 const styles = { ...stylesRoot, ...stylesCurrent };
 
 // const getCategoryBySystem = (system) => {};
+
+const renderFacilityCell = (record, { handleUpdate, _isGroupEditable, dictionary }) => {
+  const value = record.Facility;
+  return (
+    <>
+      <Editable.EF_SelectWithLabel
+        value={value}
+        onChange={(v) => handleUpdate(record.Id, v || null, "Facility", record.Facility)}
+        id={`Facility_${record.Id}`}
+        options={ITEM_FACILITY}
+        className="form-select form-select-sm"
+        disabled={!_isGroupEditable}
+        exclude={getFacilityExclude(record.System, dictionary)}
+      />
+      {getFacilityError(value, record.System, dictionary)}
+    </>
+  );
+};
 
 const Com = ({ title, id }) => {
   const {
@@ -269,52 +287,8 @@ const TableWindow = ({ stats, handleShowItem, list, dictKey, label, kind }) => {
       {
         fieldCode: "Facility",
         width: 150,
-        render: (t, record) => {
-          const updatingKey = "Facility";
-          const value = record[updatingKey];
-          const acceptFacilities =
-            dictionary?.facilitySystemCodeList?.[record?.["System"]];
-          let err = null;
-          if (!acceptFacilities?.includes(value)) {
-            err = (
-              <span className="text-danger text-xs">
-                Not available in {value}
-              </span>
-            );
-          }
-          const excludeFacilities = ITEM_FACILITY.reduce((acc, item) => {
-            if (
-              item.key === "" ||
-              (acceptFacilities && !acceptFacilities.includes(item.key))
-            ) {
-              acc[item.key] = true;
-            }
-            return acc;
-          }, {});
-
-          return (
-            <>
-              <Editable.EF_SelectWithLabel
-                {...{
-                  value,
-                  onChange: (v) =>
-                    handleUpdate(
-                      record?.Id,
-                      v || null,
-                      "Facility",
-                      record["Facility"],
-                    ),
-                  id: `Facility_${record?.Id}`,
-                  options: ITEM_FACILITY,
-                  className: "form-select form-select-sm",
-                  disabled: !_isGroupEditable,
-                  exclude: excludeFacilities,
-                }}
-              />
-              {err}
-            </>
-          );
-        },
+        render: (t, record) =>
+          renderFacilityCell(record, { handleUpdate, _isGroupEditable, dictionary }),
       },
       {
         fieldCode: "Size",
@@ -602,49 +576,8 @@ const TableDoor = ({ stats, handleShowItem, list, label, dictKey, kind }) => {
     {
       fieldCode: "Facility",
       width: 150,
-      render: (t, record) => {
-        const updatingKey = "Facility";
-        const value = record[updatingKey];
-        const acceptFacilities =
-          dictionary?.facilitySystemCodeList?.[record?.["System"]];
-        let err = null;
-        if (!acceptFacilities?.includes(value)) {
-          err = (
-            <span className="text-danger text-xs">
-              Not available in {value}
-            </span>
-          );
-        }
-        const excludeFacilities = ITEM_FACILITY.reduce((acc, item) => {
-          if (
-            item.key === "" ||
-            (acceptFacilities && !acceptFacilities.includes(item.key))
-          ) {
-            acc[item.key] = true;
-          }
-          return acc;
-        }, {});
-
-        return (
-          <Editable.EF_SelectWithLabel
-            {...{
-              value,
-              onChange: (v) =>
-                handleUpdate(
-                  record?.Id,
-                  v || null,
-                  "Facility",
-                  record["Facility"],
-                ),
-              id: `Facility_${record?.Id}`,
-              options: ITEM_FACILITY,
-              className: "form-select form-select-sm",
-              disabled: !_isGroupEditable,
-              exclude: excludeFacilities,
-            }}
-          />
-        );
-      },
+      render: (t, record) =>
+        renderFacilityCell(record, { handleUpdate, _isGroupEditable, dictionary }),
     },
     {
       fieldCode: "Size",
@@ -1008,49 +941,8 @@ const TableOther = ({ stats, list, label, dictKey, kind = "w" }) => {
     {
       fieldCode: "Facility",
       width: 150,
-      render: (t, record) => {
-        const updatingKey = "Facility";
-        const value = record[updatingKey];
-        const acceptFacilities =
-          dictionary?.facilitySystemCodeList?.[record?.["System"]];
-        let err = null;
-        if (!acceptFacilities?.includes(value)) {
-          err = (
-            <span className="text-danger text-xs">
-              Not available in {value}
-            </span>
-          );
-        }
-        const excludeFacilities = ITEM_FACILITY.reduce((acc, item) => {
-          if (
-            item.key === "" ||
-            (acceptFacilities && !acceptFacilities.includes(item.key))
-          ) {
-            acc[item.key] = true;
-          }
-          return acc;
-        }, {});
-        
-        return (
-          <Editable.EF_SelectWithLabel
-            {...{
-              value,
-              onChange: (v) =>
-                handleUpdate(
-                  record?.Id,
-                  v || null,
-                  "Facility",
-                  record["Facility"],
-                ),
-              id: `Facility_${record?.Id}`,
-              options: ITEM_FACILITY,
-              className: cn("form-select form-select-sm"),
-              disabled: !_isGroupEditable,
-              exclude: excludeFacilities,
-            }}
-          />
-        );
-      },
+      render: (t, record) =>
+        renderFacilityCell(record, { handleUpdate, _isGroupEditable, dictionary }),
     },
     {
       fieldCode: "Size",
