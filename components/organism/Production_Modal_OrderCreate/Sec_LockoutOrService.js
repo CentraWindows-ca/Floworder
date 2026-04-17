@@ -69,9 +69,7 @@ export default ({
     setServiceOrder(v);
   };
 
-  console.log(projectFormId)
   const handleProjectSelect = (v) => {
-    console.log("??", v)
     setProjectFormId(v);
   };
 
@@ -90,34 +88,15 @@ export default ({
     <>
       <div className="p-4">
         <div className="alert alert-light mb-0 font-bold" role="alert">
-          <div className="justify-content-center align-items-center flex">
-            Is this work order linked to a{" "}
-            {!constants.DEV_HOLDING_FEATURES.v20251030_createWithService &&
-              "Service"}{" "}
-            or Lockout ?
-            <div className="ms-2">
-              <Editable.EF_SelectWithLabel
-                id={"lockoutOrService"}
-                value={isLockoutOrService}
-                onChange={(v) => setIsLockoutOrService(v)}
-                options={[
-                  { label: "-", key: "" },
-                  { label: "Yes", key: "Yes" },
-                  { label: "No", key: "No" },
-                ]}
-              />
-            </div>
-          </div>
-
-          <div style={{ borderTop: "1px solid #E0E0E0" }} className="my-2 pt-4">
-            <div className="d-flex align-items-center gap-1 py-2">
+          <div>
+            <div className="d-flex align-items-center gap-1" style={{ height: 30 }}>
               <span>
                 <EF_Checkbox
                   id={"enableLockout"}
                   value={isEnableLockout}
                   onChange={handleEnableLockout}
                 />
-                <label htmlFor="enableLockout" className="ps-2">
+                <label htmlFor="enableLockout" className="px-2">
                   This is a Lockout order.
                 </label>
               </span>
@@ -150,14 +129,14 @@ export default ({
               )}
             </div>
             {!constants.DEV_HOLDING_FEATURES.v20251030_createWithService && (
-              <div className="d-flex align-items-center gap-1 py-2">
+              <div className="d-flex align-items-center gap-1" style={{ height: 30 }}>
                 <span>
                   <EF_Checkbox
                     id={"enableService"}
                     value={isEnableService}
                     onChange={handleEnableService}
                   />
-                  <label htmlFor="enableService" className="ps-2">
+                  <label htmlFor="enableService" className="px-2">
                     This is a Service order.
                   </label>
                 </span>
@@ -191,7 +170,7 @@ export default ({
 
             <div
               className="d-flex align-items-center gap-1"
-              style={{ height: 40 }}
+              style={{ height: 30 }}
             >
               <span>
                 <EF_Checkbox
@@ -199,7 +178,7 @@ export default ({
                   value={isEnableMfso}
                   onChange={handleEnableMFSO39}
                 />
-                <label htmlFor="enableMfso" className="ps-2">
+                <label htmlFor="enableMfso" className="px-2">
                   This is a MFSO part3/part9
                 </label>
               </span>
