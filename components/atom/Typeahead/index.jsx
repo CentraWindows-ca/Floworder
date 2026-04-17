@@ -88,6 +88,8 @@ export default React.memo(
           const selectedKey = valueKey
             ? selected?.[0]?.[valueKey]
             : selected?.[0];
+
+            console.log(selectedKey, selected)
           onChange(selectedKey, selected);
         };
 

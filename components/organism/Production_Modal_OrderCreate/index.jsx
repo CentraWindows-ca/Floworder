@@ -272,6 +272,8 @@ const Screen2 = ({
   const [isLockoutOrService, setIsLockoutOrService] = useState("No");
   const [lockoutOrder, setLockoutOrder] = useState(null);
   const [serviceOrder, setServiceOrder] = useState(null);
+  const [projectFormId, setProjectFormId] = useState(null);
+  
 
   const isWindow = !!(
     windowMakerData?.wmWindows ||
@@ -317,6 +319,10 @@ const Screen2 = ({
     } else {
       updateValues.status =
         existingWorkOrder?.m_Status || WORKORDER_STATUS_MAPPING.Scheduled.key;
+    }
+
+    if (projectFormId) {
+      updateValues.formId = projectFormId
     }
 
     if (selectedOverrideOption === "ResetWorkOrder") {
@@ -466,7 +472,9 @@ const Screen2 = ({
                 const { field, title } = a;
                 return (
                   <div key={field} className="form-group row">
-                    <label className="col-lg-4 font-bold">{title} ({facility})</label>
+                    <label className="col-lg-4 font-bold">
+                      {title} ({facility})
+                    </label>
                     <div className="col-lg-8 border-gray-200">
                       {utils.formatDate(existingWorkOrder?.[field]) || "--"}
                     </div>
@@ -586,6 +594,8 @@ const Screen2 = ({
             isLockoutOrService,
             setIsLockoutOrService,
             existingWorkOrder,
+            projectFormId,
+            setProjectFormId,
           }}
         />
       )}

@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import cn from "classnames";
 import _ from "lodash";
 import Modal from "components/molecule/Modal";
+import External_FromApi from "lib/api/External_FromApi";
 
 // styles
 import Editable, { EF_Checkbox } from "components/molecule/Editable";
+import Typeahead from "components/atom/Typeahead";
 
 import Lookup_Lockout from "./Lookup_Lockout";
 import Lookup_Service from "./Lookup_Service";
@@ -20,12 +22,21 @@ export default ({
   setServiceOrder,
   isLockoutOrService,
   setIsLockoutOrService,
+  projectFormId,
+  setProjectFormId,
 }) => {
   const [showLockoutLookup, setShowLockoutLookup] = useState(false);
   const [showServiceLookup, setShowServiceLookup] = useState(false);
 
   const [isEnableLockout, setIsEnableLockout] = useState(false);
   const [isEnableService, setIsEnableService] = useState(false);
+  const [isEnableMfso, setIsEnableMfso] = useState(false);
+
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    doInit();
+  }, []);
 
   const handleEnableLockout = (v) => {
     setIsEnableLockout(v);
@@ -41,6 +52,13 @@ export default ({
     }
   };
 
+  const handleEnableMFSO39 = (v) => {
+    setIsEnableMfso(v);
+    if (!v) {
+      setIsEnableMfso(null);
+    }
+  };
+
   const handleLockoutSelect = (v) => {
     setShowLockoutLookup(false);
     setLockoutOrder(v);
@@ -49,6 +67,23 @@ export default ({
   const handleServiceSelect = (v) => {
     setShowServiceLookup(false);
     setServiceOrder(v);
+  };
+
+  console.log(projectFormId)
+  const handleProjectSelect = (v) => {
+    console.log("??", v)
+    setProjectFormId(v);
+  };
+
+  const doInit = async () => {
+    const data = await External_FromApi.getMFSOPart3andPart9();
+    const options = data
+      ?.map((a) => ({
+        label: `${a?.community} (${a?.customerName})`,
+        key: a?.formId,
+      }))
+      ?.sort((a, b) => (a.label > b.label ? 1 : -1));
+    setProjects(options);
   };
 
   return (
@@ -74,91 +109,117 @@ export default ({
             </div>
           </div>
 
-          {isLockoutOrService === "Yes" && (
-            <div
-              style={{ borderTop: "1px solid #E0E0E0" }}
-              className="my-2 pt-4"
-            >
+          <div style={{ borderTop: "1px solid #E0E0E0" }} className="my-2 pt-4">
+            <div className="d-flex align-items-center gap-1 py-2">
+              <span>
+                <EF_Checkbox
+                  id={"enableLockout"}
+                  value={isEnableLockout}
+                  onChange={handleEnableLockout}
+                />
+                <label htmlFor="enableLockout" className="ps-2">
+                  This is a Lockout order.
+                </label>
+              </span>
+
+              {isEnableLockout && (
+                <>
+                  <span
+                    className={cn(
+                      styles.link,
+                      lockoutOrder ? "" : styles.noValue,
+                    )}
+                    onClick={() => setShowLockoutLookup(true)}
+                  >
+                    {lockoutOrder ? (
+                      <>[Lockout Order: {lockoutOrder?.displayName}]</>
+                    ) : (
+                      "[Select...]"
+                    )}
+                  </span>
+                  {lockoutOrder ? (
+                    <i
+                      className={cn(
+                        "fa-solid fa-circle-xmark",
+                        styles.icon_close,
+                      )}
+                      onClick={() => setLockoutOrder(null)}
+                    ></i>
+                  ) : null}
+                </>
+              )}
+            </div>
+            {!constants.DEV_HOLDING_FEATURES.v20251030_createWithService && (
               <div className="d-flex align-items-center gap-1 py-2">
                 <span>
                   <EF_Checkbox
-                    id={"enableLockout"}
-                    value={isEnableLockout}
-                    onChange={handleEnableLockout}
+                    id={"enableService"}
+                    value={isEnableService}
+                    onChange={handleEnableService}
                   />
-                  <label htmlFor="enableLockout" className="ps-2">
-                    This is a Lockout order.
+                  <label htmlFor="enableService" className="ps-2">
+                    This is a Service order.
                   </label>
                 </span>
 
-                {isEnableLockout && (
+                {isEnableService && (
                   <>
                     <span
                       className={cn(
                         styles.link,
-                        lockoutOrder ? "" : styles.noValue,
+                        serviceOrder ? "" : styles.noValue,
                       )}
-                      onClick={() => setShowLockoutLookup(true)}
+                      onClick={() => setShowServiceLookup(true)}
                     >
-                      {lockoutOrder ? (
-                        <>[Lockout Order: {lockoutOrder?.displayName}]</>
-                      ) : (
-                        "[Select...]"
-                      )}
+                      {serviceOrder
+                        ? `[Service Order: ${serviceOrder?.serviceId}]`
+                        : "[Select...]"}
                     </span>
-                    {lockoutOrder ? (
+                    {serviceOrder ? (
                       <i
                         className={cn(
                           "fa-solid fa-circle-xmark",
                           styles.icon_close,
                         )}
-                        onClick={() => setLockoutOrder(null)}
+                        onClick={() => setServiceOrder(null)}
                       ></i>
                     ) : null}
                   </>
                 )}
               </div>
-              {!constants.DEV_HOLDING_FEATURES.v20251030_createWithService && (
-                <div className="d-flex align-items-center gap-1 py-2">
-                  <span>
-                    <EF_Checkbox
-                      id={"enableService"}
-                      value={isEnableService}
-                      onChange={handleEnableService}
-                    />
-                    <label htmlFor="enableService" className="ps-2">
-                      This is a Service order.
-                    </label>
-                  </span>
+            )}
 
-                  {isEnableService && (
-                    <>
-                      <span
-                        className={cn(
-                          styles.link,
-                          serviceOrder ? "" : styles.noValue,
-                        )}
-                        onClick={() => setShowServiceLookup(true)}
-                      >
-                        {serviceOrder
-                          ? `[Service Order: ${serviceOrder?.serviceId}]`
-                          : "[Select...]"}
-                      </span>
-                      {serviceOrder ? (
-                        <i
-                          className={cn(
-                            "fa-solid fa-circle-xmark",
-                            styles.icon_close,
-                          )}
-                          onClick={() => setServiceOrder(null)}
-                        ></i>
-                      ) : null}
-                    </>
-                  )}
-                </div>
+            <div
+              className="d-flex align-items-center gap-1"
+              style={{ height: 40 }}
+            >
+              <span>
+                <EF_Checkbox
+                  id={"enableMfso"}
+                  value={isEnableMfso}
+                  onChange={handleEnableMFSO39}
+                />
+                <label htmlFor="enableMfso" className="ps-2">
+                  This is a MFSO part3/part9
+                </label>
+              </span>
+
+              {isEnableMfso && (
+                <>
+                  <Typeahead
+                    id={"projectSelect"}
+                    labelKey="label"
+                    valueKey="key"
+                    size="sm"
+                    value={projectFormId}
+                    onChange={(v) => handleProjectSelect(v)}
+                    options={projects}
+                    style={{ flex: "1" }}
+                  />
+                </>
               )}
             </div>
-          )}
+          </div>
         </div>
       </div>
       <Modal
